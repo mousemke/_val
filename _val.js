@@ -244,7 +244,7 @@ function dodge( from, to, text )
         to = textSplit[1];
     }
 
-    botText = ' hits ' + to + ' with a ';
+    var botText = ' hits ' + to + ' with a ';
     var car = cars[ Math.floor( Math.random() * cars.length ) ];
 
     if ( !car[ 1 ] )
@@ -279,7 +279,7 @@ function doge( from, text, full )
 {
     var textSplit = text.split( ' ' );
 
-    url = 'https://block.io/api/v1/get_current_price/?api_key=' + dcMasterList[ 'api-key' ];
+    var url = 'https://block.io/api/v1/get_current_price/?api_key=' + dcMasterList[ 'api-key' ];
     apiGet( url, function( info )
     {
         var price, dogePrices = info.data.prices,
@@ -301,7 +301,7 @@ function doge( from, text, full )
             doge += ' ';
         }
 
-        for ( i = 0, lenI = dogePrices.length; i < lenI; i++ )
+        for (var i = 0, lenI = dogePrices.length; i < lenI; i++ )
         {
             if ( ( dogePrices[ i ].price_base === 'BTC' &&
                  dogePrices[ i ].exchange === 'cryptsy' && full === false ) ||
@@ -403,7 +403,7 @@ function listenToMessages( from, to, text )
         active[ from ][ to ] = Date.now();
 
         var botText = '';
-        command = text.slice( 1 ).split( ' ' )[ 0 ];
+        var command = text.slice( 1 ).split( ' ' )[ 0 ];
         var moon = moonRegex.exec( command );
 
         if ( text === '_val' || text === '_val?' )
@@ -550,7 +550,7 @@ function listenToMessages( from, to, text )
 
                 var option, options = userConfig.fettiOptions;
                 options[ 0 ] = word + ' ';
-                for ( i = 0; i < 25; i++ )
+                for (var  i = 0; i < 25; i++ )
                 {
                     option = Math.floor( Math.random() * options.length );
                     botText += options[ option ];
@@ -560,7 +560,7 @@ function listenToMessages( from, to, text )
             {
                 botText = 'm';
                 var moonLength = moon[1].length;
-                for ( i = 0, lenI = moonLength; i < lenI; i++ )
+                for ( i = 0; i < moonLength; i++ )
                 {
                     botText += 'ooo';
                 }
@@ -667,25 +667,20 @@ function loadMasterList()
 
 function pool( from, to, text )
 {
-    var botText, url = 'http://192.168.2.15:8001/api/players/',
-        position    = [],
+    var botText, url = 'http://192.168.2.15:8001/api/players',
         textSplit   = text.split( ' ' ),
-        wordOrNum   = parseInt( textSplit[ 1 ] ),
+        wordOrNum   = parseInt( textSplit[ 1 ], 10 ),
         count;
 
     if ( isNaN( wordOrNum ) && typeof textSplit[ 1 ] !== 'undefined' )
     {
         count = textSplit[ 1 ];
-        url = 'http://192.168.2.15:8001/api/players/' + count;
+        url += '/' + count;
     }
-    else if ( typeof wordOrNum === 'number' )
+    else
     {
         count = wordOrNum;
-    }
-
-    if ( isNaN( count ) && typeof count !== 'string' )
-    {
-        count = 5;
+        url += '?sort=desc&limit=' + ( isNaN( count ) ? 5 : count );
     }
 
     if ( count !== 1 )
@@ -699,53 +694,36 @@ function pool( from, to, text )
 
     apiGet( url, function( players )
     {
+        var player;
         if ( typeof count === 'number' )
         {
-            for ( i = 0, lenI = players.length; i < lenI; i++ )
+            var rank = 1;
+
+            for ( var i = 0, length = players.length; i < length; i++ )
             {
-                if ( ! position[ players[ i ].wins ] )
+                player = players[i];
+
+                botText += (rank++) + ' - ' + player.name + ' (' +
+                            player.wins  + ':' + player.losses + ')';
+
+                if ( i < length - 1 )
                 {
-                    position[ players[ i ].wins ] = [ players[ i ].name ];
-                }
-                else
-                {
-                    position[ players[ i ].wins ].push( players[ i ].name );
+                    botText += ', ';
                 }
             }
 
-            for ( i = position.length - 1; i >= 0; i-- )
-            {
-                for ( j = 0, lenJ = position[ i ].length; j < lenJ; j++ )
-                {
-                    botText += position[ i ][ j ] + ' ' + i + ', ';
-
-                    count--;
-                    if ( count === 0 )
-                    {
-                        break;
-                    }
-                }
-                 if ( count === 0 )
-                {
-                    break;
-                }
-            }
-
-            if ( i === -1 || count === 0 )
-            {
-                botText = botText.slice( 0, botText.length - 2 );
-                _bot.say( from, botText );
-            }
+            _bot.say( from, botText );
         }
-        else
+        else if ( typeof count === 'string' )
         {
-            if ( players.score )
+            player = players;
+            if ( player.score )
             {
-                botText = count + ' a ' + ( players._score ) + '% win rate. ( ' + ( players.wins ) + ':' + ( players.losses ) + ' )';
+                botText = count + ' a ' + ( player._score ) + '% win rate. ( ' + ( player.wins ) + ':' + ( player.losses ) + ' )';
             }
-            else if ( players.score === null || players.score === 0 )
+            else if ( player.score === null || player.score === 0 )
             {
-                botText = count + ' has never won a game. ( ' + ( players.wins ) + ':' + ( players.losses ) + ' )';
+                botText = count + ' has never won a game. ( ' + ( player.wins ) + ':' + ( player.losses ) + ' )';
             }
             else
             {
