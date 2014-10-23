@@ -1,23 +1,7 @@
 
 
 // Create the configuration
-var userConfig = {
-        friends             : [ 'nico', '_mouse_', 'arikedelstein' ],
-        welcomingChannels   : [ '#microbe', '#the_unit' ],
-        bots                : [ 'dante', 'zach', 'guillotine' ],
-        admins              : [ '_mouse_' ],
-        // channels            : [ '#soc-bots' ],
-        channels            : [ '#soc-bots', '#microbe', '#sociomantic', '#the_unit', '#backend', '#_teamDoinStuff' ],
-        server              : '192.168.2.24',
-        botName             : '_val_00B5',
-        trigger             : '.',
-        dcAddress           : removed,
-        api                 : removed,
-        activeTime          : 600000,
-        nickservBot         : 'NickServ',
-        fettiLength         : 15,
-        fettiOptions        : [ ' ', '. ', '´ ', '\' ', ' ,' ]
-    },
+var userConfig = require( './_val.config.js' ),
 
     channel, _bot,
 
@@ -30,38 +14,6 @@ var userConfig = {
     active      = {},
     moonRegex   = /(?:m([o]+)n)/,
     dcMasterList = {};
-
-    userConfig.helpText    = 'Hi!  My name is ' + ( userConfig.botName ) + ', and I\'ll be your IRC bot for the evening.        \n' +
-            'Valid commands are:     \n' +
-            ( userConfig.trigger ) + 'help\n' +
-            ( userConfig.trigger ) + 'doge\n' +
-            ( userConfig.trigger ) + 'market\n' +
-            ( userConfig.trigger ) + 'tip <user> <amount>\n' +
-            ( userConfig.trigger ) + 'withdraw <address> [ <amount> ]  (costs a Ð1 transaction fee)   \n' +
-            ( userConfig.trigger ) + 'deposit\n' +
-            ( userConfig.trigger ) + 'balance\n' +
-            ( userConfig.trigger ) + 'soak <amount>\n' +
-            ( userConfig.trigger ) + 'active\n' +
-            ( userConfig.trigger ) + 'google <query>\n' +
-            ( userConfig.trigger ) + 'pool (<name or number>)\n' +
-            '* market, doge, balance, withdraw, & deposit are also available as a pm';
-
-userConfig.helpTextSecondary =  '\n' + ( userConfig.trigger ) + 'rain\n' +
-                                ( userConfig.trigger ) + 'g <query>\n' +
-                                ( userConfig.trigger ) + 'dance\n' +
-                                ( userConfig.trigger ) + 'wave\n' +
-                                ( userConfig.trigger ) + 'domo\n' +
-                                ( userConfig.trigger ) + 'barrelroll\n' +
-                                ( userConfig.trigger ) + 'hedgehog\n' +
-                                ( userConfig.trigger ) + 'internet\n' +
-                                ( userConfig.trigger ) + 'cornflakes\n' +
-                                ( userConfig.trigger ) + 'snowflakes\n' +
-                                ( userConfig.trigger ) + 'whale\n' +
-                                ( userConfig.trigger ) + 'bot\n' +
-                                ( userConfig.trigger ) + 'dodge\n' +
-                                ( userConfig.trigger ) + 'ping\n' +
-                                ( userConfig.trigger ) + 'witchhunt\n' +
-                                ( userConfig.trigger ) + 'innovation';
 
 
 /**
@@ -301,7 +253,7 @@ function doge( from, text, full )
             doge += ' ';
         }
 
-        for (var i = 0, lenI = dogePrices.length; i < lenI; i++ )
+        for ( var i = 0, lenI = dogePrices.length; i < lenI; i++ )
         {
             if ( ( dogePrices[ i ].price_base === 'BTC' &&
                  dogePrices[ i ].exchange === 'cryptsy' && full === false ) ||
@@ -462,6 +414,16 @@ function listenToMessages( from, to, text )
                     break;
                 case 'innovation':
                     botText = 'INNOVATION!';
+                    break;
+                case 'flipthetable':
+                    botText = '(╯°□°）╯︵ ┻━┻';
+                    break;
+                case 'chilloutbro':
+                case 'putthetableback':
+                    botText = '┬──┬ ノ( ゜-゜ノ)';
+                    break;
+                case 'vampire':
+                    botText = '(°,..,°)';
                     break;
                 case 'ping':
                     botText = to + ': pong';
@@ -679,8 +641,8 @@ function pool( from, to, text )
     }
     else
     {
-        count = wordOrNum;
-        url += '?sort=desc&limit=' + ( isNaN( count ) ? 5 : count );
+        count = isNaN( wordOrNum ) ? 5 : wordOrNum;
+        url += '?sort=desc&limit=' + count;
     }
 
     if ( count !== 1 )
@@ -885,6 +847,7 @@ function tip( from, to, text )
                 writeMasterList();
 
                 _bot.say( from, 'WOW! ' + to + ' tipped ' + reciever + ' such Ð' + amount + ' (to claim /msg ' + ( userConfig.botName ) + ' help)' );
+                _bot.say( reciever,   'Such ' + to + ' tipped you Ð' + amount + ' (to claim /msg ' + ( userConfig.botName ) + ' help)' );
             }
             else
             {
@@ -980,159 +943,8 @@ function writeMasterList()
 dcMasterList = init();
 
 
-var nouns = [
-    [ 'a tornado.  It\'s an F5, and full of cows' ],
-    [ 'an actor' ],
-    [ 'actors' ],
-    [ 'a columnist' ],
-    [ 'a person' ],
-    [ 'people' ],
-    [ 'a pocket full of kryptonite' ],
-    [ 'a question' ],
-    [ 'questions unfit for human ponderings' ],
-    [ 'a refrigerator' ],
-    [ 'some refrigerators' ],
-    [ 'a saw' ],
-    [ 'saws' ],
-    [ 'a scorpion' ],
-    [ 'scorpions' ],
-    [ 'a bobcat. Heh.  Look at him.' ],
-    [ 'a box of bobcats' ],
-    [ 'a cave with some lewd cave paintings' ],
-    [ 'a cougar' ],
-    [ 'some cougars' ],
-    [ 'a root' ],
-    [ 'a sneeze' ],
-    [ 'a staircase' ],
-    [ 'a tire' ],
-    [ 'tires.  They are on fire.' ],
-    [ 'a vase' ],
-    [ 'Anthropology' ],
-    [ 'a beard of bees' ],
-    [ 'education' ],
-    [ 'mustard' ],
-    [ 'work' ],
-    [ 'a Canoe.  It leaks slightly' ],
-    [ 'Canoes, in a \'V\' formation' ],
-    [ 'a Church' ],
-    [ 'a fox' ],
-    [ 'foxes' ],
-    [ 'a harbor' ],
-    [ 'Meat' ],
-    [ 'an ophthalmologist' ],
-    [ 'a beggar' ],
-    [ 'a cello', 'noun' ],
-    [ 'cellos', 'noun' ],
-    [ 'a detective' ],
-    [ 'an eyelash' ],
-    [ 'Fear' ],
-    [ 'your Grandfather' ],
-    [ 'a lion' ],
-    [ 'some lions' ],
-    [ 'a radiator' ],
-    [ 'a fishmonger' ],
-    [ 'an adamantine wafer' ],
-    [ 'a laptop from 1998' ],
-    [ 'a Motorola Droid.  The screen is cracked.' ],
-    [ 'a BANH MI sandwich' ],
-    [ 'a bubble' ],
-    [ 'a Nuka-Cola' ],
-    [ 'a Jolt Cola' ],
-    [ '99 Luftbaloons' ],
-    [ '100 dogecoin paper coins' ],
-    [ 'the 100th Luftballon. It\'s popped.....' ],
-    [ 'a hot pocket' ],
-    [ 'a can of Coca-Cola, filled with Pepsi' ],
-    [ 'real food' ],
-    [ 'some bratwurst' ],
-    [ 'a classic NES' ],
-    [ 'a broken bottle of maple syrup' ],
-    [ 'ebola.  Walk it off.' ],
-    [ 'a glass of sharkleberry fin kool-aid' ]
-];
+var nouns = require( './lists/nouns.js' );
 
-var coffees = [
-    'a cup of cappuccino',
-    'a cup of espresso',
-    'a cup of French blend'
-];
+var coffees = require( './lists/coffee.js' );
 
-var cars = [
-    [ '330', 1963, 1964 ],
-    [ '400', 1982, 1983 ],
-    [ '440', 1963, 1964 ],
-    [ '600', 1983, 1988 ],
-    [ '880', 1962, 1965 ],
-    [ 'Aries', 1981, 1989 ],
-    [ 'Aspen', 1976, 1980 ],
-    [ 'Caliber', 2007, 2012 ],
-    [ 'Challenger', 1970, 1974 ],
-    [ 'Charger', 1966, 1977 ],
-    [ 'Colt', 1971, 1994 ],
-    [ 'Conquest', 1984, 1986 ],
-    [ 'Coronet', 1949, 1959 ],
-    [ 'Custom', 1946, 1948 ],
-    [ 'Custom Royal', 1955, 1959 ],
-    [ 'Daytona', 1984, 1993 ],
-    [ 'Deluxe', 1946, 1948 ],
-    [ 'Demon', 1960, 1976 ],
-    [ 'Diplomat', 1977, 1989 ],
-    [ 'Dynasty', 1988, 1993 ],
-    [ 'Eight', 1930, 1933 ],
-    [ 'Fast Four', 1927, 1928 ],
-    [ 'Intrepid', 1993, 2004 ],
-    [ 'Lancer', 1961, 1962 ],
-    [ 'Magnum', 1978, 1979 ],
-    [ 'Matador', 1960, null ],
-    [ 'Meadowbrook', 1949, 1954 ],
-    [ 'Mirada', 1980, 1983 ],
-    [ 'Model 30', 1914, 1922 ],
-    [ 'Monaco', 1965, 1978 ],
-    [ 'Neon', 1995, 2005 ],
-    [ 'Omni', 1978, 1990 ],
-    [ 'Polara', 1960, 1973 ],
-    [ 'Raider', 1987, 1989 ],
-    [ 'Royal', 1954, 1959 ],
-    [ 'Senior', 1927, 1930 ],
-    [ 'Series 116', 1923, 1925 ],
-    [ 'Series 126', 1926, 1927 ],
-    [ 'Shadow', 1987, 1994 ],
-    [ 'Sierra', 1957, 1959 ],
-    [ 'Six', 1929, 1949 ],
-    [ 'Spirit', 1989, 1995 ],
-    [ 'Standard', 1928, 1929 ],
-    [ 'Stealth', 1991, 1996 ],
-    [ 'Stratus', 1995, 2006 ],
-    [ 'St. Regis', 1979, 1981 ],
-    [ 'Victory', 1928, 1929 ],
-    [ 'Viper', null, null ],
-    [ 'Venom', 1994, null ],
-    [ 'Wayfarer', 1949, 1952 ],
-    [ 'Durango', 1998, 2009 ],
-    [ 'A100', 1964, 1970 ],
-    [ 'D50', 1979,1993 ],
-    [ 'Nitro', 2007, 2012 ],
-    [ 'Raider', 1987, 1989 ],
-    [ 'Ramcharger', 1974, 1993 ],
-    [ 'Rampage', 1982, 1984 ],
-    [ 'Ram Wagon', 1981, 2003 ],
-    [ 'Route Van', 1948, 1959 ],
-    [ 'Sprinter', 2003, 2009 ],
-    [ 'Rumble Bee', 1960, 2014 ],
-    [ '1500', 1973, 1978 ],
-    [ '1800', 1973, 1981 ],
-    [ 'Polara', 1973, 1981 ],
-    [ 'Alpine',  1977, 1982 ],
-    [ 'AT4', 1959, 1979 ],
-    [ 'Coronet',  1978, 1982 ],
-    [ 'Dart', 1970, 1981 ],
-    [ '3700', 1971, 1978 ],
-    [ 'Phoenix', 1960, 1973 ],
-    [ 'Utility', 1967, 1976 ],
-    [ 'Husky', null, null ],
-    [ 'Crusader', 1951, 1958 ],
-    [ 'Kingsway', 1946, 1952 ],
-    [ 'Mayfair', 1953, 1959 ],
-    [ 'Regent', 1946, 1959 ],
-    [ 'Viscount', 1959, '' ]
-];
+var cars = require( './lists/cars.js' );
