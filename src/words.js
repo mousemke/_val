@@ -17,7 +17,7 @@ module.exports  = function Words( _bot, apiGet, userData, userConfig )
 
         listenToWord : function( word, to, text )
         {
-            if ( text.toLowercase() === word.toLowercase() )
+            if ( text === word )
             {
                 _bot.say( userConfig.unscramble, 'Good Job ' + to + ' !' );
                 //doge tip per length?
