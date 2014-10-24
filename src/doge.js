@@ -1,7 +1,9 @@
 var http            = require( 'http' ),
     https           = require( 'https' ),
-    irc             = require( 'irc' );
-    fs              = require( 'fs' );
+    irc             = require( 'irc' ),
+    fs              = require( 'fs' ),
+    active          = {},
+    dcMasterList    = {};
 
 module.exports = function Doge( _bot, apiGet, userData )
 {
@@ -194,6 +196,16 @@ module.exports = function Doge( _bot, apiGet, userData )
 
                 _bot.say( from, doge );
             } );
+        },
+
+
+        init : function()
+        {
+            for ( var i = 0, lenI = userConfig.channels.length; i < lenI; i++ )
+            {
+                channel = userConfig.channels[ i ];
+                _bot.addListener( 'message' + channel, this.watchActive.bind( this, channel ) );
+            }
         },
 
 
@@ -392,6 +404,16 @@ module.exports = function Doge( _bot, apiGet, userData )
             };
 
             userData( to, from, _tipCB, text );
+        },
+
+
+        watchActive : function( from, to )
+        {
+            if ( !active[ from ] )
+            {
+                active[ from ] = {};
+            }
+            active[ from ][ to ] = Date.now();
         },
 
 

@@ -12,9 +12,7 @@ var channel, _bot, doge,
     fs              = require( 'fs' ),
     nouns           = require( './lists/nouns.js' ),
     coffees         = require( './lists/coffee.js' ),
-    cars            = require( './lists/cars.js' ),
-    active          = {},
-    dcMasterList    = {};
+    cars            = require( './lists/cars.js' );
 
 
 /**
@@ -172,15 +170,15 @@ function init()
 
     for ( var i = 0, lenI = channels.length; i < lenI; i++ )
     {
-        channel = channels[ i ];
+        channel = userConfig.channels[ i ];
         _bot.addListener( 'message' + channel, listenToMessages.bind( this, channels[ i ] ) );
     }
 
-    doge = new Doge( _bot, apiGet, userData );
-
-    plainText = new PlainText( _bot, apiGet, userData );
-
+    doge        = new Doge( _bot, apiGet, userData );
+    doge.init();
     doge.loadMasterList();
+
+    plainText   = new PlainText( _bot, apiGet, userData );
 }
 
 
@@ -199,12 +197,6 @@ function listenToMessages( from, to, text )
 {
     if ( userConfig.bots.indexOf( to ) === -1 )
     {
-        if ( !active[ from ] )
-        {
-            active[ from ] = {};
-        }
-        active[ from ][ to ] = Date.now();
-
         var botText = '';
 
         if ( text === '_val' || text === '_val?' )
@@ -401,4 +393,4 @@ function userData( to, from,  _cb, origText )
 }
 
 
-dcMasterList = init();
+init();
