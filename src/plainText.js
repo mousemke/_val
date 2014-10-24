@@ -81,64 +81,67 @@ module.exports = function PlainText( _bot, apiGet, userData )
         {
             switch ( command )
             {
+                case 'konami':
+                    botText = 'B A B A ↑ ↓ B A ← → B A (start)';
+                    break;
                 case 'rain':
-                          botText = 'ヽ｀、ヽ｀ヽヽ｀、ヽ｀ヽヽ｀、ヽ｀ヽ(¬_¬ )ヽ｀、ヽ｀ヽ｀、ヽ｀';
-                          break;
+                    botText = 'ヽ｀、ヽ｀ヽヽ｀、ヽ｀ヽヽ｀、ヽ｀ヽ(¬_¬ )ヽ｀、ヽ｀ヽ｀、ヽ｀';
+                    break;
                 case 'dance':
-                          botText = '♪┏(・o･)┛♪┗ ( ･o･) ┓♪';
-                          break;
+                    botText = '♪┏(・o･)┛♪┗ ( ･o･) ┓♪';
+                    break;
                 case 'domo':
-                          botText = '\\|°▿▿▿▿°|/';
-                          break;
+                    botText = '\\|°▿▿▿▿°|/';
+                    break;
                 case 'barrelroll':
-                          botText = '(._.)  ( l: )  ( .-. )  ( :l )  (._.)';
-                          break;
+                    botText = '(._.)  ( l: )  ( .-. )  ( :l )  (._.)';
+                    break;
                 case 'hedgehog':
-                          botText = '(•ᴥ• )́`́\'́`́\'́⻍ ';
-                          break;
+                    botText = '(•ᴥ• )́`́\'́`́\'́⻍ ';
+                    break;
                 case 'wave':
-                          botText = to + ' o/';
-                          break;
+                    botText = to + ' o/';
+                    break;
                 case 'internet':
-                          botText = 'ଘ(੭*ˊᵕˋ)੭* ̀ˋ ɪɴᴛᴇʀɴᴇᴛs';
-                          break;
+                    botText = 'ଘ(੭*ˊᵕˋ)੭* ̀ˋ ɪɴᴛᴇʀɴᴇᴛs';
+                    break;
                 case 'cornflakes':
                 case 'snowflakes':
-                          botText = '❅ ❆ ❄ ❆ ❆ ❄ ❆ ❅ ❆ ❆ ❅ ❆ ❄ ❄ ❅ ❄ ❆ ❆ ❆ ❄ ❆ ❆ ❄ ❆ ❆ ❅ ❅ ❄ ❄ ❅ ❄ ❄ ❄ ❆ ❄ ❅ ❆ ❅ ❅ ❄';
-                          break;
+                    botText = '❅ ❆ ❄ ❆ ❆ ❄ ❆ ❅ ❆ ❆ ❅ ❆ ❄ ❄ ❅ ❄ ❆ ❆ ❆ ❄ ❆ ❆ ❄ ❆ ❆ ❅ ❅ ❄ ❄ ❅ ❄ ❄ ❄ ❆ ❄ ❅ ❆ ❅ ❅ ❄';
+                    break;
                 case 'whale':
-                          botText = 'https://www.youtube.com/watch?v=xo2bVbDtiX8';
-                          break;
+                    botText = 'https://www.youtube.com/watch?v=xo2bVbDtiX8';
+                    break;
                 case 'bot':
-                          botText = 'I AM BOT\nINSERT DOGE';
-                          break;
+                    botText = 'I AM BOT\nINSERT DOGE';
+                    break;
                 case 'google':
                           text = text.split( ' ' ).slice( 1 ).join( '%20' );
-                          botText = 'http://www.lmgtfy.com/?q=' + text;
-                          break;
+                    botText = 'http://www.lmgtfy.com/?q=' + text;
+                    break;
                 case 'g':
                           text = text.split( ' ' ).slice( 1 ).join( '%20' );
-                          botText = 'https://www.google.com/search?btnG=1&pws=0&q=' + text + '&gws_rd=ssl';
-                          break;
+                    botText = 'https://www.google.com/search?btnG=1&pws=0&q=' + text + '&gws_rd=ssl';
+                    break;
                 case 'witchhunt':
-                          botText = 'http://i.imgur.com/x63cdJW.jpg';
-                          break;
+                    botText = 'http://i.imgur.com/x63cdJW.jpg';
+                    break;
                 case 'innovation':
-                          botText = 'INNOVATION!';
-                          break;
+                    botText = 'INNOVATION!';
+                    break;
                 case 'flipthetable':
-                          botText = '(╯°□°）╯︵ ┻━┻';
-                          break;
+                    botText = '(╯°□°）╯︵ ┻━┻';
+                    break;
                 case 'chilloutbro':
                 case 'putthetableback':
-                          botText = '┬──┬ ノ( ゜-゜ノ)';
-                          break;
+                    botText = '┬──┬ ノ( ゜-゜ノ)';
+                    break;
                 case 'vampire':
-                          botText = '(°,..,°)';
-                          break;
+                    botText = '(°,..,°)';
+                    break;
                 case 'ping':
-                          botText = to + ': pong';
-                          break;
+                    botText = to + ': pong';
+                    break;
             }
         }
 

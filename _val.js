@@ -104,6 +104,8 @@ function dogeResponses( from, to, text, botText )
             doge.soak( from, to, text );
             break;
     }
+
+    return botText;
 }
 
 
@@ -218,6 +220,8 @@ function listenToMessages( from, to, text )
 
             if ( botText === '' )
             {
+                var command = text.slice( 1 ).split( ' ' )[ 0 ];
+
                 switch ( command )
                 {
                     case 'pool':
