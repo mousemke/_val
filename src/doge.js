@@ -5,7 +5,7 @@ var http            = require( 'http' ),
     active          = {},
     dcMasterList    = {};
 
-module.exports = function Doge( _bot, apiGet, userData )
+module.exports = function Doge( _bot, apiGet, userData, userConfig )
 {
     return {
         /**
@@ -240,6 +240,41 @@ module.exports = function Doge( _bot, apiGet, userData )
             });
         },
 
+
+        responses : function( from, to, text, botText )
+        {
+            var command = text.slice( 1 ).split( ' ' )[ 0 ];
+
+            switch ( command )
+            {
+                case 'doge':
+                    this.doge( from, text, false );
+                    break;
+                case 'market':
+                    this.doge( from, text, true );
+                    break;
+                case 'tip':
+                    this.tip( from, to, text );
+                    break;
+                case 'withdraw':
+                    this.withdraw( from, to, text );
+                    break;
+                case 'balance':
+                    this.balance( from, to, text );
+                    break;
+                case 'deposit':
+                    this.deposit( from, to, text );
+                    break;
+                case 'active':
+                    this.checkActive( from, to, text );
+                    break;
+                case 'soak':
+                    this.soak( from, to, text );
+                    break;
+            }
+
+            return botText;
+        },
 
 
         /**

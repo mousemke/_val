@@ -4,7 +4,7 @@ var http            = require( 'http' ),
     fs              = require( 'fs' ),
     moonRegex       = /(?:m([o]+)n)/;
 
-module.exports = function PlainText( _bot, apiGet, userData )
+module.exports = function PlainText( _bot, apiGet, userData, userConfig )
 {
     return function( from, to, text, botText )
     {
@@ -112,15 +112,18 @@ module.exports = function PlainText( _bot, apiGet, userData )
                 case 'whale':
                     botText = 'https://www.youtube.com/watch?v=xo2bVbDtiX8';
                     break;
+                case 'safety':
+                    botText = 'https://www.youtube.com/watch?v=AjPau5QYtYs';
+                    break;
                 case 'bot':
                     botText = 'I AM BOT\nINSERT DOGE';
                     break;
                 case 'google':
-                          text = text.split( ' ' ).slice( 1 ).join( '%20' );
+                    text = text.split( ' ' ).slice( 1 ).join( '%20' );
                     botText = 'http://www.lmgtfy.com/?q=' + text;
                     break;
                 case 'g':
-                          text = text.split( ' ' ).slice( 1 ).join( '%20' );
+                    text = text.split( ' ' ).slice( 1 ).join( '%20' );
                     botText = 'https://www.google.com/search?btnG=1&pws=0&q=' + text + '&gws_rd=ssl';
                     break;
                 case 'witchhunt':

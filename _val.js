@@ -1,10 +1,11 @@
 
 
 // Create the configuration
-var channel, _bot, doge,
+var channel, _bot, doge, words,
     userConfig      = require( './_val.config.js' ),
     channels        = userConfig.channels,
     Doge            = require( './src/doge.js' ),
+    Words           = require( './src/words.js' ),
     PlainText       = require( './src/plainText.js' ),
     http            = require( 'http' ),
     https           = require( 'https' ),
@@ -81,9 +82,6 @@ function dogeResponses( from, to, text, botText )
             break;
         case 'market':
             doge.doge( from, text, true );
-            break;
-        case 'dodge':
-            dodge( from, to, text );
             break;
         case 'tip':
             doge.tip( from, to, text );
@@ -176,11 +174,13 @@ function init()
         _bot.addListener( 'message' + channel, listenToMessages.bind( this, channels[ i ] ) );
     }
 
-    doge        = new Doge( _bot, apiGet, userData );
+    doge        = new Doge( _bot, apiGet, userData, userConfig );
     doge.init();
     doge.loadMasterList();
 
-    plainText   = new PlainText( _bot, apiGet, userData );
+    words       = new Words( _bot, apiGet, userData, userConfig );
+
+    plainText   = new PlainText( _bot, apiGet, userData, userConfig );
 }
 
 
@@ -215,7 +215,7 @@ function listenToMessages( from, to, text )
 
             if ( botText === '' )
             {
-                botText = dogeResponses( from, to, text, botText );
+                botText = doge.responses( from, to, text, botText );
             }
 
             if ( botText === '' )
@@ -224,6 +224,12 @@ function listenToMessages( from, to, text )
 
                 switch ( command )
                 {
+                    case 'dodge':
+                        dodge( from, to, text );
+                        break;
+                    case 'word':
+                        words.word( 'noun' );
+                        break;
                     case 'pool':
                         pool( from, to, text );
                         break;
