@@ -241,6 +241,10 @@ function listenToMessages( from, to, text )
                         {
                             botText += userConfig.helpTextSecondary;
                         }
+                        else if ( text.split( ' ' )[1] === 'unscramble' )
+                        {
+                            botText += userConfig.helpTextUnscramble;
+                        }
                         _bot.say ( to, botText );
                         botText = '';
                         break;

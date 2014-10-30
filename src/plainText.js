@@ -115,6 +115,12 @@ module.exports = function PlainText( _bot, apiGet, userData, userConfig, nouns )
                 case 'hedgehog':
                     botText = '(•ᴥ• )́`́\'́`́\'́⻍ ';
                     break;
+                case 'lurk':
+                    botText = '┬┴┬┴┤(･_├┬┴┬┴';
+                    break;
+                case 'lurkbear':
+                    botText = '┬┴┬┴┤ʕ•ᴥ├┬┴┬┴';
+                    break;
                 case 'wave':
                     botText = to + ' o/';
                     break;
