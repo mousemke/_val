@@ -97,8 +97,11 @@ module.exports = function PlainText( _bot, apiGet, userData, userConfig, nouns )
         {
             switch ( command )
             {
-                case 'konami':
+                case 'levelSelect':
                     botText = 'B A B A ↑ ↓ B A ← → B A (start)';
+                    break;
+                case 'konami':
+                    botText = '↑ ↑ ↓ ↓ ← → ← → B A (start)';
                     break;
                 case 'rain':
                     botText = 'ヽ｀、ヽ｀ヽヽ｀、ヽ｀ヽヽ｀、ヽ｀ヽ(¬_¬ )ヽ｀、ヽ｀ヽ｀、ヽ｀';

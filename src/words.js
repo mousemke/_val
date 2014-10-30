@@ -20,7 +20,7 @@ module.exports  = function Words( _bot, apiGet, userData, userConfig )
         {
             var definition;
 
-            var url = 'http://api.wordnik.com:80/v4/word.json/' + word.toLowerCase() + '/definitions?limit=1&includeRelated=true&useCanonical=true&includeTags=false&api_key=' + wordnikAPIKey
+            var url = 'http://api.wordnik.com:80/v4/word.json/' + word.toLowerCase() + '/definitions?limit=1&includeRelated=true&useCanonical=true&includeTags=false&api_key=' + wordnikAPIKey;
             apiGet( url, function( result )
             {
                 if ( current === true )
