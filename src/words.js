@@ -1,8 +1,10 @@
 var wordnikAPIKey   = '2b79afb305c66bf9bf00f026b7a02f49e85b963364a580810',
-    minLength       = 5,
-    maxLength       = 9,
+    minLength       = 4,
+    maxLength       = 8,
     currentWord     = '',
-    scrambledWord   = '';
+    currentWordDef  = '',
+    scrambledWord   = '',
+    wordListener;
 
 module.exports  = function Words( _bot, apiGet, userData, userConfig )
 {
@@ -14,15 +16,80 @@ module.exports  = function Words( _bot, apiGet, userData, userConfig )
         },
 
 
+        define : function( from, word, current )
+        {
+            var definition;
+
+            var url = 'http://api.wordnik.com:80/v4/word.json/' + word.toLowerCase() + '/definitions?limit=1&includeRelated=true&useCanonical=true&includeTags=false&api_key=' + wordnikAPIKey
+            apiGet( url, function( result )
+            {
+                if ( current === true )
+                {
+                    currentWordDef = result[0].text;
+                }
+                else
+                {
+                    _bot.say( from, word + ': ' + result[0].text );
+                }
+
+            }, false );
+        },
+
 
         listenToWord : function( word, to, text )
         {
-            if ( text === word )
+            if ( text.toLowerCase() === word.toLowerCase() )
             {
-                _bot.say( userConfig.unscramble, 'Good Job ' + to + ' !' );
+                _bot.say( userConfig.unscramble, 'Good Job ' + to + ' !\n' + currentWord + ': ' + currentWordDef );
+                currentWord     = '';
+                currentWordDef  = '';
                 //doge tip per length?
                 this.newWord();
             }
+        },
+
+
+        newWord : function()
+        {
+            _bot.removeListener( 'message' + userConfig.unscramble, wordListener );
+
+            if ( currentWord !== '' )
+            {
+                _bot.say( userConfig.unscramble, 'aww...   it\'s not that hard!  it was ' + currentWord + '\n' + currentWordDef );
+                currentWord     = '';
+            }
+
+            scrambledWord   = '';
+            this.word();
+        },
+
+
+        responses : function( from, to, text, botText )
+        {
+
+            var command = text.slice( 1 ).split( ' ' )[ 0 ];
+
+            if ( from === userConfig.unscramble )
+            {
+                switch ( command )
+                {
+                    case 'word':
+                        this.word( from, text, false );
+                        break;
+                    case 'newWord':
+                        this.newWord( from, text, true );
+                        break;
+                }
+            }
+
+            switch ( command )
+            {
+                case 'define':
+                    this.define( from, text.split( ' ' )[ 1 ] );
+                    break;
+            }
+
+            return botText;
         },
 
 
@@ -45,16 +112,7 @@ module.exports  = function Words( _bot, apiGet, userData, userConfig )
         },
 
 
-        newWord : function()
-        {
-            _bot.removeListener( 'message' + userConfig.unscramble, this.listenToWord );
-            currentWord     = '';
-            scrambledWord   = '';
-            this.word();
-        },
-
-
-        word : function( type )
+        word : function()
         {
             if ( currentWord === '' )
             {
@@ -72,10 +130,19 @@ module.exports  = function Words( _bot, apiGet, userData, userConfig )
                 var url = 'http://api.wordnik.com:80/v4/words.json/randomWord?hasDictionaryDef=true&' + excludeList + 'minCorpusCount=0&maxCorpusCount=-1&minDictionaryCount=3&maxDictionaryCount=-1&minLength=' + minLength + '&maxLength=' + maxLength + '&api_key=' + wordnikAPIKey;
                 apiGet( url, function( result )
                 {
-                    currentWord     = result.word;
-                    scrambledWord   = scope.scramble( currentWord );
-                    _bot.say( userConfig.unscramble, 'The new scramble word is: ' + scrambledWord + ' (' + ( currentWord[0] ) + ')' );
-                    _bot.addListener( 'message' + userConfig.unscramble, scope.listenToWord.bind( scope, result.word ) );
+                    if ( result.word[0] !== result.word[0].toLowerCase() || result.word.indexOf( '-' ) !== -1 )
+                    {
+                        scope.word();
+                    }
+                    else
+                    {
+                        currentWord     = result.word;
+                        scope.define( userConfig.unscramble, currentWord, true );
+                        scrambledWord   = scope.scramble( currentWord );
+                        _bot.say( userConfig.unscramble, 'The new scramble word is: ' + scrambledWord + ' (' + ( currentWord[0] ) + ')' );
+                        wordListener    = scope.listenToWord.bind( scope, result.word );
+                        _bot.addListener( 'message' + userConfig.unscramble, wordListener );
+                    }
                 }, false);
             }
             else

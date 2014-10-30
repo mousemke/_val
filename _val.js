@@ -180,7 +180,7 @@ function init()
 
     words       = new Words( _bot, apiGet, userData, userConfig );
 
-    plainText   = new PlainText( _bot, apiGet, userData, userConfig );
+    plainText   = new PlainText( _bot, apiGet, userData, userConfig, nouns );
 }
 
 
@@ -211,11 +211,16 @@ function listenToMessages( from, to, text )
         }
         else if ( text[ 0 ] === userConfig.trigger && text !== userConfig.trigger )
         {
-            botText = plainText( from, to, text, botText );
+            botText = plainText( from, to, text, botText, nouns );
 
             if ( botText === '' )
             {
                 botText = doge.responses( from, to, text, botText );
+            }
+
+            if ( botText === '' )
+            {
+                botText = words.responses( from, to, text, botText );
             }
 
             if ( botText === '' )
@@ -226,9 +231,6 @@ function listenToMessages( from, to, text )
                 {
                     case 'dodge':
                         dodge( from, to, text );
-                        break;
-                    case 'word':
-                        words.word( 'noun' );
                         break;
                     case 'pool':
                         pool( from, to, text );

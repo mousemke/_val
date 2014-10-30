@@ -1,17 +1,20 @@
 userConfig = {
-    friends             : [ '_mouse_' ],
+    friends             : [ 'nico', '_mouse_', 'arikedelstein' ],
     bots                : [ 'dante', 'zach', 'guillotine' ],
     admins              : [ '_mouse_' ],
-    channels            : [ '#soc-bots' ],
+    // channels            : [ '#soc-bots' ],
+    channels            : [ '#soc-bots', '#microbe', '#sociomantic', '#the_unit', '#backend', '#_teamDoinStuff', '#unscramble' ],
     server              : '192.168.2.24',
     botName             : 'justAnotherBot',
-    trigger             : '.',
+    trigger             : 'ß',
     dcAddress           : 'DDIHaveNoIdeaWhatImDoing',
     api                 : 'Help, I\'m trapped in an api factory',
     activeTime          : 600000,
     nickservBot         : 'NickServ',
-    fettiLength         : 15,
-    fettiOptions        : [ ' ', '. ', '´ ', '\' ', ' ,' ]
+    fettiWordLength     : 15,
+    fettiLength         : 25,
+    fettiOptions        : [ '. ', '´ ', '\' ', ' ,' ],
+    unscramble          : '#unscramble'
 };
 
 userConfig.helpText    = 'Hi!  My name is ' + ( userConfig.botName ) + ', and I\'ll be your IRC bot for the evening.        \n' +

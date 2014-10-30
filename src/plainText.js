@@ -4,7 +4,7 @@ var http            = require( 'http' ),
     fs              = require( 'fs' ),
     moonRegex       = /(?:m([o]+)n)/;
 
-module.exports = function PlainText( _bot, apiGet, userData, userConfig )
+module.exports = function PlainText( _bot, apiGet, userData, userConfig, nouns )
 {
     return function( from, to, text, botText )
     {
@@ -37,25 +37,41 @@ module.exports = function PlainText( _bot, apiGet, userData, userConfig )
 
             switch ( type )
             {
-              case 'doge':
-                  word = 'wow';
-                  break;
-              case 'con':
-                  word = '´ . \'';
-                  break;
+                case 'doge':
+                    word = 'wow ';
+                    break;
+                case 'con':
+                    word = '´ . \' ';
+                    break;
+                case 'spooky':
+                    word = [ '\\༼☯༽/ ', '༼°°༽ ', 'SPOOKY ', 'GHOSTS ' ];
+                    break;
+                case 'moon':
+                    word = [ 'moon ', 'moooooooon ', 'doge ', 'wow ' ];
+                    break;
             }
 
-            if ( type.length > userConfig.fettiLength )
+            if ( type.length > userConfig.fettiWordLength )
             {
                 word = 'toolong';
             }
 
-            var option, options = userConfig.fettiOptions;
-            options[ 0 ] = word + ' ';
-            for ( var  i = 0; i < 25; i++ )
+            if ( typeof word === 'string' )
             {
-                option = Math.floor( Math.random() * options.length );
-                botText += options[ option ];
+                word = [ word ];
+            }
+
+            var i, lenI, option;
+
+            for ( i = 0, lenI = userConfig.fettiOptions.length; i < lenI; i++ )
+            {
+                word.push ( userConfig.fettiOptions[ i ] + ' ' );
+            }
+
+            for ( i = 0; i < userConfig.fettiLength; i++ )
+            {
+                option   = Math.floor( Math.random() * word.length );
+                botText += word[ option ];
             }
         }
         else if ( moon && moon[1] )
