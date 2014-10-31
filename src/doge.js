@@ -2,7 +2,7 @@ var http            = require( 'http' ),
     https           = require( 'https' ),
     irc             = require( 'irc' ),
     fs              = require( 'fs' ),
-    active          = {},
+    active          = {};
     dcMasterList    = {};
 
 module.exports = function Doge( _bot, apiGet, userData, userConfig )
@@ -57,9 +57,24 @@ module.exports = function Doge( _bot, apiGet, userData, userConfig )
          */
         checkActive : function( from, to, text, talk )
         {
+            this.active = active || {};
+
             var name, now = Date.now(), i = 0,
-                activeUsers = [],
-                activeChannel = active[ from ];
+                activeUsers = [];
+
+            if ( ! this.active[ from ] )
+            {
+                this.active[ from ] = {};
+            }
+
+            var activeChannel = this.active[ from ];
+
+            if ( ! activeChannel[ to ] && to !== userConfig.botName &&
+                    userConfig.bots.indexOf( to ) === -1 )
+            {
+                activeChannel[ to ] = now;
+                now++;
+            }
 
             for ( name in activeChannel )
             {
@@ -88,6 +103,7 @@ module.exports = function Doge( _bot, apiGet, userData, userConfig )
                 _bot.say( from, botText );
             }
 
+            active = this.active;
             return activeUsers;
         },
 
@@ -206,6 +222,7 @@ module.exports = function Doge( _bot, apiGet, userData, userConfig )
                 channel = userConfig.channels[ i ];
                 _bot.addListener( 'message' + channel, this.watchActive.bind( this, channel ) );
             }
+            this.loadMasterList();
         },
 
 

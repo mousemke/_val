@@ -176,9 +176,9 @@ function init()
 
     doge        = new Doge( _bot, apiGet, userData, userConfig );
     doge.init();
-    doge.loadMasterList();
 
-    words       = new Words( _bot, apiGet, userData, userConfig );
+    words       = new Words( _bot, apiGet, userData, userConfig, doge );
+    words.init();
 
     plainText   = new PlainText( _bot, apiGet, userData, userConfig, nouns );
 }

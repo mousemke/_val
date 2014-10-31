@@ -1,17 +1,21 @@
 var wordnikAPIKey   = '2b79afb305c66bf9bf00f026b7a02f49e85b963364a580810',
+    http            = require( 'http' ),
+    https           = require( 'https' ),
     minLength       = 4,
     maxLength       = 8,
     currentWord     = '',
     currentWordDef  = '',
     scrambledWord   = '',
-    wordListener;
+    wordScores      = {},
+    wordListener, newWordVote = [];
 
-module.exports  = function Words( _bot, apiGet, userData, userConfig )
+module.exports  = function Words( _bot, apiGet, userData, userConfig, doge )
 {
     return {
 
         init : function()
         {
+            this.readScores();
             this.word();
         },
 
@@ -40,27 +44,105 @@ module.exports  = function Words( _bot, apiGet, userData, userConfig )
         {
             if ( text.toLowerCase() === word.toLowerCase() )
             {
-                _bot.say( userConfig.unscramble, 'Good Job ' + to + ' !\n' + currentWord + ': ' + currentWordDef );
+                var points, now = Date.now();
+
+                if ( wordScores[ to ] )
+                {
+                    for ( var i = 0, lenI = wordScores[ to ].length; i < lenI; i++ )
+                    {
+                        if ( wordScores[ to ][ i ] < now - userConfig.unscramblePointTimeout )
+                        {
+                            console.log( 'moo' );
+                            wordScores[ to ][ i ].splice( i, 1 );
+                        }
+                    }
+
+                    wordScores[ to ].push( now );
+                }
+                else
+                {
+                    wordScores[ to ] = [ now ];
+                }
+
+                points = wordScores[ to ].length;
+                var botText = 'Good Job ' + to + '! you now have ' + points + ' point';
+                if ( points !== 1 )
+                {
+                    botText += 's';
+                }
+                botText += '\n' + currentWord + ': ' + currentWordDef;
+
+                this.writeScores();
+                _bot.say( userConfig.unscramble, botText );
+
                 currentWord     = '';
                 currentWordDef  = '';
+                newWordVote     = [];
                 //doge tip per length?
-                this.newWord();
+                _bot.removeListener( 'message' + userConfig.unscramble, wordListener );
+                this.word();
             }
         },
 
 
-        newWord : function()
+        newWord : function( from, to )
         {
-            _bot.removeListener( 'message' + userConfig.unscramble, wordListener );
+            var active =  doge.checkActive( from, to, '', false );
 
-            if ( currentWord !== '' )
+            if ( newWordVote.indexOf( to ) !== -1 )
             {
-                _bot.say( userConfig.unscramble, 'aww...   it\'s not that hard!  it was ' + currentWord + '\n' + currentWordDef );
-                currentWord     = '';
+                _bot.say( userConfig.unscramble, 'Sorry, ' + to + ', you\'ve already voted' );
+                return false;
             }
+            else
+            {
+                newWordVote.push( to );
 
-            scrambledWord   = '';
-            this.word();
+                var votesNeeded = active.length * userConfig.newWordVoteNeeded;
+
+                if ( newWordVote.length < votesNeeded )
+                {
+                    _bot.say( userConfig.unscramble, to + ': counted. that\'s ' + newWordVote.length + ' out of a necessary ' + votesNeeded );
+                }
+                else
+                {
+                    if ( currentWord !== '' )
+                    {
+                        _bot.say( userConfig.unscramble, 'that\'s enough votes. The correct answer was:\n' +
+                                     currentWord + '- ' + currentWordDef );
+                        currentWord     = '';
+                    }
+
+                    scrambledWord   = '';
+                    newWordVote     = [];
+                    this.word();
+                }
+            }
+        },
+
+
+        readScores : function()
+        {
+            var url = '/_val/json/unscrambleScores.json';
+
+            http.get( url, function( res )
+            {
+                 var body = '';
+
+                res.on( 'data', function( chunk )
+                {
+                    body += chunk;
+                });
+
+                res.on( 'end', function()
+                {
+                    wordScores =  JSON.parse( body );
+                });
+
+            } ).on( 'error', function( e )
+            {
+                console.log( 'Got error: ', e );
+            });
         },
 
 
@@ -77,7 +159,7 @@ module.exports  = function Words( _bot, apiGet, userData, userConfig )
                         this.word( from, text, false );
                         break;
                     case 'newWord':
-                        this.newWord( from, text, true );
+                        this.newWord( from, to );
                         break;
                 }
             }
@@ -86,6 +168,9 @@ module.exports  = function Words( _bot, apiGet, userData, userConfig )
             {
                 case 'define':
                     this.define( from, text.split( ' ' )[ 1 ] );
+                    break;
+                case 'unscramble':
+                    this.unscramble( from, to, text );
                     break;
             }
 
@@ -109,6 +194,23 @@ module.exports  = function Words( _bot, apiGet, userData, userConfig )
             }
 
             return word.join( '' );
+        },
+
+
+        unscramble : function( from, to, text )
+        {
+            _bot.say( from, 'hello, ' + to + ', this would be your score if it was built' );
+        },
+
+
+        writeScores : function()
+        {
+            var wordScoresJson = JSON.stringify( wordScores );
+
+            fs.writeFile( './json/unscrambleScores.json', wordScoresJson, function ( err )
+            {
+                return console.log( err );
+            });
         },
 
 
