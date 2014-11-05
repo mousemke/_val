@@ -4,4 +4,4 @@ dcMasterList.bak
 node_modules/
 npm-debug.log
 _val.config.js
-json/unscrambleScores.json
+./json/unscrambleScores.json
