@@ -52,8 +52,7 @@ module.exports  = function Words( _bot, apiGet, userData, userConfig, doge )
                     {
                         if ( wordScores[ to ][ i ] < now - userConfig.unscramblePointTimeout )
                         {
-                            console.log( 'moo' );
-                            wordScores[ to ][ i ].splice( i, 1 );
+                            wordScores[ to ].splice( i, 1 );
                         }
                     }
 
@@ -109,7 +108,7 @@ module.exports  = function Words( _bot, apiGet, userData, userConfig, doge )
                     if ( currentWord !== '' )
                     {
                         _bot.say( userConfig.unscramble, 'that\'s enough votes. The correct answer was:\n' +
-                                     currentWord + '- ' + currentWordDef );
+                                     currentWord + ' - ' + currentWordDef );
                         currentWord     = '';
                     }
 
@@ -166,6 +165,7 @@ module.exports  = function Words( _bot, apiGet, userData, userConfig, doge )
 
             switch ( command )
             {
+                case 'def':
                 case 'define':
                     this.define( from, text.split( ' ' )[ 1 ] );
                     break;

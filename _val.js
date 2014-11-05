@@ -255,6 +255,8 @@ function listenToMessages( from, to, text )
 
             if ( botText !== '' )
             {
+                console.log( '<' + from + '> <' + to + '> :' + text );
+                console.log( '<' + from + '> <' + userConfig.botName + '> :' + botText );
                 _bot.say ( from, botText );
             }
         }
@@ -269,6 +271,8 @@ function listenToMessages( from, to, text )
 
 function listenToPm( from, text )
 {
+    console.log( '<' + from + '> :' + text );
+
     var textSplit = text.split( ' ' );
     if ( textSplit[ 0 ] === 'die' && userConfig.admins.indexOf( from ) !== -1 )
     {

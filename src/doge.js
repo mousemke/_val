@@ -235,7 +235,7 @@ module.exports = function Doge( _bot, apiGet, userData, userConfig )
          */
         loadMasterList : function()
         {
-            var url = '/_val/dcMasterList.json';
+            var url = '/_val/json/dcMasterList.json';
 
             http.get( url, function( res )
             {
@@ -514,7 +514,7 @@ module.exports = function Doge( _bot, apiGet, userData, userConfig )
         {
             var jsonMasterList = JSON.stringify( dcMasterList );
 
-            fs.writeFile( './dcMasterList.json', jsonMasterList, function ( err )
+            fs.writeFile( './json/dcMasterList.json', jsonMasterList, function ( err )
             {
                 return console.log( err );
             });
