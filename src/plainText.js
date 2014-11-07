@@ -134,6 +134,9 @@ module.exports = function PlainText( _bot, apiGet, userData, userConfig, nouns )
                 case 'snowflakes':
                     botText = '❅ ❆ ❄ ❆ ❆ ❄ ❆ ❅ ❆ ❆ ❅ ❆ ❄ ❄ ❅ ❄ ❆ ❆ ❆ ❄ ❆ ❆ ❄ ❆ ❆ ❅ ❅ ❄ ❄ ❅ ❄ ❄ ❄ ❆ ❄ ❅ ❆ ❅ ❅ ❄';
                     break;
+                case 'moonflakes':
+                    botText = '☽ ❅ ❅ ❄ ☾ ❆ ❅ ☽ ❆ ❆ ☾ ❅ ☽ ☾ ❄ ❅ ☾ ❄ ☽ ☽ ❆ ☽ ❄ ❄ ☾ ☾ ❆ ☾ ❅ ☾ ☾ ❅ ❄ ☾ ❄ ☾ ❅ ❄ ☾ ❆';
+                    break;
                 case 'whale':
                     botText = 'https://www.youtube.com/watch?v=xo2bVbDtiX8';
                     break;

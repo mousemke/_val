@@ -147,8 +147,12 @@ module.exports  = function Words( _bot, apiGet, userData, userConfig, doge )
 
         responses : function( from, to, text, botText )
         {
+            if ( text[0] === '.' )
+            {
+                text = text.slice( 1 );
+            }
 
-            var command = text.slice( 1 ).split( ' ' )[ 0 ];
+            var command = text.split( ' ' )[ 0 ];
 
             if ( from === userConfig.unscramble )
             {
@@ -163,15 +167,93 @@ module.exports  = function Words( _bot, apiGet, userData, userConfig, doge )
                 }
             }
 
-            switch ( command )
+            var complexTranslation = /[a-z]{2}\|[a-z]{2}/;
+            if ( complexTranslation.test( command ) )
             {
-                case 'def':
-                case 'define':
-                    this.define( from, text.split( ' ' )[ 1 ] );
-                    break;
-                case 'unscramble':
-                    this.unscramble( from, to, text );
-                    break;
+                text = text.replace( '.' + command, '' ).trim();
+                command = command.split( '|' );
+                this.translate( command[0], command[1], from, to, text );
+            }
+            else
+            {
+                switch ( command )
+                {
+                    case 'de':
+                    case 'fr':
+                    case 'ru':
+                    case 'es':
+                    case 'no':
+                    case 'he':
+                    case 'he':
+                    case 'nl':
+                    case 'pl':
+                    case 'ch':
+                    case 'sl':
+                    case 'so':
+                    case 'pt':
+                    case 'sv':
+                    case 'eo':
+                    case 'ca':
+                    case 'sq':
+                    case 'hy':
+                    case 'hr':
+                    case 'bs':
+                    case 'yi':
+                    case 'it':
+                    case 'zh':
+                    case 'ms':
+                    case 'cs':
+                    case 'so':
+                    case 'da':
+                    case 'ar':
+                    case 'et':
+                    case 'aa':
+                    case 'an':
+                    case 'eu':
+                    case 'gl':
+                    case 'fi':
+                    case 'fj':
+                    case 'el':
+                    case 'id':
+                    case 'jv':
+                    case 'su':
+                    case 'ja':
+                    case 'co':
+                    case 'sc':
+                    case 'ky':
+                    case 'ug':
+                    case 'km':
+                    case 'ko':
+                    case 'si':
+                    case 'lt':
+                    case 'mo':
+                    case 'ro':
+                    case 'tr':
+                    case 'uk':
+                    case 'mg':
+                    case 'dv':
+                    case 'ne':
+                    case 'ay':
+                    case 'qu':
+                    case 'ho':
+                    case 'tl':
+                    case 'os':
+                    case 'ce':
+                    case 'la':
+                    case 'vi':
+                    case 'sm':
+                    case 'af':
+                    case 'zu':
+                        this.translate( 'en', command, from, to, text );
+                        break;
+                    case 'def':
+                    case 'define':
+                        this.define( from, text.split( ' ' )[ 1 ] );
+                        break;
+                    case 'unscramble':
+                        this.unscramble( from, to, text );
+                        break;
+                }
             }
 
             return botText;
@@ -194,6 +276,33 @@ module.exports  = function Words( _bot, apiGet, userData, userConfig, doge )
             }
 
             return word.join( '' );
+        },
+
+
+        translate : function( langFrom, langTo, from, to, text )
+        {
+            if ( text[0] === '.' )
+            {
+                text = text.replace( '.' + langTo, '' ).trim();
+            }
+            else
+            {
+                text = text.replace( langTo, '' ).trim();
+            }
+
+            var spaceRegex = new RegExp( ' ', 'g' );
+            text = text.replace( spaceRegex, '%20' );
+
+            var url = 'http://mymemory.translated.net/api/get?q=' + text + '&langpair=' + langFrom + '|' + langTo;
+
+            apiGet( url, function( response )
+            {
+
+                response    = response.responseData.translatedText;
+                botText     = response;
+
+                _bot.say( from, to + ': ' + langFrom + ' > ' + langTo + ' - ' + botText );
+            }, false );
         },
 
 

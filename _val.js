@@ -311,6 +311,10 @@ function listenToPm( from, text )
     {
         doge.deposit( from, from, text );
     }
+    else
+    {
+        words.responses( from, from, text, '' );
+    }
 }
 
 
