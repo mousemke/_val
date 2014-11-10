@@ -151,8 +151,18 @@ module.exports = function PlainText( _bot, apiGet, userData, userConfig, nouns )
                     botText = 'http://www.lmgtfy.com/?q=' + text;
                     break;
                 case 'g':
+                case 'pic':
+                case 'gif':
                     text = text.split( ' ' ).slice( 1 ).join( '%20' );
-                    botText = 'https://www.google.com/search?btnG=1&pws=0&q=' + text + '&gws_rd=ssl';
+                    if ( command === 'gif' )
+                    {
+                        text += '%20filetype:gif';
+                    }
+                    botText = 'https://www.google.com/search?btnG=1&pws=0&q=' + text;
+                    if ( command === 'gif' || command === 'pic' )
+                    {
+                        botText += '&tbm=isch';
+                    }
                     break;
                 case 'witchhunt':
                     botText = 'http://i.imgur.com/x63cdJW.jpg';

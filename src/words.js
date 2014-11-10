@@ -13,12 +13,6 @@ module.exports  = function Words( _bot, apiGet, userData, userConfig, doge )
 {
     return {
 
-        init : function()
-        {
-            this.readScores();
-            this.word();
-        },
-
 
         define : function( from, word, current )
         {
@@ -37,6 +31,13 @@ module.exports  = function Words( _bot, apiGet, userData, userConfig, doge )
                 }
 
             }, false );
+        },
+
+
+        init : function()
+        {
+            this.readScores();
+            this.word();
         },
 
 
