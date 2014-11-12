@@ -115,6 +115,7 @@ module.exports  = function Words( _bot, apiGet, userData, userConfig, doge )
 
                     scrambledWord   = '';
                     newWordVote     = [];
+                    _bot.removeListener( 'message' + userConfig.unscramble, wordListener );
                     this.word();
                 }
             }
@@ -291,16 +292,17 @@ module.exports  = function Words( _bot, apiGet, userData, userConfig, doge )
                 text = text.replace( langTo, '' ).trim();
             }
 
-            var spaceRegex = new RegExp( ' ', 'g' );
-            text = text.replace( spaceRegex, '%20' );
+            text = encodeURIComponent( text );
 
             var url = 'http://mymemory.translated.net/api/get?q=' + text + '&langpair=' + langFrom + '|' + langTo;
 
             apiGet( url, function( response )
             {
-
-                response    = response.responseData.translatedText;
-                botText     = response;
+                var botText    = response.responseData.translatedText;
+                if ( botText.indexOf( '|' ) !== -1 )
+                {
+                    botText = botText.split( '|' )[1].slice( 1 );
+                }
 
                 _bot.say( from, to + ': ' + langFrom + ' > ' + langTo + ' - ' + botText );
             }, false );
