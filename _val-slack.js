@@ -2,7 +2,7 @@
 
 // Create the configuration
 var channel, _bot, doge, words,
-    userConfig      = require( './_val.config.js' ),
+    userConfig      = require( './_val-slack.config.js' ),
     channels        = userConfig.channels,
     Doge            = require( './src/doge.js' ),
     Words           = require( './src/words.js' ),
@@ -158,8 +158,12 @@ function dodge( from, to, text )
 function init()
 {
     _bot = new irc.Client( userConfig.server, userConfig.botName, {
-        channels: userConfig.channels,
-        password: userConfig.serverPassword,
+        channels    : userConfig.channels,
+        password    : userConfig.serverPassword,
+        showErrors  : false,
+        autoRejoin  : true,
+        autoConnect : true
+        // debug       : true
     });
 
     _bot.addListener( 'error', function( message )

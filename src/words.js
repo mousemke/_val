@@ -180,71 +180,71 @@ module.exports  = function Words( _bot, apiGet, userData, userConfig, doge )
             {
                 switch ( command )
                 {
-                    case 'de':
-                    case 'fr':
-                    case 'ru':
-                    case 'es':
-                    case 'no':
-                    case 'he':
-                    case 'he':
-                    case 'nl':
-                    case 'pl':
-                    case 'ch':
-                    case 'sl':
-                    case 'so':
-                    case 'pt':
-                    case 'sv':
-                    case 'eo':
-                    case 'ca':
-                    case 'sq':
-                    case 'hy':
-                    case 'hr':
-                    case 'bs':
-                    case 'yi':
-                    case 'it':
-                    case 'zh':
-                    case 'ms':
-                    case 'cs':
-                    case 'so':
-                    case 'da':
-                    case 'ar':
-                    case 'et':
                     case 'aa':
+                    case 'af':
                     case 'an':
+                    case 'ay':
+                    case 'ar':
+                    case 'bs':
+                    case 'ca':
+                    case 'ce':
+                    case 'ch':
+                    case 'co':
+                    case 'cs':
+                    case 'da':
+                    case 'de':
+                    case 'dv':
+                    case 'el':
+                    case 'eo':
+                    case 'es':
+                    case 'et':
                     case 'eu':
-                    case 'gl':
                     case 'fi':
                     case 'fj':
-                    case 'el':
+                    case 'fr':
+                    case 'gl':
+                    case 'he':
+                    case 'ho':
+                    case 'hr':
+                    case 'hy':
                     case 'id':
-                    case 'jv':
-                    case 'su':
+                    case 'it':
                     case 'ja':
-                    case 'co':
-                    case 'sc':
+                    case 'jv':
                     case 'ky':
-                    case 'ug':
                     case 'km':
                     case 'ko':
-                    case 'si':
-                    case 'lt':
-                    case 'mo':
-                    case 'ro':
-                    case 'tr':
-                    case 'uk':
-                    case 'mg':
-                    case 'dv':
-                    case 'ne':
-                    case 'ay':
-                    case 'qu':
-                    case 'ho':
-                    case 'tl':
-                    case 'os':
-                    case 'ce':
                     case 'la':
-                    case 'vi':
+                    case 'lo':
+                    case 'lt':
+                    case 'lv':
+                    case 'mg':
+                    case 'mo':
+                    case 'ms':
+                    case 'ne':
+                    case 'nl':
+                    case 'no':
+                    case 'os':
+                    case 'pl':
+                    case 'pt':
+                    case 'qu':
+                    case 'ro':
+                    case 'ru':
+                    case 'sc':
+                    case 'si':
+                    case 'sl':
                     case 'sm':
-                    case 'af':
+                    case 'so':
+                    case 'sq':
+                    case 'su':
+                    case 'sv':
+                    case 'tl':
+                    case 'tr':
+                    case 'ug':
+                    case 'uk':
+                    case 'vi':
+                    case 'yi':
+                    case 'zh':
                     case 'zu':
                         this.translate( 'en', command, from, to, text );
                         break;
