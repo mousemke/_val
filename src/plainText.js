@@ -143,6 +143,9 @@ module.exports = function PlainText( _bot, apiGet, userData, userConfig, nouns )
                 case 'safety':
                     botText = 'https://www.youtube.com/watch?v=AjPau5QYtYs';
                     break;
+                case 'tacos':
+                    botText = 'https://www.youtube.com/watch?v=W0-esOKooEE&index=28&list=RDHsKXvAymwUg';
+                    break;
                 case 'bot':
                     botText = 'I AM BOT\nINSERT DOGE';
                     break;

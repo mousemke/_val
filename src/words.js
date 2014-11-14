@@ -201,6 +201,7 @@ module.exports  = function Words( _bot, apiGet, userData, userConfig, doge )
                     case 'eu':
                     case 'fi':
                     case 'fj':
+                    case 'fo':
                     case 'fr':
                     case 'gl':
                     case 'he':
@@ -209,6 +210,7 @@ module.exports  = function Words( _bot, apiGet, userData, userConfig, doge )
                     case 'hy':
                     case 'id':
                     case 'it':
+                    case 'is':
                     case 'ja':
                     case 'jv':
                     case 'ky':
@@ -283,6 +285,7 @@ module.exports  = function Words( _bot, apiGet, userData, userConfig, doge )
 
         translate : function( langFrom, langTo, from, to, text )
         {
+
             if ( text[0] === '.' )
             {
                 text = text.replace( '.' + langTo, '' ).trim();
