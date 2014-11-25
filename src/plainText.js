@@ -146,6 +146,28 @@ module.exports = function PlainText( _bot, apiGet, userData, userConfig, nouns )
                 case 'tacos':
                     botText = 'https://www.youtube.com/watch?v=W0-esOKooEE&index=28&list=RDHsKXvAymwUg';
                     break;
+                case 'flipnico':
+                    botText = '(╯°Д°）╯︵/(.□ . ) ᵇᵘᵗ ᴵ\'ᵐ ᶰᶦᶜᵒ﹗';
+                    break;
+                case 'putthenicoback':
+                    botText = '(._. ) ノ( ゜-゜ノ)';
+                    break;
+                case 'yes!':
+                    botText = '( ･ㅂ･)و ̑̑';
+                    break;
+                case 'no!':
+                    botText = '｡゜(｀Д´)゜｡';
+                    break;
+                case 'why?!':
+                    botText = 'ლ(ಠ_ಠლ)';
+                    break;
+                case 'why!?':
+                    botText = 'щ(ಥДಥщ)';
+                    break;
+                case '...':
+                    botText = 'ಠ_ಠ';
+                    break;
+                case 'g':
                 case 'bot':
                     botText = 'I AM BOT\nINSERT DOGE';
                     break;
