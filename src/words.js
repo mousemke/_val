@@ -172,7 +172,9 @@ module.exports  = function Words( _bot, apiGet, userData, userConfig, doge )
             var complexTranslation = /[a-z]{2}\|[a-z]{2}/;
             if ( complexTranslation.test( command ) )
             {
-                text = text.replace( '.' + command, '' ).trim();
+                console.log( command );
+                text = text.replace( command, '' ).trim();
+                console.log( text );
                 command = command.split( '|' );
                 this.translate( command[0], command[1], from, to, text );
             }
