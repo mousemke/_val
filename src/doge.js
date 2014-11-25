@@ -189,7 +189,13 @@ module.exports = function Doge( _bot, apiGet, userData, userConfig )
                         {
                             price = price + ' (' + ( dogePrices[ i ].price_base ) + '), ';
                         }
-                        else if ( dogePrices[ i ].price_base !== 'BTC' && dogePrices[ i ].price_base !== 'USD' )
+                         else if ( dogePrices[ i ].price_base === 'EUR' )
+                        {
+                            price = ( price * 1000 ) + ' (' + ( dogePrices[ i ].price_base ) + '), ';
+                        }
+                        else if ( dogePrices[ i ].price_base !== 'BTC' &&
+                            dogePrices[ i ].price_base !== 'USD' &&
+                            dogePrices[ i ].price_base !== 'EUR' )
                         {
                             price = price + ' (' + ( dogePrices[ i ].price_base ) + '), ';
                         }
