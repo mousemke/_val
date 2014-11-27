@@ -38,7 +38,7 @@ module.exports = function PlainText( _bot, apiGet, userData, userConfig, nouns )
             switch ( type )
             {
                 case 'doge':
-                    word = 'wow ';
+                    word = [ 'wow ', 'Ð ', 'doge ', 'moon ', 'ÐÐÐ ', 'such ', 'is ' ];
                     break;
                 case 'con':
                     word = '´ . \' ';
@@ -174,6 +174,11 @@ module.exports = function PlainText( _bot, apiGet, userData, userConfig, nouns )
                 case 'google':
                     text = text.split( ' ' ).slice( 1 ).join( '%20' );
                     botText = 'http://www.lmgtfy.com/?q=' + text;
+                    break;
+                case 'w':
+                case 'wiki':
+                    text = text.split( ' ' ).slice( 1 ).join( '%20' );
+                    botText = 'http://en.wikipedia.org/wiki/' + text;
                     break;
                 case 'g':
                 case 'pic':

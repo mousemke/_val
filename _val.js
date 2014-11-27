@@ -2,7 +2,7 @@
 
 // Create the configuration
 var channel, _bot, doge, words,
-    userConfig      = require( './_val.config.js' ),
+    userConfig      = require( './config/_val.config.js' ),
     channels        = userConfig.channels,
     Doge            = require( './src/doge.js' ),
     Words           = require( './src/words.js' ),
