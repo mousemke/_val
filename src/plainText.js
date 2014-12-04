@@ -2,14 +2,17 @@ var http            = require( 'http' ),
     https           = require( 'https' ),
     irc             = require( 'irc' );
     fs              = require( 'fs' ),
-    moonRegex       = /(?:m([o]+)n)/;
+    moonRegex       = /(?:m([o]+)n)/,
+    spaceRegex      = /(?:sp([a]+)ce)/,
+    nicoFlipped     = false;
 
 module.exports = function PlainText( _bot, apiGet, userData, userConfig, nouns )
 {
     return function( from, to, text, botText )
     {
         var command = text.slice( 1 ).split( ' ' )[ 0 ];
-        var moon = moonRegex.exec( command );
+        var moon    = moonRegex.exec( command );
+        var space   = spaceRegex.exec( command );
 
         if ( command.slice( command.length - 3 ) === 'end' )
         {
@@ -48,6 +51,12 @@ module.exports = function PlainText( _bot, apiGet, userData, userConfig, nouns )
                     break;
                 case 'moon':
                     word = [ 'moon ', 'moooooooon ', 'doge ', 'wow ' ];
+                    break;
+                case 'troll':
+                    word = [ 'http://trololololololololololo.com/', 'http', 'trolo', 'lolo', 'ololo.com', 'troll'  ];
+                    break;
+                case 'trøll':
+                    word = [ 'http://trølølølølølølølølølølø.cøm/', 'http', 'trølø', 'lølø', 'ølølø.cøm', 'trøll'  ];
                     break;
             }
 
@@ -92,6 +101,17 @@ module.exports = function PlainText( _bot, apiGet, userData, userConfig, nouns )
             {
               botText = botText.toUpperCase() + '!!!!!!!!';
             }
+        }
+        else if ( space && space[1] )
+        {
+            botText = 'sp';
+            var spaceLength = space[1].length;
+            for ( var k = 0, lenK = spaceLength; k < lenK; k++ )
+            {
+              botText += 'aa';
+            }
+            botText += 'ce';
+            botText = botText.toUpperCase() + '!!!!';
         }
         else
         {
@@ -147,10 +167,13 @@ module.exports = function PlainText( _bot, apiGet, userData, userConfig, nouns )
                     botText = 'https://www.youtube.com/watch?v=W0-esOKooEE&index=28&list=RDHsKXvAymwUg';
                     break;
                 case 'flipnico':
-                    botText = '(╯°Д°）╯︵/(.□ . ) ᵇᵘᵗ ᴵ\'ᵐ ᶰᶦᶜᵒ﹗';
+                    botText     = '(╯°Д°）╯︵/(.□ . ) ᵇᵘᵗ ᴵ\'ᵐ ᶰᶦᶜᵒ﹗';
+                    nicoFlipped = true;
+                    _bot.say( 'nico', to + ' just flipped you, sucka! Now you\'re stuck on your back in ' + from + ' like a little turtle.' );
                     break;
                 case 'putthenicoback':
-                    botText = '(._. ) ノ( ゜-゜ノ)';
+                    botText     = '(._. ) ノ( ゜-゜ノ)';
+                    nicoFlipped = false;
                     break;
                 case 'yes!':
                     botText = '( ･ㅂ･)و ̑̑';
@@ -167,7 +190,6 @@ module.exports = function PlainText( _bot, apiGet, userData, userConfig, nouns )
                 case '...':
                     botText = 'ಠ_ಠ';
                     break;
-                case 'g':
                 case 'bot':
                     botText = 'I AM BOT\nINSERT DOGE';
                     break;
@@ -188,7 +210,7 @@ module.exports = function PlainText( _bot, apiGet, userData, userConfig, nouns )
                     {
                         text += '%20filetype:gif';
                     }
-                    botText = 'https://www.google.com/search?btnG=1&pws=0&q=' + text;
+                    botText = 'https://www.google.com/search?btnG=1&nfpr=1&pws=0&q=' + text;
                     if ( command === 'gif' || command === 'pic' )
                     {
                         botText += '&tbm=isch';
@@ -196,9 +218,6 @@ module.exports = function PlainText( _bot, apiGet, userData, userConfig, nouns )
                     break;
                 case 'witchhunt':
                     botText = 'http://i.imgur.com/x63cdJW.jpg';
-                    break;
-                case 'innovation':
-                    botText = 'INNOVATION!';
                     break;
                 case 'flipthetable':
                     botText = '(╯°□°）╯︵ ┻━┻';
@@ -213,7 +232,22 @@ module.exports = function PlainText( _bot, apiGet, userData, userConfig, nouns )
                 case 'ping':
                     botText = to + ': pong';
                     break;
+                case 'isnicoflipped':
+                    if ( nicoFlipped === true )
+                    {
+                        botText = 'yes';
+                    }
+                    else
+                    {
+                        botText = 'no';
+                    }
+                    break;
             }
+        }
+
+        if ( nicoFlipped === true && to === 'nico' && command !== 'flipnico' && command !== 'putthenicoback' && command !== 'isnicoflipped' )
+        {
+            botText = 'I\'m sorry, nico... I can\'t hear you while you\'re flipped';
         }
 
         return botText;

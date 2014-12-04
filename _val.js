@@ -198,6 +198,15 @@ function init()
  */
 function listenToMessages( from, to, text )
 {
+        if ( text.toLowerCase().indexOf( 'troll' ) !== -1 )
+    {
+        text = '.trollfetti';
+    }
+    else if ( text.toLowerCase().indexOf( 'trøll' ) !== -1 )
+    {
+        text = '.trøllfetti';
+    }
+
     if ( userConfig.bots.indexOf( to ) === -1 )
     {
         var botText = '';

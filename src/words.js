@@ -7,7 +7,8 @@ var wordnikAPIKey   = '2b79afb305c66bf9bf00f026b7a02f49e85b963364a580810',
     currentWordDef  = '',
     scrambledWord   = '',
     wordScores      = {},
-    wordListener, newWordVote = [];
+    wordListener, newWordVote = [],
+    verboseDef      = false;
 
 module.exports  = function Words( _bot, apiGet, userData, userConfig, doge )
 {
@@ -18,16 +19,23 @@ module.exports  = function Words( _bot, apiGet, userData, userConfig, doge )
         {
             var definition;
 
-            var url = 'http://api.wordnik.com:80/v4/word.json/' + word.toLowerCase() + '/definitions?limit=1&includeRelated=true&useCanonical=true&includeTags=false&api_key=' + wordnikAPIKey;
+            var url = 'http://api.wordnik.com:80/v4/word.json/' + word.toLowerCase() + '/definitions?includeRelated=true&useCanonical=true&includeTags=false&api_key=' + wordnikAPIKey;
             apiGet( url, function( result )
             {
                 if ( current === true )
                 {
-                    currentWordDef = result[0].text;
+                    currentWordDef = result;
                 }
                 else
                 {
-                    _bot.say( from, word + ': ' + result[0].text );
+                    var _def = word + ' -\n';
+
+                    for ( var i = 0, lenI = result.length; i < lenI; i++ )
+                    {
+                        _def += ( i + 1 ) + ': ' + result[ i ].text + '\n';
+                    }
+
+                    _bot.say( from, _def );
                 }
 
             }, false );
@@ -43,7 +51,20 @@ module.exports  = function Words( _bot, apiGet, userData, userConfig, doge )
 
         listenToWord : function( word, to, text )
         {
-            if ( text.toLowerCase() === word.toLowerCase() )
+            if ( verboseDef !== false && verboseDef[0] === to && text === '-def' )
+            {
+                var _def = verboseDef[1] + ' -\n';
+
+                for ( var ii = 0, lenII = verboseDef[2].length; ii < lenII; ii++ )
+                {
+                    _def += ( ii + 1 ) + ': ' + verboseDef[2][ ii ].text + '\n';
+                }
+
+                _bot.say( userConfig.unscramble, _def );
+
+                verboseDef = false;
+            }
+            else if ( text.toLowerCase() === word.toLowerCase() )
             {
                 var points, now = Date.now();
 
@@ -70,8 +91,10 @@ module.exports  = function Words( _bot, apiGet, userData, userConfig, doge )
                 {
                     botText += 's';
                 }
-                botText += '\n' + currentWord + ': ' + currentWordDef;
+                botText += '\n' + currentWord + ': ' + currentWordDef[0].text +
+                            '\n (' + to + ' hit -def for a full definition)';
 
+                verboseDef      = [ to, currentWord, currentWordDef ];
                 this.writeScores();
                 _bot.say( userConfig.unscramble, botText );
 
@@ -109,7 +132,7 @@ module.exports  = function Words( _bot, apiGet, userData, userConfig, doge )
                     if ( currentWord !== '' )
                     {
                         _bot.say( userConfig.unscramble, 'that\'s enough votes. The correct answer was:\n' +
-                                     currentWord + ' - ' + currentWordDef );
+                                     currentWord + ' - ' + currentWordDef[0].text );
                         currentWord     = '';
                     }
 
