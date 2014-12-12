@@ -121,6 +121,9 @@ module.exports = function PlainText( _bot, apiGet, userData, userConfig, nouns )
         {
             switch ( command )
             {
+                case 'fight':
+                    botText = '(ง︡\'-\'︠)ง';
+                    break;
                 case 'levelSelect':
                     botText = 'B A B A ↑ ↓ B A ← → B A (start)';
                     break;

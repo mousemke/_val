@@ -210,6 +210,10 @@ function listenToMessages( from, to, text )
     {
         text = '.trøllfetti';
     }
+    else if ( text.toLowerCase().indexOf( 'fight' ) !== -1 )
+    {
+        text = '.fight';
+    }
 
     if ( userConfig.bots.indexOf( to ) === -1 )
     {
@@ -221,7 +225,7 @@ function listenToMessages( from, to, text )
         }
         else if ( text === 'is nico a bad man?' )
         {
-            _bot.say( from, 'yes.  most definately' );
+            _bot.say( from, 'yes.  most definitely' );
         }
         else if ( text[ 0 ] === userConfig.trigger && text !== userConfig.trigger )
         {

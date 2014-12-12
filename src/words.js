@@ -30,7 +30,8 @@ module.exports  = function Words( _bot, apiGet, userData, userConfig, doge )
                 }
                 else
                 {
-                    var _def = word.replace( '%20', ' ' );
+                    var spaceRegex = new RegExp( /%20/, 'g' );
+                    var _def = word.replace( spaceRegex, ' ' );
 
                     if ( result.length === 0 )
                     {
@@ -359,7 +360,7 @@ module.exports  = function Words( _bot, apiGet, userData, userConfig, doge )
         unscramble : function( from, to, text )
         {
             this.readScores();
-            console.log( text );
+
             var points = [];
             var playerPoints;
             var botText;
