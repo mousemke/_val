@@ -19,7 +19,9 @@ module.exports  = function Words( _bot, apiGet, userData, userConfig, doge )
         {
             var definition;
 
-            var url = 'http://api.wordnik.com:80/v4/word.json/' + word.toLowerCase() + '/definitions?includeRelated=true&useCanonical=true&includeTags=false&api_key=' + wordnikAPIKey;
+            word = word.toLowerCase();
+
+            var url = 'http://api.wordnik.com:80/v4/word.json/' + word + '/definitions?includeRelated=true&useCanonical=true&includeTags=false&api_key=' + wordnikAPIKey;
             apiGet( url, function( result )
             {
                 if ( current === true )
@@ -28,11 +30,19 @@ module.exports  = function Words( _bot, apiGet, userData, userConfig, doge )
                 }
                 else
                 {
-                    var _def = word + ' -\n';
+                    var _def = word.replace( '%20', ' ' );
 
-                    for ( var i = 0, lenI = result.length; i < lenI; i++ )
+                    if ( result.length === 0 )
                     {
-                        _def += ( i + 1 ) + ': ' + result[ i ].text + '\n';
+                        _def += ' is, sadly, not a word.';
+                    }
+                    else
+                    {
+                        _def += ' -\n';
+                        for ( var i = 0, lenI = result.length; i < lenI; i++ )
+                        {
+                            _def += ( i + 1 ) + ': ' + result[ i ].text + '\n';
+                        }
                     }
 
                     _bot.say( from, _def );
@@ -91,10 +101,18 @@ module.exports  = function Words( _bot, apiGet, userData, userConfig, doge )
                 {
                     botText += 's';
                 }
-                botText += '\n' + currentWord + ': ' + currentWordDef[0].text +
-                            '\n (' + to + ' hit -def for a full definition)';
+                var additionalDefs = currentWordDef.length - 1;
+                botText += '\n' + currentWord + ': ' + currentWordDef[0].text;
+                if ( additionalDefs !== 0 )
+                {
+                    botText += '\n (' + to + ' hit -def for ' + additionalDefs + ' more definitions)';
+                    verboseDef      = [ to, currentWord, currentWordDef ];
+                }
+                else
+                {
+                    verboseDef      = false;
+                }
 
-                verboseDef      = [ to, currentWord, currentWordDef ];
                 this.writeScores();
                 _bot.say( userConfig.unscramble, botText );
 
@@ -184,6 +202,7 @@ module.exports  = function Words( _bot, apiGet, userData, userConfig, doge )
                 switch ( command )
                 {
                     case 'word':
+                    case 'whirred':
                         this.word( from, text, false );
                         break;
                     case 'newWord':
@@ -277,7 +296,7 @@ module.exports  = function Words( _bot, apiGet, userData, userConfig, doge )
                         break;
                     case 'def':
                     case 'define':
-                        this.define( from, text.split( ' ' )[ 1 ] );
+                        this.define( from, text.split( ' ' ).slice( 1 ).join( '%20' ) );
                         break;
                     case 'unscramble':
                         this.unscramble( from, to, text );
@@ -339,7 +358,76 @@ module.exports  = function Words( _bot, apiGet, userData, userConfig, doge )
 
         unscramble : function( from, to, text )
         {
-            _bot.say( from, 'hello, ' + to + ', this would be your score if it was built' );
+            this.readScores();
+            console.log( text );
+            var points = [];
+            var playerPoints;
+            var botText;
+            var playerRequest = text.split( ' ' )[1];
+
+            for ( var player in wordScores )
+            {
+                if ( player === playerRequest )
+                {
+                    playerPoints = wordScores[player].length;
+                }
+
+                var _obj = {
+                    name    : player,
+                    points  : wordScores[player].length
+                };
+
+                points.push( _obj );
+            }
+
+            points.sort( function( a, b )
+            {
+                return b.points - a.points;
+            } );
+
+            if ( playerRequest )
+            {
+                if ( playerPoints )
+                {
+                    if ( to === playerRequest )
+                    {
+                        botText =  'Hey ' + to + '! You have ' + playerPoints + ' point';
+                    }
+                    else
+                    {
+                        botText =  'Why hello ' + to + '! ' + playerRequest + ' has ' + playerPoints + ' point';
+                    }
+
+                    if ( playerPoints !== 1 )
+                    {
+                        botText += 's';
+                    }
+                }
+                else
+                {
+                    botText =  'Well... ' + to + '... I don\'t think ' + playerRequest + ' is a real person';
+                }
+            }
+            else
+            {
+                botText = 'Unscramble Scores - \n';
+                for ( var i = 0, lenI = points.length; i < lenI; i++ )
+                {
+                    botText += ( i + 1 ) + ': ' + points[ i ].name + ' - ' + points[ i ].points + ' point';
+
+                    if ( points[ i ].points !== 1 )
+                    {
+                        botText += 's';
+                    }
+                    botText += '\n';
+
+                    if ( i >= 9 )
+                    {
+                        break;
+                    }
+                }
+            }
+             _bot.say( from, botText );
         },
 
 

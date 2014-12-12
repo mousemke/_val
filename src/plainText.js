@@ -58,6 +58,10 @@ module.exports = function PlainText( _bot, apiGet, userData, userConfig, nouns )
                 case 'trøll':
                     word = [ 'http://trølølølølølølølølølølø.cøm/', 'http', 'trølø', 'lølø', 'ølølø.cøm', 'trøll'  ];
                     break;
+                case 'xmas':
+                case 'christmas':
+                    word = [ 'ʕ◔ᴥ◔ʔ ', '☃ ', 'presents ', '✦ ', 'santa ', '⁂ ', 'satan ' ];
+                    break;
             }
 
             if ( type.length > userConfig.fettiWordLength )
@@ -174,6 +178,9 @@ module.exports = function PlainText( _bot, apiGet, userData, userConfig, nouns )
                 case 'putthenicoback':
                     botText     = '(._. ) ノ( ゜-゜ノ)';
                     nicoFlipped = false;
+                    break;
+                case 'shrug':
+                    botText     = '¯\\_(ツ)_/¯';
                     break;
                 case 'yes!':
                     botText = '( ･ㅂ･)و ̑̑';
