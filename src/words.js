@@ -20,8 +20,8 @@ module.exports  = function Words( _bot, apiGet, userData, userConfig, doge )
             var definition;
 
             word = word.toLowerCase();
-
             var url = 'http://api.wordnik.com:80/v4/word.json/' + word + '/definitions?includeRelated=true&useCanonical=true&includeTags=false&api_key=' + wordnikAPIKey;
+
             apiGet( url, function( result )
             {
                 if ( current === true )
@@ -30,8 +30,12 @@ module.exports  = function Words( _bot, apiGet, userData, userConfig, doge )
                 }
                 else
                 {
-                    var spaceRegex = new RegExp( /%20/, 'g' );
-                    var _def = word.replace( spaceRegex, ' ' );
+                    while ( word.indexOf( '%20' ) !== -1 )
+                    {
+                        word = word.replace( '%20', ' ' );
+                    }
+
+                    var _def = word;
 
                     if ( result.length === 0 )
                     {

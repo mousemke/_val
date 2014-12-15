@@ -176,7 +176,7 @@ module.exports = function PlainText( _bot, apiGet, userData, userConfig, nouns )
                 case 'flipnico':
                     botText     = '(╯°Д°）╯︵/(.□ . ) ᵇᵘᵗ ᴵ\'ᵐ ᶰᶦᶜᵒ﹗';
                     nicoFlipped = true;
-                    _bot.say( 'nico', to + ' just flipped you, sucka! Now you\'re stuck on your back in ' + from + ' like a little turtle.' );
+                    _bot.say( 'nico, I\'m so sorry! ' + to + ' just flipped you like a little turtle. It\'s not my fault, I swear!! Now you\'re stuck on your back in ' + from + ' ' );
                     break;
                 case 'putthenicoback':
                     botText     = '(._. ) ノ( ゜-゜ノ)';
@@ -202,6 +202,9 @@ module.exports = function PlainText( _bot, apiGet, userData, userConfig, nouns )
                     break;
                 case 'bot':
                     botText = 'I AM BOT\nINSERT DOGE';
+                    break;
+                case 'disappearinacloudofsmoke':
+                    botText = 'no...  you don\'t have that ability.  stupid.';
                     break;
                 case 'google':
                     text = text.split( ' ' ).slice( 1 ).join( '%20' );
