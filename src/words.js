@@ -101,13 +101,20 @@ module.exports  = function Words( _bot, apiGet, userData, userConfig, doge )
                 }
 
                 points = wordScores[ to ].length;
-                var botText = 'Good Job ' + to + '! you now have ' + points + ' point';
+                var botText = 'WOW ' + to + '! Such ' + points + ' point';
                 if ( points !== 1 )
                 {
                     botText += 's';
                 }
                 var additionalDefs = currentWordDef.length - 1;
+
+                if ( ! currentWordDef || ! currentWordDef[0] )
+                {
+                    currentWordDef = [ { text: 'ummm....    I forgot' } ];
+                }
+
                 botText += '\n' + currentWord + ': ' + currentWordDef[0].text;
+
                 if ( additionalDefs !== 0 )
                 {
                     botText += '\n (' + to + ' hit -def for ' + additionalDefs + ' more definitions)';
@@ -465,7 +472,9 @@ module.exports  = function Words( _bot, apiGet, userData, userConfig, doge )
                 var url = 'http://api.wordnik.com:80/v4/words.json/randomWord?hasDictionaryDef=true&' + excludeList + 'minCorpusCount=0&maxCorpusCount=-1&minDictionaryCount=3&maxDictionaryCount=-1&minLength=' + minLength + '&maxLength=' + maxLength + '&api_key=' + wordnikAPIKey;
                 apiGet( url, function( result )
                 {
-                    if ( result.word[0] !== result.word[0].toLowerCase() || result.word.indexOf( '-' ) !== -1 )
+                    if ( result.word[0] !== result.word[0].toLowerCase() ||
+                            result.word.indexOf( '-' ) !== -1 ||
+                            result.word.match( /^[a-zA-Z]+$/ ) === null )
                     {
                         scope.word();
                     }

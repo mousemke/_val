@@ -301,6 +301,10 @@ function listenToPm( from, text )
             console.log( from + ' killed me' );
         });
     }
+    else if ( textSplit[ 0 ] === 'restart' && userConfig.admins.indexOf( from ) !== -1 )
+    {
+        _bot.say ( userConfig.unscramble, 'I will restart after the next word is skipped or solved' );
+    }
     else if ( textSplit[ 0 ] === 'help' )
     {
         botText = userConfig.helpText;

@@ -200,6 +200,9 @@ module.exports = function PlainText( _bot, apiGet, userData, userConfig, nouns )
                 case '...':
                     botText = 'ಠ_ಠ';
                     break;
+                case 'facepalm':
+                    botText = '(－‸ლ)';
+                    break;
                 case 'bot':
                     botText = 'I AM BOT\nINSERT DOGE';
                     break;
