@@ -74,42 +74,6 @@ function apiGet( _url, _cb, secure )
 }
 
 
-function dogeResponses( from, to, text, botText )
-{
-    var command = text.slice( 1 ).split( ' ' )[ 0 ];
-
-    switch ( command )
-    {
-        case 'doge':
-            doge.doge( from, text, false );
-            break;
-        case 'market':
-            doge.doge( from, text, true );
-            break;
-        case 'tip':
-            doge.tip( from, to, text );
-            break;
-        case 'withdraw':
-            doge.withdraw( from, to, text );
-            break;
-        case 'balance':
-            doge.balance( from, to, text );
-            break;
-        case 'deposit':
-            doge.deposit( from, to, text );
-            break;
-        case 'active':
-            doge.checkActive( from, to, text );
-            break;
-        case 'soak':
-            doge.soak( from, to, text );
-            break;
-    }
-
-    return botText;
-}
-
-
 /**
  * Dodge
  *
@@ -231,6 +195,10 @@ function listenToMessages( from, to, text )
         else if ( text === 'is nico a bad man?' )
         {
             _bot.say( from, 'yes.  most definitely' );
+        }
+        else if ( text === '.moon?' )
+        {
+            _bot.say( from, 'most likely' );
         }
         else if ( text[ 0 ] === userConfig.trigger && text !== userConfig.trigger )
         {
