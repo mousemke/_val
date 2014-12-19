@@ -2,18 +2,19 @@
 
 // Create the configuration
 var channel, _bot, doge, words,
-    userConfig      = require( './config/_val.config.js' ),
-    channels        = userConfig.channels,
-    Doge            = require( './src/doge.js' ),
-    Words           = require( './src/words.js' ),
-    PlainText       = require( './src/plainText.js' ),
-    http            = require( 'http' ),
-    https           = require( 'https' ),
-    irc             = require( 'irc' ),
-    fs              = require( 'fs' ),
-    nouns           = require( './lists/nouns.js' ),
-    coffees         = require( './lists/coffee.js' ),
-    cars            = require( './lists/cars.js' );
+    userConfig  = require( './config/_val.config.js' ),
+    channels    = userConfig.channels,
+    Doge        = require( './src/doge.js' ),
+    Words       = require( './src/words.js' ),
+    PlainText   = require( './src/plainText.js' ),
+    Beats       = require( './src/beats.js' ),
+    http        = require( 'http' ),
+    https       = require( 'https' ),
+    irc         = require( 'irc' ),
+    fs          = require( 'fs' ),
+    nouns       = require( './lists/nouns.js' ),
+    coffees     = require( './lists/coffee.js' ),
+    cars        = require( './lists/cars.js' );
 
 
 
@@ -188,6 +189,8 @@ function init()
     words.init();
 
     plainText   = new PlainText( _bot, apiGet, userData, userConfig, nouns );
+
+    beats       = new Beats( _bot, apiGet, userData, userConfig, nouns );
 }
 
 
@@ -241,6 +244,11 @@ function listenToMessages( from, to, text )
             if ( botText === '' )
             {
                 botText = words.responses( from, to, text, botText );
+            }
+
+            if ( botText === '' )
+            {
+                botText = beats( from, to, text, botText );
             }
 
             if ( botText === '' )
