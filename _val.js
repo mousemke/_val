@@ -16,6 +16,8 @@ var channel, _bot, doge, words,
     cars            = require( './lists/cars.js' );
 
 
+
+
 /**
  * API get
  *
@@ -158,8 +160,12 @@ function dodge( from, to, text )
 function init()
 {
     _bot = new irc.Client( userConfig.server, userConfig.botName, {
-        channels: userConfig.channels,
-        password: userConfig.serverPassword,
+        channels    : userConfig.channels,
+        password    : userConfig.serverPassword,
+        showErrors  : false,
+        autoRejoin  : true,
+        autoConnect : true
+        // debug       : true
     });
 
     _bot.addListener( 'error', function( message )
@@ -198,13 +204,17 @@ function init()
  */
 function listenToMessages( from, to, text )
 {
-        if ( text.toLowerCase().indexOf( 'troll' ) !== -1 )
+    if ( text.toLowerCase().indexOf( 'troll' ) !== -1 )
     {
         text = '.trollfetti';
     }
     else if ( text.toLowerCase().indexOf( 'trøll' ) !== -1 )
     {
         text = '.trøllfetti';
+    }
+    else if ( text.toLowerCase().indexOf( 'fight' ) !== -1 )
+    {
+        text = '.fight';
     }
 
     if ( userConfig.bots.indexOf( to ) === -1 )
@@ -217,7 +227,7 @@ function listenToMessages( from, to, text )
         }
         else if ( text === 'is nico a bad man?' )
         {
-            _bot.say( from, 'yes.  most definately' );
+            _bot.say( from, 'yes.  most definitely' );
         }
         else if ( text[ 0 ] === userConfig.trigger && text !== userConfig.trigger )
         {
@@ -290,6 +300,10 @@ function listenToPm( from, text )
         {
             console.log( from + ' killed me' );
         });
+    }
+    else if ( textSplit[ 0 ] === 'restart' && userConfig.admins.indexOf( from ) !== -1 )
+    {
+        _bot.say ( userConfig.unscramble, 'I will restart after the next word is skipped or solved' );
     }
     else if ( textSplit[ 0 ] === 'help' )
     {

@@ -4,6 +4,7 @@ var wordnikAPIKey   = '2b79afb305c66bf9bf00f026b7a02f49e85b963364a580810',
     minLength       = 4,
     maxLength       = 8,
     currentWord     = '',
+    currentWordTime = 0,
     currentWordDef  = '',
     scrambledWord   = '',
     wordScores      = {},
@@ -101,11 +102,15 @@ module.exports  = function Words( _bot, apiGet, userData, userConfig, doge )
                 }
 
                 points = wordScores[ to ].length;
-                var botText = 'WOW ' + to + '! Such ' + points + ' point';
+
+                var solveTime   = Math.floor( ( now - currentWordTime ) / 10 ) / 100;
+                var botText     = 'WOW ' + to + '! Such ' + points + ' point';
                 if ( points !== 1 )
                 {
                     botText += 's';
                 }
+                botText += '! Many ' + solveTime + ' seconds';
+
                 var additionalDefs = currentWordDef.length - 1;
 
                 if ( ! currentWordDef || ! currentWordDef[0] )
@@ -130,6 +135,7 @@ module.exports  = function Words( _bot, apiGet, userData, userConfig, doge )
 
                 currentWord     = '';
                 currentWordDef  = '';
+                currentWordTime = '';
                 newWordVote     = [];
                 //doge tip per length?
                 _bot.removeListener( 'message' + userConfig.unscramble, wordListener );
@@ -166,6 +172,7 @@ module.exports  = function Words( _bot, apiGet, userData, userConfig, doge )
                         currentWord     = '';
                     }
 
+                    currentWordTime = 0;
                     scrambledWord   = '';
                     newWordVote     = [];
                     _bot.removeListener( 'message' + userConfig.unscramble, wordListener );
@@ -481,6 +488,7 @@ module.exports  = function Words( _bot, apiGet, userData, userConfig, doge )
                     else
                     {
                         currentWord     = result.word;
+                        currentWordTime = Date.now();
                         scope.define( userConfig.unscramble, currentWord, true );
                         scrambledWord   = scope.scramble( currentWord );
                         _bot.say( userConfig.unscramble, 'The new scramble word is: ' + scrambledWord + ' (' + ( currentWord[0] ) + ')' );
@@ -491,7 +499,7 @@ module.exports  = function Words( _bot, apiGet, userData, userConfig, doge )
             }
             else
             {
-                _bot.say( userConfig.unscramble, 'The current scramble word is: ' + scrambledWord + ' (' + ( currentWord[0] ) + ')' );
+                _bot.say( userConfig.unscramble, 'The current scramble word is: ' + scrambledWord + ' (' + ( currentWord[0] ) + ')\n' );
             }
         }
     };

@@ -209,6 +209,7 @@ module.exports = function PlainText( _bot, apiGet, userData, userConfig, nouns )
                 case 'disappearinacloudofsmoke':
                     botText = 'no...  you don\'t have that ability.  stupid.';
                     break;
+                case 'g':
                 case 'google':
                     text = text.split( ' ' ).slice( 1 ).join( '%20' );
                     botText = 'http://www.lmgtfy.com/?q=' + text;
@@ -218,7 +219,6 @@ module.exports = function PlainText( _bot, apiGet, userData, userConfig, nouns )
                     text = text.split( ' ' ).slice( 1 ).join( '%20' );
                     botText = 'http://en.wikipedia.org/wiki/' + text;
                     break;
-                case 'g':
                 case 'pic':
                 case 'gif':
                     text = text.split( ' ' ).slice( 1 ).join( '%20' );
@@ -257,6 +257,15 @@ module.exports = function PlainText( _bot, apiGet, userData, userConfig, nouns )
                     {
                         botText = 'no';
                     }
+                    break;
+                case 'badyoutube':
+                case 'germanysgottalent':
+                    var choices = [ 'https://www.youtube.com/watch?v=IeWAPVWXLtM',
+                                    'https://www.youtube.com/watch?v=dNUUCHsgRu8',
+                                    'https://www.youtube.com/watch?v=PJQVlVHsFF8'
+                                    ];
+                    var choice = Math.floor( Math.random() * choices.length );
+                    botText = choices[ choice ];
                     break;
             }
         }
