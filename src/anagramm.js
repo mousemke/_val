@@ -241,8 +241,8 @@ module.exports  = function Worte( _bot, apiGet, userData, userConfig, doge )
             // }
             // else
             // {
-            //     switch ( command )
-            //     {
+                switch ( command )
+                {
             //         case 'aa':
             //         case 'af':
             //         case 'an':
@@ -317,10 +317,10 @@ module.exports  = function Worte( _bot, apiGet, userData, userConfig, doge )
             //         case 'define':
             //             this.define( from, text.split( ' ' ).slice( 1 ).join( '%20' ) );
             //             break;
-            //         case 'unscramble':
-            //             this.unscramble( from, to, text );
-            //             break;
-            //     }
+                    case 'anagramm':
+                        this.unscramble( from, to, text );
+                        break;
+                }
             // }
 
             return botText;
@@ -365,7 +365,7 @@ module.exports  = function Worte( _bot, apiGet, userData, userConfig, doge )
             {
                 var botText, response = response.matches;
 
-                for ( var i = 0, lenI = response.length; i < lenI; i++ ) 
+                for ( var i = 0, lenI = response.length; i < lenI; i++ )
                 {
                     if ( response[ i ].quality !== '0' )
                     {
@@ -381,7 +381,7 @@ module.exports  = function Worte( _bot, apiGet, userData, userConfig, doge )
 
                 if ( from !== 'internal' )
                 {
-                    _bot.say( from, to + ': ' + langFrom + ' > ' + langTo + ' - ' + botText );                    
+                    _bot.say( from, to + ': ' + langFrom + ' > ' + langTo + ' - ' + botText );
                 }
 
                 if ( func )
@@ -516,11 +516,11 @@ module.exports  = function Worte( _bot, apiGet, userData, userConfig, doge )
                             currentWord.indexOf( ' ' ) !== -1 ||
                             currentWord.toLowerCase() === englishWord )
                             {
-                                currentWord = ''; 
+                                currentWord = '';
                                 scope.word();
                             }
                             else
-                            {    
+                            {
                                 scrambledWord   = scope.scramble( currentWord );
                                 _bot.say( userConfig.anagramm, 'Der neue Anagramm ist: ' + scrambledWord.toLowerCase() + ' (' + ( currentWord[0].toLowerCase() ) + ')' );
                                 wordListener    = scope.listenToWord.bind( scope, currentWord );
