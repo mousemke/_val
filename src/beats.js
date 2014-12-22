@@ -16,6 +16,15 @@ module.exports = function Beats( _bot, apiGet, userData, userConfig, nouns )
             var Oct231998   = 909097200000;
             var allBeats    = ( ( now - Oct231998 ) / 1000 / 86.4 );
             var beatTime    = Math.floor( allBeats % 1000 );
+
+            if ( beatTime.length < 3 )
+            {
+                while ( beatTime.length !== 3 )
+                {
+                    beatTime = '0' + beatTime;
+                }
+            }
+
             botText = '@' + beatTime;
         }
 

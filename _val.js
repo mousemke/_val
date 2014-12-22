@@ -6,6 +6,7 @@ var channel, _bot, doge, words,
     channels    = userConfig.channels,
     Doge        = require( './src/doge.js' ),
     Words       = require( './src/words.js' ),
+    Anagramm    = require( './src/anagramm.js' ),
     PlainText   = require( './src/plainText.js' ),
     Beats       = require( './src/beats.js' ),
     http        = require( 'http' ),
@@ -152,6 +153,9 @@ function init()
     words       = new Words( _bot, apiGet, userData, userConfig, doge );
     words.init();
 
+    anagramm       = new Anagramm( _bot, apiGet, userData, userConfig, doge );
+    anagramm.init();
+
     plainText   = new PlainText( _bot, apiGet, userData, userConfig, nouns );
 
     beats       = new Beats( _bot, apiGet, userData, userConfig, nouns );
@@ -212,6 +216,11 @@ function listenToMessages( from, to, text )
             if ( botText === '' )
             {
                 botText = words.responses( from, to, text, botText );
+            }
+
+            if ( botText === '' )
+            {
+                botText = anagramm.responses( from, to, text, botText );
             }
 
             if ( botText === '' )
