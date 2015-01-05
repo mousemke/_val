@@ -202,7 +202,7 @@ function listenToMessages( from, to, text )
         }
         else if ( text === '.moon?' )
         {
-            _bot.say( from, 'most likely' );
+            _bot.say( from, 'that\s no moon...' );
         }
         else if ( text[ 0 ] === userConfig.trigger && text !== userConfig.trigger )
         {
