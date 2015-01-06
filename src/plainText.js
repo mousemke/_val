@@ -236,6 +236,9 @@ module.exports = function PlainText( _bot, apiGet, userData, userConfig, nouns )
                 case 'witchhunt':
                     botText = 'http://i.imgur.com/x63cdJW.jpg';
                     break;
+                case 'wow':
+                    botText = 'https://i.imgur.com/8rhlusE.gif';
+                    break;
                 case 'flipthetable':
                     botText = '(╯°□°）╯︵ ┻━┻';
                     break;

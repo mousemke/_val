@@ -153,7 +153,7 @@ function init()
     words       = new Words( _bot, apiGet, userData, userConfig, doge );
     words.init();
 
-    anagramm       = new Anagramm( _bot, apiGet, userData, userConfig, doge );
+    anagramm    = new Anagramm( _bot, apiGet, userData, userConfig, doge );
     anagramm.init();
 
     plainText   = new PlainText( _bot, apiGet, userData, userConfig, nouns );
@@ -289,7 +289,7 @@ function listenToPm( from, text )
     else if ( textSplit[ 0 ] === 'restart' && userConfig.admins.indexOf( from ) !== -1 )
     {
         _bot.say ( userConfig.unscramble, 'I will restart after the next word is skipped or solved' );
-        _bot.say ( userConfig.anagramm, 'Nach diesem Wort ich wird neu gestartet' );
+        _bot.say ( userConfig.anagramm, 'Nach diesem Wort werde ich neu gestartet' );
     }
     else if ( textSplit[ 0 ] === 'help' )
     {
