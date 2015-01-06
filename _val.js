@@ -289,6 +289,7 @@ function listenToPm( from, text )
     else if ( textSplit[ 0 ] === 'restart' && userConfig.admins.indexOf( from ) !== -1 )
     {
         _bot.say ( userConfig.unscramble, 'I will restart after the next word is skipped or solved' );
+        _bot.say ( userConfig.anagramm, 'Nach diesem Wort ich wird neu gestartet' );
     }
     else if ( textSplit[ 0 ] === 'help' )
     {

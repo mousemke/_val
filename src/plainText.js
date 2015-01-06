@@ -207,9 +207,9 @@ module.exports = function PlainText( _bot, apiGet, userData, userConfig, nouns )
                     botText = 'I AM BOT\nINSERT DOGE';
                     break;
                 case 'disappearinacloudofsmoke':
+                    setTimeout( function(){ _bot.say( from, 'I mean...  why would you just assume you can have any new ability you want....' ) }, 5500 );
                     botText = 'no...  you don\'t have that ability.  stupid.';
                     break;
-                case 'g':
                 case 'google':
                     text = text.split( ' ' ).slice( 1 ).join( '%20' );
                     botText = 'http://www.lmgtfy.com/?q=' + text;
@@ -219,6 +219,7 @@ module.exports = function PlainText( _bot, apiGet, userData, userConfig, nouns )
                     text = text.split( ' ' ).slice( 1 ).join( '%20' );
                     botText = 'http://en.wikipedia.org/wiki/' + text;
                     break;
+                case 'g':
                 case 'pic':
                 case 'gif':
                     text = text.split( ' ' ).slice( 1 ).join( '%20' );

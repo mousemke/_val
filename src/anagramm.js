@@ -230,98 +230,12 @@ module.exports  = function Worte( _bot, apiGet, userData, userConfig, doge )
                 }
             }
 
-            // taken care of in word
-            //
-            // var complexTranslation = /[a-z]{2}\|[a-z]{2}/;
-            // if ( complexTranslation.test( command ) )
-            // {
-            //     text = text.replace( command, '' ).trim();
-            //     command = command.split( '|' );
-            //     this.translate( command[0], command[1], from, to, text );
-            // }
-            // else
-            // {
-                switch ( command )
-                {
-            //         case 'aa':
-            //         case 'af':
-            //         case 'an':
-            //         case 'ay':
-            //         case 'ar':
-            //         case 'bs':
-            //         case 'ca':
-            //         case 'ce':
-            //         case 'ch':
-            //         case 'co':
-            //         case 'cs':
-            //         case 'da':
-            //         case 'de':
-            //         case 'dv':
-            //         case 'el':
-            //         case 'eo':
-            //         case 'es':
-            //         case 'et':
-            //         case 'eu':
-            //         case 'fi':
-            //         case 'fj':
-            //         case 'fo':
-            //         case 'fr':
-            //         case 'gl':
-            //         case 'he':
-            //         case 'ho':
-            //         case 'hr':
-            //         case 'hy':
-            //         case 'id':
-            //         case 'it':
-            //         case 'is':
-            //         case 'ja':
-            //         case 'jv':
-            //         case 'ky':
-            //         case 'km':
-            //         case 'ko':
-            //         case 'la':
-            //         case 'lo':
-            //         case 'lt':
-            //         case 'lv':
-            //         case 'mg':
-            //         case 'mo':
-            //         case 'ms':
-            //         case 'ne':
-            //         case 'nl':
-            //         case 'no':
-            //         case 'os':
-            //         case 'pl':
-            //         case 'pt':
-            //         case 'qu':
-            //         case 'ro':
-            //         case 'ru':
-            //         case 'sc':
-            //         case 'si':
-            //         case 'sl':
-            //         case 'sm':
-            //         case 'so':
-            //         case 'sq':
-            //         case 'su':
-            //         case 'sv':
-            //         case 'tl':
-            //         case 'tr':
-            //         case 'ug':
-            //         case 'uk':
-            //         case 'vi':
-            //         case 'yi':
-            //         case 'zh':
-            //         case 'zu':
-            //             this.translate( 'en', command, from, to, text );
-            //             break;
-            //         case 'def':
-            //         case 'define':
-            //             this.define( from, text.split( ' ' ).slice( 1 ).join( '%20' ) );
-            //             break;
-                    case 'anagramm':
-                        this.unscramble( from, to, text );
-                        break;
-                }
-            // }
+            switch ( command )
+            {
+                case 'anagramm':
+                    this.unscramble( from, to, text );
+                    break;
+            }
 
             return botText;
         },
@@ -532,7 +446,7 @@ module.exports  = function Worte( _bot, apiGet, userData, userConfig, doge )
             }
             else
             {
-                _bot.say( userConfig.anagramm, 'Das Anagramm ist: ' + scrambledWord.toLowerCase() + ' (' + ( currentWord[0] ) + ')\n' );
+                _bot.say( userConfig.anagramm, 'Das Anagramm ist: ' + scrambledWord.toLowerCase() + ' (' + ( currentWord[0].toLowerCase() ) + ')\n' );
             }
         }
     };
