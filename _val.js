@@ -4,6 +4,7 @@
 var channel, _bot, doge, words,
     userConfig  = require( './config/_val.config.js' ),
     channels    = userConfig.channels,
+    _4SQ        = require( './src/_4sq.js' ),
     Doge        = require( './src/doge.js' ),
     Words       = require( './src/words.js' ),
     Anagramm    = require( './src/anagramm.js' ),
@@ -159,6 +160,8 @@ function init()
     plainText   = new PlainText( _bot, apiGet, userData, userConfig, nouns );
 
     beats       = new Beats( _bot, apiGet, userData, userConfig, nouns );
+
+    _4sq        = new _4SQ( _bot, apiGet, userData, userConfig, doge );
 }
 
 
@@ -202,7 +205,7 @@ function listenToMessages( from, to, text )
         }
         else if ( text === '.moon?' )
         {
-            _bot.say( from, 'that\s no moon...' );
+            _bot.say( from, 'Moon Knight is a fictional character, a superhero who appears in comic books published by Marvel Comics. The character exists in the Marvel Universe and was created by Doug Moench and Don Perlin. He first appeared in Werewolf by Night #32.' );
         }
         else if ( text[ 0 ] === userConfig.trigger && text !== userConfig.trigger )
         {
@@ -226,6 +229,11 @@ function listenToMessages( from, to, text )
             if ( botText === '' )
             {
                 botText = beats( from, to, text, botText );
+            }
+
+            if ( botText === '' )
+            {
+                botText = _4sq.responses( from, to, text, botText );
             }
 
             if ( botText === '' )

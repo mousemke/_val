@@ -12,7 +12,12 @@ userConfig = {
     fettiWordLength     : 15,
     fettiLength         : 25,
     fettiOptions        : [ '. ', '´ ', '\' ', ' ,' ],
-    unscramble          : '#unscramble'
+    unscramble          : '#unscramble',
+    anagramm            : '#anagramm',
+    foursquareID        : '4sq ID - go get one',
+    foursquareSecret    : '4sq secret - go get one',
+    latLong             : '-88.987,-88.567',
+    wordnikAPIKey       : 'wordnik - it works bitches'
 };
 
 

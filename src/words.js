@@ -1,5 +1,4 @@
-var wordnikAPIKey   = '2b79afb305c66bf9bf00f026b7a02f49e85b963364a580810',
-    http            = require( 'http' ),
+var http            = require( 'http' ),
     https           = require( 'https' ),
     minLength       = 4,
     maxLength       = 8,
@@ -21,7 +20,7 @@ module.exports  = function Words( _bot, apiGet, userData, userConfig, doge )
             var definition;
 
             word = word.toLowerCase();
-            var url = 'http://api.wordnik.com:80/v4/word.json/' + word + '/definitions?includeRelated=true&useCanonical=true&includeTags=false&api_key=' + wordnikAPIKey;
+            var url = 'http://api.wordnik.com:80/v4/word.json/' + word + '/definitions?includeRelated=true&useCanonical=true&includeTags=false&api_key=' + userConfig.wordnikAPIKey;
 
             apiGet( url, function( result )
             {
@@ -476,7 +475,7 @@ module.exports  = function Words( _bot, apiGet, userData, userConfig, doge )
                                     'excludePartOfSpeech=idiom&' +
                                     'excludePartOfSpeech=phrasal-prefix&';
 
-                var url = 'http://api.wordnik.com:80/v4/words.json/randomWord?hasDictionaryDef=true&' + excludeList + 'minCorpusCount=0&maxCorpusCount=-1&minDictionaryCount=3&maxDictionaryCount=-1&minLength=' + minLength + '&maxLength=' + maxLength + '&api_key=' + wordnikAPIKey;
+                var url = 'http://api.wordnik.com:80/v4/words.json/randomWord?hasDictionaryDef=true&' + excludeList + 'minCorpusCount=0&maxCorpusCount=-1&minDictionaryCount=3&maxDictionaryCount=-1&minLength=' + minLength + '&maxLength=' + maxLength + '&api_key=' + userConfig.wordnikAPIKey;
                 apiGet( url, function( result )
                 {
                     if ( result.word[0] !== result.word[0].toLowerCase() ||
