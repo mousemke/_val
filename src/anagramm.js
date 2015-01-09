@@ -277,7 +277,8 @@ module.exports  = function Worte( _bot, apiGet, userData, userConfig, doge )
 
             apiGet( url, function( response )
             {
-                var botText, response = response.matches;
+                var botText;
+                response = response.matches;
 
                 for ( var i = 0, lenI = response.length; i < lenI; i++ )
                 {

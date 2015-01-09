@@ -6,25 +6,37 @@ module.exports  = function _4sq( _bot, apiGet, userData, userConfig, doge )
 {
     return {
 
-
         lunch : function( from, query )
         {
             var _botText;
 
             //DEFAULT i suppose
-            var section = 'food';
-            var radius  = '1000';
+            var section     = 'food'; // food, drinks, coffee, shops, arts, outdoors, sights, trending, specials, nextVenues, topPicks
+            var radius      = '1000'; // in meters
+            var intent      = 'browse'; // checkin
+            var searchType  = 'explore'; // search
 
             var noSpaces = new RegExp( ' ', 'g' );
 
             query = query.split( ' ' ).slice( 1 ).join( '%20' );
 
-            var url = 'https://api.foursquare.com/v2/venues/explore?client_id=' + userConfig.foursquareID + '&client_secret=' + userConfig.foursquareSecret + '&v=20130815%20&ll=' + userConfig.latLong + '&llAcc=1000&openNow=1&radius=' + radius + '&section=' + section;
+            var url = 'https://api.foursquare.com/v2/venues/' + searchType + '?client_id=' + userConfig.foursquareID + '&client_secret=' + userConfig.foursquareSecret + '&v=20130815%20&ll=' + userConfig.latLong + '&llAcc=1000&openNow=1&radius=' + radius;
 
             if ( query !== '' )
             {
                  url += '&query=' + query;
             }
+            else
+            {
+                url += '&section=' + section;
+            }
+
+            if ( searchType === 'search' )
+            {
+                url += '&intent=' + intent;
+            }
+
+            // url += '&novelty=new&friendVisits=notvisited';
 
             apiGet( url, function( result )
             {
@@ -53,7 +65,7 @@ module.exports  = function _4sq( _bot, apiGet, userData, userConfig, doge )
                     if ( tip.user.lastName )
                     {
                         tipUser += ' ' + tip.user.lastName;
-                    } 
+                    }
 
                     tip         = tipUser + ' says, "' + tip.text + '"';
 
@@ -72,7 +84,7 @@ module.exports  = function _4sq( _bot, apiGet, userData, userConfig, doge )
                          _botText += '\n' + tip;
                     }
 
-                    var venueUrl = _valsChoice.venue.name.replace( noSpaces, '-' ) + 
+                    var venueUrl = _valsChoice.venue.name.replace( noSpaces, '-' ) +
                                 '/' + _valsChoice.venue.id;
 
                     _botText += '\nhttps://foursquare.com/v/' + venueUrl;

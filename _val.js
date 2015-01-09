@@ -10,6 +10,7 @@ var channel, _bot, doge, words,
     Anagramm    = require( './src/anagramm.js' ),
     PlainText   = require( './src/plainText.js' ),
     Beats       = require( './src/beats.js' ),
+    XKCD        = require( './src/xkcd.js' ),
     http        = require( 'http' ),
     https       = require( 'https' ),
     irc         = require( 'irc' ),
@@ -162,6 +163,8 @@ function init()
     beats       = new Beats( _bot, apiGet, userData, userConfig, nouns );
 
     _4sq        = new _4SQ( _bot, apiGet, userData, userConfig, doge );
+
+    xkcd        = new XKCD( _bot, apiGet, userData, userConfig, doge );
 }
 
 
@@ -234,6 +237,11 @@ function listenToMessages( from, to, text )
             if ( botText === '' )
             {
                 botText = _4sq.responses( from, to, text, botText );
+            }
+
+            if ( botText === '' )
+            {
+                botText = xkcd.responses( from, to, text, botText );
             }
 
             if ( botText === '' )
