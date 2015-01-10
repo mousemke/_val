@@ -85,8 +85,19 @@ var userConfig = {
     helpTextSecondary       : helpTextSecondary,
     helpTextUnscramble      : helpTextUnscramble,
 
-    enablePM                : true
+    enablePM                : true,
+
+    twitchMode              : false
 };
 
+if ( userConfig.twitchMode )
+{
+    userConfig.autoAuth             = true,
+    userConfig.enableHelp           = false,
+    userConfig.enableWords          = false,
+    userConfig.enableFoursquare     = false,
+    userConfig.enablePM             = false
+}
 
 module.exports = userConfig;
+
