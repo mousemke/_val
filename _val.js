@@ -266,14 +266,14 @@ function listenToMessages( from, to, text )
                     case 'help':
                         if ( userConfig.enableHelp )
                         {
-                            botText = userConfig.helpText;
+                            botText = userConfig.helpText();
                             if ( text.split( ' ' )[1] === '-v' )
                             {
-                                botText += userConfig.helpTextSecondary;
+                                botText += userConfig.helpTextSecondary();
                             }
                             else if ( text.split( ' ' )[1] === 'unscramble' )
                             {
-                                botText += userConfig.helpTextUnscramble;
+                                botText += userConfig.helpTextUnscramble();
                             }
                             _bot.say ( to, botText );
                             botText = '';
@@ -319,10 +319,10 @@ function listenToPm( from, text )
     }
     else if ( textSplit[ 0 ] === 'help' )
     {
-        botText = userConfig.helpText;
+        botText = userConfig.helpText();
         if ( textSplit[ 1 ] === '-v' )
         {
-            botText += userConfig.helpTextSecondary;
+            botText += userConfig.helpTextSecondary();
         }
         _bot.say ( from, botText );
         botText = '';
