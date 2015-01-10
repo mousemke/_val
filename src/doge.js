@@ -8,17 +8,18 @@ var http            = require( 'http' ),
 module.exports = function Doge( _bot, apiGet, userData, userConfig )
 {
     return {
+
         /**
-        * Balance
-        *
-        * returns a users balance
-        *
-        * @param  {str}                    from                originating channel
-        * @param  {str}                    to                  user
-        * @param  {str}                    text                full message text
-        *
-        * @return {void}
-        */
+         * Balance
+         *
+         * returns a users balance
+         *
+         * @param  {str}            from                originating channel
+         * @param  {str}            to                  user
+         * @param  {str}            text                full message text
+         *
+         * @return {void}
+         */
         balance : function( from, to, text )
         {
             var _balanceCB = function( _to, success )
@@ -50,10 +51,10 @@ module.exports = function Doge( _bot, apiGet, userData, userConfig )
          *
          * returns a list of users that have posted within the defined amount of time
          *
-         * @param  {str}                    from                originating channel
-         * @param  {str}                    to                  originating user
-         * @param  {str}                    text                full message text
-         * @param  {bool}                   talk                true to say, otherwise
+         * @param  {str}            from                originating channel
+         * @param  {str}            to                  originating user
+         * @param  {str}            text                full message text
+         * @param  {bool}           talk                true to say, otherwise
          *                                                      active only returns
          *
          * @return {arr}                                        active users
@@ -129,7 +130,7 @@ module.exports = function Doge( _bot, apiGet, userData, userConfig )
             // userData( from, to, _depositCB );
             //
 
-            _bot.say( to, 'deposit and withdraw are in between APIs at the moment.  Ask _mouse_ for more info' );
+            _bot.say( to, 'deposit and withdraw are in between APIs at the moment.  Ask mouse for more info' );
         },
 
 
@@ -224,6 +225,13 @@ module.exports = function Doge( _bot, apiGet, userData, userConfig )
         },
 
 
+        /**
+         * Doge init
+         *
+         * sets the active listener and loads the dogecoin bank
+         *
+         * @return {void}
+         */
         init : function()
         {
             for ( var i = 0, lenI = userConfig.channels.length; i < lenI; i++ )
@@ -231,6 +239,7 @@ module.exports = function Doge( _bot, apiGet, userData, userConfig )
                 channel = userConfig.channels[ i ];
                 _bot.addListener( 'message' + channel, this.watchActive.bind( this, channel ) );
             }
+
             this.loadMasterList();
         },
 
@@ -267,6 +276,16 @@ module.exports = function Doge( _bot, apiGet, userData, userConfig )
         },
 
 
+        /**
+         * dogecoin module responses
+         *
+         * @param  {str}            from                originating channel
+         * @param  {str}            to                  originating user
+         * @param  {str}            text                full message text
+         * @param  {str}            botText             old botText
+         *
+         * @return {str}                                        new botText
+         */
         responses : function( from, to, text, botText )
         {
             var command = text.slice( 1 ).split( ' ' )[ 0 ];
@@ -306,13 +325,13 @@ module.exports = function Doge( _bot, apiGet, userData, userConfig )
         /**
          * SOAK!
          *
-         * takes a tip and splits it up between all active users
+         * takes a tip and splits it up between all active users after nickserv authentication
          *
-         * @param  {[type]} from [description]
-         * @param  {[type]} to   [description]
-         * @param  {[type]} text [description]
+         * @param  {str}            from                originating channel
+         * @param  {str}            to                  originating user
+         * @param  {str}            text                full message text
          *
-         * @return {[type]}      [description]
+         * @return {void}
          */
         soak : function( from, to, text )
         {
@@ -416,6 +435,17 @@ module.exports = function Doge( _bot, apiGet, userData, userConfig )
         },
 
 
+        /**
+         * tip
+         *
+         * moves a specified amount from one user to another after nickserv authentication
+         *
+         * @param  {str}            from                originating channel
+         * @param  {str}            to                  originating user
+         * @param  {str}            text                full message text
+         *
+         * @return {void}
+         */
         tip : function( from, to, text )
         {
             var scope = this;
@@ -496,6 +526,16 @@ module.exports = function Doge( _bot, apiGet, userData, userConfig )
         },
 
 
+        /**
+         * watch active
+         *
+         * sets the latest active time for a user in a channel
+         *
+         * @param  {str}            from                originating channel
+         * @param  {str}            to                  originating user
+         *
+         * @return {void}
+         */
         watchActive : function( from, to )
         {
             if ( !active[ from ] )
@@ -543,10 +583,17 @@ module.exports = function Doge( _bot, apiGet, userData, userConfig )
 
             // userData( fro from,m, to, _withdrawCB );
 
-            _bot.say( to, 'deposit and withdraw are in between APIs at the moment.  Ask _mouse_ for more info' );
+            _bot.say( to, 'deposit and withdraw are in between APIs at the moment.  Ask mouse for more info' );
         },
 
 
+        /**
+         * write Master List
+         *
+         * saves the json to the master bank list
+         *
+         * @return {void}
+         */
         writeMasterList : function()
         {
             var jsonMasterList = JSON.stringify( dcMasterList );

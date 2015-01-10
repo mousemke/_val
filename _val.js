@@ -1,31 +1,35 @@
 
 
-// Create the configuration
+// Loads the configuration and sets variables
 var channel, _bot, doge, words,
     userConfig  = require( './config/_val.config.js' ),
     channels    = userConfig.channels,
-    Doge        = require( './src/doge.js' ),
-    PlainText   = require( './src/plainText.js' ),
-    Beats       = require( './src/beats.js' ),
-    XKCD        = require( './src/xkcd.js' ),
+
+    /**
+     * load node modules
+     */
     http        = require( 'http' ),
     https       = require( 'https' ),
     irc         = require( 'irc' ),
     fs          = require( 'fs' ),
+
+    /**
+     * load _val modules
+     */
+    Doge        = require( './src/doge.js' ),
+    PlainText   = require( './src/plainText.js' ),
+    Beats       = require( './src/beats.js' ),
+    XKCD        = require( './src/xkcd.js' ),
+    _4SQ        = ( userConfig.enableFourquare ) ? require( './src/_4sq.js' )   : null,
+    Words       = ( userConfig.enableWords ) ? require( './src/words.js' )      : null,
+    Anagramm    = ( userConfig.enableWords ) ? require( './src/anagramm.js' )   : null,
+
+    /**
+     * Lists
+     */
     nouns       = require( './lists/nouns.js' ),
-    coffees     = require( './lists/coffee.js' ),
+    coffees     = require( './lists/coffee.js' ), // unimplemented
     cars        = require( './lists/cars.js' );
-
-if ( userConfig.enableFourquare )
-{
-    var _4SQ        = require( './src/_4sq.js' );
-}
-
-if ( userConfig.enableWords )
-{
-    var Words       = require( './src/words.js' );
-    var Anagramm    = require( './src/anagramm.js' );
-}
 
 
 /**
@@ -35,6 +39,8 @@ if ( userConfig.enableWords )
  *
  * @param  {str}                    _url                target url
  * @param  {func}                   _cb                 callback
+ * @param  {bool}                   secure              https?
+ *
  * @return {void}
  */
 function apiGet( _url, _cb, secure )
@@ -90,6 +96,7 @@ function apiGet( _url, _cb, secure )
  *
  * @param  {str}                    from                originating channel
  * @param  {str}                    to                  originating user
+ * @param  {str}                    text                message text
  *
  * @return {void}
  */
@@ -184,11 +191,11 @@ function init()
  *
  * .... what do you think?
  *
+ * @param  {str}            from                originating channel
+ * @param  {str}            to                  user
+ * @param  {str}            text                full message text
  *
- * @param  {[type]} from [description]
- * @param  {[type]} to   [description]
- * @param  {[type]} text [description]
- * @return {[type]}      [description]
+ * @return {void}
  */
 function listenToMessages( from, to, text )
 {
@@ -261,7 +268,10 @@ function listenToMessages( from, to, text )
                         dodge( from, to, text );
                         break;
                     case 'pool':
-                        pool( from, to, text );
+                        if ( userConfig.enablePool )
+                        {
+                            pool( from, to, text );
+                        }
                         break;
                     case 'help':
                         if ( userConfig.enableHelp )
@@ -300,6 +310,16 @@ function listenToMessages( from, to, text )
 }
 
 
+/**
+ * listen to messages
+ *
+ * .... what do you think?
+ *
+ * @param  {str}            from                originating user
+ * @param  {str}            text                full message text
+ *
+ * @return {void}
+ */
 function listenToPm( from, text )
 {
     console.log( '<' + from + '> :' + text );
@@ -354,9 +374,20 @@ function listenToPm( from, text )
 }
 
 
+/**
+ * pool leaderboard
+ *
+ * grabs the current statistics from the pool leaderboard
+ *
+ * @param  {str}            from                originating channel
+ * @param  {str}            to                  user
+ * @param  {str}            text                full message text
+ *
+ * @return {void}
+ */
 function pool( from, to, text )
 {
-    var botText, url = 'http://192.168.2.15:8001/api/players',
+    var botText, url = ( userConfig.poolApiUrl ) + 'players',
         textSplit   = text.split( ' ' ),
         wordOrNum   = parseInt( textSplit[ 1 ], 10 ),
         count;
@@ -425,6 +456,18 @@ function pool( from, to, text )
 }
 
 
+/**
+ * userdata
+ *
+ * gets userdata from the nickserv authentication bot
+ *
+ * @param  {str}            to                  user
+ * @param  {str}            from                originating channel
+ * @param  {func}           _cb                 callback
+ * @param  {str}            origText            original message text
+ *
+ * @return {void}
+ */
 function userData( to, from, _cb, origText )
 {
     if ( userConfig.autoAuth )
@@ -441,11 +484,11 @@ function userData( to, from, _cb, origText )
 
             var textSplit = text.split( ' ' );
 
-            if ( textSplit[ 0 ] === userConfig.api && textSplit[ 1 ] === 'identified' && textSplit[ 2 ] === to )
+            if ( textSplit[ 0 ] === userConfig.NickservAPI && textSplit[ 1 ] === 'identified' && textSplit[ 2 ] === to )
             {
                 _cb( to, textSplit[ 3 ], textSplit, origText );
             }
-            else if ( textSplit[ 0 ] === userConfig.api && textSplit[ 1 ] === 'notRegistered' && textSplit[ 2 ] === to )
+            else if ( textSplit[ 0 ] === userConfig.NickservAPI && textSplit[ 1 ] === 'notRegistered' && textSplit[ 2 ] === to )
             {
                 _bot.say( to, 'You are not a registered user. (/msg NickServ help)' );
             }
@@ -457,7 +500,7 @@ function userData( to, from, _cb, origText )
 
         _bot.addListener( 'pm', response );
 
-        _bot.say( userConfig.nickservBot, userConfig.api + ' identified ' + to );
+        _bot.say( userConfig.nickservBot, userConfig.NickservAPI + ' identified ' + to );
     }
 }
 

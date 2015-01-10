@@ -6,6 +6,10 @@ var http            = require( 'http' ),
     spaceRegex      = /(?:sp([a]+)ce)/,
     nicoFlipped     = false;
 
+
+/**
+ * this is entirely filled with nonsense.  thats all the docs this needs.
+ */
 module.exports = function PlainText( _bot, apiGet, userData, userConfig, nouns )
 {
     return function( from, to, text, botText )
@@ -207,7 +211,10 @@ module.exports = function PlainText( _bot, apiGet, userData, userConfig, nouns )
                     botText = 'I AM BOT\nINSERT DOGE';
                     break;
                 case 'disappearinacloudofsmoke':
-                    setTimeout( function(){ _bot.say( from, 'I mean...  why would you just assume you can have any new ability you want....' ) }, 5500 );
+                    setTimeout( function()
+                        { 
+                            _bot.say( from, 'I mean...  why would you just assume you can have any new ability you want....' ); 
+                        }, 5500 );
                     botText = 'no...  you don\'t have that ability.  stupid.';
                     break;
                 case 'google':
@@ -274,7 +281,8 @@ module.exports = function PlainText( _bot, apiGet, userData, userConfig, nouns )
             }
         }
 
-        if ( nicoFlipped === true && to === 'nico' && command !== 'flipnico' && command !== 'putthenicoback' && command !== 'isnicoflipped' )
+        if ( nicoFlipped === true && to === 'nico' && command !== 'flipnico' && 
+                command !== 'putthenicoback' && command !== 'isnicoflipped' )
         {
             botText = 'I\'m sorry, nico... I can\'t hear you while you\'re flipped';
         }

@@ -22,7 +22,7 @@ module.exports  = function Worte( _bot, apiGet, userData, userConfig, doge )
             var definition;
 
             word = word.toLowerCase();
-            var url = 'http://api.wordnik.com:80/v4/word.json/' + word + '/definitions?includeRelated=true&useCanonical=true&includeTags=false&api_key=' + userConfig.wordnikAPIKey;
+            var url = ( userConfig.wordnikBaseUrl ) + 'word.json/' + word + '/definitions?includeRelated=true&useCanonical=true&includeTags=false&api_key=' + userConfig.wordnikAPIKey;
 
             apiGet( url, function( result )
             {
@@ -273,7 +273,7 @@ module.exports  = function Worte( _bot, apiGet, userData, userConfig, doge )
 
             text = encodeURIComponent( text );
 
-            var url = 'http://mymemory.translated.net/api/get?q=' + text + '&langpair=' + langFrom + '|' + langTo;
+            var url = ( userConfig.translationBaseUrl ) + 'get?q=' + text + '&langpair=' + langFrom + '|' + langTo;
 
             apiGet( url, function( response )
             {
@@ -408,7 +408,7 @@ module.exports  = function Worte( _bot, apiGet, userData, userConfig, doge )
                                     'excludePartOfSpeech=idiom&' +
                                     'excludePartOfSpeech=phrasal-prefix&';
 
-                var url = 'http://api.wordnik.com:80/v4/words.json/randomWord?hasDictionaryDef=true&' + excludeList + 'minCorpusCount=0&maxCorpusCount=-1&minDictionaryCount=3&maxDictionaryCount=-1&minLength=' + minLength + '&maxLength=' + maxLength + '&api_key=' + userConfig.wordnikAPIKey;
+                var url = ( userConfig.wordnikBaseUrl ) + 'words.json/randomWord?hasDictionaryDef=true&' + excludeList + 'minCorpusCount=0&maxCorpusCount=-1&minDictionaryCount=3&maxDictionaryCount=-1&minLength=' + minLength + '&maxLength=' + maxLength + '&api_key=' + userConfig.wordnikAPIKey;
                 apiGet( url, function( result )
                 {
                     if ( result.word[0] !== result.word[0].toLowerCase() ||
