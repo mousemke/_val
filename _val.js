@@ -4,10 +4,7 @@
 var channel, _bot, doge, words,
     userConfig  = require( './config/_val.config.js' ),
     channels    = userConfig.channels,
-    _4SQ        = require( './src/_4sq.js' ),
     Doge        = require( './src/doge.js' ),
-    Words       = require( './src/words.js' ),
-    Anagramm    = require( './src/anagramm.js' ),
     PlainText   = require( './src/plainText.js' ),
     Beats       = require( './src/beats.js' ),
     XKCD        = require( './src/xkcd.js' ),
@@ -19,7 +16,16 @@ var channel, _bot, doge, words,
     coffees     = require( './lists/coffee.js' ),
     cars        = require( './lists/cars.js' );
 
+if ( userConfig.enableFourquare )
+{
+    var _4SQ        = require( './src/_4sq.js' );
+}
 
+if ( userConfig.enableWords )
+{
+    var Words       = require( './src/words.js' );
+    var Anagramm    = require( './src/anagramm.js' );
+}
 
 
 /**
@@ -133,7 +139,6 @@ function init()
         showErrors  : false,
         autoRejoin  : true,
         autoConnect : true
-        // debug       : true
     });
 
     _bot.addListener( 'error', function( message )
@@ -152,17 +157,23 @@ function init()
     doge        = new Doge( _bot, apiGet, userData, userConfig );
     doge.init();
 
-    words       = new Words( _bot, apiGet, userData, userConfig, doge );
-    words.init();
+    if ( userConfig.enableWords )
+    {
+        words       = new Words( _bot, apiGet, userData, userConfig, doge );
+        words.init();
 
-    anagramm    = new Anagramm( _bot, apiGet, userData, userConfig, doge );
-    anagramm.init();
+        anagramm    = new Anagramm( _bot, apiGet, userData, userConfig, doge );
+        anagramm.init();
+    }
 
     plainText   = new PlainText( _bot, apiGet, userData, userConfig, nouns );
 
     beats       = new Beats( _bot, apiGet, userData, userConfig, nouns );
 
-    _4sq        = new _4SQ( _bot, apiGet, userData, userConfig, doge );
+    if ( userConfig.enableFourquare )
+    {
+        _4sq        = new _4SQ( _bot, apiGet, userData, userConfig, doge );
+    }
 
     xkcd        = new XKCD( _bot, apiGet, userData, userConfig, doge );
 }
@@ -183,15 +194,11 @@ function listenToMessages( from, to, text )
 {
     if ( text.toLowerCase().indexOf( 'troll' ) !== -1 )
     {
-        text = '.trollfetti';
+        text = userConfig.trigger + 'trollfetti';
     }
     else if ( text.toLowerCase().indexOf( 'trøll' ) !== -1 )
     {
-        text = '.trøllfetti';
-    }
-    else if ( text.toLowerCase().indexOf( 'fight' ) !== -1 )
-    {
-        text = '.fight';
+        text = userConfig.trigger + 'trøllfetti';
     }
 
     if ( userConfig.bots.indexOf( to ) === -1 )
@@ -206,7 +213,7 @@ function listenToMessages( from, to, text )
         {
             _bot.say( from, 'yes.  most definitely' );
         }
-        else if ( text === '.moon?' )
+        else if ( text === userConfig.trigger + 'moon?' )
         {
             _bot.say( from, 'Moon Knight is a fictional character, a superhero who appears in comic books published by Marvel Comics. The character exists in the Marvel Universe and was created by Doug Moench and Don Perlin. He first appeared in Werewolf by Night #32.' );
         }
@@ -219,12 +226,12 @@ function listenToMessages( from, to, text )
                 botText = doge.responses( from, to, text, botText );
             }
 
-            if ( botText === '' )
+            if ( botText === '' && userConfig.enableWords )
             {
                 botText = words.responses( from, to, text, botText );
             }
 
-            if ( botText === '' )
+            if ( botText === '' && userConfig.enableWords )
             {
                 botText = anagramm.responses( from, to, text, botText );
             }
@@ -234,7 +241,7 @@ function listenToMessages( from, to, text )
                 botText = beats( from, to, text, botText );
             }
 
-            if ( botText === '' )
+            if ( botText === '' && userConfig.enableFourquare )
             {
                 botText = _4sq.responses( from, to, text, botText );
             }
@@ -257,17 +264,20 @@ function listenToMessages( from, to, text )
                         pool( from, to, text );
                         break;
                     case 'help':
-                        botText = userConfig.helpText;
-                        if ( text.split( ' ' )[1] === '-v' )
+                        if ( userConfig.enableHelp )
                         {
-                            botText += userConfig.helpTextSecondary;
+                            botText = userConfig.helpText;
+                            if ( text.split( ' ' )[1] === '-v' )
+                            {
+                                botText += userConfig.helpTextSecondary;
+                            }
+                            else if ( text.split( ' ' )[1] === 'unscramble' )
+                            {
+                                botText += userConfig.helpTextUnscramble;
+                            }
+                            _bot.say ( to, botText );
+                            botText = '';
                         }
-                        else if ( text.split( ' ' )[1] === 'unscramble' )
-                        {
-                            botText += userConfig.helpTextUnscramble;
-                        }
-                        _bot.say ( to, botText );
-                        botText = '';
                         break;
                     default:
                         botText = '';
@@ -415,31 +425,40 @@ function pool( from, to, text )
 }
 
 
-function userData( to, from,  _cb, origText )
+function userData( to, from, _cb, origText )
 {
-    var response = function( from, text )
+    if ( userConfig.autoAuth )
     {
-        _bot.removeListener( 'pm', response );
+        var textSplit = origText.slice( 1 ).split( ' ' );
 
-        textSplit = text.split( ' ' );
-
-        if ( textSplit[ 0 ] === userConfig.api && textSplit[ 1 ] === 'identified' && textSplit[ 2 ] === to )
+        _cb( to, 'true', textSplit, origText );
+    }
+    else
+    {
+        var response = function( from, text )
         {
-            _cb( to, textSplit[ 3 ], textSplit, origText );
-        }
-        else if ( textSplit[ 0 ] === userConfig.api && textSplit[ 1 ] === 'notRegistered' && textSplit[ 2 ] === to )
-        {
-            _bot.say( to, 'You are not a registered user. (/msg NickServ help)' );
-        }
-        else
-        {
-            _bot.say( from, to + 'that\'s not an identified user' );
-        }
-    };
+            _bot.removeListener( 'pm', response );
 
-    _bot.addListener( 'pm', response );
+            var textSplit = text.split( ' ' );
 
-    _bot.say( userConfig.nickservBot, userConfig.api + ' identified ' + to );
+            if ( textSplit[ 0 ] === userConfig.api && textSplit[ 1 ] === 'identified' && textSplit[ 2 ] === to )
+            {
+                _cb( to, textSplit[ 3 ], textSplit, origText );
+            }
+            else if ( textSplit[ 0 ] === userConfig.api && textSplit[ 1 ] === 'notRegistered' && textSplit[ 2 ] === to )
+            {
+                _bot.say( to, 'You are not a registered user. (/msg NickServ help)' );
+            }
+            else
+            {
+                _bot.say( from, to + 'that\'s not an identified user' );
+            }
+        };
+
+        _bot.addListener( 'pm', response );
+
+        _bot.say( userConfig.nickservBot, userConfig.api + ' identified ' + to );
+    }
 }
 
 

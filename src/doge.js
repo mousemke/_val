@@ -21,24 +21,27 @@ module.exports = function Doge( _bot, apiGet, userData, userConfig )
         */
         balance : function( from, to, text )
         {
-          var _balanceCB = function( _to, _whois )
-          {
-              var amount      = dcMasterList[ _to ];
-              amount          = ( amount ) ? amount : 0;
+            var _balanceCB = function( _to, success )
+            {
+                if ( success )
+                    {
+                        var amount      = dcMasterList[ _to ];
+                    amount          = ( amount ) ? amount : 0;
 
-              var botText     = '';
+                    var botText     = '';
 
-              if ( from !== _to )
-              {
-                  botText += _to + ', ';
-              }
+                    if ( from !== _to )
+                    {
+                      botText += _to + ', ';
+                    }
 
-              botText += 'you currently have Ð' + amount;
+                    botText += 'you currently have Ð' + amount;
 
-              _bot.say( from, botText );
-          };
+                    _bot.say( from, botText );
+                } 
+            };
 
-          userData( to, from, _balanceCB );
+            userData( to, from, _balanceCB );
         },
 
 
@@ -322,7 +325,7 @@ module.exports = function Doge( _bot, apiGet, userData, userConfig )
             var soakRemainder   = soakTotal - ( soakAmount * users );
 
 
-            var _soakCB = function( _to, _whois, textSplit, origText )
+            var _soakCB = function( _to, success, textSplit, origText )
             {
                 if ( dcMasterList[ to ] < soakTotal )
                 {
@@ -344,7 +347,7 @@ module.exports = function Doge( _bot, apiGet, userData, userConfig )
                     }
                     else
                     {
-                        if ( textSplit[ 3 ] === 'true' )
+                        if ( success === 'true' )
                         {
                             if ( users !== 1 )
                             {
@@ -394,10 +397,15 @@ module.exports = function Doge( _bot, apiGet, userData, userConfig )
                             }
                             scope.writeMasterList();
                         }
-                    else
-                    {
-                        botText = 'you must be identified to access your Doge (/msg ' + ( userConfig.nickservBot ) + ' help)';
-                    }
+                        else
+                        {
+                            _botText = 'you must be identified to access your Doge';
+
+                            if ( userConfig.enablePM )
+                            {
+                                _botText += ' (/msg ' + ( userConfig.nickservBot ) + ' help)';
+                            }
+                        }
 
                     _bot.say( from, botText );
                     }
@@ -412,7 +420,7 @@ module.exports = function Doge( _bot, apiGet, userData, userConfig )
         {
             var scope = this;
 
-            var _tipCB = function( _to, _whois, textSplit, origText )
+            var _tipCB = function( _to, success, textSplit, origText )
             {
                 var origTextSplit = origText.split( ' ' );
 
@@ -442,22 +450,45 @@ module.exports = function Doge( _bot, apiGet, userData, userConfig )
                 }
                 else
                 {
-                    if ( textSplit[ 3 ] === 'true' )
+                    var _botText;
+
+                    if ( success === 'true' )
                     {
                         amount = parseInt( amount );
 
-                        dcMasterList[ to ]  = dcMasterList[ to ]  - amount;
-                        dcMasterList[ reciever ] = ( dcMasterList[ reciever ] ) ? dcMasterList[ reciever ] + amount : amount;
+                        dcMasterList[ to.toLowerCase() ]  = dcMasterList[ to.toLowerCase() ]  - amount;
+
+                        if ( reciever !== userConfig.botName )
+                        {
+                            dcMasterList[ reciever.toLowerCase() ] = ( dcMasterList[ reciever.toLowerCase() ] ) ? dcMasterList[ reciever.toLowerCase() ] + amount : amount;
+                            _bot.say( reciever,   'Such ' + to + ' tipped you Ð' + amount + ' (to claim /msg ' + ( userConfig.botName ) + ' help)' );
+                        }
 
                         scope.writeMasterList();
 
-                        _bot.say( from, 'WOW! ' + to + ' tipped ' + reciever + ' such Ð' + amount + ' (to claim /msg ' + ( userConfig.botName ) + ' help)' );
-                        _bot.say( reciever,   'Such ' + to + ' tipped you Ð' + amount + ' (to claim /msg ' + ( userConfig.botName ) + ' help)' );
+                        _botText = 'WOW! ' + to + ' tipped ' + reciever + ' such Ð' + amount;
+
+                        if ( userConfig.enablePM )
+                        {
+                            _botText += ' (to claim /msg ' + ( userConfig.botName ) + ' help)';
+                        }
+
+                        if ( reciever === userConfig.botName )
+                        {
+                            setTimeout( function(){ _bot.say( from, 'Thanks!' ); }, 5000 );
+                        }
                     }
                     else
                     {
-                        _bot.say( from, 'you must be identified to access your Doge (/msg ' + ( userConfig.nickservBot ) + ' help)' );
+                        _botText = 'you must be identified to access your Doge';
+
+                        if ( userConfig.enablePM )
+                        {
+                            _botText += ' (/msg ' + ( userConfig.nickservBot ) + ' help)';
+                        }
                     }
+
+                    _bot.say( from, _botText );
                 }
             };
 

@@ -1,30 +1,4 @@
-userConfig = {
-    bots                    : [ 'bot1', 'bot2', 'bot3' ],
-    admins                  : [ 'user' ],
-    channels                : [ '#channel-bots', '#channel1', '#channel2', '#channel3', '#channel4', '#channel5', '#channel6' ],
-    server                  : '192.168.1.1',
-    serverPassword          : 'just.another.irc.server.password.i.suppose',
-    botName                 : 'justAnotherBot',
-    trigger                 : 'ß',
-    api                     : 'Help, I\'m trapped in an api factory',
-    dcAddress               : 'DDIHaveNoIdeaWhatImDoing',
-    activeTime              : 600000,
-    fettiWordLength         : 15,
-    fettiLength             : 25,
-    fettiOptions            : [ '. ', '´ ', '\' ', ' ,' ],
-    nickservBot             : 'NickServ',
-    newWordVoteNeeded       : 0.6,
-    unscramblePointTimeout  : 86400000, // 24 hours
-    unscramble              : '#unscramble',
-    anagramm                : '#anagramm',
-    foursquareID            : '4sq ID - go get one',
-    foursquareSecret        : '4sq secret - go get one',
-    latLong                 : '-88.987,-88.567',
-    wordnikAPIKey           : 'wordnik - it works bitches'
-};
-
-
-userConfig.helpText    = 'Hi!  My name is ' + ( userConfig.botName ) + ', and I\'ll be your IRC bot for the evening.\n' +
+var helpText = 'Hi!  My name is ' + ( userConfig.botName ) + ', and I\'ll be your IRC bot for the evening.\n' +
             'Valid commands are:     \n' +
             ( userConfig.trigger ) + 'help\n' +
             ( userConfig.trigger ) + 'doge (<amount>)\n' +
@@ -41,7 +15,8 @@ userConfig.helpText    = 'Hi!  My name is ' + ( userConfig.botName ) + ', and I\
             '* market, doge, balance, withdraw, & deposit are also available as a pm\n' +
             'for more help, try ".help -v" or ".help unscramble"';
 
-userConfig.helpTextSecondary =  '\n' +
+
+var helpTextSecondary =  '\n' +
             ( userConfig.trigger ) + 'konami\n' +
             ( userConfig.trigger ) + 'rain\n' +
             ( userConfig.trigger ) + 'dance\n' +
@@ -68,13 +43,50 @@ userConfig.helpTextSecondary =  '\n' +
             ( userConfig.trigger ) + 'ping';
 
 
-userConfig.helpTextUnscramble =  '\n' +
+var helpTextUnscramble =  '\n' +
             ( userConfig.trigger ) + 'word\n' +
             ( userConfig.trigger ) + 'newWord\n' +
             ( userConfig.trigger ) + 'define';
 
 
 
+var userConfig = {
+    bots                    : [ 'bot1', 'bot2', 'bot3' ],
+    admins                  : [ 'user' ],
+    channels                : [ '#channel-bots', '#channel1', '#channel2', '#channel3', '#channel4', '#channel5', '#channel6' ],
+    server                  : '192.168.1.1',
+    serverPassword          : 'just.another.irc.server.password.i.suppose',
+    botName                 : 'justAnotherBot',
+    trigger                 : 'ß',
+    api                     : 'Help, I\'m trapped in an api factory',
+    dcAddress               : 'DDIHaveNoIdeaWhatImDoing',
+    activeTime              : 600000,
+    fettiWordLength         : 15,
+    fettiLength             : 25,
+    fettiOptions            : [ '. ', '´ ', '\' ', ' ,' ],
+
+    autoAuth                : false,
+    nickservBot             : 'NickServ',
+
+    enableWords             : true,
+    newWordVoteNeeded       : 0.6,
+    unscramblePointTimeout  : 86400000, // 24 hours
+    unscramble              : '#unscramble',
+    anagramm                : '#anagramm',
+    wordnikAPIKey           : 'wordnik - it works bitches',
+
+    enableFoursquare        : true,
+    foursquareID            : '4sq ID - go get one',
+    foursquareSecret        : '4sq secret - go get one',
+    latLong                 : '-88.987,-88.567',
+
+    enableHelp              : true,
+    helpText                : helpText,
+    helpTextSecondary       : helpTextSecondary,
+    helpTextUnscramble      : helpTextUnscramble,
+
+    enablePM                : true
+};
 
 
 module.exports = userConfig;
