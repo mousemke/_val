@@ -1,4 +1,36 @@
 
+var getMoment = function()
+{
+    var date = new Date();
+    var hours = date.getHours();
+
+    if ( 8 < hours )
+    {
+        if ( hours < 12 )
+        {
+            return 'morning';
+        }
+        if ( hours < 17 )
+        {
+            return 'day';
+        }
+        if ( hours < 22 )
+        {
+            return 'evening';
+        }
+    }
+
+    return 'night';
+};
+
+
+var helpText = function()
+{
+    return 'Moin Moin!  My name is ' + ( userConfig.botName ) + ', and I\'ll be your IRC bot for the' + getMoment() + '. ' +
+            'Valid commands are listed here: ' + ( userConfig.helpUrl );
+};
+
+
 var userConfig = {
 
     /**
@@ -28,7 +60,7 @@ var userConfig = {
      * timout for a user to be considered active
      **/
     activeTime              : 600000,
-    
+
     /**
      * anything ending in 'fetti'
      */
@@ -37,12 +69,12 @@ var userConfig = {
     fettiOptions            : [ '. ', '´ ', '\' ', ' ,' ],
 
     /**
-     * connection to nickserv bot.  in twitch, users are already identified, 
+     * connection to nickserv bot.  in twitch, users are already identified,
      * so there in no need for NickServ
      */
     autoAuth                : false,
     nickservBot             : 'NickServ',
-    NickservAPI             : 'Help, I\'m trapped in an api factory',
+    nickservAPI             : 'Help, I\'m trapped in an api factory',
 
     /**
      * uses the wordnik api for words and mymemory for translations
@@ -62,7 +94,7 @@ var userConfig = {
      * https://github.com/nicolasbrugneaux/leaderboard
      */
     enablePool              : true,
-    userConfig.poolApiUrl   : 'http://192.168.2.15:8001/api/',
+    poolApiUrl              : 'http://192.168.2.15:8001/api/',
 
     /**
      * go get yo' self a foursquare api key
@@ -75,7 +107,7 @@ var userConfig = {
     latLong                 : '-88.987,-88.567',
 
     /**
-     * some services (**cough* twitch**) dont support private messages or 
+     * some services (**cough* twitch**) dont support private messages or
      * multiline messages.
      */
     enableHelp              : true,
@@ -90,48 +122,17 @@ var userConfig = {
     /**
      * special modes that configure for services
      */
-    twitchMode              : false,
+    twitchMode              : false
 };
 
 
 if ( userConfig.twitchMode )
 {
-    userConfig.autoAuth             = true,
-    userConfig.enableWords          = false,
-    userConfig.enableFoursquare     = false,
-    userConfig.enablePM             = false
+    userConfig.autoAuth             = true;
+    userConfig.enableWords          = false;
+    userConfig.enableFoursquare     = false;
+    userConfig.enablePM             = false;
 }
-
-var getMoment = function()
-{
-    var date = new Date;
-    var hours = date.getHours();
-
-    if ( 8 < hours )
-    {
-        if ( hours < 12 )
-        {
-            return 'morning';
-        }
-        if ( hours < 17 )
-        {
-            return 'day';
-        }
-        if ( hours < 22 )
-        {
-            return 'evening';
-        }
-    }
-
-    return 'night';
-};
-
-
-var helpText = function()
-{
-    return 'Moin Moin!  My name is ' + ( userConfig.botName ) + ', and I\'ll be your IRC bot for the' + getMoment() + '.\n' +
-            'Valid commands are listed here: ' + ( userConfig.helpUrl );
-};
 
 
 module.exports = userConfig;

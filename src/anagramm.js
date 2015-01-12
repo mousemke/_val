@@ -16,6 +16,80 @@ module.exports  = function Worte( _bot, apiGet, userData, userConfig, doge )
 {
     return {
 
+        anagramm : function( from, to, text )
+        {
+            this.readScores();
+
+            var points = [];
+            var playerPoints;
+            var botText;
+            var playerRequest = text.split( ' ' )[1];
+
+            for ( var player in wordScores )
+            {
+                if ( player === playerRequest )
+                {
+                    playerPoints = wordScores[player].length;
+                }
+
+                var _obj = {
+                    name    : player,
+                    points  : wordScores[player].length
+                };
+
+                points.push( _obj );
+            }
+
+            points.sort( function( a, b )
+            {
+                return b.points - a.points;
+            } );
+
+            if ( playerRequest )
+            {
+                if ( playerPoints )
+                {
+                    if ( to === playerRequest )
+                    {
+                        botText =  'Hallo ' + to + '! Du hast ' + playerPoints + ' Punkte';
+                    }
+                    else
+                    {
+                        botText =  'Moin ' + to + '! ' + playerRequest + ' hat ' + playerPoints + ' Punkte';
+                    }
+
+                    if ( playerPoints !== 1 )
+                    {
+                        botText += 's';
+                    }
+                }
+                else
+                {
+                    botText =  'Hmm... ' + to + '... Ich glaube nicht, dass ' + playerRequest + ' ist eine reale Person';
+                }
+            }
+            else
+            {
+                botText = 'Anagramm Punktzahl - \n';
+                for ( var i = 0, lenI = points.length; i < lenI; i++ )
+                {
+                    botText += ( i + 1 ) + ': ' + points[ i ].name + ' - ' + points[ i ].points + ' Punkt';
+
+                    if ( points[ i ].points !== 1 )
+                    {
+                        botText += 'e';
+                    }
+                    botText += '\n';
+
+                    if ( i >= 9 )
+                    {
+                        break;
+                    }
+                }
+            }
+             _bot.say( from, botText );
+        },
+
 
         define : function( from, word, current )
         {
@@ -62,7 +136,7 @@ module.exports  = function Worte( _bot, apiGet, userData, userConfig, doge )
         init : function()
         {
             this.readScores();
-            this.word();
+            this.wort();
         },
 
 
@@ -140,12 +214,12 @@ module.exports  = function Worte( _bot, apiGet, userData, userConfig, doge )
                 newWordVote     = [];
                 //doge tip per length?
                 _bot.removeListener( 'message' + userConfig.anagramm, wordListener );
-                this.word();
+                this.wort();
             }
         },
 
 
-        newWord : function( from, to )
+        neuesWort : function( from, to )
         {
             var active =  doge.checkActive( from, to, '', false );
 
@@ -177,7 +251,7 @@ module.exports  = function Worte( _bot, apiGet, userData, userConfig, doge )
                     scrambledWord   = '';
                     newWordVote     = [];
                     _bot.removeListener( 'message' + userConfig.anagramm, wordListener );
-                    this.word();
+                    this.wort();
                 }
             }
         },
@@ -210,7 +284,7 @@ module.exports  = function Worte( _bot, apiGet, userData, userConfig, doge )
 
         responses : function( from, to, text, botText )
         {
-            if ( text[0] === '.' )
+            if ( text[0] === userConfig.trigger )
             {
                 text = text.slice( 1 );
             }
@@ -222,10 +296,10 @@ module.exports  = function Worte( _bot, apiGet, userData, userConfig, doge )
                 switch ( command )
                 {
                     case 'wort':
-                        this.word( from, text, false );
+                        this.wort( from, text, false );
                         break;
                     case 'neuesWort':
-                        this.newWord( from, to );
+                        this.neuesWort( from, to );
                         break;
                 }
             }
@@ -233,7 +307,7 @@ module.exports  = function Worte( _bot, apiGet, userData, userConfig, doge )
             switch ( command )
             {
                 case 'anagramm':
-                    this.unscramble( from, to, text );
+                    this.anagramm( from, to, text );
                     break;
             }
 
@@ -307,81 +381,6 @@ module.exports  = function Worte( _bot, apiGet, userData, userConfig, doge )
         },
 
 
-        unscramble : function( from, to, text )
-        {
-            this.readScores();
-
-            var points = [];
-            var playerPoints;
-            var botText;
-            var playerRequest = text.split( ' ' )[1];
-
-            for ( var player in wordScores )
-            {
-                if ( player === playerRequest )
-                {
-                    playerPoints = wordScores[player].length;
-                }
-
-                var _obj = {
-                    name    : player,
-                    points  : wordScores[player].length
-                };
-
-                points.push( _obj );
-            }
-
-            points.sort( function( a, b )
-            {
-                return b.points - a.points;
-            } );
-
-            if ( playerRequest )
-            {
-                if ( playerPoints )
-                {
-                    if ( to === playerRequest )
-                    {
-                        botText =  'Hallo ' + to + '! Du hast ' + playerPoints + ' Punkte';
-                    }
-                    else
-                    {
-                        botText =  'Moin ' + to + '! ' + playerRequest + ' hat ' + playerPoints + ' Punkte';
-                    }
-
-                    if ( playerPoints !== 1 )
-                    {
-                        botText += 's';
-                    }
-                }
-                else
-                {
-                    botText =  'Hmm... ' + to + '... Ich glaube nicht, dass ' + playerRequest + ' ist eine reale Person';
-                }
-            }
-            else
-            {
-                botText = 'Anagramm Punktzahl - \n';
-                for ( var i = 0, lenI = points.length; i < lenI; i++ )
-                {
-                    botText += ( i + 1 ) + ': ' + points[ i ].name + ' - ' + points[ i ].points + ' Punkt';
-
-                    if ( points[ i ].points !== 1 )
-                    {
-                        botText += 'e';
-                    }
-                    botText += '\n';
-
-                    if ( i >= 9 )
-                    {
-                        break;
-                    }
-                }
-            }
-             _bot.say( from, botText );
-        },
-
-
         writeScores : function()
         {
             var wordScoresJson = JSON.stringify( wordScores );
@@ -393,7 +392,7 @@ module.exports  = function Worte( _bot, apiGet, userData, userConfig, doge )
         },
 
 
-        word : function()
+        wort : function()
         {
             if ( currentWord === '' )
             {
@@ -415,7 +414,7 @@ module.exports  = function Worte( _bot, apiGet, userData, userConfig, doge )
                             result.word.indexOf( '-' ) !== -1 ||
                             result.word.match( /^[a-zA-Z]+$/ ) === null )
                     {
-                        scope.word();
+                        scope.wort();
                     }
                     else
                     {
@@ -432,7 +431,7 @@ module.exports  = function Worte( _bot, apiGet, userData, userConfig, doge )
                             currentWord.toLowerCase() === englishWord )
                             {
                                 currentWord = '';
-                                scope.word();
+                                scope.wort();
                             }
                             else
                             {

@@ -212,7 +212,7 @@ module.exports  = function Words( _bot, apiGet, userData, userConfig, doge )
 
         responses : function( from, to, text, botText )
         {
-            if ( text[0] === '.' )
+            if ( text[0] === userConfig.trigger )
             {
                 text = text.slice( 1 );
             }
@@ -236,9 +236,7 @@ module.exports  = function Words( _bot, apiGet, userData, userConfig, doge )
             var complexTranslation = /[a-z]{2}\|[a-z]{2}/;
             if ( complexTranslation.test( command ) )
             {
-                console.log( command );
                 text = text.replace( command, '' ).trim();
-                console.log( text );
                 command = command.split( '|' );
                 this.translate( command[0], command[1], from, to, text );
             }
@@ -351,10 +349,9 @@ module.exports  = function Words( _bot, apiGet, userData, userConfig, doge )
 
         translate : function( langFrom, langTo, from, to, text )
         {
-
-            if ( text[0] === '.' )
+            if ( text[0] === userConfig.trigger )
             {
-                text = text.replace( '.' + langTo, '' ).trim();
+                text = text.replace( ( userConfig.trigger ) + langTo, '' ).trim();
             }
             else
             {

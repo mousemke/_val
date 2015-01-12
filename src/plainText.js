@@ -91,7 +91,7 @@ module.exports = function PlainText( _bot, apiGet, userData, userConfig, nouns )
                 botText += word[ option ];
             }
         }
-        else if ( moon && moon[1] )
+        else if ( moon && moon[1] && text !== '+moonflakes' )
         {
             botText = 'm';
             var moonLength = moon[1].length;
@@ -163,10 +163,10 @@ module.exports = function PlainText( _bot, apiGet, userData, userConfig, nouns )
                     break;
                 case 'cornflakes':
                 case 'snowflakes':
-                    botText = '❅ ❆ ❄ ❆ ❆ ❄ ❆ ❅ ❆ ❆ ❅ ❆ ❄ ❄ ❅ ❄ ❆ ❆ ❆ ❄ ❆ ❆ ❄ ❆ ❆ ❅ ❅ ❄ ❄ ❅ ❄ ❄ ❄ ❆ ❄ ❅ ❆ ❅ ❅ ❄';
+                    botText = '❅ ❆ ❆ ❆ ❆ ❅ ❆ ❆ ❅ ❆ ❅ ❆ ❆ ❆ ❆ ❆ ❆ ❆ ❅ ❅ ❅ ❆ ❅ ❆ ❅ ❅ ❆ ❅ ❆ ❅ ❆ ❆ ❆ ❆ ❆ ❆ ❆ ❆ ❆ ❆';
                     break;
                 case 'moonflakes':
-                    botText = '☽ ❅ ❅ ❄ ☾ ❆ ❅ ☽ ❆ ❆ ☾ ❅ ☽ ☾ ❄ ❅ ☾ ❄ ☽ ☽ ❆ ☽ ❄ ❄ ☾ ☾ ❆ ☾ ❅ ☾ ☾ ❅ ❄ ☾ ❄ ☾ ❅ ❄ ☾ ❆';
+                    botText = '☽ ❅ ❅ ❅ ☾ ❆ ❅ ☽ ❆ ❆ ☾ ❅ ☽ ☾ ❅ ❅ ☾ ❅ ☽ ☽ ❆ ☽ ❅ ❅ ☾ ☾ ❆ ☾ ❅ ☾ ☾ ❅ ❅ ☾ ❅ ☾ ❅ ❅ ☾ ❆';
                     break;
                 case 'whale':
                     botText = 'https://www.youtube.com/watch?v=xo2bVbDtiX8';
@@ -178,6 +178,7 @@ module.exports = function PlainText( _bot, apiGet, userData, userConfig, nouns )
                     botText = 'https://www.youtube.com/watch?v=W0-esOKooEE&index=28&list=RDHsKXvAymwUg';
                     break;
                 case 'flipnico':
+                case 'flipthenico':
                     botText     = '(╯°Д°）╯︵/(.□ . ) ᵇᵘᵗ ᴵ\'ᵐ ᶰᶦᶜᵒ﹗';
                     nicoFlipped = true;
                     _bot.say( 'nico, I\'m so sorry! ' + to + ' just flipped you like a little turtle. It\'s not my fault, I swear!! Now you\'re stuck on your back in ' + from + ' ' );
@@ -212,8 +213,8 @@ module.exports = function PlainText( _bot, apiGet, userData, userConfig, nouns )
                     break;
                 case 'disappearinacloudofsmoke':
                     setTimeout( function()
-                        { 
-                            _bot.say( from, 'I mean...  why would you just assume you can have any new ability you want....' ); 
+                        {
+                            _bot.say( from, 'I mean...  why would you just assume you can have any new ability you want....' );
                         }, 5500 );
                     botText = 'no...  you don\'t have that ability.  stupid.';
                     break;
@@ -242,6 +243,9 @@ module.exports = function PlainText( _bot, apiGet, userData, userConfig, nouns )
                     break;
                 case 'witchhunt':
                     botText = 'http://i.imgur.com/x63cdJW.jpg';
+                    break;
+                case 'whichhunt':
+                    botText = 'whichever';
                     break;
                 case 'wow':
                     botText = 'https://i.imgur.com/8rhlusE.gif';
@@ -281,7 +285,7 @@ module.exports = function PlainText( _bot, apiGet, userData, userConfig, nouns )
             }
         }
 
-        if ( nicoFlipped === true && to === 'nico' && command !== 'flipnico' && 
+        if ( nicoFlipped === true && to === 'nico' && command !== 'flipnico' &&
                 command !== 'putthenicoback' && command !== 'isnicoflipped' )
         {
             botText = 'I\'m sorry, nico... I can\'t hear you while you\'re flipped';

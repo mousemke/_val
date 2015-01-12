@@ -19,7 +19,7 @@ module.exports  = function XKCD( _bot, apiGet, userData, userConfig, doge )
 
         responses : function( from, to, text, botText )
         {
-            if ( text[0] === '.' )
+            if ( text[0] === userConfig.trigger )
             {
                 text = text.slice( 1 );
             }

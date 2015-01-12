@@ -20,7 +20,7 @@ var channel, _bot, doge, words,
     PlainText   = require( './src/plainText.js' ),
     Beats       = require( './src/beats.js' ),
     XKCD        = require( './src/xkcd.js' ),
-    _4SQ        = ( userConfig.enableFourquare ) ? require( './src/_4sq.js' )   : null,
+    _4SQ        = ( userConfig.enableFoursquare ) ? require( './src/_4sq.js' )   : null,
     Words       = ( userConfig.enableWords ) ? require( './src/words.js' )      : null,
     Anagramm    = ( userConfig.enableWords ) ? require( './src/anagramm.js' )   : null,
 
@@ -177,7 +177,7 @@ function init()
 
     beats       = new Beats( _bot, apiGet, userData, userConfig, nouns );
 
-    if ( userConfig.enableFourquare )
+    if ( userConfig.enableFoursquare )
     {
         _4sq    = new _4SQ( _bot, apiGet, userData, userConfig, doge );
     }
@@ -248,7 +248,7 @@ function listenToMessages( from, to, text )
                 botText = beats( from, to, text, botText );
             }
 
-            if ( botText === '' && userConfig.enableFourquare )
+            if ( botText === '' && userConfig.enableFoursquare )
             {
                 botText = _4sq.responses( from, to, text, botText );
             }
@@ -276,7 +276,14 @@ function listenToMessages( from, to, text )
                     case 'help':
                         if ( userConfig.enableHelp )
                         {
-                            _bot.say ( to, userConfig.helpText() );
+                            if ( userConfig.enablePM )
+                            {
+                                _bot.say ( to, userConfig.helpText() );
+                            }
+                            else
+                            {
+                                _bot.say ( from, to + ': ' + userConfig.helpText() );
+                            }
                             botText = '';
                         }
                         break;
@@ -288,7 +295,7 @@ function listenToMessages( from, to, text )
             if ( botText !== '' )
             {
                 console.log( '<' + from + '> <' + to + '> :' + text );
-                console.log( '<' + from + '> <' + userConfig.botName + '> :' + botText );
+                console.log( '<' + from + '> <' + ( userConfig.botName ) + '> :' + botText );
                 _bot.say ( from, botText );
             }
         }
@@ -463,6 +470,7 @@ function userData( to, from, _cb, origText )
 {
     if ( userConfig.autoAuth )
     {
+
         var textSplit = origText.slice( 1 ).split( ' ' );
 
         _cb( to, 'true', textSplit, origText );

@@ -39,7 +39,7 @@ module.exports = function Doge( _bot, apiGet, userData, userConfig )
                     botText += 'you currently have Ð' + amount;
 
                     _bot.say( from, botText );
-                } 
+                }
             };
 
             userData( to, from, _balanceCB, text );
@@ -338,8 +338,8 @@ module.exports = function Doge( _bot, apiGet, userData, userConfig )
             var i, lenI, scope  = this;
             var list            = scope.checkActive( from, to, text, false );
             var users           = list.length - 1;
-            text                = text.split( ' ' );
-            var soakTotal       = parseInt( text[1] );
+            var textSplit       = text.split( ' ' );
+            var soakTotal       = parseInt( textSplit[1] );
             var soakAmount      = Math.floor( soakTotal / users );
             var soakRemainder   = soakTotal - ( soakAmount * users );
 
@@ -348,11 +348,11 @@ module.exports = function Doge( _bot, apiGet, userData, userConfig )
             {
                 if ( dcMasterList[ to ] < soakTotal )
                 {
-                    _bot.say( from, 'Sorry, ' + to + ', you need more doge' );
+                    botText = 'Sorry, ' + to + ', you need more doge';
                 }
                 else if ( soakTotal < 1 )
                 {
-                    _bot.say( from, 'Don\'t be so down, ' + to + '...  Stay positive!' );
+                    botText = 'Don\'t be so down, ' + to + '...  Stay positive!';
                 }
                 else
                 {
@@ -372,7 +372,7 @@ module.exports = function Doge( _bot, apiGet, userData, userConfig )
                             {
                                 botText = 'Searching for active users....  ';
 
-                                botText += to + ' tipped Ð' + text[1] + ' and is soaking ' + users +
+                                botText += to + ' tipped Ð' + soakAmount + ' and is soaking ' + users +
                                         ' people with Ð' + soakAmount + ' each! : ';
 
                                 dcMasterList[ to ]  = dcMasterList[ to ] - soakTotal;
@@ -408,7 +408,7 @@ module.exports = function Doge( _bot, apiGet, userData, userConfig )
                                     if ( list[ i ] !== to )
                                     {
                                         dcMasterList[ list[ i ] ] = dcMasterList[ list[ i ] ] + soakAmount;
-                                        botText = to + ' tipped Ð' + text[1] + ' to ' + list[ i ];
+                                        botText = to + ' tipped Ð' + soakAmount + ' to ' + list[ i ];
                                     }
                                 }
 
@@ -425,10 +425,10 @@ module.exports = function Doge( _bot, apiGet, userData, userConfig )
                                 _botText += ' (/msg ' + ( userConfig.nickservBot ) + ' help)';
                             }
                         }
-
-                    _bot.say( from, botText );
                     }
                 }
+
+                _bot.say( from, botText );
             };
 
             userData( to, from, _soakCB, text );
