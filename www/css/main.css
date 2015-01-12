@@ -83,6 +83,7 @@ a:active
     height:                     60px;
     text-align:                 center;
     line-height:                18px;
+    font-size:                  12px;
 }
 
 .icon
@@ -90,24 +91,26 @@ a:active
     width:                      42px;
     height:                     42px;
     display:                    inline-block;
+    position:                   relative;
+    top:                        -2px;
 }
 
 
 .twitch--icon
 {
-    /*background-image:           url(../img/twitch-icon.png);*/
+    background-image:           url(../img/twitch-icon.png);
 }
 
 
 .twitter--icon
 {
-    /*background-image:           url(../img/twitter-icon.png);*/
+    background-image:           url(../img/twitter-icon.png);
 }
 
 
 .email--icon
 {
-    /*background-image:           url(../img/email-icon.png);*/
+    background-image:           url(../img/email-icon.png);
 }
 
 
