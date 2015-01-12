@@ -79,9 +79,8 @@ var userConfig = {
      * multiline messages.
      */
     enableHelp              : true,
+    helpUrl                 : 'http://knoblau.ch/_val/',
     helpText                : helpText,
-    helpTextSecondary       : helpTextSecondary,
-    helpTextUnscramble      : helpTextUnscramble,
 
     /**
      * disables private messages
@@ -98,7 +97,6 @@ var userConfig = {
 if ( userConfig.twitchMode )
 {
     userConfig.autoAuth             = true,
-    userConfig.enableHelp           = false,
     userConfig.enableWords          = false,
     userConfig.enableFoursquare     = false,
     userConfig.enablePM             = false
@@ -128,66 +126,11 @@ var getMoment = function()
     return 'night';
 };
 
-var triggerify = function( str )
-{
-    return str.replace( /__TRIGGER__/g, userConfig.trigger );
-}
 
 var helpText = function()
 {
-    return triggerify( 'Moin Moin!  My name is ' + ( userConfig.botName ) + ', and I\'ll be your IRC bot for the' + getMoment() + '.\n' +
-            'Valid commands are:     \n' +
-        '__TRIGGER__help\n' +
-        '__TRIGGER__doge (<amount>)\n' +
-        '__TRIGGER__market (<amount>)\n' +
-        '__TRIGGER__tip <user> <amount>\n' +
-        '__TRIGGER__withdraw <address> [ <amount> ]  (costs a Ð1 transaction fee)\n' +
-        '__TRIGGER__deposit\n' +
-        '__TRIGGER__balance\n' +
-        '__TRIGGER__soak <amount>\n' +
-        '__TRIGGER__active\n' +
-        '__TRIGGER__google <query>\n' +
-        '__TRIGGER__define <word>\n' +
-        '__TRIGGER__pool (<name or number>)\n' +
-            '* market, doge, balance, withdraw, & deposit are also available as a pm\n' +
-            'for more help, try ".help -v" or ".help unscramble"' );
-};
-
-var helpTextSecondary = function()
-{
-    return triggerify ( '\n' +
-        '__TRIGGER__konami\n' +
-        '__TRIGGER__rain\n' +
-        '__TRIGGER__dance\n' +
-        '__TRIGGER__domo\n' +
-        '__TRIGGER__barrelroll\n' +
-        '__TRIGGER__hedgehog\n' +
-        '__TRIGGER__lurk\n' +
-        '__TRIGGER__lurkbear\n' +
-        '__TRIGGER__wave\n' +
-        '__TRIGGER__internet\n' +
-        '__TRIGGER__cornflakes\n' +
-        '__TRIGGER__snowflakes\n' +
-        '__TRIGGER__whale\n' +
-        '__TRIGGER__safety\n' +
-        '__TRIGGER__bot\n' +
-        '__TRIGGER__dodge (<name>)\n' +
-        '__TRIGGER__g <query>\n' +
-        '__TRIGGER__witchhunt\n' +
-        '__TRIGGER__innovation\n' +
-        '__TRIGGER__flipthetable\n' +
-        '__TRIGGER__chilloutbro\n' +
-        '__TRIGGER__putthetableback\n' +
-        '__TRIGGER__vampire\n' +
-        '__TRIGGER__ping' );
-};
-
-var helpTextUnscramble = function()
-{
-    return triggerify( '\n' +
-        '__TRIGGER__word\n' +
-        '__TRIGGER__newWord\n' +
-        '__TRIGGER__define' );
+    return 'Moin Moin!  My name is ' + ( userConfig.botName ) + ', and I\'ll be your IRC bot for the' + getMoment() + '.\n' +
+            'Valid commands are listed here: ' + ( userConfig.helpUrl );
 };
 
 

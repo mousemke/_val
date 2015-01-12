@@ -166,10 +166,10 @@ function init()
 
     if ( userConfig.enableWords )
     {
-        words       = new Words( _bot, apiGet, userData, userConfig, doge );
+        words   = new Words( _bot, apiGet, userData, userConfig, doge );
         words.init();
 
-        anagramm    = new Anagramm( _bot, apiGet, userData, userConfig, doge );
+        anagramm = new Anagramm( _bot, apiGet, userData, userConfig, doge );
         anagramm.init();
     }
 
@@ -179,7 +179,7 @@ function init()
 
     if ( userConfig.enableFourquare )
     {
-        _4sq        = new _4SQ( _bot, apiGet, userData, userConfig, doge );
+        _4sq    = new _4SQ( _bot, apiGet, userData, userConfig, doge );
     }
 
     xkcd        = new XKCD( _bot, apiGet, userData, userConfig, doge );
@@ -276,16 +276,7 @@ function listenToMessages( from, to, text )
                     case 'help':
                         if ( userConfig.enableHelp )
                         {
-                            botText = userConfig.helpText();
-                            if ( text.split( ' ' )[1] === '-v' )
-                            {
-                                botText += userConfig.helpTextSecondary();
-                            }
-                            else if ( text.split( ' ' )[1] === 'unscramble' )
-                            {
-                                botText += userConfig.helpTextUnscramble();
-                            }
-                            _bot.say ( to, botText );
+                            _bot.say ( to, userConfig.helpText() );
                             botText = '';
                         }
                         break;
@@ -311,7 +302,7 @@ function listenToMessages( from, to, text )
 
 
 /**
- * listen to messages
+ * listen to private messages
  *
  * .... what do you think?
  *

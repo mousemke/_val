@@ -42,7 +42,7 @@ module.exports = function Doge( _bot, apiGet, userData, userConfig )
                 } 
             };
 
-            userData( to, from, _balanceCB );
+            userData( to, from, _balanceCB, text );
         },
 
 

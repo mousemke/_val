@@ -14,8 +14,6 @@ module.exports  = function Words( _bot, apiGet, userData, userConfig, doge )
 {
     return {
 
-
-
         define : function( from, word, current )
         {
             var definition;
