@@ -470,36 +470,41 @@ function userData( to, from, _cb, origText )
 {
     if ( userConfig.autoAuth )
     {
-
         var textSplit = origText.slice( 1 ).split( ' ' );
 
         _cb( to, 'true', textSplit, origText );
     }
     else
     {
-        var response = function( from, text )
+        var response = function( _from, text )
         {
             _bot.removeListener( 'pm', response );
 
-            var textSplit = text.split( ' ' );
+            var textSplit       = text.split( ' ' );
+            var apiReturn       = textSplit[ 0 ];
+            var returnMessage   = textSplit[ 1 ];
+            var user            = textSplit[ 2 ];
+            var result          = textSplit[ 3 ];
 
-            if ( textSplit[ 0 ] === userConfig.NickservAPI && textSplit[ 1 ] === 'identified' && textSplit[ 2 ] === to )
+            if ( apiReturn === userConfig.nickservAPI &&
+                returnMessage === 'identified' && user === to && result === 'true' )
             {
-                _cb( to, textSplit[ 3 ], textSplit, origText );
+                _cb( to, result, textSplit, origText );
             }
-            else if ( textSplit[ 0 ] === userConfig.NickservAPI && textSplit[ 1 ] === 'notRegistered' && textSplit[ 2 ] === to )
+            else if ( apiReturn === userConfig.nickservAPI &&
+                returnMessage === 'identified' && user === to && result === 'false' )
+            {
+                _bot.say( to, 'You are not identified. (/msg NickServ help)' );
+            }
+            else if ( apiReturn === userConfig.NickservAPI && returnMessage === 'notRegistered' && user === to )
             {
                 _bot.say( to, 'You are not a registered user. (/msg NickServ help)' );
-            }
-            else
-            {
-                _bot.say( from, to + 'that\'s not an identified user' );
             }
         };
 
         _bot.addListener( 'pm', response );
 
-        _bot.say( userConfig.nickservBot, userConfig.NickservAPI + ' identified ' + to );
+        _bot.say( userConfig.nickservBot, userConfig.nickservAPI + ' identify ' + to );
     }
 }
 
