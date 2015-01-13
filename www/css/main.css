@@ -167,6 +167,12 @@ a:active
 }
 
 
+.hr.hr-blue
+{
+    background-color:           #4481CD;
+}
+
+
 .indented
 {
     margin-left:                20px;
