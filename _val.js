@@ -1,5 +1,5 @@
 
-var version = '0.1.0';
+var version = '0.1.1';
 
 // Loads the configuration and sets variables
 var channel, _bot, doge, words,
@@ -21,6 +21,7 @@ var channel, _bot, doge, words,
     PlainText   = require( './src/plainText.js' ),
     Beats       = require( './src/beats.js' ),
     XKCD        = require( './src/xkcd.js' ),
+    Nico        = require( './src/nico.js' ),
     _4SQ        = ( userConfig.enableFoursquare ) ? require( './src/_4sq.js' )   : null,
     Words       = ( userConfig.enableWords ) ? require( './src/words.js' )      : null,
     Anagramm    = ( userConfig.enableWords ) ? require( './src/anagramm.js' )   : null,
@@ -184,6 +185,8 @@ function init()
     }
 
     xkcd        = new XKCD( _bot, apiGet, userData, userConfig, doge );
+
+    nico        = new Nico( _bot, apiGet, userData, userConfig, doge );
 }
 
 
@@ -216,10 +219,6 @@ function listenToMessages( from, to, text )
         if ( text === '_val' || text === '_val?' )
         {
             _bot.say( from, 'yes?' );
-        }
-        else if ( text === 'is nico a bad man?' )
-        {
-            _bot.say( from, 'yes.  most definitely' );
         }
         else if ( text === userConfig.trigger + 'moon?' )
         {
@@ -261,6 +260,11 @@ function listenToMessages( from, to, text )
 
             if ( botText === '' )
             {
+                botText = nico( from, to, text, botText );
+            }
+
+            if ( botText === '' )
+            {
                 var command = text.slice( 1 ).split( ' ' )[ 0 ];
 
                 switch ( command )
@@ -273,6 +277,9 @@ function listenToMessages( from, to, text )
                         {
                             pool( from, to, text );
                         }
+                        break;
+                    case 'version':
+                        botText = 'Well, ' + to + ', thanks for asking!  I\'m currently running version ' + version;
                         break;
                     case 'help':
                         if ( userConfig.enableHelp )
@@ -302,9 +309,10 @@ function listenToMessages( from, to, text )
         }
     }
     else if ( userConfig.bots.indexOf( to ) !== -1 &&
-        ( ( text[ 0 ] === '.' && text !== '.' ) || ( text[ 0 ] + text[ 1 ] === '<<' ) ) )
+        ( text[ 0 ] ===  userConfig.trigger && text !==  userConfig.trigger ) )
     {
-        _bot.say( from, 'nice try...' );
+        // automated response to automated people
+        // _bot.say( from, 'nice try....' );
     }
 }
 

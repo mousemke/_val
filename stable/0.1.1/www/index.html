@@ -13,7 +13,7 @@
         <div class="header">
             <a href="#intro"><span class="val--title__logo"></span></a>
             <span class="val--title__text">
-                _val, an IRC Dogecoin tipbot.  And then some.  ( v 0.1.0 )
+                _val, an IRC Dogecoin tipbot.  And then some.  ( v 0.1.1 )
             </span>
             <span class="val--author">
                 _val is coded by @mousemke<br>
@@ -40,6 +40,7 @@
                     <a href="#beats-module">BEATS MODULE</a>
                     <a href="#4sq-module">FOURSQUARE MODULE</a>
                     <a href="#xkcd-module">XKCD MODULE</a>
+                    <a href="#nico-module">NICO MODULE</a>
                     <br>
                     <div class="hr"></div>
 
@@ -49,11 +50,11 @@
                     <div class="indented">
                         <a href="#troll">troll<br>trøll</a>
                         <a href="#_val">_val<br>_val?</a>
-                        <a href="#is-nico-a-bad-man">is nico a bad man?</a>
                         <a href="#moon">moon?</a>
                         <a href="#dodge">dodge (user name)</a>
                         <a href="#pool">pool (name or number)</a>
                         <a href="#help">help</a>
+                        <a href="#version">version</a>
                     </div>
                     <br>
 
@@ -81,9 +82,6 @@
                         <a href="#whale">whale</a>
                         <a href="#safety">safety</a>
                         <a href="#tacos">tacos</a>
-                        <a href="#flipnico">flipnico</a>
-                        <a href="#flipthenico">flipthenico</a>
-                        <a href="#putthenicoback">putthenicoback</a>
                         <a href="#shrug">shrug</a>
                         <a href="#yes">yes!</a>
                         <a href="#no">no!</a>
@@ -107,7 +105,6 @@
                         <a href="#putthetableback">putthetableback</a>
                         <a href="#vampire">vampire</a>
                         <a href="#ping">ping</a>
-                        <a href="#isnicoflipped">isnicoflipped</a>
                         <a href="#badyoutube">badyoutube</a>
                         <a href="#germanysgottalent">germanysgottalent</a>
                     </div>
@@ -173,6 +170,21 @@
                     <div class="indented">
                         <a href="#xkcd">xkcd</a>
                     </div>
+                    <br>
+
+                    <br>
+                    <a href="#nico-module">NICO MODULE</a>
+                    <div class="indented">
+                        <a href="#tag">tag (username)</a>
+                        <a href="#isnicoflipped">isnicoflipped</a>
+                        <a href="#flipnico">flipnico</a>
+                        <a href="#flipthenico">flipthenico</a>
+                        <a href="#putthenicoback">putthenicoback</a>
+                        <a href="#isnicoabadman">isnicoabadman?</a>
+                        <a href="#whosit">whosit?</a>
+                        <a href="#whoisit">whoisit?</a>
+                    </div>
+                    <br>
                 </div>
             </div>
 
@@ -212,11 +224,6 @@
                             <p>yes?<br>
                             * mainly used to test if the bot is up</p>
 
-                        <a name="is-nico-a-bad-man"></a>
-                        <br>
-                        <span class="command">is nico a bad man?</span>
-                            <p>yes or no, depending on whether or not nico is a bad man</p>
-
                         <a name="moon"></a>
                         <br>
                         <span class="command">moon?</span>
@@ -238,6 +245,11 @@
                         <br>
                         <span class="command">help</span>
                             <p>Sends the link to this page as a PM.  If PMs are disabled, it sends it to the originating channel</p>
+
+                        <a name="version"></a>
+                        <br>
+                        <span class="command">version</span>
+                            <p>Shows the current vserion of _val</p>
                     </div>
 
                     <br>
@@ -365,18 +377,6 @@
                         <span class="command">tacos</span>
                         <p>who doesn't like tacos?</p>
 
-                        <a name="flipnico"></a>
-                        <a name="flipthenico"></a>
-                        <br>
-                        <span class="command">flipnico</span>
-                        <p>(╯°Д°）╯︵/(.□ . ) ᵇᵘᵗ ᴵ'ᵐ ᶰᶦᶜᵒ﹗<br>
-                        * nico is not allowed to do anything until he is put back</p>
-
-                        <a name="putthenicoback"></a>
-                        <br>
-                        <span class="command">putthenicoback</span>
-                        <p>(._. ) ノ( ゜-゜ノ)</p>
-
                         <a name="shrug"></a>
                         <br>
                         <span class="command">shrug</span>
@@ -480,11 +480,6 @@
                         <br>
                         <span class="command">ping</span>
                         <p> (sender's name): pong</p>
-
-                        <a name="isnicoflipped"></a>
-                        <br>
-                        <span class="command">isnicoflipped</span>
-                        <p>yes or no, depending on nico's status</p>
 
                         <a name="badyoutube"></a>
                         <a name="germanysgottalent"></a>
@@ -669,6 +664,54 @@
                         <p>Gets a random XKCD comic</p>
 
                     </div>
+
+                    <br>
+                    <br>
+                    <a name="nico-module"></a>
+                    <br>
+                    <span class="module--title">NICO MODULE</span>
+
+                    <p>Tag.  In a manner of speaking...  You don't want to get stuck being the nico!</p>
+
+                    <div class="indented">
+                        <a name="tag"></a>
+                        <br>
+                        <span class="command">tag (username)!</span>
+                        <p>Sets the given username as the Nico</p>
+
+                        <a name="isnicoabadman"></a>
+                        <br>
+                        <span class="command">is(nico)abadman?</span>
+                        <p>yes or no, depending on whether or not nico is a bad man</p>
+
+                        <a name="isnicoflipped"></a>
+                        <br>
+                        <span class="command">is(nico)flipped</span>
+                        <p>yes or no, depending on nico's status</p>
+
+                        <a name="flipnico"></a>
+                        <a name="flipthenico"></a>
+                        <br>
+                        <span class="command">flip(nico)</span>
+                        <span class="command">flipthe(nico)</span>
+                        <p>(╯°Д°）╯︵/(.□ . ) ᵇᵘᵗ ᴵ'ᵐ ᶰᶦᶜᵒ﹗<br>
+                        * nico is not allowed to do anything until he is put back</p>
+
+                        <a name="putthenicoback"></a>
+                        <br>
+                        <span class="command">putthe(nico)back</span>
+                        <p>(._. ) ノ( ゜-゜ノ)</p>
+
+                        <a name="whosit"></a>
+                        <a name="whoisit"></a>
+                        <br>
+                        <span class="command">whosit?</span>
+                        <span class="command">whoisit?</span>
+                        <p>Tells you who the nico is.</p>
+
+                    </div>
+
+
                     <br>
                 </div>
             </div>

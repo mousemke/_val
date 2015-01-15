@@ -8,6 +8,5 @@ Go to http://knoblau.ch/_val for a list of commands.
 **Change log**
 
 0.1.1 -
-+ added nico module with dynamic nicoing
++ added nico module
 + added version comand
-+ awaybot exists
