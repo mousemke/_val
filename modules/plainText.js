@@ -261,6 +261,9 @@ module.exports = function PlainText( _bot, apiGet, userData, userConfig, nouns )
                     var choice = Math.floor( Math.random() * choices.length );
                     botText = choices[ choice ];
                     break;
+                case 'magic':
+                    botText = '∴•:+*⁽⁽ଘ( ˊᵕˋ )ଓ⁾⁾*+:•*∴';
+                    break;
             }
         }
 

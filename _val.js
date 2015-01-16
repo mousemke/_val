@@ -363,23 +363,23 @@ function listenToPm( from, text )
         _bot.say ( from, botText );
         botText = '';
     }
-    else if ( textSplit[ 0 ] === 'doge' )
+    else if ( doge && textSplit[ 0 ] === 'doge' )
     {
         doge.doge( from, text, false );
     }
-    else if ( textSplit[ 0 ] === 'market' )
+    else if ( doge && textSplit[ 0 ] === 'market' )
     {
         doge.doge( from, text, true );
     }
-    else if ( textSplit[ 0 ] === 'withdraw' )
+    else if ( doge && textSplit[ 0 ] === 'withdraw' )
     {
         doge.withdraw( from, from, text );
     }
-    else if ( textSplit[ 0 ] === 'balance' )
+    else if ( doge && textSplit[ 0 ] === 'balance' )
     {
         doge.balance( from, from, text );
     }
-    else if ( textSplit[ 0 ] === 'deposit' )
+    else if ( doge && textSplit[ 0 ] === 'deposit' )
     {
         doge.deposit( from, from, text );
     }
