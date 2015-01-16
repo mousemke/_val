@@ -13,8 +13,6 @@ module.exports = function Nico( _bot, apiGet, userData, userConfig, nouns )
     return function( from, to, text, botText )
     {
         var command = text.slice( 1 ).split( ' ' )[ 0 ];
-        var moon    = moonRegex.exec( command );
-        var space   = spaceRegex.exec( command );
 
         switch( command )
         {

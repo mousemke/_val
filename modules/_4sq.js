@@ -102,7 +102,7 @@ module.exports  = function _4sq( _bot, apiGet, userData, userConfig, doge )
             {
                 text = text.slice( 1 );
             }
-console.log( text );
+
             var command = text.split( ' ' )[ 0 ];
 
             switch ( command )

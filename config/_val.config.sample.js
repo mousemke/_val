@@ -82,6 +82,12 @@ var userConfig = {
     nickservAPI             : 'Help, I\'m trapped in an api factory',
 
     /**
+     * enables Dogecoin functions
+     * must have a copy of dogecoind running for this to work
+     */
+    enableDoge              : true,
+
+    /**
      * uses the wordnik api for words and mymemory for translations
      * runs german and english (and potentially any language) word scramble
      */

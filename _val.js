@@ -17,14 +17,15 @@ var channel, _bot, doge, words,
     /**
      * load _val modules
      */
-    Doge        = require( './src/doge.js' ),
-    PlainText   = require( './src/plainText.js' ),
-    Beats       = require( './src/beats.js' ),
-    XKCD        = require( './src/xkcd.js' ),
-    Nico        = require( './src/nico.js' ),
-    _4SQ        = ( userConfig.enableFoursquare ) ? require( './src/_4sq.js' )   : null,
-    Words       = ( userConfig.enableWords ) ? require( './src/words.js' )      : null,
-    Anagramm    = ( userConfig.enableWords ) ? require( './src/anagramm.js' )   : null,
+    PlainText   = require( './modules/plainText.js' ),
+    Beats       = require( './modules/beats.js' ),
+    XKCD        = require( './modules/xkcd.js' ),
+    Nico        = require( './modules/nico.js' ),
+    Doge        = ( userConfig.enableDoge ) ? require( './modules/doge.js' ) : null,
+    _4SQ        = ( userConfig.enableFoursquare ) ? require( './modules/_4sq.js' )   : null,
+    Words       = ( userConfig.enableWords ) ? require( './modules/words.js' )      : null,
+    Anagramm    = ( userConfig.enableWords ) ? require( './modules/anagramm.js' )   : null,
+    Pool        = ( userConfig.enablePool ) ? require( './modules/pool.js' )   : null,
 
     /**
      * Lists
@@ -163,8 +164,19 @@ function init()
         _bot.addListener( 'message' + channel, listenToMessages.bind( this, channels[ i ] ) );
     }
 
-    doge        = new Doge( _bot, apiGet, userData, userConfig );
-    doge.init();
+    plainText   = new PlainText( _bot, apiGet, userData, userConfig, nouns );
+
+    beats       = new Beats( _bot, apiGet, userData, userConfig, nouns );
+
+    xkcd        = new XKCD( _bot, apiGet, userData, userConfig, doge );
+
+    nico        = new Nico( _bot, apiGet, userData, userConfig, doge );
+
+    if ( userConfig.enableDoge )
+    {
+        doge        = new Doge( _bot, apiGet, userData, userConfig );
+        doge.init();
+    }
 
     if ( userConfig.enableWords )
     {
@@ -175,18 +187,15 @@ function init()
         anagramm.init();
     }
 
-    plainText   = new PlainText( _bot, apiGet, userData, userConfig, nouns );
-
-    beats       = new Beats( _bot, apiGet, userData, userConfig, nouns );
-
     if ( userConfig.enableFoursquare )
     {
         _4sq    = new _4SQ( _bot, apiGet, userData, userConfig, doge );
     }
 
-    xkcd        = new XKCD( _bot, apiGet, userData, userConfig, doge );
-
-    nico        = new Nico( _bot, apiGet, userData, userConfig, doge );
+    if ( userConfig.enablePool )
+    {
+        pool    = new Pool( _bot, apiGet, userData, userConfig, doge );
+    }
 }
 
 
@@ -230,6 +239,21 @@ function listenToMessages( from, to, text )
 
             if ( botText === '' )
             {
+                botText = beats( from, to, text, botText );
+            }
+
+            if ( botText === '' )
+            {
+                botText = xkcd.responses( from, to, text, botText );
+            }
+
+            if ( botText === '' )
+            {
+                botText = nico( from, to, text, botText );
+            }
+
+            if ( botText === '' && userConfig.enableDoge )
+            {
                 botText = doge.responses( from, to, text, botText );
             }
 
@@ -243,24 +267,14 @@ function listenToMessages( from, to, text )
                 botText = anagramm.responses( from, to, text, botText );
             }
 
-            if ( botText === '' )
-            {
-                botText = beats( from, to, text, botText );
-            }
-
             if ( botText === '' && userConfig.enableFoursquare )
             {
                 botText = _4sq.responses( from, to, text, botText );
             }
 
-            if ( botText === '' )
+            if ( botText === '' && userConfig.enablePool )
             {
-                botText = xkcd.responses( from, to, text, botText );
-            }
-
-            if ( botText === '' )
-            {
-                botText = nico( from, to, text, botText );
+                botText = pool.responses( from, to, text, botText );
             }
 
             if ( botText === '' )
@@ -272,13 +286,8 @@ function listenToMessages( from, to, text )
                     case 'dodge':
                         dodge( from, to, text );
                         break;
-                    case 'pool':
-                        if ( userConfig.enablePool )
-                        {
-                            pool( from, to, text );
-                        }
-                        break;
                     case 'version':
+                    case userConfig.trigger + 'v':
                         botText = 'Well, ' + to + ', thanks for asking!  I\'m currently running version ' + version;
                         break;
                     case 'help':
@@ -378,88 +387,6 @@ function listenToPm( from, text )
     {
         words.responses( from, from, text, '' );
     }
-}
-
-
-/**
- * pool leaderboard
- *
- * grabs the current statistics from the pool leaderboard
- *
- * @param  {str}            from                originating channel
- * @param  {str}            to                  user
- * @param  {str}            text                full message text
- *
- * @return {void}
- */
-function pool( from, to, text )
-{
-    var botText, url = ( userConfig.poolApiUrl ) + 'players',
-        textSplit   = text.split( ' ' ),
-        wordOrNum   = parseInt( textSplit[ 1 ], 10 ),
-        count;
-
-    if ( isNaN( wordOrNum ) && typeof textSplit[ 1 ] !== 'undefined' )
-    {
-        count = textSplit[ 1 ];
-        url += '/' + count;
-    }
-    else
-    {
-        count = isNaN( wordOrNum ) ? 5 : wordOrNum;
-        url += '?sort=desc&limit=' + count;
-    }
-
-    if ( count !== 1 )
-    {
-        botText = 'the top ' + count + ' pool players in Sociomantic are:\n';
-    }
-    else
-    {
-        botText = 'the top pool player in Sociomantic is:\n';
-    }
-
-    apiGet( url, function( players )
-    {
-        var player;
-        if ( typeof count === 'number' )
-        {
-            var rank = 1;
-
-            for ( var i = 0, length = players.length; i < length; i++ )
-            {
-                player = players[i];
-
-                botText += (rank++) + ' - ' + player.name + ' (' +
-                            player.wins  + ':' + player.losses + ')';
-
-                if ( i < length - 1 )
-                {
-                    botText += ', ';
-                }
-            }
-
-            _bot.say( from, botText );
-        }
-        else if ( typeof count === 'string' )
-        {
-            player = players;
-            if ( player.score )
-            {
-                botText = count + ' a ' + ( player._score ) + '% win rate. ( ' + ( player.wins ) + ':' + ( player.losses ) + ' )';
-            }
-            else if ( player.score === null || player.score === 0 )
-            {
-                botText = count + ' has never won a game. ( ' + ( player.wins ) + ':' + ( player.losses ) + ' )';
-            }
-            else
-            {
-                botText = 'are you sure that\'s an actual person?';
-            }
-
-            _bot.say( from, botText );
-        }
-    }, false );
 }
 
 
