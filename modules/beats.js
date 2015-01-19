@@ -1,10 +1,6 @@
 //86.4 seconds
-var http            = require( 'http' ),
-    https           = require( 'https' ),
-    irc             = require( 'irc' );
-    fs              = require( 'fs' ),
 
-module.exports = function Beats( _bot, apiGet, userData, userConfig, nouns )
+module.exports = function Beats( _bot, apiGet, userData, userConfig )
 {
     return function( from, to, text, botText )
     {

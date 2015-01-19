@@ -1,15 +1,12 @@
-var http            = require( 'http' ),
-    https           = require( 'https' ),
-    irc             = require( 'irc' );
-    fs              = require( 'fs' ),
-    moonRegex       = /(?:m([o]+)n)/,
-    spaceRegex      = /(?:sp([a]+)ce)/;
+var moonRegex       = /(?:m([o]+)n)/,
+    spaceRegex      = /(?:sp([a]+)ce)/,
+    nouns           = require( '../lists/nouns.js' );
 
 
 /**
  * this is entirely filled with nonsense.  thats all the docs this needs.
  */
-module.exports = function PlainText( _bot, apiGet, userData, userConfig, nouns )
+module.exports = function PlainText( _bot, apiGet, userData, userConfig )
 {
     return function( from, to, text, botText )
     {
@@ -265,12 +262,6 @@ module.exports = function PlainText( _bot, apiGet, userData, userConfig, nouns )
                     botText = '∴•:+*⁽⁽ଘ( ˊᵕˋ )ଓ⁾⁾*+:•*∴';
                     break;
             }
-        }
-
-        if ( nicoFlipped === true && to === userConfig.nico && command !== 'flip' + ( userConfig.nico ) &&
-                command !== 'putthe' + ( userConfig.nico ) + 'back' && command !== 'is' + ( userConfig.nico ) + 'flipped' )
-        {
-            botText = 'I\'m sorry, ' + ( userConfig.nico ) + '... I can\'t hear you while you\'re flipped';
         }
 
         return botText;

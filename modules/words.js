@@ -1,6 +1,4 @@
-var http            = require( 'http' ),
-    https           = require( 'https' ),
-    minLength       = 4,
+var minLength       = 4,
     maxLength       = 8,
     currentWord     = '',
     currentWordTime = 0,
@@ -10,7 +8,13 @@ var http            = require( 'http' ),
     wordListener, newWordVote = [],
     verboseDef      = false;
 
-module.exports  = function Words( _bot, apiGet, userData, userConfig, doge )
+var http            = require( 'http' ),
+    https           = require( 'https' );
+// var http            = userConfig.req.http;
+// var https           = userConfig.req.https;
+var fs              = userConfig.req.fs;
+
+module.exports  = function Words( _bot, apiGet, userData, userConfig )
 {
     return {
 
@@ -61,7 +65,7 @@ module.exports  = function Words( _bot, apiGet, userData, userConfig, doge )
          *
          * @return {void}
          */
-        init : function()
+        ini : function()
         {
             this.readScores();
             this.word();
@@ -191,7 +195,7 @@ module.exports  = function Words( _bot, apiGet, userData, userConfig, doge )
 
             http.get( url, function( res )
             {
-                 var body = '';
+                var body = '';
 
                 res.on( 'data', function( chunk )
                 {

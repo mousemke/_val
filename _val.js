@@ -1,37 +1,25 @@
 
-var version = '0.1.1';
+var version = '0.1.2';
 
 // Loads the configuration and sets variables
-var channel, _bot, doge, words,
-    userConfig  = require( './config/_val.config.js' ),
-    channels    = userConfig.channels,
+var channel, _bot, words, _modules = {},
+    userConfig      = require( './config/_val.config.js' );
+    
+    userConfig.req  = {};
+
+var channels        = userConfig.channels,
 
     /**
      * load node modules
      */
-    http        = require( 'http' ),
-    https       = require( 'https' ),
-    irc         = require( 'irc' ),
-    fs          = require( 'fs' ),
-
-    /**
-     * load _val modules
-     */
-    PlainText   = require( './modules/plainText.js' ),
-    Beats       = require( './modules/beats.js' ),
-    XKCD        = require( './modules/xkcd.js' ),
-    Nico        = require( './modules/nico.js' ),
-    Doge        = ( userConfig.enableDoge ) ? require( './modules/doge.js' ) : null,
-    _4SQ        = ( userConfig.enableFoursquare ) ? require( './modules/_4sq.js' )   : null,
-    Words       = ( userConfig.enableWords ) ? require( './modules/words.js' )      : null,
-    Anagramm    = ( userConfig.enableWords ) ? require( './modules/anagramm.js' )   : null,
-    Pool        = ( userConfig.enablePool ) ? require( './modules/pool.js' )   : null,
+    http    = userConfig.req.http   = require( 'http' ),
+    https   = userConfig.req.https  = require( 'https' ),
+    irc     = userConfig.req.irc    = require( 'irc' ),
+    fs      = userConfig.req.fs     = require( 'fs' ),
 
     /**
      * Lists
      */
-    nouns       = require( './lists/nouns.js' ),
-    coffees     = require( './lists/coffee.js' ), // unimplemented
     cars        = require( './lists/cars.js' );
 
 
@@ -141,7 +129,7 @@ function dodge( from, to, text )
  *
  * @return {void}
  */
-function init()
+function ini()
 {
     _bot = new irc.Client( userConfig.server, userConfig.botName, {
         channels    : userConfig.channels,
@@ -164,37 +152,36 @@ function init()
         _bot.addListener( 'message' + channel, listenToMessages.bind( this, channels[ i ] ) );
     }
 
-    plainText   = new PlainText( _bot, apiGet, userData, userConfig, nouns );
+    /**
+     * load _val modules
+     */
+    modules     = require( './config/_val.modules.js' );
 
-    beats       = new Beats( _bot, apiGet, userData, userConfig, nouns );
-
-    xkcd        = new XKCD( _bot, apiGet, userData, userConfig, doge );
-
-    nico        = new Nico( _bot, apiGet, userData, userConfig, doge );
-
-    if ( userConfig.enableDoge )
+    for ( var module in modules ) 
     {
-        doge        = new Doge( _bot, apiGet, userData, userConfig );
-        doge.init();
-    }
+        var _module = modules[ module ];
 
-    if ( userConfig.enableWords )
-    {
-        words   = new Words( _bot, apiGet, userData, userConfig, doge );
-        words.init();
+        if ( _module.enabled )
+        {
+            _modules[ module ] = require( _module.url );    
+            
+            if ( _module.options )
+            {
+                for ( var option in _module.options )
+                {
+                    userConfig[ option ] = _module.options[ option ];
+                }
+            }
 
-        anagramm = new Anagramm( _bot, apiGet, userData, userConfig, doge );
-        anagramm.init();
-    }
+            newModule       = module.toLowerCase();;
 
-    if ( userConfig.enableFoursquare )
-    {
-        _4sq    = new _4SQ( _bot, apiGet, userData, userConfig, doge );
-    }
+            _modules[ newModule ] = new _modules[ module ]( _bot, apiGet, userData, userConfig );
 
-    if ( userConfig.enablePool )
-    {
-        pool    = new Pool( _bot, apiGet, userData, userConfig, doge );
+            if ( modules[ module ].ini )
+            {
+                _modules[ newModule ].ini();   
+            }
+        }
     }
 }
 
@@ -235,46 +222,46 @@ function listenToMessages( from, to, text )
         }
         else if ( text[ 0 ] === userConfig.trigger && text !== userConfig.trigger )
         {
-            botText = plainText( from, to, text, botText, nouns );
+            botText = _modules.nico( from, to, text, botText );
 
             if ( botText === '' )
             {
-                botText = beats( from, to, text, botText );
-            }
-
-            if ( botText === '' )
-            {
-                botText = xkcd.responses( from, to, text, botText );
+                botText = _modules.plaintext( from, to, text, botText );
             }
 
             if ( botText === '' )
             {
-                botText = nico( from, to, text, botText );
+                botText = _modules.beats( from, to, text, botText );
             }
 
-            if ( botText === '' && userConfig.enableDoge )
+            if ( botText === '' )
             {
-                botText = doge.responses( from, to, text, botText );
+                botText = _modules.xkcd.responses( from, to, text, botText );
             }
 
-            if ( botText === '' && userConfig.enableWords )
+            if ( botText === '' && _modules.doge )
             {
-                botText = words.responses( from, to, text, botText );
+                botText = _modules.doge.responses( from, to, text, botText );
             }
 
-            if ( botText === '' && userConfig.enableWords )
+            if ( botText === '' && _modules.words )
             {
-                botText = anagramm.responses( from, to, text, botText );
+                botText = _modules.words.responses( from, to, text, botText );
             }
 
-            if ( botText === '' && userConfig.enableFoursquare )
+            if ( botText === '' && _modules.anagramm )
             {
-                botText = _4sq.responses( from, to, text, botText );
+                botText = _modules.anagramm.responses( from, to, text, botText );
             }
 
-            if ( botText === '' && userConfig.enablePool )
+            if ( botText === '' && _modules.foursquare )
             {
-                botText = pool.responses( from, to, text, botText );
+                botText = _modules.foursquare.responses( from, to, text, botText );
+            }
+
+            if ( botText === '' && _modules.pool )
+            {
+                botText = _modules.pool.responses( from, to, text, botText );
             }
 
             if ( botText === '' )
@@ -445,4 +432,4 @@ function userData( to, from, _cb, origText )
 }
 
 
-init();
+ini();

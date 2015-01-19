@@ -4,5 +4,5 @@ dcMasterList.bak
 node_modules/
 npm-debug.log
 _val.config.js
-_val-slack.config.js
-json/unscrambleScores.json
+_val.modules.js
+unscrambleScores.json

@@ -1,9 +1,10 @@
-var http            = require( 'http' ),
-    https           = require( 'https' ),
-    irc             = require( 'irc' ),
-    fs              = require( 'fs' ),
-    active          = {};
-    dcMasterList    = {};
+
+var http            = userConfig.req.http;
+var https           = userConfig.req.https;
+var fs              = userConfig.req.fs;
+
+var active          = {};
+var dcMasterList    = {};
 
 module.exports = function Doge( _bot, apiGet, userData, userConfig )
 {
@@ -232,7 +233,7 @@ module.exports = function Doge( _bot, apiGet, userData, userConfig )
          *
          * @return {void}
          */
-        init : function()
+        ini : function()
         {
             for ( var i = 0, lenI = userConfig.channels.length; i < lenI; i++ )
             {

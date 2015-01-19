@@ -1,7 +1,5 @@
-var http            = require( 'http' ),
-    https           = require( 'https' );
 
-module.exports  = function _4sq( _bot, apiGet, userData, userConfig, doge )
+module.exports  = function _4sq( _bot, apiGet, userData, userConfig )
 {
     return {
 

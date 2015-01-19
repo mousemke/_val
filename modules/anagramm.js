@@ -1,7 +1,5 @@
 
-var http            = require( 'http' ),
-    https           = require( 'https' ),
-    minLength       = 4,
+var minLength       = 4,
     maxLength       = 8,
     currentWord     = '',
     englishWord     = '',
@@ -12,7 +10,12 @@ var http            = require( 'http' ),
     wordListener, newWordVote = [],
     verboseDef      = false;
 
-module.exports  = function Worte( _bot, apiGet, userData, userConfig, doge )
+var http            = userConfig.req.http;
+var https           = userConfig.req.https;
+
+var fs              = userConfig.req.fs;
+
+module.exports  = function Worte( _bot, apiGet, userData, userConfig )
 {
     return {
 
@@ -133,7 +136,7 @@ module.exports  = function Worte( _bot, apiGet, userData, userConfig, doge )
         },
 
 
-        init : function()
+        ini : function()
         {
             this.readScores();
             this.wort();
@@ -212,7 +215,7 @@ module.exports  = function Worte( _bot, apiGet, userData, userConfig, doge )
                 currentWordDef  = '';
                 currentWordTime = '';
                 newWordVote     = [];
-                //doge tip per length?
+
                 _bot.removeListener( 'message' + userConfig.anagramm, wordListener );
                 this.wort();
             }
@@ -262,8 +265,8 @@ module.exports  = function Worte( _bot, apiGet, userData, userConfig, doge )
             var url = '/_val/json/unscrambleScores.json';
 
             http.get( url, function( res )
-            {
-                 var body = '';
+            {   
+                var body = '';
 
                 res.on( 'data', function( chunk )
                 {

@@ -1,8 +1,6 @@
-var http            = require( 'http' ),
-    https           = require( 'https' );
 
 //4sq api https://developer.foursquare.com/docs/venues/explore
-module.exports  = function _4sq( _bot, apiGet, userData, userConfig, doge )
+module.exports  = function _4sq( _bot, apiGet, userData, userConfig )
 {
     return {
 

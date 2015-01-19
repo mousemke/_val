@@ -1,14 +1,11 @@
-var http            = require( 'http' ),
-    https           = require( 'https' ),
-    irc             = require( 'irc' );
-    fs              = require( 'fs' ),
-    nicoFlipped     = false;
+
+var nicoFlipped     = false;
 
 
 /**
  * this is entirely filled with nonsense.  thats all the docs this needs.
  */
-module.exports = function Nico( _bot, apiGet, userData, userConfig, nouns )
+module.exports = function Nico( _bot, apiGet, userData, userConfig )
 {
     return function( from, to, text, botText )
     {

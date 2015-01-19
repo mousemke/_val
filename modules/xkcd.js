@@ -1,15 +1,11 @@
 
-var http            = require( 'http' ),
-    https           = require( 'https' );
-    xkcdFetchUrl    = 'http://xkcd-imgs.herokuapp.com/';
-
-module.exports  = function XKCD( _bot, apiGet, userData, userConfig, doge )
+module.exports  = function XKCD( _bot, apiGet, userData, userConfig )
 {
     return {
 
         getComic : function( from, to, text, botText )
         {
-            apiGet( xkcdFetchUrl, function( response )
+            apiGet( userConfig.appUrl, function( response )
             {
                 _bot.say( from, response.url + '\n' + response.title );
 
