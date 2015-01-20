@@ -7,9 +7,10 @@ Go to http://knoblau.ch/_val for a list of commands.
 
 **Change log**
 
-0.1.2 - 
+0.1.2 -
 + reorganized module loading and introduced config/_val.modules.js for enhanced dynamic module loading
 + cleaned lots of code
++ new plaintext commands \o/
 
 
 0.1.1 -

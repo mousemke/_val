@@ -1,4 +1,7 @@
-var minLength       = 4,
+
+module.exports  = function Words( _bot, apiGet, userData, userConfig )
+{
+    var minLength       = 4,
     maxLength       = 8,
     currentWord     = '',
     currentWordTime = 0,
@@ -8,14 +11,10 @@ var minLength       = 4,
     wordListener, newWordVote = [],
     verboseDef      = false;
 
-var http            = require( 'http' ),
-    https           = require( 'https' );
-// var http            = userConfig.req.http;
-// var https           = userConfig.req.https;
-var fs              = userConfig.req.fs;
+    var http            = userConfig.req.http;
+    var https           = userConfig.req.https;
+    var fs              = userConfig.req.fs;
 
-module.exports  = function Words( _bot, apiGet, userData, userConfig )
-{
     return {
 
         define : function( from, word, current )
@@ -144,7 +143,7 @@ module.exports  = function Words( _bot, apiGet, userData, userConfig )
                 currentWordDef  = '';
                 currentWordTime = '';
                 newWordVote     = [];
-                //doge tip per length?
+
                 _bot.removeListener( 'message' + userConfig.unscramble, wordListener );
                 this.word();
             }
@@ -153,7 +152,8 @@ module.exports  = function Words( _bot, apiGet, userData, userConfig )
 
         newWord : function( from, to )
         {
-            var active =  doge.checkActive( from, to, '', false );
+            var active = [ 0 ];
+            // var active =  doge.checkActive( from, to, '', false );
 
             if ( newWordVote.indexOf( to ) !== -1 )
             {

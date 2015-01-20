@@ -1,13 +1,13 @@
 
-var http            = userConfig.req.http;
-var https           = userConfig.req.https;
-var fs              = userConfig.req.fs;
-
-var active          = {};
-var dcMasterList    = {};
-
 module.exports = function Doge( _bot, apiGet, userData, userConfig )
 {
+    var http            = userConfig.req.http;
+    var https           = userConfig.req.https;
+    var fs              = userConfig.req.fs;
+
+    var active          = {};
+    var dcMasterList    = {};
+
     return {
 
         /**

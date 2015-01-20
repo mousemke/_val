@@ -1,12 +1,11 @@
 
-var nicoFlipped     = false;
-
-
 /**
  * this is entirely filled with nonsense.  thats all the docs this needs.
  */
 module.exports = function Nico( _bot, apiGet, userData, userConfig )
 {
+    var nicoFlipped     = false;
+
     return function( from, to, text, botText )
     {
         var command = text.slice( 1 ).split( ' ' )[ 0 ];

@@ -4,7 +4,7 @@ var version = '0.1.2';
 // Loads the configuration and sets variables
 var channel, _bot, words, _modules = {},
     userConfig      = require( './config/_val.config.js' );
-    
+
     userConfig.req  = {};
 
 var channels        = userConfig.channels,
@@ -21,7 +21,6 @@ var channels        = userConfig.channels,
      * Lists
      */
     cars        = require( './lists/cars.js' );
-
 
 /**
  * API get
@@ -157,14 +156,14 @@ function ini()
      */
     modules     = require( './config/_val.modules.js' );
 
-    for ( var module in modules ) 
+    for ( var module in modules )
     {
         var _module = modules[ module ];
 
         if ( _module.enabled )
         {
-            _modules[ module ] = require( _module.url );    
-            
+            _modules[ module ] = require( _module.url );
+
             if ( _module.options )
             {
                 for ( var option in _module.options )
@@ -173,13 +172,13 @@ function ini()
                 }
             }
 
-            newModule       = module.toLowerCase();;
+            newModule       = module.toLowerCase();
 
             _modules[ newModule ] = new _modules[ module ]( _bot, apiGet, userData, userConfig );
 
             if ( modules[ module ].ini )
             {
-                _modules[ newModule ].ini();   
+                _modules[ newModule ].ini();
             }
         }
     }
@@ -350,29 +349,29 @@ function listenToPm( from, text )
         _bot.say ( from, botText );
         botText = '';
     }
-    else if ( doge && textSplit[ 0 ] === 'doge' )
+    else if ( _modules.doge && textSplit[ 0 ] === 'doge' )
     {
-        doge.doge( from, text, false );
+        _modules.doge.doge( from, text, false );
     }
-    else if ( doge && textSplit[ 0 ] === 'market' )
+    else if ( _modules.doge && textSplit[ 0 ] === 'market' )
     {
-        doge.doge( from, text, true );
+        _modules.doge.doge( from, text, true );
     }
-    else if ( doge && textSplit[ 0 ] === 'withdraw' )
+    else if ( _modules.doge && textSplit[ 0 ] === 'withdraw' )
     {
-        doge.withdraw( from, from, text );
+        _modules.doge.withdraw( from, from, text );
     }
-    else if ( doge && textSplit[ 0 ] === 'balance' )
+    else if ( _modules.doge && textSplit[ 0 ] === 'balance' )
     {
-        doge.balance( from, from, text );
+        _modules.doge.balance( from, from, text );
     }
-    else if ( doge && textSplit[ 0 ] === 'deposit' )
+    else if ( _modules.doge && textSplit[ 0 ] === 'deposit' )
     {
-        doge.deposit( from, from, text );
+        _modules.doge.deposit( from, from, text );
     }
     else
     {
-        words.responses( from, from, text, '' );
+        _modules.words.responses( from, from, text, '' );
     }
 }
 

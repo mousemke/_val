@@ -1,22 +1,23 @@
 
-var minLength       = 4,
-    maxLength       = 8,
-    currentWord     = '',
-    englishWord     = '',
-    currentWordTime = 0,
-    currentWordDef  = '',
-    scrambledWord   = '',
-    wordScores      = {},
-    wordListener, newWordVote = [],
-    verboseDef      = false;
-
-var http            = userConfig.req.http;
-var https           = userConfig.req.https;
-
-var fs              = userConfig.req.fs;
-
 module.exports  = function Worte( _bot, apiGet, userData, userConfig )
 {
+
+    var minLength       = 4,
+        maxLength       = 8,
+        currentWord     = '',
+        englishWord     = '',
+        currentWordTime = 0,
+        currentWordDef  = '',
+        scrambledWord   = '',
+        wordScores      = {},
+        wordListener, newWordVote = [],
+        verboseDef      = false;
+
+    var http            = userConfig.req.http;
+    var https           = userConfig.req.https;
+
+    var fs              = userConfig.req.fs;
+
     return {
 
         anagramm : function( from, to, text )
@@ -224,7 +225,8 @@ module.exports  = function Worte( _bot, apiGet, userData, userConfig )
 
         neuesWort : function( from, to )
         {
-            var active =  doge.checkActive( from, to, '', false );
+            var active = [ 0, 1, 2 ];
+            // var active =  doge.checkActive( from, to, '', false );
 
             if ( newWordVote.indexOf( to ) !== -1 )
             {
@@ -265,7 +267,7 @@ module.exports  = function Worte( _bot, apiGet, userData, userConfig )
             var url = '/_val/json/unscrambleScores.json';
 
             http.get( url, function( res )
-            {   
+            {
                 var body = '';
 
                 res.on( 'data', function( chunk )
@@ -388,7 +390,7 @@ module.exports  = function Worte( _bot, apiGet, userData, userConfig )
         {
             var wordScoresJson = JSON.stringify( wordScores );
 
-            fs.writeFile( './json/unscrambleScores.json', wordScoresJson, function ( err )
+            fs.writeFile( '/_val/json/unscrambleScores.json', wordScoresJson, function ( err )
             {
                 return console.log( err );
             });

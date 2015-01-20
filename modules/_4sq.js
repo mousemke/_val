@@ -58,6 +58,7 @@ module.exports  = function _4sq( _bot, apiGet, userData, userConfig )
 
                     var tip     = _valsChoice.tips;
                     var tips    = tip.length;
+                    console.log( _valsChoice );
                     tip         = tip[ Math.floor( Math.random() * tips ) ];
                     var tipUser = tip.user.firstName;
                     if ( tip.user.lastName )

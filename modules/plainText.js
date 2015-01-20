@@ -1,13 +1,13 @@
-var moonRegex       = /(?:m([o]+)n)/,
-    spaceRegex      = /(?:sp([a]+)ce)/,
-    nouns           = require( '../lists/nouns.js' );
-
 
 /**
  * this is entirely filled with nonsense.  thats all the docs this needs.
  */
 module.exports = function PlainText( _bot, apiGet, userData, userConfig )
 {
+    var moonRegex       = /(?:m([o]+)n)/,
+        spaceRegex      = /(?:sp([a]+)ce)/,
+        nouns           = require( '../lists/nouns.js' );
+
     return function( from, to, text, botText )
     {
         var command = text.slice( 1 ).split( ' ' )[ 0 ];
@@ -61,6 +61,15 @@ module.exports = function PlainText( _bot, apiGet, userData, userConfig )
                 case 'xmas':
                 case 'christmas':
                     word = [ 'ʕ◔ᴥ◔ʔ ', '☃ ', 'presents ', '✦ ', 'santa ', '⁂ ', 'satan ' ];
+                    break;
+                case 'fork':
+                    word = [ '--E ' ];
+                    break;
+                case 'fukt':
+                    word = [ 'ا҈̢̅ͬͦͬͬͤ҉̢̅ͬͦͬͬͤ҈̢̅ͬͦͬͬͤ҉̢̅ͬͦͬͬͤ҈̢̅ͬͦͬͬͤ҉̢̅ͬͦͬͬͤ҈̢̅ͬͦͬͬͤ҉̢̅ͬͦͬͬͤ҈̢̅ͬͦͬͬͤ҉̢̅ͬͦͬͬͤ҈̢̅ͬͦͬͬͤ҉̢̅ͬͦͬͬͤ҈̢̅ͬͦͬͬͤ҉̢̅ͬͦͬͬͤ҈̢̅ͬͦͬͬͤ҉̢̅ͬͦͬͬͤ҈̢̅ͬͦͬͬͤ҉̢ ', '⌒͝͡͡͡͡͡͡͡͡͡͡͡͡͡͡͡͡͡͡ ' ];
+                    break;
+                case 'cone':
+                    word = [ '/\\ ' ];
                     break;
             }
 
@@ -134,7 +143,15 @@ module.exports = function PlainText( _bot, apiGet, userData, userConfig )
                     botText = 'ヽ｀、ヽ｀ヽヽ｀、ヽ｀ヽヽ｀、ヽ｀ヽ(¬_¬ )ヽ｀、ヽ｀ヽ｀、ヽ｀';
                     break;
                 case 'dance':
-                    botText = '♪┏(・o･)┛♪┗ ( ･o･) ┓♪';
+                    var dancer = Math.floor( Math.random() * 80 );
+                    if ( dancer === 3 )
+                    {
+                        botText = '└[∵┌]└[ ∵ ]┘[┐∵]┘';
+                    }
+                    else
+                    {
+                        botText = '♪┏(・o･)┛♪┗ ( ･o･) ┓♪';
+                    }
                     break;
                 case 'domo':
                     botText = '\\|°▿▿▿▿°|/';
@@ -260,6 +277,9 @@ module.exports = function PlainText( _bot, apiGet, userData, userConfig )
                     break;
                 case 'magic':
                     botText = '∴•:+*⁽⁽ଘ( ˊᵕˋ )ଓ⁾⁾*+:•*∴';
+                    break;
+                case 'pacman':
+                    botText = '( *<)  • • • • • • •';
                     break;
             }
         }

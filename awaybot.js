@@ -4,7 +4,8 @@ var version = '0.1.2';
 // Loads the configuration and sets variables
 var channel, _bot,
     userConfig  = require( './config/_val.config.js' ),
-    channels    = userConfig.channels;
+    channels    = userConfig.channels,
+    irc         = require( 'irc' );
 
 
 
@@ -57,7 +58,7 @@ function listenToMessages( from, to, text )
     if ( text[ 0 ] === userConfig.trigger && text !== userConfig.trigger )
     {
         console.log( '<' + from + '> <' + to + '> :' + text );
-        _bot.say ( from, '_val\'s not here, man...' );
+        _bot.say ( from, userConfig.botName + '\'s not here, man...' );
     }
 }
 
@@ -75,7 +76,7 @@ function listenToMessages( from, to, text )
 function listenToPm( from, text )
 {
     console.log( '<pm from ' + from + '> :' + text );
-    _bot.say ( from, '_val\'s not here, man...' );
+    _bot.say ( from, userConfig.botName + '\'s not here, man...' );
 }
 
 
