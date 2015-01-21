@@ -25,24 +25,37 @@ module.exports = function Doge( _bot, _modules, userConfig )
             var _balanceCB = function( _to, success )
             {
                 if ( success )
-                    {
-                        var amount      = dcMasterList[ _to ];
+                {
+                    var amount      = dcMasterList[ _to ];
                     amount          = ( amount ) ? amount : 0;
 
                     var botText     = '';
 
-                    if ( from !== _to )
+                    if ( _to === 'masterTotal' )
                     {
-                      botText += _to + ', ';
+                        botText += 'There are currently Ð' + amount + ' in circulation';
                     }
-
-                    botText += 'you currently have Ð' + amount;
+                    else
+                    {
+                        if ( from !== _to )
+                        {
+                          botText += _to + ', ';
+                        }
+                        botText += 'you currently have Ð' + amount;
+                    }
 
                     _bot.say( from, botText );
                 }
             };
 
-            _modules.core.userData( to, from, _balanceCB, text );
+            if ( text.split( ' ' )[ 1 ] === 'all' )
+            {
+                _balanceCB( 'masterTotal', true );
+            }
+            else
+            {
+                _modules.core.userData( to, from, _balanceCB, text );
+            }
         },
 
 

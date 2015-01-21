@@ -1,5 +1,5 @@
 
-var version = '0.1.2';
+var version = '0.1.3a';
 
 // Loads the configuration and sets variables
 var channel, _bot, words, _modules = {},
