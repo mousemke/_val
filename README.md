@@ -14,6 +14,9 @@ Go to http://knoblau.ch/_val for a list of commands.
 + plaintext reorganization
 + dodge moved to plaintext
 + pool becomes its own modules
++ all modules passed as _modules to each for dynamic interconnectedness
++ awaybot updated
++ active moved to core functionality
 
 
 0.1.1 -

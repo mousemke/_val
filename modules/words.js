@@ -1,5 +1,5 @@
 
-module.exports  = function Words( _bot, apiGet, userData, userConfig )
+module.exports  = function Words( _bot, _modules, userConfig )
 {
     var minLength       = 4,
     maxLength       = 8,
@@ -24,7 +24,7 @@ module.exports  = function Words( _bot, apiGet, userData, userConfig )
             word = word.toLowerCase();
             var url = ( userConfig.wordnikBaseUrl ) + 'word.json/' + word + '/definitions?includeRelated=true&useCanonical=true&includeTags=false&api_key=' + userConfig.wordnikAPIKey;
 
-            apiGet( url, function( result )
+            _modules.core.apiGet( url, function( result )
             {
                 if ( current === true )
                 {
@@ -152,8 +152,7 @@ module.exports  = function Words( _bot, apiGet, userData, userConfig )
 
         newWord : function( from, to )
         {
-            var active = [ 0 ];
-            // var active =  doge.checkActive( from, to, '', false );
+            var active =  _modules.core.checkActive( from, to, '', false );
 
             if ( newWordVote.indexOf( to ) !== -1 )
             {
@@ -334,6 +333,8 @@ module.exports  = function Words( _bot, apiGet, userData, userConfig )
 
         scramble : function( word )
         {
+            var originalWord = word;
+
             word = word.split( '' );
             var currentIndex = word.length, temporaryValue, randomIndex ;
 
@@ -347,7 +348,9 @@ module.exports  = function Words( _bot, apiGet, userData, userConfig )
                 word[  randomIndex ]   = temporaryValue;
             }
 
-            return word.join( '' );
+            word = word.join( '' );
+
+            return ( word === originalWord ) ? scramble( word ) : word;
         },
 
 
@@ -366,7 +369,7 @@ module.exports  = function Words( _bot, apiGet, userData, userConfig )
 
             var url = ( userConfig.translationBaseUrl ) + 'get?q=' + text + '&langpair=' + langFrom + '|' + langTo;
 
-            apiGet( url, function( response )
+            _modules.core.apiGet( url, function( response )
             {
                 var botText    = response.responseData.translatedText;
                 if ( botText.indexOf( '|' ) !== -1 )
@@ -481,7 +484,7 @@ module.exports  = function Words( _bot, apiGet, userData, userConfig )
                                     'excludePartOfSpeech=phrasal-prefix&';
 
                 var url =  ( userConfig.wordnikBaseUrl ) + 'words.json/randomWord?hasDictionaryDef=true&' + excludeList + 'minCorpusCount=0&maxCorpusCount=-1&minDictionaryCount=3&maxDictionaryCount=-1&minLength=' + minLength + '&maxLength=' + maxLength + '&api_key=' + userConfig.wordnikAPIKey;
-                apiGet( url, function( result )
+                _modules.core.apiGet( url, function( result )
                 {
                     if ( result.word[0] !== result.word[0].toLowerCase() ||
                             result.word.indexOf( '-' ) !== -1 ||

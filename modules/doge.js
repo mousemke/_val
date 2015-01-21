@@ -1,11 +1,10 @@
 
-module.exports = function Doge( _bot, apiGet, userData, userConfig )
+module.exports = function Doge( _bot, _modules, userConfig )
 {
     var http            = userConfig.req.http;
     var https           = userConfig.req.https;
     var fs              = userConfig.req.fs;
 
-    var active          = {};
     var dcMasterList    = {};
 
     return {
@@ -43,73 +42,7 @@ module.exports = function Doge( _bot, apiGet, userData, userConfig )
                 }
             };
 
-            userData( to, from, _balanceCB, text );
-        },
-
-
-        /**
-         * Check active
-         *
-         * returns a list of users that have posted within the defined amount of time
-         *
-         * @param  {str}            from                originating channel
-         * @param  {str}            to                  originating user
-         * @param  {str}            text                full message text
-         * @param  {bool}           talk                true to say, otherwise
-         *                                                      active only returns
-         *
-         * @return {arr}                                        active users
-         */
-        checkActive : function( from, to, text, talk )
-        {
-            this.active = active || {};
-
-            var name, now = Date.now(), i = 0,
-                activeUsers = [];
-
-            if ( ! this.active[ from ] )
-            {
-                this.active[ from ] = {};
-            }
-
-            var activeChannel = this.active[ from ];
-
-            if ( ! activeChannel[ to ] && to !== userConfig.botName &&
-                    userConfig.bots.indexOf( to ) === -1 )
-            {
-                activeChannel[ to ] = now;
-                now++;
-            }
-
-            for ( name in activeChannel )
-            {
-                if ( now - userConfig.activeTime < activeChannel[ name ] )
-                {
-                    i++;
-                    activeUsers.push( name );
-                }
-                else
-                {
-                    delete activeChannel[ name ];
-                }
-            }
-
-            if ( talk !== false )
-            {
-                botText = 'I see ' + i + ' active user';
-
-                if ( i > 1 || i === 0 )
-                {
-                    botText += 's';
-                }
-
-                botText += ' in ' + from;
-
-                _bot.say( from, botText );
-            }
-
-            active = this.active;
-            return activeUsers;
+            _modules.core.userData( to, from, _balanceCB, text );
         },
 
 
@@ -128,7 +61,7 @@ module.exports = function Doge( _bot, apiGet, userData, userConfig )
             //     _bot.say( from, botText );
             // };
 
-            // userData( from, to, _depositCB );
+            // _modules.core.userData( from, to, _depositCB );
             //
 
             _bot.say( to, 'deposit and withdraw are in between APIs at the moment.  Ask mouse for more info' );
@@ -149,7 +82,7 @@ module.exports = function Doge( _bot, apiGet, userData, userConfig )
             var textSplit = text.split( ' ' );
 
             var url = 'https://block.io/api/v1/get_current_price/?api_key=' + dcMasterList[ 'api-key' ];
-            apiGet( url, function( info )
+            _modules.core.apiGet( url, function( info )
             {
                 var price, dogePrices = info.data.prices,
                     amount = parseInt( textSplit[ 1 ] );
@@ -235,12 +168,6 @@ module.exports = function Doge( _bot, apiGet, userData, userConfig )
          */
         ini : function()
         {
-            for ( var i = 0, lenI = userConfig.channels.length; i < lenI; i++ )
-            {
-                channel = userConfig.channels[ i ];
-                _bot.addListener( 'message' + channel, this.watchActive.bind( this, channel ) );
-            }
-
             this.loadMasterList();
         },
 
@@ -311,9 +238,6 @@ module.exports = function Doge( _bot, apiGet, userData, userConfig )
                 case 'deposit':
                     this.deposit( from, to, text );
                     break;
-                case 'active':
-                    this.checkActive( from, to, text );
-                    break;
                 case 'soak':
                     this.soak( from, to, text );
                     break;
@@ -337,7 +261,7 @@ module.exports = function Doge( _bot, apiGet, userData, userConfig )
         soak : function( from, to, text )
         {
             var i, lenI, scope  = this;
-            var list            = scope.checkActive( from, to, text, false );
+            var list            = _modules.core.checkActive( from, to, text, false );
             var users           = list.length - 1;
             var textSplit       = text.split( ' ' );
             var soakTotal       = parseInt( textSplit[1] );
@@ -432,7 +356,7 @@ module.exports = function Doge( _bot, apiGet, userData, userConfig )
                 _bot.say( from, botText );
             };
 
-            userData( to, from, _soakCB, text );
+            _modules.core.userData( to, from, _soakCB, text );
         },
 
 
@@ -523,27 +447,7 @@ module.exports = function Doge( _bot, apiGet, userData, userConfig )
                 }
             };
 
-            userData( to, from, _tipCB, text );
-        },
-
-
-        /**
-         * watch active
-         *
-         * sets the latest active time for a user in a channel
-         *
-         * @param  {str}            from                originating channel
-         * @param  {str}            to                  originating user
-         *
-         * @return {void}
-         */
-        watchActive : function( from, to )
-        {
-            if ( !active[ from ] )
-            {
-                active[ from ] = {};
-            }
-            active[ from ][ to ] = Date.now();
+            _modules.core.userData( to, from, _tipCB, text );
         },
 
 
@@ -574,7 +478,7 @@ module.exports = function Doge( _bot, apiGet, userData, userConfig )
             //     else
             //     {
             //         url = 'https://block.io/api/v1/withdraw_from_labels/?api_key=' + dcMasterList[ 'api-key' ] + '&from_labels=' + ( _whois.host ) + '&payment_address=' + _outgoingAddress + '&amount=' + _sendAmount + '&pin=' + ( userConfig.api );
-            //         apiGet( url, function( info )
+            //         _modules.core.apiGet( url, function( info )
             //         {
             //             console.log( info, info.data, info.data.txid );
             //             _bot.say( from, 'Doge sent. https://dogechain.info/tx/' + info.data.txid );
@@ -582,7 +486,7 @@ module.exports = function Doge( _bot, apiGet, userData, userConfig )
             //     }
             // };
 
-            // userData( fro from,m, to, _withdrawCB );
+            // _modules.core.userData( fro from,m, to, _withdrawCB );
 
             _bot.say( to, 'deposit and withdraw are in between APIs at the moment.  Ask mouse for more info' );
         },

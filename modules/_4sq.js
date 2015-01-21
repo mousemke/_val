@@ -1,6 +1,6 @@
 
 //4sq api https://developer.foursquare.com/docs/venues/explore
-module.exports  = function _4sq( _bot, apiGet, userData, userConfig )
+module.exports  = function _4sq( _bot, _modules, userConfig )
 {
     return {
 
@@ -36,7 +36,7 @@ module.exports  = function _4sq( _bot, apiGet, userData, userConfig )
 
             // url += '&novelty=new&friendVisits=notvisited';
 
-            apiGet( url, function( result )
+            _modules.core.apiGet( url, function( result )
             {
                 var _valsChoice;
                 var venues      = result.response.groups[0].items;
@@ -54,11 +54,9 @@ module.exports  = function _4sq( _bot, apiGet, userData, userConfig )
                     var address = _valsChoice.venue.location.address;
                     var url     = _valsChoice.venue.url;
 
-
-
                     var tip     = _valsChoice.tips;
                     var tips    = tip.length;
-                    console.log( _valsChoice );
+
                     tip         = tip[ Math.floor( Math.random() * tips ) ];
                     var tipUser = tip.user.firstName;
                     if ( tip.user.lastName )

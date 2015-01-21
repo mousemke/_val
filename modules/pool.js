@@ -1,5 +1,5 @@
 
-module.exports  = function _4sq( _bot, apiGet, userData, userConfig )
+module.exports  = function Pool( _bot, _modules, userConfig )
 {
     return {
 
@@ -32,7 +32,7 @@ module.exports  = function _4sq( _bot, apiGet, userData, userConfig )
                     botText = 'the top pool player in Sociomantic is:\n';
                 }
 
-                apiGet( url, function( players )
+                _modules.core.apiGet( url, function( players )
                 {
                     var player;
                     if ( typeof count === 'number' )
@@ -96,85 +96,4 @@ module.exports  = function _4sq( _bot, apiGet, userData, userConfig )
     };
 };
 
-
-
-// /**
-//  * this is entirely filled with nonsense.  thats all the docs this needs.
-//  */
-// module.exports = function Pool( _bot, apiGet, userData, userConfig, nouns )
-// {
-//     return function( from, to, text )
-//     {
-//         var botText, url = ( userConfig.poolApiUrl ) + 'players',
-//             textSplit   = text.split( ' ' ),
-//             wordOrNum   = parseInt( textSplit[ 1 ], 10 ),
-//             count;
-// console.log( 'phase 2 ', textSplit[ 0 ].slice( 1 ) );
-//         if ( textSplit[ 0 ].slice( 1 ) === 'pool' )
-//         {
-//             console.log( 'phase 3' );
-//             if ( isNaN( wordOrNum ) && typeof textSplit[ 1 ] !== 'undefined' )
-//             {
-//                 count = textSplit[ 1 ];
-//                 url += '/' + count;
-//             }
-//             else
-//             {
-//                 count = isNaN( wordOrNum ) ? 5 : wordOrNum;
-//                 url += '?sort=desc&limit=' + count;
-//             }
-
-//             if ( count !== 1 )
-//             {
-//                 botText = 'the top ' + count + ' pool players in Sociomantic are:\n';
-//             }
-//             else
-//             {
-//                 botText = 'the top pool player in Sociomantic is:\n';
-//             }
-
-//             apiGet( url, function( players )
-//             {
-//                 console.log( 'phase 4' );
-//                 var player;
-//                 if ( typeof count === 'number' )
-//                 {
-//                     var rank = 1;
-
-//                     for ( var i = 0, length = players.length; i < length; i++ )
-//                     {
-//                         player = players[i];
-
-//                         botText += ( rank++ ) + ' - ' + player.name + ' (' +
-//                                     player.wins  + ':' + player.losses + ')';
-
-//                         if ( i < length - 1 )
-//                         {
-//                             botText += ', ';
-//                         }
-//                     }
-//                 }
-//                 else if ( typeof count === 'string' )
-//                 {
-//                     player = players;
-//                     if ( player.score )
-//                     {
-//                         botText = count + ' a ' + ( player._score ) + '% win rate. ( ' + ( player.wins ) + ':' + ( player.losses ) + ' )';
-//                     }
-//                     else if ( player.score === null || player.score === 0 )
-//                     {
-//                         botText = count + ' has never won a game. ( ' + ( player.wins ) + ':' + ( player.losses ) + ' )';
-//                     }
-//                     else
-//                     {
-//                         botText = 'are you sure that\'s an actual person?';
-//                     }
-//                 }
-
-//                 return botText;
-//             }, false );
-//         }
-//         //
-//     };
-// };
 

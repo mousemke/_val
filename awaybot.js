@@ -58,7 +58,8 @@ function listenToMessages( from, to, text )
     if ( text[ 0 ] === userConfig.trigger && text !== userConfig.trigger )
     {
         console.log( '<' + from + '> <' + to + '> :' + text );
-        _bot.say ( from, userConfig.botName + '\'s not here, man...' );
+        _bot.say ( from, 'Your ' + userConfig.botName + ' is getting a firmware ' +
+            'upgrade, please do not press the power button or unplug your computer.' );
     }
 }
 

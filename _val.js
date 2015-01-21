@@ -75,6 +75,69 @@ function apiGet( _url, _cb, secure )
 
 
 /**
+ * Check active
+ *
+ * returns a list of users that have posted within the defined amount of time
+ *
+ * @param  {str}            from                originating channel
+ * @param  {str}            to                  originating user
+ * @param  {str}            text                full message text
+ * @param  {bool}           talk                true to say, otherwise
+ *                                                      active only returns
+ *
+ * @return {arr}                                        active users
+ */
+function checkActive( from, to, text, talk )
+{
+    var name, now = Date.now(), i = 0,
+        activeUsers = [];
+
+    if ( ! _bot.active[ from ] )
+    {
+        _bot.active[ from ] = {};
+    }
+
+    var activeChannel = _bot.active[ from ];
+
+    if ( ! activeChannel[ to ] && to !== userConfig.botName &&
+            userConfig.bots.indexOf( to ) === -1 )
+    {
+        activeChannel[ to ] = now;
+        now++;
+    }
+
+    for ( name in activeChannel )
+    {
+        if ( now - userConfig.activeTime < activeChannel[ name ] )
+        {
+            i++;
+            activeUsers.push( name );
+        }
+        else
+        {
+            delete activeChannel[ name ];
+        }
+    }
+
+    if ( talk !== false )
+    {
+        botText = 'I see ' + i + ' active user';
+
+        if ( i > 1 || i === 0 )
+        {
+            botText += 's';
+        }
+
+        botText += ' in ' + from;
+
+        _bot.say( from, botText );
+    }
+
+    return activeUsers;
+}
+
+
+/**
  * init
  *
  * sets listeners and master list up
@@ -104,6 +167,24 @@ function ini()
         _bot.addListener( 'message' + channel, listenToMessages.bind( this, channels[ i ] ) );
     }
 
+    _bot.active = {};
+
+    /*
+     * adds core components to an obj to be passed modules
+     */
+    _modules.core = {
+
+         checkActive    : checkActive,
+
+         userData       : userData,
+
+         apiGet         : apiGet,
+
+         responses      : responses
+    };
+
+    _modules.constructors = {};
+
     /**
      * load _val modules
      */
@@ -115,7 +196,7 @@ function ini()
 
         if ( _module.enabled )
         {
-            _modules[ module ] = require( _module.url );
+            _modules.constructors[ module ] = require( _module.url );
 
             if ( _module.options )
             {
@@ -127,7 +208,7 @@ function ini()
 
             newModule       = module.toLowerCase();
 
-            _modules[ newModule ] = new _modules[ module ]( _bot, apiGet, userData, userConfig );
+            _modules[ newModule ] = new _modules.constructors[ module ]( _bot, _modules, userConfig );
 
             if ( modules[ module ].ini )
             {
@@ -151,6 +232,8 @@ function ini()
  */
 function listenToMessages( from, to, text )
 {
+    watchActive( from, to );
+
     if ( text.toLowerCase().indexOf( 'troll' ) !== -1 )
     {
         text = userConfig.trigger + 'trollfetti';
@@ -170,81 +253,20 @@ function listenToMessages( from, to, text )
         }
         else if ( text === userConfig.trigger + 'moon?' )
         {
-            _bot.say( from, 'Moon Knight is a fictional character, a superhero who appears in comic books published by Marvel Comics. The character exists in the Marvel Universe and was created by Doug Moench and Don Perlin. He first appeared in Werewolf by Night #32.' );
+            _bot.say( from, 'An astronaut miner extracting the precious moon gas that promises to reverse the Earth\'s energy crisis nears the end of his three-year contract, and makes an ominous discovery in this psychological sci-fi film starring Sam Rockwell and Kevin Spacey.' );
         }
         else if ( text[ 0 ] === userConfig.trigger && text !== userConfig.trigger )
         {
-            botText = _modules.nico( from, to, text, botText );
-
-            if ( botText === '' )
+            for ( var module in _modules )
             {
-                botText = _modules.plaintext( from, to, text, botText );
-            }
-
-            if ( botText === '' )
-            {
-                botText = _modules.beats( from, to, text, botText );
-            }
-
-            if ( botText === '' )
-            {
-                botText = _modules.xkcd.responses( from, to, text, botText );
-            }
-
-            if ( botText === '' && _modules.doge )
-            {
-                botText = _modules.doge.responses( from, to, text, botText );
-            }
-
-            if ( botText === '' && _modules.words )
-            {
-                botText = _modules.words.responses( from, to, text, botText );
-            }
-
-            if ( botText === '' && _modules.anagramm )
-            {
-                botText = _modules.anagramm.responses( from, to, text, botText );
-            }
-
-            if ( botText === '' && _modules.foursquare )
-            {
-                botText = _modules.foursquare.responses( from, to, text, botText );
-            }
-
-            if ( botText === '' && _modules.pool )
-            {
-                botText = _modules.pool.responses( from, to, text, botText );
-            }
-
-            if ( botText === '' )
-            {
-                var command = text.slice( 1 ).split( ' ' )[ 0 ];
-
-                switch ( command )
+                if ( module !== 'constructors' )
                 {
-                    case 'dodge':
-                        dodge( from, to, text );
-                        break;
-                    case 'version':
-                    case userConfig.trigger + 'v':
-                        botText = 'Well, ' + to + ', thanks for asking!  I\'m currently running version ' + version;
-                        break;
-                    case 'help':
-                        if ( userConfig.enableHelp )
-                        {
-                            if ( userConfig.enablePM )
-                            {
-                                _bot.say ( to, userConfig.helpText() );
-                            }
-                            else
-                            {
-                                _bot.say ( from, to + ': ' + userConfig.helpText() );
-                            }
-                            botText = '';
-                        }
-                        break;
-                    default:
-                        botText = '';
+                    botText = _modules[ module ].responses( from, to, text, botText );
+                }
+
+                if ( botText !== '' )
+                {
+                    break;
                 }
             }
 
@@ -279,53 +301,85 @@ function listenToPm( from, text )
 {
     console.log( '<' + from + '> :' + text );
 
-    var textSplit = text.split( ' ' );
-    if ( textSplit[ 0 ] === 'die' && userConfig.admins.indexOf( from ) !== -1 )
+    // var textSplit = text.split( ' ' );
+    // if ( textSplit[ 0 ] === 'die' && userConfig.admins.indexOf( from ) !== -1 )
+    // {
+    //     _bot.disconnect( 'Fine...  I was on my way out anyways.', function()
+    //     {
+    //         console.log( from + ' killed me' );
+    //     });
+    // }
+    // else if ( textSplit[ 0 ] === 'restart' && userConfig.admins.indexOf( from ) !== -1 )
+    // {
+    //     _bot.say ( userConfig.unscramble, 'I will restart after the next word is skipped or solved' );
+    //     _bot.say ( userConfig.anagramm, 'Nach diesem Wort werde ich neu gestartet' );
+    // }
+    // else if ( textSplit[ 0 ] === 'help' )
+    // {
+    //     botText = userConfig.helpText();
+
+    //     _bot.say ( from, botText );
+    //     botText = '';
+    // }
+    // else if ( _modules.doge && textSplit[ 0 ] === 'doge' )
+    // {
+    //     _modules.doge.doge( from, text, false );
+    // }
+    // else if ( _modules.doge && textSplit[ 0 ] === 'market' )
+    // {
+    //     _modules.doge.doge( from, text, true );
+    // }
+    // else if ( _modules.doge && textSplit[ 0 ] === 'withdraw' )
+    // {
+    //     _modules.doge.withdraw( from, from, text );
+    // }
+    // else if ( _modules.doge && textSplit[ 0 ] === 'balance' )
+    // {
+    //     _modules.doge.balance( from, from, text );
+    // }
+    // else if ( _modules.doge && textSplit[ 0 ] === 'deposit' )
+    // {
+    //     _modules.doge.deposit( from, from, text );
+    // }
+    // else
+    // {
+    //     _modules.words.responses( from, from, text, '' );
+    // }
+}
+
+
+function responses( from, to, text, botText )
+{
+    var command = text.slice( 1 ).split( ' ' )[ 0 ];
+
+    switch ( command )
     {
-        _bot.disconnect( 'Fine...  I was on my way out anyways.', function()
-        {
-            console.log( from + ' killed me' );
-        });
+        case 'active':
+            checkActive( from, to, text );
+            break;
+        case 'version':
+        case userConfig.trigger + 'v':
+            botText = 'Well, ' + to + ', thanks for asking!  I\'m currently running version ' + version;
+            break;
+        case 'help':
+            if ( userConfig.enableHelp )
+            {
+                if ( userConfig.enablePM )
+                {
+                    _bot.say ( to, userConfig.helpText() );
+                }
+                else
+                {
+                    _bot.say ( from, to + ': ' + userConfig.helpText() );
+                }
+                botText = '';
+            }
+            break;
+        default:
+            botText = '';
     }
-    else if ( textSplit[ 0 ] === 'restart' && userConfig.admins.indexOf( from ) !== -1 )
-    {
-        _bot.say ( userConfig.unscramble, 'I will restart after the next word is skipped or solved' );
-        _bot.say ( userConfig.anagramm, 'Nach diesem Wort werde ich neu gestartet' );
-    }
-    else if ( textSplit[ 0 ] === 'help' )
-    {
-        botText = userConfig.helpText();
-        if ( textSplit[ 1 ] === '-v' )
-        {
-            botText += userConfig.helpTextSecondary();
-        }
-        _bot.say ( from, botText );
-        botText = '';
-    }
-    else if ( _modules.doge && textSplit[ 0 ] === 'doge' )
-    {
-        _modules.doge.doge( from, text, false );
-    }
-    else if ( _modules.doge && textSplit[ 0 ] === 'market' )
-    {
-        _modules.doge.doge( from, text, true );
-    }
-    else if ( _modules.doge && textSplit[ 0 ] === 'withdraw' )
-    {
-        _modules.doge.withdraw( from, from, text );
-    }
-    else if ( _modules.doge && textSplit[ 0 ] === 'balance' )
-    {
-        _modules.doge.balance( from, from, text );
-    }
-    else if ( _modules.doge && textSplit[ 0 ] === 'deposit' )
-    {
-        _modules.doge.deposit( from, from, text );
-    }
-    else
-    {
-        _modules.words.responses( from, from, text, '' );
-    }
+
+    return botText;
 }
 
 
@@ -381,6 +435,26 @@ function userData( to, from, _cb, origText )
 
         _bot.say( userConfig.nickservBot, userConfig.nickservAPI + ' identify ' + to );
     }
+}
+
+
+/**
+ * watch active
+ *
+ * sets the latest active time for a user in a channel
+ *
+ * @param  {str}            from                originating channel
+ * @param  {str}            to                  originating user
+ *
+ * @return {void}
+ */
+function watchActive( from, to )
+{
+    if ( !_bot.active[ from ] )
+    {
+        _bot.active[ from ] = {};
+    }
+    _bot.active[ from ][ to ] = Date.now();
 }
 
 
