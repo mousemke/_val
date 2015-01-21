@@ -17,8 +17,6 @@ Go to http://knoblau.ch/_val for a list of commands.
 + all modules passed as _modules to each for dynamic interconnectedness
 + awaybot updated
 + active moved to core functionality
-+ refactored basic module building and commands for better dynamics
-+ disabled all pm commands ahead of refactoring
 
 
 0.1.1 -
