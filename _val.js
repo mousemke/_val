@@ -15,12 +15,7 @@ var channels        = userConfig.channels,
     http    = userConfig.req.http   = require( 'http' ),
     https   = userConfig.req.https  = require( 'https' ),
     irc     = userConfig.req.irc    = require( 'irc' ),
-    fs      = userConfig.req.fs     = require( 'fs' ),
-
-    /**
-     * Lists
-     */
-    cars        = require( './lists/cars.js' );
+    fs      = userConfig.req.fs     = require( 'fs' );
 
 /**
  * API get
@@ -76,48 +71,6 @@ function apiGet( _url, _cb, secure )
             console.log( 'Got error: ', e );
         });
     }
-}
-
-
-/**
- * Dodge
- *
- * by stefan's request
- *
- * @param  {str}                    from                originating channel
- * @param  {str}                    to                  originating user
- * @param  {str}                    text                message text
- *
- * @return {void}
- */
-function dodge( from, to, text )
-{
-    var textSplit = text.split( ' ' );
-
-    if ( textSplit[1] )
-    {
-        to = textSplit[1];
-    }
-
-    var botText = ' hits ' + to + ' with a ';
-    var car = cars[ Math.floor( Math.random() * cars.length ) ];
-
-    if ( !car[ 1 ] )
-    {
-        botText += 'Dodge ' + car[ 0 ];
-    }
-    else if ( !car[ 2 ] )
-    {
-        botText += car[ 1 ] + ' Dodge ' + car[ 0 ];
-    }
-    else
-    {
-        var spread = car[ 2 ] - car[ 1 ];
-        var year = Math.floor( Math.random() * spread ) + car[ 1 ];
-        botText += year + ' Dodge ' + car[ 0 ];
-    }
-
-    _bot.action( from, botText );
 }
 
 

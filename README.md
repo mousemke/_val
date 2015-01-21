@@ -11,6 +11,9 @@ Go to http://knoblau.ch/_val for a list of commands.
 + reorganized module loading and introduced config/_val.modules.js for enhanced dynamic module loading
 + cleaned lots of code
 + new plaintext commands \o/
++ plaintext reorganization
++ dodge moved to plaintext
++ pool becomes its own modules
 
 
 0.1.1 -

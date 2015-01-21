@@ -6,8 +6,156 @@ module.exports = function PlainText( _bot, apiGet, userData, userConfig )
 {
     var moonRegex       = /(?:m([o]+)n)/,
         spaceRegex      = /(?:sp([a]+)ce)/,
-        nouns           = require( '../lists/nouns.js' );
+        
+        /**
+         * Lists
+         */
+        nouns           = require( '../lists/nouns.js' ),
+        cars            = require( '../lists/cars.js' );
 
+
+    /**
+     * Dodge
+     *
+     * by stefan's request
+     *
+     * @param  {str}                    from                originating channel
+     * @param  {str}                    to                  originating user
+     * @param  {str}                    text                message text
+     *
+     * @return {void}
+     */
+    var dodge = function( from, to, text )
+    {
+        var textSplit = text.split( ' ' );
+
+        if ( textSplit[1] )
+        {
+            to = textSplit[1];
+        }
+
+        var botText = ' hits ' + to + ' with a ';
+        var car = cars[ Math.floor( Math.random() * cars.length ) ];
+
+        if ( !car[ 1 ] )
+        {
+            botText += 'Dodge ' + car[ 0 ];
+        }
+        else if ( !car[ 2 ] )
+        {
+            botText += car[ 1 ] + ' Dodge ' + car[ 0 ];
+        }
+        else
+        {
+            var spread = car[ 2 ] - car[ 1 ];
+            var year = Math.floor( Math.random() * spread ) + car[ 1 ];
+            botText += year + ' Dodge ' + car[ 0 ];
+        }
+
+        return botText;
+    };
+
+
+    /**
+     * Fetti!
+     **/
+    var fetti = function( command )
+    {
+        var type = command.slice( 0, command.length - 5 );
+        var word = type;
+
+        switch ( type )
+        {
+            case 'doge':
+                word = [ 'wow ', 'Ð ', 'doge ', 'moon ', 'ÐÐÐ ', 'such ', 'is ' ];
+                break;
+            case 'con':
+                word = '´ . \' ';
+                break;
+            case 'spooky':
+                word = [ '\\༼☯༽/ ', '༼°°༽ ', 'SPOOKY ', 'GHOSTS ' ];
+                break;
+            case 'moon':
+                word = [ 'moon ', 'moooooooon ', 'doge ', 'wow ' ];
+                break;
+            case 'troll':
+                word = [ 'http://trololololololololololo.com/', 'http', 'trolo', 'lolo', 'ololo.com', 'troll'  ];
+                break;
+            case 'trøll':
+                word = [ 'http://trølølølølølølølølølølø.cøm/', 'http', 'trølø', 'lølø', 'ølølø.cøm', 'trøll'  ];
+                break;
+            case 'xmas':
+            case 'christmas':
+                word = [ 'ʕ◔ᴥ◔ʔ ', '☃ ', 'presents ', '✦ ', 'santa ', '⁂ ', 'satan ' ];
+                break;
+            case 'fork':
+                word = [ '--E ' ];
+                break;
+            case 'fukt':
+                word = [ 'ا҈̢̅ͬͦͬͬͤ҉̢̅ͬͦͬͬͤ҈̢̅ͬͦͬͬͤ҉̢̅ͬͦͬͬͤ҈̢̅ͬͦͬͬͤ҉̢̅ͬͦͬͬͤ҈̢̅ͬͦͬͬͤ҉̢̅ͬͦͬͬͤ҈̢̅ͬͦͬͬͤ҉̢̅ͬͦͬͬͤ҈̢̅ͬͦͬͬͤ҉̢̅ͬͦͬͬͤ҈̢̅ͬͦͬͬͤ҉̢̅ͬͦͬͬͤ҈̢̅ͬͦͬͬͤ҉̢̅ͬͦͬͬͤ҈̢̅ͬͦͬͬͤ҉̢ ', '⌒͝͡͡͡͡͡͡͡͡͡͡͡͡͡͡͡͡͡͡ ' ];
+                break;
+            case 'cone':
+                word = [ '/\\ ' ];
+                break;
+        }
+
+        if ( type.length > userConfig.fettiWordLength )
+        {
+            word = [ 'toolong' ];
+        }
+
+        if ( typeof word === 'string' )
+        {
+            word = [ word ];
+        }
+
+        var i, lenI, option;
+
+        for ( i = 0, lenI = userConfig.fettiOptions.length; i < lenI; i++ )
+        {
+            word.push ( userConfig.fettiOptions[ i ] + ' ' );
+        }
+
+        var botText = '';
+
+        for ( i = 0; i < userConfig.fettiLength; i++ )
+        {
+            option   = Math.floor( Math.random() * word.length );
+            botText += word[ option ];
+        }
+
+        return botText;
+    }
+
+
+    /**
+     *
+     **/
+    var end = function( command, text )
+    {
+        var num     = Math.floor( Math.random() * ( nouns.length ) );
+        var noun    = nouns[ num ];
+
+        botText     = command + 's ' + noun[ 0 ];
+
+        var target  = text.split( ' ' );
+
+        if ( target && target[ 1 ] )
+        {
+          var connections = [ ' to ', ' at ' ];
+
+          num = Math.floor( Math.random() * ( connections.length ) );
+          botText += connections[ num ] + target[ 1 ];
+        }
+
+        return botText;
+    }
+
+
+
+    /**
+     * Responses
+     **/
     return function( from, to, text, botText )
     {
         var command = text.slice( 1 ).split( ' ' )[ 0 ];
@@ -16,85 +164,11 @@ module.exports = function PlainText( _bot, apiGet, userData, userConfig )
 
         if ( command.slice( command.length - 3 ) === 'end' )
         {
-            var num = Math.floor( Math.random() * ( nouns.length ) );
-            var noun = nouns[ num ];
-
-            botText = command + 's ' + noun[ 0 ];
-
-            var target = text.split( ' ' );
-
-            if ( target && target[ 1 ] )
-            {
-              var connections = [ ' to ', ' at ' ];
-              num = Math.floor( Math.random() * ( connections.length ) );
-              botText += connections[ num ] + target[ 1 ];
-            }
-            _bot.action( from, botText );
-            botText = '';
-
+            botText = end( command, text );
         }
         else if ( command.slice( command.length - 5 ) === 'fetti' )
         {
-            var type = command.slice( 0, command.length - 5 );
-            var word = type;
-
-            switch ( type )
-            {
-                case 'doge':
-                    word = [ 'wow ', 'Ð ', 'doge ', 'moon ', 'ÐÐÐ ', 'such ', 'is ' ];
-                    break;
-                case 'con':
-                    word = '´ . \' ';
-                    break;
-                case 'spooky':
-                    word = [ '\\༼☯༽/ ', '༼°°༽ ', 'SPOOKY ', 'GHOSTS ' ];
-                    break;
-                case 'moon':
-                    word = [ 'moon ', 'moooooooon ', 'doge ', 'wow ' ];
-                    break;
-                case 'troll':
-                    word = [ 'http://trololololololololololo.com/', 'http', 'trolo', 'lolo', 'ololo.com', 'troll'  ];
-                    break;
-                case 'trøll':
-                    word = [ 'http://trølølølølølølølølølølø.cøm/', 'http', 'trølø', 'lølø', 'ølølø.cøm', 'trøll'  ];
-                    break;
-                case 'xmas':
-                case 'christmas':
-                    word = [ 'ʕ◔ᴥ◔ʔ ', '☃ ', 'presents ', '✦ ', 'santa ', '⁂ ', 'satan ' ];
-                    break;
-                case 'fork':
-                    word = [ '--E ' ];
-                    break;
-                case 'fukt':
-                    word = [ 'ا҈̢̅ͬͦͬͬͤ҉̢̅ͬͦͬͬͤ҈̢̅ͬͦͬͬͤ҉̢̅ͬͦͬͬͤ҈̢̅ͬͦͬͬͤ҉̢̅ͬͦͬͬͤ҈̢̅ͬͦͬͬͤ҉̢̅ͬͦͬͬͤ҈̢̅ͬͦͬͬͤ҉̢̅ͬͦͬͬͤ҈̢̅ͬͦͬͬͤ҉̢̅ͬͦͬͬͤ҈̢̅ͬͦͬͬͤ҉̢̅ͬͦͬͬͤ҈̢̅ͬͦͬͬͤ҉̢̅ͬͦͬͬͤ҈̢̅ͬͦͬͬͤ҉̢ ', '⌒͝͡͡͡͡͡͡͡͡͡͡͡͡͡͡͡͡͡͡ ' ];
-                    break;
-                case 'cone':
-                    word = [ '/\\ ' ];
-                    break;
-            }
-
-            if ( type.length > userConfig.fettiWordLength )
-            {
-                word = 'toolong';
-            }
-
-            if ( typeof word === 'string' )
-            {
-                word = [ word ];
-            }
-
-            var i, lenI, option;
-
-            for ( i = 0, lenI = userConfig.fettiOptions.length; i < lenI; i++ )
-            {
-                word.push ( userConfig.fettiOptions[ i ] + ' ' );
-            }
-
-            for ( i = 0; i < userConfig.fettiLength; i++ )
-            {
-                option   = Math.floor( Math.random() * word.length );
-                botText += word[ option ];
-            }
+            botText = fetti( command );
         }
         else if ( moon && moon[1] && text !== '+moonflakes' )
         {
@@ -130,6 +204,9 @@ module.exports = function PlainText( _bot, apiGet, userData, userConfig )
         {
             switch ( command )
             {
+                case 'dodge':
+                    botText = dodge( from, to, text );
+                    break;
                 case 'fight':
                     botText = '(ง︡\'-\'︠)ง';
                     break;
