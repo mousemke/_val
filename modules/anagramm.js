@@ -190,6 +190,14 @@ module.exports  = function Worte( _bot, _modules, userConfig )
                 }
                 botText += '! Many ' + solveTime + ' Sekunden';
 
+                if ( _modules.doge && userConfig.anagrammDogePayout )
+                {
+                    var dogetip = currentWord.length * userConfig.anagrammDogeModifier;
+
+                    _modules.doge.giveFromBank( to, dogetip, true );
+                    botText += ' You\'ve earned Ð' + dogetip + '!';
+                }
+
                 var additionalDefs = currentWordDef.length - 1;
 
                 if ( ! currentWordDef || ! currentWordDef[0] )

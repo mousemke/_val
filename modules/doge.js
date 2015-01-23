@@ -172,6 +172,24 @@ module.exports = function Doge( _bot, _modules, userConfig )
         },
 
 
+        giveFromBank : function( to, amount, silent )
+        {
+            silent = silent || false;
+
+            dcMasterList[ to.toLowerCase() ]  = dcMasterList[ to.toLowerCase() ]  + amount || amount;
+            dcMasterList.___bank___  = dcMasterList.___bank___  - amount;
+
+            this.writeMasterList();
+
+            if ( silent )
+            {
+                return '';
+            }
+
+            return to + ' earns such Ð' + amount;
+        },
+
+
         /**
          * Doge init
          *

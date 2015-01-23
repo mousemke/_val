@@ -10,6 +10,7 @@ Go to http://knoblau.ch/_val for a list of commands.
 0.1.3 -
 + added twitch module
 + added admin module
++ words and anagramm both can reward in Doge!
 
 
 0.1.2 -

@@ -115,7 +115,15 @@ module.exports  = function Words( _bot, _modules, userConfig )
                 {
                     botText += 's';
                 }
-                botText += '! Many ' + solveTime + ' seconds';
+                botText += '! Many ' + solveTime + ' seconds!';
+
+                if ( _modules.doge && userConfig.unscrambleDogePayout )
+                {
+                    var dogetip = currentWord.length * userConfig.unscrambleDogeModifier;
+
+                    _modules.doge.giveFromBank( to, dogetip, true );
+                    botText += ' You\'ve earned Ð' + dogetip + '!';
+                }
 
                 var additionalDefs = currentWordDef.length - 1;
 

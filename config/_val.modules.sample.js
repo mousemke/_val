@@ -33,7 +33,7 @@
         enabled : true,
         ini     : true,
         url     : './modules/doge.js'
-    },    
+    },
 
     Foursquare        : {
         enabled : true,
@@ -55,8 +55,10 @@
             newWordVoteNeeded       : 0.6,
             unscramblePointTimeout  : 86400000, // 24 hours
             unscramble              : '#unscramble',
+            unscrambleDogePayout    : true, // requires module: doge
+            unscrambleDogeModifier  : 1,
             wordnikAPIKey           : 'wordnik - it works bitches',
-        } 
+        }
     },
 
     Anagramm    : {
@@ -64,8 +66,15 @@
         ini     : true,
         url     : './modules/anagramm.js',
         options : {
-                anagramm                : '#anagramm',
-        } 
+            wordnikBaseUrl          : 'http://api.wordnik.com:80/v4/',
+            translationBaseUrl      : 'http://mymemory.translated.net/api/',
+            newWordVoteNeeded       : 0.6,
+            unscramblePointTimeout  : 86400000, // 24 hours
+            anagramm                : '#anagramm',
+            anagrammDogePayout      : true, // requires module: doge
+            anagrammDogeModifier    : 1,
+            wordnikAPIKey           : 'wordnik - it works bitches',
+        }
     },
 
     Pool        : {
@@ -73,7 +82,7 @@
         url     : './modules/pool.js',
         options : {
                 poolApiUrl              : 'http://192.168.2.15:8001/api/'
-        } 
+        }
     },
 
     Twitch      : {
