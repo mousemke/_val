@@ -447,7 +447,14 @@ module.exports = function Doge( _bot, _modules, userConfig )
                         if ( reciever !== userConfig.botName )
                         {
                             dcMasterList[ reciever.toLowerCase() ] = ( dcMasterList[ reciever.toLowerCase() ] ) ? dcMasterList[ reciever.toLowerCase() ] + amount : amount;
-                            _bot.say( reciever,   'Such ' + to + ' tipped you Ð' + amount + ' (to claim /msg ' + ( userConfig.botName ) + ' help)' );
+                            if ( userConfig.enablePM )
+                            {
+                                _bot.say( reciever,   'Such ' + to + ' tipped you Ð' + amount + ' (to claim /msg ' + ( userConfig.botName ) + ' help)' );
+                            }
+                        }
+                        else
+                        {
+                            dcMasterList.___bank___ = dcMasterList.___bank___ + amount;
                         }
 
                         scope.writeMasterList();
