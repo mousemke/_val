@@ -1,13 +1,11 @@
 
-var version = '0.1.3a';
-
 // Loads the configuration and sets variables
 var channel, _bot, words, _modules = {},
-    userConfig      = require( './config/_val.config.js' );
+    userConfig          = require( './config/_val.config.js' );
+    userConfig.version  = '0.1.3a';
+    userConfig.req      = {};
 
-    userConfig.req  = {};
-
-var channels        = userConfig.channels,
+var channels            = userConfig.channels,
 
     /**
      * load node modules
@@ -147,11 +145,14 @@ function checkActive( from, to, text, talk )
 function ini()
 {
     _bot = new irc.Client( userConfig.server, userConfig.botName, {
-        channels    : userConfig.channels,
-        password    : userConfig.serverPassword,
-        showErrors  : false,
-        autoRejoin  : true,
-        autoConnect : true
+        channels                : userConfig.channels,
+        password                : userConfig.serverPassword,
+        showErrors              : false,
+        autoRejoin              : true,
+        autoConnect             : true,
+        floodProtection         : userConfig.floodProtection,
+        floodProtectionDelay    : userConfig.floodProtectionDelay,
+        // encoding                : 'UTF-8'
     });
 
     _bot.addListener( 'error', function( message )
@@ -356,10 +357,6 @@ function responses( from, to, text, botText )
     {
         case 'active':
             checkActive( from, to, text );
-            break;
-        case 'version':
-        case userConfig.trigger + 'v':
-            botText = 'Well, ' + to + ', thanks for asking!  I\'m currently running version ' + version;
             break;
         case 'help':
             if ( userConfig.enableHelp )

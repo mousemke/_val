@@ -181,7 +181,10 @@ module.exports  = function Words( _bot, _modules, userConfig )
                     currentWordTime = 0;
                     scrambledWord   = '';
                     newWordVote     = [];
-                    _bot.removeListener( 'message' + userConfig.unscramble, wordListener );
+                    if ( wordListener )
+                    {
+                        _bot.removeListener( 'message' + userConfig.unscramble, wordListener );
+                    }
                     this.word();
                 }
             }

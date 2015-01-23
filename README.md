@@ -7,6 +7,11 @@ Go to http://knoblau.ch/_val for a list of commands.
 
 **Change log**
 
+0.1.3 -
++ added twitch module
++ added admin module
+
+
 0.1.2 -
 + reorganized module loading and introduced config/_val.modules.js for enhanced dynamic module loading
 + cleaned lots of code

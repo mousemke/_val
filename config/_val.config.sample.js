@@ -50,11 +50,13 @@ var userConfig = {
     server                  : '192.168.1.1',
     serverPassword          : 'just.another.irc.server.password.i.suppose',
     botName                 : 'justAnotherBot',
+    floodProtection         : false,
+    floodProtectionDelay    : 1200,
 
     /**
      * trigger to catch commands
      **/
-    trigger                 : 'ß',
+    trigger                 : '!',
 
     /**
      * timout for a user to be considered active
@@ -82,40 +84,11 @@ var userConfig = {
     nickservAPI             : 'Help, I\'m trapped in an api factory',
 
     /**
-     * enables Dogecoin functions
-     * must have a copy of dogecoind running for this to work
-     */
-    enableDoge              : true,
-
-    /**
-     * uses the wordnik api for words and mymemory for translations
-     * runs german and english (and potentially any language) word scramble
-     */
-    enableWords             : true,
-    wordnikBaseUrl          : 'http://api.wordnik.com:80/v4/',
-    translationBaseUrl      : 'http://mymemory.translated.net/api/',
-    newWordVoteNeeded       : 0.6,
-    unscramblePointTimeout  : 86400000, // 24 hours
-    unscramble              : '#unscramble',
-    anagramm                : '#anagramm',
-    wordnikAPIKey           : 'wordnik - it works bitches',
-
-    /**
      * uses the leaderboard api to track pool scores
      * https://github.com/nicolasbrugneaux/leaderboard
      */
     enablePool              : true,
     poolApiUrl              : 'http://192.168.2.15:8001/api/',
-
-    /**
-     * go get yo' self a foursquare api key
-     * this is mainly used to find new lunch places around Sociomantic Labs.
-     * change the latLong for other locations.
-     */
-    enableFoursquare        : true,
-    foursquareID            : '4sq ID - go get one',
-    foursquareSecret        : '4sq secret - go get one',
-    latLong                 : '-88.987,-88.567',
 
     /**
      * some services (**cough* twitch**) dont support private messages or
@@ -129,22 +102,7 @@ var userConfig = {
      * disables private messages
      */
     enablePM                : true,
-
-    /**
-     * special modes that configure for services
-     */
-    twitchMode              : false
 };
-
-
-if ( userConfig.twitchMode )
-{
-    userConfig.autoAuth             = true;
-    userConfig.enableWords          = false;
-    userConfig.enableFoursquare     = false;
-    userConfig.enablePM             = false;
-}
-
 
 module.exports = userConfig;
 

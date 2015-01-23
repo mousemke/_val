@@ -74,5 +74,23 @@
         options : {
                 poolApiUrl              : 'http://192.168.2.15:8001/api/'
         } 
+    },
+
+    Twitch      : {
+        enabled : false,
+        url     : './modules/twitch.js',
+        options : {
+            autoAuth                    : true,
+            enablePM                    : false,
+            floodProtection             : true,
+            floodProtectionDelay        : 1200
+        }
+    },
+
+    Admin       : {
+        enabled : false,
+        url     : './modules/admin.js',
+        options : {
+        }
     }
 };
