@@ -85,8 +85,15 @@
         }
     },
 
+    Admin       : {
+        enabled : true,
+        url     : './modules/admin.js',
+        options : {
+        }
+    },
+
     Twitch      : {
-        enabled : false,
+        enabled : true,
         url     : './modules/twitch.js',
         options : {
             autoAuth                    : true,
@@ -96,10 +103,12 @@
         }
     },
 
-    Admin       : {
-        enabled : false,
-        url     : './modules/admin.js',
+    GuildWars   : {
+        enabled : true,
+        url     : './modules/games/gw2.js',
         options : {
+            guildWars2Trigger           : 'gw2',
+            guildWars2Room              : '#guildwars'
         }
     }
 };
