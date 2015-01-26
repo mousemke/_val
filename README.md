@@ -11,6 +11,7 @@ Go to http://knoblau.ch/_val for a list of commands.
 + added twitch module
 + added admin module
 + words and anagramm both can reward in Doge!
++ added /games directory for league and online game info
 
 
 0.1.2 -

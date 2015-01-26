@@ -1,12 +1,13 @@
 
 module.exports  = function Template( _bot, _modules, userConfig )
 {
-    var apiBaseUrl = 'https://api.testsite.com/v2';
-
+    var apiBaseUrl      = userConfig.TEMPLATEapiBaseUrl;
+    var moduleTrigger   = userConfig.TEMPLATETrigger;
+    var moduleRoom      = userConfig.TEMPLATERoom;
 
     return {
 
-        test : function()
+        test : function( botText )
         {
             var url = apiBaseUrl + '/items';
 
@@ -18,7 +19,7 @@ module.exports  = function Template( _bot, _modules, userConfig )
 
             } );
 
-            return null;
+            return botText;
         },
 
 
@@ -28,14 +29,15 @@ module.exports  = function Template( _bot, _modules, userConfig )
             var textSplit = text.split( ' ' );
             var command = textSplit[ 0 ].slice( 1 );
 
-            if ( userConfig.guildWars2Room !== from && command === userConfig.guildWars2Trigger )
+            if ( moduleRoom !== from && command === moduleTrigger &&
+                textSplit.length > 1 )
             {
-                from = userConfig.guildWars2Room;
+                from = moduleRoom;
                 textSplit = textSplit.slice( 1 );
                 command = textSplit[ 0 ];
             }
 
-            if ( userConfig.guildWars2Room === from )
+            if ( moduleRoom === from )
             {            
                 if ( typeof command !== 'string' )
                 {

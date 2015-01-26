@@ -20,7 +20,9 @@
 
 module.exports  = function GuildWars2( _bot, _modules, userConfig )
 {
-    var apiBaseUrl = 'https://api.guildwars2.com/v2';
+    var apiBaseUrl      = userConfig.guildWars2apiUrl;
+    var moduleTrigger   = userConfig.guildWars2Trigger;
+    var moduleRoom      = userConfig.guildWars2Room;
 
 
     return {
@@ -83,7 +85,7 @@ module.exports  = function GuildWars2( _bot, _modules, userConfig )
     // /v2/worlds [l]
 
 
-        test : function()
+        test : function( botText )
         {
             var url = apiBaseUrl + '/items';
 
@@ -95,7 +97,7 @@ module.exports  = function GuildWars2( _bot, _modules, userConfig )
 
             } );
 
-            return null;
+            return botText;
         },
 
 
@@ -105,14 +107,15 @@ module.exports  = function GuildWars2( _bot, _modules, userConfig )
             var textSplit = text.split( ' ' );
             var command = textSplit[ 0 ].slice( 1 );
 
-            if ( userConfig.guildWars2Room !== from && command === userConfig.guildWars2Trigger )
+            if ( moduleRoom !== from && command === moduleTrigger &&
+                textSplit.length > 1 )
             {
-                from = userConfig.guildWars2Room;
+                from = moduleRoom;
                 textSplit = textSplit.slice( 1 );
                 command = textSplit[ 0 ];
             }
 
-            if ( userConfig.guildWars2Room === from )
+            if ( moduleRoom === from )
             {            
                 if ( typeof command !== 'string' )
                 {

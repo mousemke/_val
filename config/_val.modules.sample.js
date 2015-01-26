@@ -72,7 +72,7 @@
             unscramblePointTimeout  : 86400000, // 24 hours
             anagramm                : '#anagramm',
             anagrammDogePayout      : true, // requires module: doge
-            anagrammDogeModifier    : 1,
+            anagrammDogeModifier    : 3,
             wordnikAPIKey           : 'wordnik - it works bitches',
         }
     },
@@ -81,7 +81,7 @@
         enabled : true,
         url     : './modules/pool.js',
         options : {
-                poolApiUrl              : 'http://192.168.2.15:8001/api/'
+                poolApiUrl          : 'http://192.168.2.15:8001/api/'
         }
     },
 
@@ -96,10 +96,10 @@
         enabled : true,
         url     : './modules/twitch.js',
         options : {
-            autoAuth                    : true,
-            enablePM                    : false,
-            floodProtection             : true,
-            floodProtectionDelay        : 1200
+            autoAuth                : true,
+            enablePM                : false,
+            floodProtection         : true,
+            floodProtectionDelay    : 1200
         }
     },
 
@@ -107,8 +107,9 @@
         enabled : true,
         url     : './modules/games/gw2.js',
         options : {
-            guildWars2Trigger           : 'gw2',
-            guildWars2Room              : '#guildwars'
+            guildWars2Trigger       : 'gw2',
+            guildWars2Room          : '#guildwars',
+            guildWars2apiUrl        : 'https://api.guildwars2.com/v2'
         }
     }
 };
