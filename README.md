@@ -12,6 +12,7 @@ Go to http://knoblau.ch/_val for a list of commands.
 + added admin module
 + words and anagramm both can reward in Doge!
 + added /games directory for league and online game info
++ admin module now supports timed, repeating broadcasts
 
 
 0.1.2 -

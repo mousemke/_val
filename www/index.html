@@ -55,6 +55,7 @@
                         <a href="#troll">troll<br>trøll</a>
                         <a href="#_val">_val<br>_val?</a>
                         <a href="#moon">moon?</a>
+                        <a href="#isup">isup</a>
                         <a href="#help">help</a>
                         <a href="#active">active</a>
                     </div>
@@ -205,6 +206,12 @@
                     <a href="#admin-module">ADMIN MODULE</a>
                     <div class="indented">
                         <a href="#admin-v">v</a>
+                        <a href="#admin-m">m (message)</a>
+                        <a href="#admin-m-info">m-info</a>
+                        <a href="#admin-m-interval">m-interval (interval in ms)</a>
+                        <a href="#admin-m-channels">m-channels (channels)</a>
+                        <a href="#admin-m-cancel">m-cancel</a>
+                        <a href="#admin-m-clear">m-clear</a>
                     </div>
                     <br>
                 </div>
@@ -225,7 +232,8 @@
                                 + added admin module<br>
                                 + words and anagramm both can reward in Doge!<br>
                                 + added /games directory for league and online game info<br>
-                                + added Guild Wars 2
+                                + added Guild Wars 2<br>
+                                + admin module now supports timed, repeating broadcasts<br>
                                 <br>
                                 <a href="#old-changes">older change logs</a>
                             </div>
@@ -254,16 +262,14 @@
                             <p>this command is evoked when the message text comtains troll or trøll.  The message text is changed to trollfetti or trøllfetti.  This supercedes all other commands that might be in the text</p>
 
                         <a name="_val"></a>
+                        <a name="moon"></a>
+                        <a name="isup"></a>
                         <br>
                         <span class="command">_val</span>
                         <span class="command">_val?</span>
-                            <p>yes?<br>
-                            * mainly used to test if the bot is up</p>
-
-                        <a name="moon"></a>
-                        <br>
                         <span class="command">moon?</span>
-                            <p>this text tends to change from commit to commit<br>
+                        <span class="command">isup</span>
+                            <p>these texts tends to change from commit to commit<br>
                             * mainly used to test if the bot is up</p>
 
                         <a name="help"></a>
@@ -815,6 +821,33 @@
                         <br>
                         <span class="command">v</span>
                             <p>Shows _val's version number</p>
+
+                        <a name="admin-m"></a>
+                        <br>
+                        <span class="command">m (message)</span>
+                            <p>Sets the broadcast message text.  Empty text will cancel the message </p>
+
+                        <a name="admin-m-info"></a>
+                        <br>
+                        <span class="command">m-info</span>
+                            <p>Displays info on the current broadcast message</p>
+
+                        <a name="admin-m-interval"></a>
+                        <br>
+                        <span class="command">m-interval (interval in ms)</span>
+                            <p>Sets the repeat interval of the broadcast message</p>
+
+                        <a name="admin-m-channels"></a>
+                        <br>
+                        <span class="command">m-channels (channels)</span>
+                            <p>Sets the target channels for the broadcast message, starting with #, separated by spaces</p>
+
+                        <a name="admin-m-cancel"></a>
+                        <a name="admin-m-clear"></a>
+                        <br>
+                        <span class="command">m-cancel</span>
+                        <span class="command">m-clear</span>
+                            <p>Cancels the broadcast message</p>
 
                     </div>
 

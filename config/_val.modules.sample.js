@@ -89,6 +89,9 @@
         enabled : true,
         url     : './modules/admin.js',
         options : {
+            adminMessage            : '5 minutes later test. well, this appears to work',
+            adminMessageInterval    : 300000, // 5 min
+            adminMessageChannels    : [ '#soc-bots' ] // optional.  otherwise it falls back to all channels
         }
     },
 

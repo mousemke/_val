@@ -11,7 +11,9 @@ module.exports = function PlainText( _bot, _modules, userConfig )
          * Lists
          */
         nouns           = require( '../lists/nouns.js' ),
-        cars            = require( '../lists/cars.js' );
+        cars            = require( '../lists/cars.js' ),
+        textResponses   = require( '../lists/plainText.js' );
+
 
     return {
 
@@ -202,162 +204,74 @@ module.exports = function PlainText( _bot, _modules, userConfig )
             }
             else
             {
-                switch ( command )
+                if ( !! textResponses[ command ] )
                 {
-                    case 'dodge':
-                        botText = this.dodge( from, to, text );
-                        break;
-                    case 'fight':
-                        botText = '(ง︡\'-\'︠)ง';
-                        break;
-                    case 'levelSelect':
-                        botText = 'B A B A ↑ ↓ B A ← → B A (start)';
-                        break;
-                    case 'konami':
-                        botText = '↑ ↑ ↓ ↓ ← → ← → B A (start)';
-                        break;
-                    case 'rain':
-                        botText = 'ヽ｀、ヽ｀ヽヽ｀、ヽ｀ヽヽ｀、ヽ｀ヽ(¬_¬ )ヽ｀、ヽ｀ヽ｀、ヽ｀';
-                        break;
-                    case 'dance':
-                        var dancer = Math.floor( Math.random() * 80 );
-                        if ( dancer === 3 )
-                        {
-                            botText = '└[∵┌]└[ ∵ ]┘[┐∵]┘';
-                        }
-                        else
-                        {
-                            botText = '♪┏(・o･)┛♪┗ ( ･o･) ┓♪';
-                        }
-                        break;
-                    case 'domo':
-                        botText = '\\|°▿▿▿▿°|/';
-                        break;
-                    case 'barrelroll':
-                        botText = '(._.)  ( l: )  ( .-. )  ( :l )  (._.)';
-                        break;
-                    case 'hedgehog':
-                        botText = '(•ᴥ• )́`́\'́`́\'́⻍ ';
-                        break;
-                    case 'lurk':
-                        botText = '┬┴┬┴┤(･_├┬┴┬┴';
-                        break;
-                    case 'lurkbear':
-                        botText = '┬┴┬┴┤ʕ•ᴥ├┬┴┬┴';
-                        break;
-                    case 'wave':
-                        botText = to + ' o/';
-                        break;
-                    case 'internet':
-                        botText = 'ଘ(੭*ˊᵕˋ)੭* ̀ˋ ɪɴᴛᴇʀɴᴇᴛs';
-                        break;
-                    case 'cornflakes':
-                    case 'snowflakes':
-                        botText = '❅ ❆ ❆ ❆ ❆ ❅ ❆ ❆ ❅ ❆ ❅ ❆ ❆ ❆ ❆ ❆ ❆ ❆ ❅ ❅ ❅ ❆ ❅ ❆ ❅ ❅ ❆ ❅ ❆ ❅ ❆ ❆ ❆ ❆ ❆ ❆ ❆ ❆ ❆ ❆';
-                        break;
-                    case 'moonflakes':
-                        botText = '☽ ❅ ❅ ❅ ☾ ❆ ❅ ☽ ❆ ❆ ☾ ❅ ☽ ☾ ❅ ❅ ☾ ❅ ☽ ☽ ❆ ☽ ❅ ❅ ☾ ☾ ❆ ☾ ❅ ☾ ☾ ❅ ❅ ☾ ❅ ☾ ❅ ❅ ☾ ❆';
-                        break;
-                    case 'whale':
-                        botText = 'https://www.youtube.com/watch?v=xo2bVbDtiX8';
-                        break;
-                    case 'safety':
-                        botText = 'https://www.youtube.com/watch?v=AjPau5QYtYs';
-                        break;
-                    case 'tacos':
-                        botText = 'https://www.youtube.com/watch?v=W0-esOKooEE&index=28&list=RDHsKXvAymwUg';
-                        break;
-                    case 'shrug':
-                        botText     = '¯\\_(ツ)_/¯';
-                        break;
-                    case 'yes!':
-                        botText = '( ･ㅂ･)و ̑̑';
-                        break;
-                    case 'no!':
-                        botText = '｡゜(｀Д´)゜｡';
-                        break;
-                    case 'why?!':
-                        botText = 'ლ(ಠ_ಠლ)';
-                        break;
-                    case 'why!?':
-                        botText = 'щ(ಥДಥщ)';
-                        break;
-                    case '...':
-                        botText = 'ಠ_ಠ';
-                        break;
-                    case 'facepalm':
-                        botText = '(－‸ლ)';
-                        break;
-                    case 'bot':
-                        botText = 'I AM BOT\nINSERT DOGE';
-                        break;
-                    case 'disappearinacloudofsmoke':
-                        setTimeout( function()
+                    botText = textResponses[ command ];
+                }
+                else
+                {
+                    switch ( command )
+                    {
+                        case 'dodge':
+                            botText = this.dodge( from, to, text );
+                            break;
+                        case 'dance':
+                            var dancer = Math.floor( Math.random() * 80 );
+                            if ( dancer === 3 )
                             {
-                                _bot.say( from, 'I mean...  why would you just assume you can have any new ability you want....' );
-                            }, 5500 );
-                        botText = 'no...  you don\'t have that ability.  stupid.';
-                        break;
-                    case 'google':
-                        text = text.split( ' ' ).slice( 1 ).join( '%20' );
-                        botText = 'http://www.lmgtfy.com/?q=' + text;
-                        break;
-                    case 'w':
-                    case 'wiki':
-                        text = text.split( ' ' ).slice( 1 ).join( '%20' );
-                        botText = 'http://en.wikipedia.org/wiki/' + text;
-                        break;
-                    case 'g':
-                    case 'pic':
-                    case 'gif':
-                        text = text.split( ' ' ).slice( 1 ).join( '%20' );
-                        if ( command === 'gif' )
-                        {
-                            text += '%20filetype:gif';
-                        }
-                        botText = 'https://www.google.com/search?btnG=1&nfpr=1&pws=0&q=' + text;
-                        if ( command === 'gif' || command === 'pic' )
-                        {
-                            botText += '&tbm=isch';
-                        }
-                        break;
-                    case 'witchhunt':
-                        botText = 'http://i.imgur.com/x63cdJW.jpg';
-                        break;
-                    case 'whichhunt':
-                        botText = 'whichever';
-                        break;
-                    case 'wow':
-                        botText = 'https://i.imgur.com/8rhlusE.gif';
-                        break;
-                    case 'flipthetable':
-                        botText = '(╯°□°）╯︵ ┻━┻';
-                        break;
-                    case 'chilloutbro':
-                    case 'putthetableback':
-                        botText = '┬──┬ ノ( ゜-゜ノ)';
-                        break;
-                    case 'vampire':
-                        botText = '(°,..,°)';
-                        break;
-                    case 'ping':
-                        botText = to + ': pong';
-                        break;
-                    case 'badyoutube':
-                    case 'germanysgottalent':
-                        var choices = [ 'https://www.youtube.com/watch?v=IeWAPVWXLtM',
-                                        'https://www.youtube.com/watch?v=dNUUCHsgRu8',
-                                        'https://www.youtube.com/watch?v=PJQVlVHsFF8'
-                                        ];
-                        var choice = Math.floor( Math.random() * choices.length );
-                        botText = choices[ choice ];
-                        break;
-                    case 'magic':
-                        botText = '∴•:+*⁽⁽ଘ( ˊᵕˋ )ଓ⁾⁾*+:•*∴';
-                        break;
-                    case 'pacman':
-                        botText = '( *<)  • • • • • • •';
-                        break;
+                                botText = '└[∵┌]└[ ∵ ]┘[┐∵]┘';
+                            }
+                            else
+                            {
+                                botText = '♪┏(・o･)┛♪┗ ( ･o･) ┓♪';
+                            }
+                            break;
+                        case 'disappearinacloudofsmoke':
+                            setTimeout( function()
+                                {
+                                    _bot.say( from, 'I mean...  why would you just assume you can have any new ability you want....' );
+                                }, 5500 );
+                            botText = 'no...  you don\'t have that ability.  stupid.';
+                            break;
+                        case 'google':
+                            text = text.split( ' ' ).slice( 1 ).join( '%20' );
+                            botText = 'http://www.lmgtfy.com/?q=' + text;
+                            break;
+                        case 'w':
+                        case 'wiki':
+                            text = text.split( ' ' ).slice( 1 ).join( '%20' );
+                            botText = 'http://en.wikipedia.org/wiki/' + text;
+                            break;
+                        case 'g':
+                        case 'pic':
+                        case 'gif':
+                            text = text.split( ' ' ).slice( 1 ).join( '%20' );
+                            if ( command === 'gif' )
+                            {
+                                text += '%20filetype:gif';
+                            }
+                            botText = 'https://www.google.com/search?btnG=1&nfpr=1&pws=0&q=' + text;
+                            if ( command === 'gif' || command === 'pic' )
+                            {
+                                botText += '&tbm=isch';
+                            }
+                            break;
+                        case 'badyoutube':
+                        case 'germanysgottalent':
+                            var choices = [ 'https://www.youtube.com/watch?v=IeWAPVWXLtM',
+                                            'https://www.youtube.com/watch?v=dNUUCHsgRu8',
+                                            'https://www.youtube.com/watch?v=PJQVlVHsFF8'
+                                            ];
+                            var choice = Math.floor( Math.random() * choices.length );
+                            botText = choices[ choice ];
+                            break;
+                        case 'ping':
+                            botText = to + ': pong';
+                            break;
+                        case 'wave':
+                            botText = to + ' o/';
+                            break;
+                    }
                 }
              }
 
