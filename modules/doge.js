@@ -264,6 +264,7 @@ module.exports = function Doge( _bot, _modules, userConfig )
                     this.withdraw( from, to, text );
                     break;
                 case 'balance':
+                case 'wallet':
                     this.balance( from, to, text );
                     break;
                 case 'deposit':

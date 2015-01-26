@@ -162,39 +162,34 @@ module.exports  = function Words( _bot, _modules, userConfig )
         {
             var active =  _modules.core.checkActive( from, to, '', false );
 
-            if ( newWordVote.indexOf( to ) !== -1 )
+            if ( newWordVote.indexOf( to ) === -1 )
             {
-                _bot.say( userConfig.unscramble, 'Sorry, ' + to + ', you\'ve already voted' );
-                return false;
+                newWordVote.push( to );
+            }
+
+            var votesNeeded = active.length * userConfig.newWordVoteNeeded;
+
+            if ( newWordVote.length < votesNeeded )
+            {
+                _bot.say( userConfig.unscramble, to + ': counted. that\'s ' + newWordVote.length + ' out of a necessary ' + votesNeeded );
             }
             else
             {
-                newWordVote.push( to );
-
-                var votesNeeded = active.length * userConfig.newWordVoteNeeded;
-
-                if ( newWordVote.length < votesNeeded )
+                if ( currentWord !== '' )
                 {
-                    _bot.say( userConfig.unscramble, to + ': counted. that\'s ' + newWordVote.length + ' out of a necessary ' + votesNeeded );
+                    _bot.say( userConfig.unscramble, 'that\'s enough votes. The correct answer was:\n' +
+                                 currentWord + ' - ' + currentWordDef[0].text );
+                    currentWord     = '';
                 }
-                else
-                {
-                    if ( currentWord !== '' )
-                    {
-                        _bot.say( userConfig.unscramble, 'that\'s enough votes. The correct answer was:\n' +
-                                     currentWord + ' - ' + currentWordDef[0].text );
-                        currentWord     = '';
-                    }
 
-                    currentWordTime = 0;
-                    scrambledWord   = '';
-                    newWordVote     = [];
-                    if ( wordListener )
-                    {
-                        _bot.removeListener( 'message' + userConfig.unscramble, wordListener );
-                    }
-                    this.word();
+                currentWordTime = 0;
+                scrambledWord   = '';
+                newWordVote     = [];
+                if ( wordListener )
+                {
+                    _bot.removeListener( 'message' + userConfig.unscramble, wordListener );
                 }
+                this.word();
             }
         },
 

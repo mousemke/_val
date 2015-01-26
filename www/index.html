@@ -13,7 +13,7 @@
         <div class="header">
             <a href="#intro"><span class="val--title__logo"></span></a>
             <span class="val--title__text">
-                _val, an IRC Dogecoin tipbot.  And then some.  ( v 0.1.3a )
+                _val, an IRC Dogecoin tipbot.  And then some.  ( v 0.1.3b )
             </span>
             <span class="val--author">
                 _val is coded by @mousemke<br>
@@ -124,6 +124,7 @@
                         <a href="#tip">tip (user) (number)</a>
                         <a href="#withdraw">withdraw (address) (amount)</a>
                         <a href="#balance">balance (all)</a>
+                        <a href="#wallet">wallet (all)</a>
                         <a href="#deposit">deposit</a>
                         <a href="#soak">soak (number)</a>
                     </div>
@@ -234,6 +235,8 @@
                                 + added /games directory for league and online game info<br>
                                 + added Guild Wars 2<br>
                                 + admin module now supports timed, repeating broadcasts<br>
+                                + word and anagramm now recalculate newWord active numbers each time, even for people that have already voted<br>
+                                + added wallet command to doge<br>
                                 <br>
                                 <a href="#old-changes">older change logs</a>
                             </div>
@@ -569,8 +572,10 @@
                         <p>Withdraws the given amount to the given address</p>
 
                         <a name="balance"></a>
+                        <a name="wallet"></a>
                         <br>
                         <span class="command">balance (all)</span>
+                        <span class="command">wallet (all)</span>
                         <p>Displays the number of Doge in the sending users account. You must be identified to see your Dogecoins.  If you use the all flag, it will tell you how many total Dogecoins are in circulation in the chatbot</p>
 
                         <a name="deposit"></a>

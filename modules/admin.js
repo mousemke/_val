@@ -8,6 +8,12 @@ module.exports  = function Admin( _bot, _modules, userConfig )
 
     return {
 
+
+        /**
+         * displays info on the current message
+         *
+         * @return {str}                                message info
+         */
         displayMessageInfo : function()
         {
             if ( adminMessage === '' )
@@ -28,6 +34,11 @@ module.exports  = function Admin( _bot, _modules, userConfig )
         },
 
 
+        /**
+         * clears (if necessary) and sets the interval timer
+         *
+         * @return {void}
+         */
         setBroadcastMessage : function()
         {
             var sayTheThing = function()
@@ -50,12 +61,27 @@ module.exports  = function Admin( _bot, _modules, userConfig )
         },
 
 
+        /**
+         * sets the initial timer
+         *
+         * @return {void}
+         */
         ini : function()
         {
             this.setBroadcastMessage();
         },
 
 
+        /**
+         * admin responses
+         *
+         * @param  {str}            from                originating channel
+         * @param  {str}            to                  originating user
+         * @param  {str}            text                full input string
+         * @param  {str}            botText             text to say
+         *
+         * @return {str}                                changed botText
+         */
         responses : function( from, to, text, botText )
         {
             if ( userConfig.admins.indexOf( to.toLowerCase() ) !== -1 )
@@ -97,6 +123,13 @@ module.exports  = function Admin( _bot, _modules, userConfig )
         },
 
 
+        /**
+         * sets the broadcast message text then resets the interval
+         *
+         * @param {arr}             _text               new message text
+         *
+         * @return {str}                                text to say
+         */
         setMessage : function( _text )
         {
             _text = _text.join( ' ' );
@@ -113,9 +146,16 @@ module.exports  = function Admin( _bot, _modules, userConfig )
         },
 
 
+        /**
+         * sets the broadcast message channels then resets the interval
+         *
+         * @param {arr}             _text               new message channels
+         *
+         * @return {str}                                text to say
+         */
         setMessageChannels : function( _text )
         {
-            var channels = [];
+            var text, channels = [];
 
             for ( var i = 0, lenI = _text.length; i < lenI; i++ )
             {
@@ -127,16 +167,28 @@ module.exports  = function Admin( _bot, _modules, userConfig )
 
             if ( channels.length === 0  )
             {
-                return 'No channels provided';
+                adminMessageChannels = userConfig.adminMessageChannels || userConfig.channels;
+                text = 'Messages set back to default';
+            }
+            else
+            {
+                adminMessageChannels = channels;
+                text = 'New channels set';
             }
 
-            adminMessageChannels = channels;
             this.setBroadcastMessage();
 
-            return 'New channels set';
+            return text;
         },
 
 
+        /**
+         * sets the broadcast message interval time then resets the interval
+         *
+         * @param {arr}             _text               new message time (in ms)
+         *
+         * @return {str}                                text to say
+         */
         setMessageRepeat : function( _text )
         {
             if ( _text )

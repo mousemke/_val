@@ -235,36 +235,31 @@ module.exports  = function Worte( _bot, _modules, userConfig )
         {
             var active =  _modules.core.checkActive( from, to, '', false );
 
-            if ( newWordVote.indexOf( to ) !== -1 )
+            if ( newWordVote.indexOf( to ) === -1 )
             {
-                _bot.say( userConfig.anagramm, 'Es tut mir leit, ' + to + ', Sie bereits abgestimmt haben' );
-                return false;
+                newWordVote.push( to );
+            }
+
+            var votesNeeded = active.length * userConfig.newWordVoteNeeded;
+
+            if ( newWordVote.length < votesNeeded )
+            {
+                _bot.say( userConfig.anagramm, to + ': festgestellt. Das ist ' + newWordVote.length + ' von ' + votesNeeded );
             }
             else
             {
-                newWordVote.push( to );
-
-                var votesNeeded = active.length * userConfig.newWordVoteNeeded;
-
-                if ( newWordVote.length < votesNeeded )
+                if ( currentWord !== '' )
                 {
-                    _bot.say( userConfig.anagramm, to + ': festgestellt. Das ist ' + newWordVote.length + ' von ' + votesNeeded );
+                    _bot.say( userConfig.anagramm, 'Das ist genug. Der Antwort war:\n' +
+                                 currentWord + ': ' + englishWord + ': ' + currentWordDef[0].text );
+                    currentWord     = '';
                 }
-                else
-                {
-                    if ( currentWord !== '' )
-                    {
-                        _bot.say( userConfig.anagramm, 'Das ist genug. Der Antwort war:\n' +
-                                     currentWord + ': ' + englishWord + ': ' + currentWordDef[0].text );
-                        currentWord     = '';
-                    }
 
-                    currentWordTime = 0;
-                    scrambledWord   = '';
-                    newWordVote     = [];
-                    _bot.removeListener( 'message' + userConfig.anagramm, wordListener );
-                    this.wort();
-                }
+                currentWordTime = 0;
+                scrambledWord   = '';
+                newWordVote     = [];
+                _bot.removeListener( 'message' + userConfig.anagramm, wordListener );
+                this.wort();
             }
         },
 
@@ -400,7 +395,7 @@ module.exports  = function Worte( _bot, _modules, userConfig )
         {
             var wordScoresJson = JSON.stringify( wordScores );
 
-            fs.writeFile( '/_val/json/unscrambleScores.json', wordScoresJson, function ( err )
+            fs.writeFile( './json/unscrambleScores.json', wordScoresJson, function ( err )
             {
                 return console.log( err );
             });

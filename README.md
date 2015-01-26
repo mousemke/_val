@@ -13,6 +13,8 @@ Go to http://knoblau.ch/_val for a list of commands.
 + words and anagramm both can reward in Doge!
 + added /games directory for league and online game info
 + admin module now supports timed, repeating broadcasts
++ word and anagramm now recalculate newWord active numbers each time, even for people that have already voted
++ added wallet command to doge
 
 
 0.1.2 -
