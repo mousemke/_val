@@ -303,7 +303,7 @@ module.exports = function Doge( _bot, _modules, userConfig )
 
             var _soakCB = function( _to, success, textSplit, origText )
             {
-                if ( dcMasterList[ to ] < soakTotal )
+                if ( !dcMasterList[ to ] || dcMasterList[ to ] < soakTotal )
                 {
                     botText = 'Sorry, ' + to + ', you need more doge';
                 }

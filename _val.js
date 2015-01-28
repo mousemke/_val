@@ -252,13 +252,17 @@ function listenToMessages( from, to, text )
         {
             _bot.say( from, 'yes?' );
         }
+        else if ( text === '_val!' )
+        {
+            _bot.say( from, 'what!?' );
+        }
         else if ( text === userConfig.trigger + 'moon?' )
         {
             _bot.say( from, 'An astronaut miner extracting the precious moon gas that promises to reverse the Earth\'s energy crisis nears the end of his three-year contract, and makes an ominous discovery in this psychological sci-fi film starring Sam Rockwell and Kevin Spacey.' );
         }
         else if ( text === userConfig.trigger + 'isup' )
         {
-            _bot.say( from, 'Yes, but c\'mon!  At least use a full sentance!' );
+            _bot.say( from, 'Yes, but c\'mon!  At least use a full sentence!' );
         }
         else if ( text[ 0 ] === userConfig.trigger && text !== userConfig.trigger )
         {

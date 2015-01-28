@@ -6,6 +6,7 @@ module.exports = function PlainText( _bot, _modules, userConfig )
 {
     var moonRegex       = /(?:m([o]+)n)/,
         spaceRegex      = /(?:sp([a]+)ce)/,
+        khanRegex       = /(?:kh([a]+)n)/,
 
         /**
          * Lists
@@ -163,6 +164,7 @@ module.exports = function PlainText( _bot, _modules, userConfig )
             var command = text.slice( 1 ).split( ' ' )[ 0 ];
             var moon    = moonRegex.exec( command );
             var space   = spaceRegex.exec( command );
+            var khan    = khanRegex.exec( command );
 
             if ( command.slice( command.length - 3 ) === 'end' )
             {
@@ -200,6 +202,17 @@ module.exports = function PlainText( _bot, _modules, userConfig )
                   botText += 'aa';
                 }
                 botText += 'ce';
+                botText = botText.toUpperCase() + '!!!!';
+            }
+            else if ( khan && khan[1] )
+            {
+                botText = 'kh';
+                var khanLength = khan[1].length;
+                for ( var l = 0, lenL = khanLength; l < lenL; l++ )
+                {
+                  botText += 'aa';
+                }
+                botText += 'n';
                 botText = botText.toUpperCase() + '!!!!';
             }
             else
