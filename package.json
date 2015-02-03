@@ -1,6 +1,6 @@
 {
   "name": "_val",
-  "version": "0.1.3",
+  "version": "0.1.4a",
   "description": "An IRC bot that rules.",
   "main": "_val.js",
   "scripts": {
@@ -22,7 +22,7 @@
   "bugs": {
     "url": "https://github.com/mousemke/_val/issues"
   },
-  "homepage": "https://github.com/mousemke/_val",
+  "homepage": "https://knoblau.ch/_val",
   "dependencies": {
     "irc": "^0.3.8"
   }

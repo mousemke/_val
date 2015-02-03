@@ -4,8 +4,21 @@ erm.... bot.
 
 Go to http://knoblau.ch/_val for a list of commands.
 
+If you would like to have _val running on your irc/slack/twitch/whatever in our hosting pool let us know.  The hosting pool is run on an EC2 instance and is funded only by donations.  It's a good way to have your bots running without having to worry about it.
+
+
+Feel free to donate to keep _val's hosting server up and running!
+
+BTC  17KYpA1dL32nwwRE47Xj2V5Pb9GNEcByan
+
+DOGE DQiQ8e62CQGqx378EuS8i8gUW2mLkfBuXu
+
 
 **Change log**
+
+0.1.4 -
++ added donation wallets
+
 
 0.1.3 -
 + added twitch module

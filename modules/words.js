@@ -1,7 +1,7 @@
 
 module.exports  = function Words( _bot, _modules, userConfig )
 {
-    var minLength       = 4,
+    var minLength   = 4,
     maxLength       = 8,
     currentWord     = '',
     currentWordTime = 0,
@@ -24,38 +24,45 @@ module.exports  = function Words( _bot, _modules, userConfig )
             word = word.toLowerCase();
             var url = ( userConfig.wordnikBaseUrl ) + 'word.json/' + word + '/definitions?includeRelated=true&useCanonical=true&includeTags=false&api_key=' + userConfig.wordnikAPIKey;
 
-            _modules.core.apiGet( url, function( result )
+            if ( word === 'thoodle' )
             {
-                if ( current === true )
+                _bot.say( from, 'thoodle-oo!!' );
+            }
+            else
+            {
+                _modules.core.apiGet( url, function( result )
                 {
-                    currentWordDef = result;
-                }
-                else
-                {
-                    while ( word.indexOf( '%20' ) !== -1 )
+                    if ( current === true )
                     {
-                        word = word.replace( '%20', ' ' );
-                    }
-
-                    var _def = word;
-
-                    if ( result.length === 0 )
-                    {
-                        _def += ' is, sadly, not a word.';
+                        currentWordDef = result;
                     }
                     else
                     {
-                        _def += ' -\n';
-                        for ( var i = 0, lenI = result.length; i < lenI; i++ )
+                        while ( word.indexOf( '%20' ) !== -1 )
                         {
-                            _def += ( i + 1 ) + ': ' + result[ i ].text + '\n';
+                            word = word.replace( '%20', ' ' );
                         }
+
+                        var _def = word;
+
+                        if ( result.length === 0 )
+                        {
+                            _def += ' is, sadly, not a word.';
+                        }
+                        else
+                        {
+                            _def += ' -\n';
+                            for ( var i = 0, lenI = result.length; i < lenI; i++ )
+                            {
+                                _def += ( i + 1 ) + ': ' + result[ i ].text + '\n';
+                            }
+                        }
+
+                        _bot.say( from, _def );
                     }
 
-                    _bot.say( from, _def );
-                }
-
-            }, false );
+                }, false );
+            }
         },
 
 
