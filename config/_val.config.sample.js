@@ -59,6 +59,14 @@ var userConfig = {
     trigger                 : '!',
 
     /**
+     * acceptable prefixes for usernames.  this will ALWAYS pull this character
+     * out of the text if it's the first character of a word.  It is designed
+     * for compatability with other services that use characters as a reference
+     * for users (@user)
+     **/
+    usernamePrefix         : [ '@' ],
+
+    /**
      * timout for a user to be considered active
      **/
     activeTime              : 600000,

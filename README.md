@@ -18,6 +18,7 @@ DOGE DQiQ8e62CQGqx378EuS8i8gUW2mLkfBuXu
 
 0.1.4 -
 + added donation wallets
++ added support for username prefixes (@username, etc)
 
 
 0.1.3 -

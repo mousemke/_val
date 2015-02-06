@@ -233,6 +233,8 @@ function ini()
  */
 function listenToMessages( from, to, text )
 {
+    text = trimUsernames( text );
+
     watchActive( from, to );
 
     if ( text.toLowerCase().indexOf( 'troll' ) !== -1 )
@@ -385,6 +387,27 @@ function responses( from, to, text, botText )
     }
 
     return botText;
+}
+
+
+function trimUsernames( text )
+{
+    if ( userConfig.usernamePrefix && userConfig.usernamePrefix.length > 0 )
+    {
+        text = text.split( ' ' );
+
+        for ( var i = 0, lenI = text.length; i < lenI; i++ )
+        {
+            if ( userConfig.usernamePrefix.indexOf( text[ i ][0] ) !== -1 )
+            {
+                text[ i ] = text[ i ].slice( 1 );
+            }
+        }
+
+        return text.join( ' ' );
+    }
+
+    return text;
 }
 
 
