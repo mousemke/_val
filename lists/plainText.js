@@ -34,5 +34,6 @@ module.exports = {
     'vampire'               : '(°,..,°)',
     'magic'                 : '∴•:+*⁽⁽ଘ( ˊᵕˋ )ଓ⁾⁾*+:•*∴',
     'pacman'                : '( *<)  • • • • • • •',
-    'dontcopythatfloppy'    : 'https://www.youtube.com/watch?v=up863eQKGUI'
+    'dontcopythatfloppy'    : 'https://www.youtube.com/watch?v=up863eQKGUI',
+    'jackdawed'             : 'http://i.imgur.com/9pAAFvn.gif'
 };
