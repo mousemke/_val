@@ -142,7 +142,7 @@ module.exports = function Doge( _bot, _modules, userConfig )
                         }
                          else if ( dogePrices[ i ].price_base === 'EUR' )
                         {
-                            price = ( price * 1000 ) + ' (' + ( dogePrices[ i ].price_base ) + '), ';
+                            price =  price + ' (' + ( dogePrices[ i ].price_base ) + '), ';
                         }
                         else if ( dogePrices[ i ].price_base !== 'BTC' &&
                             dogePrices[ i ].price_base !== 'USD' &&
