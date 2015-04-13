@@ -273,7 +273,8 @@ module.exports = function PlainText( _bot, _modules, userConfig )
                         case 'germanysgottalent':
                             var choices = [ 'https://www.youtube.com/watch?v=IeWAPVWXLtM',
                                             'https://www.youtube.com/watch?v=dNUUCHsgRu8',
-                                            'https://www.youtube.com/watch?v=PJQVlVHsFF8'
+                                            'https://www.youtube.com/watch?v=PJQVlVHsFF8',
+                                            'https://www.youtube.com/watch?v=xRVvegLwK_o'
                                             ];
                             var choice = Math.floor( Math.random() * choices.length );
                             botText = choices[ choice ];
