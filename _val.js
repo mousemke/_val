@@ -312,26 +312,26 @@ function listenToPm( from, text )
 {
     console.log( '<' + from + '> :' + text );
 
-    // var textSplit = text.split( ' ' );
-    // if ( textSplit[ 0 ] === 'die' && userConfig.admins.indexOf( from ) !== -1 )
-    // {
-    //     _bot.disconnect( 'Fine...  I was on my way out anyways.', function()
-    //     {
-    //         console.log( from + ' killed me' );
-    //     });
-    // }
-    // else if ( textSplit[ 0 ] === 'restart' && userConfig.admins.indexOf( from ) !== -1 )
-    // {
-    //     _bot.say ( userConfig.unscramble, 'I will restart after the next word is skipped or solved' );
-    //     _bot.say ( userConfig.anagramm, 'Nach diesem Wort werde ich neu gestartet' );
-    // }
-    // else if ( textSplit[ 0 ] === 'help' )
-    // {
-    //     botText = userConfig.helpText();
+    var textSplit = text.split( ' ' );
+    if ( textSplit[ 0 ] === 'die' && userConfig.admins.indexOf( from ) !== -1 )
+    {
+        _bot.disconnect( 'Fine...  I was on my way out anyways.', function()
+        {
+            console.log( from + ' killed me' );
+        });
+    }
+    else if ( textSplit[ 0 ] === 'restart' && userConfig.admins.indexOf( from ) !== -1 )
+    {
+        _bot.say ( userConfig.unscramble, 'I will restart after the next word is skipped or solved' );
+        _bot.say ( userConfig.anagramm, 'Nach diesem Wort werde ich neu gestartet' );
+    }
+    else if ( textSplit[ 0 ] === 'help' )
+    {
+        botText = userConfig.helpText();
 
-    //     _bot.say ( from, botText );
-    //     botText = '';
-    // }
+        _bot.say ( from, botText );
+        botText = '';
+    }
     // else if ( _modules.doge && textSplit[ 0 ] === 'doge' )
     // {
     //     _modules.doge.doge( from, text, false );

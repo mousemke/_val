@@ -292,7 +292,7 @@ module.exports = function Doge( _bot, _modules, userConfig )
          */
         soak : function( from, to, text )
         {
-            var i, lenI, scope  = this;
+            var i, lenI, self  = this;
             var list            = _modules.core.checkActive( from, to, text, false );
             var users           = list.length - 1;
             var textSplit       = text.split( ' ' );
@@ -371,7 +371,7 @@ module.exports = function Doge( _bot, _modules, userConfig )
 
                                 botText += '. It\'s not soaking if there\'s just one person!';
                             }
-                            scope.writeMasterList();
+                            self.writeMasterList();
                         }
                         else
                         {
@@ -405,7 +405,7 @@ module.exports = function Doge( _bot, _modules, userConfig )
          */
         tip : function( from, to, text )
         {
-            var scope = this;
+            var self = this;
 
             var _tipCB = function( _to, success, textSplit, origText )
             {
@@ -458,7 +458,7 @@ module.exports = function Doge( _bot, _modules, userConfig )
                             dcMasterList.___bank___ = dcMasterList.___bank___ + amount;
                         }
 
-                        scope.writeMasterList();
+                        self.writeMasterList();
 
                         _botText = 'WOW! ' + to + ' tipped ' + reciever + ' such Ð' + amount;
 
