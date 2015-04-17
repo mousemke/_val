@@ -281,7 +281,7 @@ function listenToMessages( from, to, text )
                 }
             }
 
-            if ( botText !== '' )
+            if ( botText !== '' && botText !== false )
             {
                 console.log( '<' + from + '> <' + to + '> :' + text );
                 console.log( '<' + from + '> <' + ( userConfig.botName ) + '> :' + botText );
