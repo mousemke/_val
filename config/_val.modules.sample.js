@@ -11,10 +11,12 @@
         url     : './modules/plainText.js'
     },
 
+
     Beats       : {
         enabled : true,
         url     : './modules/beats.js'
     },
+
 
     XKCD        : {
         enabled : true,
@@ -24,16 +26,19 @@
         }
     },
 
+
     Nico        : {
         enabled : true,
         url     : './modules/nico.js'
     },
+
 
     Doge        : {
         enabled : true,
         ini     : true,
         url     : './modules/doge.js'
     },
+
 
     Foursquare        : {
         enabled : true,
@@ -44,6 +49,7 @@
             latLong             : '-88.987,-88.567',
         }
     },
+
 
     Words       : {
         enabled : true,
@@ -61,6 +67,7 @@
         }
     },
 
+
     Anagramm    : {
         enabled : true,
         ini     : true,
@@ -77,6 +84,7 @@
         }
     },
 
+
     Pool        : {
         enabled : true,
         url     : './modules/pool.js',
@@ -84,6 +92,7 @@
                 poolApiUrl          : 'http://192.168.2.15:8001/api/'
         }
     },
+
 
     Admin       : {
         enabled : true,
@@ -95,6 +104,7 @@
         }
     },
 
+
     Twitch      : {
         enabled : true,
         url     : './modules/twitch.js',
@@ -105,6 +115,18 @@
             floodProtectionDelay    : 1200
         }
     },
+
+
+    CAH        : {
+        enabled : true,
+        ini     : true,
+        url     : './modules/cah.js',
+        options : {
+            cahRoom                     : '#mousemke',
+            cahMaxMin                   : 5
+        }   
+    },   
+
 
     GuildWars   : {
         enabled : true,

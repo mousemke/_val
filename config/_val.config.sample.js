@@ -107,7 +107,7 @@ var userConfig = {
     helpText                : helpText,
 
     /**
-     * disables private messages
+     * enables private messages
      */
     enablePM                : true,
 };
