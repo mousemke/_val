@@ -6,12 +6,16 @@ module.exports  = function CAH( _bot, _modules, userConfig )
     var cahRoom         = userConfig.cahRoom;
     var cards           = {};
     var cardCount       = 0;
-    var cardsPlayed     = [];
+    var cardsPlayed     = {};
     var players         = {};
     var playerCount     = 0;
     var timer           = {};
+    var questionTimeout = {};
     var activeQuestion  = false;
-
+    var answers         = [];
+    var votes           = [];
+    var voted           = [];
+    var votingRound     = false;
 /*
 
 players : {
@@ -31,22 +35,61 @@ players : {
         {
             if ( ! players[ playerName ] )
             {
-                players[ playerName ] = { hand: [] };
+                players[ playerName ]       = { hand: [], played : false };
+                cardsPlayed[ playerName ]   = [];
+
                 var hand = players[ playerName ].hand;
 
-                for ( var i = 0; i < 10; i++ ) 
+                var text = '------ CURRENT HAND -----';
+                for ( var i = 0; i < 10; i++ )
                 {
                     hand[ i ] = this.getCard( 'A' );
-                    _bot.say( playerName, ( i + 1 ) + ': ' + hand[ i ] );
-                }    
+                    text += '\n' + ( i + 1 ) + ': ' + hand[ i ].text;
+                }
+
+                _bot.say( playerName, text );
 
                 playerCount++;
-                return 'Welcome to the game, ' + playerName + '.  I\'ve sent you your cards';   
+                return 'Welcome to the game, ' + playerName + '.  I\'ve sent you your cards';
             }
             else
             {
                 return 'You\'re already playing, ' + playerName;
             }
+        },
+
+
+        cancelQuestion : function()
+        {
+            activeQuestion.used = false;
+            activeQuestion      = false;
+
+            _bot.say( userConfig.cahRoom, 'Too late.  This question is expired.' );
+        },
+
+
+        /**
+         * returns the most common result
+         *
+         * @param  {arr}                    _arr                array to test
+         *
+         * @return {int}                                        most common number
+         */
+        checkMostCommon : function( _arr )
+        {
+            var res = new Array( playerCount ), common;
+
+            for( var i = 0, lenI = _arr.length;i < lenI; i++ )
+            {
+                res[ _arr[ i ] ]++;
+
+                if ( !common || res[ _arr[ i ] ] > res[ common ] )
+                {
+                    common = _arr[ i ];
+                }
+            }
+
+            return common;
         },
 
 
@@ -60,6 +103,24 @@ players : {
         },
 
 
+        dealCurrentHand : function()
+        {
+            var text, hand;
+            for ( var playerName in players )
+            {
+                hand = players[ playerName ].hand;
+
+                text = '------ CURRENT HAND -----';
+                for ( var i = 0; i < 10; i++ )
+                {
+                    text += '\n' + ( i + 1 ) + ': ' + hand[ i ].text;
+                }
+
+                _bot.say( playerName, text );
+            }
+        },
+
+
         getCard : function( type )
         {
             var card, cardNumber, tries = 0;
@@ -70,7 +131,7 @@ players : {
                 card = cards[ cardNumber ];
                 tries++;
             }
-            while ( card.cardType !== type && tries !== cards.length && card.used === false )
+            while ( card.cardType !== type && tries !== cards.length && card.used === false );
 
             return card;
         },
@@ -78,15 +139,15 @@ players : {
 
         ini : function()
         {
-            // if ( userConfig.enablePM )
-            // {
+            if ( userConfig.enablePM )
+            {
                 this.loadCards();
-            // }
-            // else
-            // {
-            //     console.log( 'you must have private messages enabled to run CAH.  unloading module' );
-            //     delete modules.cah;
-            // }
+            }
+            else
+            {
+                console.log( 'you must have private messages enabled to run CAH.  unloading module' );
+                delete modules.CAH;
+            }
         },
 
 
@@ -117,6 +178,8 @@ players : {
 
         newQuestion : function()
         {
+            var s;
+
             if ( activeQuestion )
             {
                 var min = ( Date.now() - timer ) / 1000 / 60;
@@ -124,12 +187,12 @@ players : {
                 if ( min > 4 )
                 {
                     min = Math.floor( ( userConfig.cahMaxMin - min ) * 60 );
-                    min = min + ' seconds left!!  '
+                    min = min + ' seconds left!!  ';
                 }
                 else
                 {
                     min     = ( userConfig.cahMaxMin - Math.floor( min + 1 ) );
-                    var s   = ( min === 1 ) ? '' : 's';
+                    s   = ( min === 1 ) ? '' : 's';
                     min     =  min + ' minute' + s + ' left.  ';
                 }
 
@@ -140,21 +203,30 @@ players : {
             }
             else
             {
-                activeQuestion      = this.getCard( 'Q' );
-                activeQuestion.used = true;   
-                var numAnswers      = activeQuestion.numAnswers;
-
-                timer               = Date.now();
-                botText             = activeQuestion.text;
-                if ( numAnswers > 1 )
+                if ( playerCount > 1 )
                 {
-                    var s   = ( numAnswers === 1 ) ? '.' : 's.';
+                    activeQuestion      = this.getCard( 'Q' );
+                    activeQuestion.used = true;
+                    var numAnswers      = activeQuestion.numAnswers;
 
-                    botText += '\nThis question needs ' + numAnswers + ' answer' + s;
+                    timer               = Date.now();
+
+                    questionTimeout     = setTimeout( this.cancelQuestion, ( userConfig.cahMaxMin * 60 * 1000 ) );
+                    botText             = activeQuestion.text;
+                    if ( numAnswers > 1 )
+                    {
+                        s   = ( numAnswers === 1 ) ? '.' : 's.';
+
+                        botText += '\nThis question needs ' + numAnswers + ' answer' + s;
+                    }
+                }
+                else
+                {
+                    botText = 'You need at least 2 players.  Don\'t worry, I\'ll wait';
                 }
             }
 
-            return botText;
+            _bot.say( userConfig.cahRoom, botText );
         },
 
 
@@ -164,7 +236,7 @@ players : {
 
             if ( player )
             {
-                for ( var i = 0; i < player.hand.length; i++ ) 
+                for ( var i = 0; i < player.hand.length; i++ )
                 {
                     player.hand[ i ].user = false;
                 }
@@ -182,18 +254,25 @@ players : {
 
         playCard : function( playerName, cardNum )
         {
-            cardNum++;
-
             var player  = players[ playerName ];
 
-            cardsPlayed.push( this.useCard( playerName, cardNum ) );
-            var newCard = this.drawCard( player );
-
-            cardCount++;
-            if ( cardCount === playerCount )
+            if ( player && player.played === false )
             {
-                // switch to voting round
-                cardCount = 0;
+                cardNum--;
+
+                cardsPlayed[ playerName ].push( this.useCard( playerName, cardNum ) );
+
+                if ( cardsPlayed[ playerName ].length === activeQuestion.numAnswers )
+                {
+                    player.played = true;
+                    cardCount++;
+                }
+                var newCard = this.drawCard( player );
+
+                if ( cardCount === playerCount )
+                {
+                    this.switchToVoting();
+                }
             }
         },
 
@@ -201,7 +280,7 @@ players : {
         responses : function( from, to, text, botText )
         {
             if ( cahRoom === from )
-            {            
+            {
                 var command = text.slice( ' ' );
 
                 if ( typeof command !== 'string' )
@@ -211,30 +290,154 @@ players : {
 
                 command = command.slice( 1 );
 
-                switch ( command )
+                if ( command === 'play' )
                 {
-                    case 'play':
-                        botText = this.addPlayer( to );
-                        break;
-                    case 'removePlayer':
-                        botText = this.removePlayer( to );
-                        break;
-                    case 'q':
-                        botText = this.newQuestion();
-                        break;
+                    botText = this.addPlayer( to );
+                }
+                else if ( players[ to ] )
+                {
+                    switch ( command )
+                    {
+                        case 'quit':
+                            botText = this.removePlayer( to );
+                            break;
+                        case 'question':
+                            this.newQuestion();
+                            break;
+                        case 'players':
+                            botText = this.listPlayers();
+                            break;
+                        default:
+                            if ( command.match( /(10|[0-9])/ ) )
+                            {
+                                if ( votingRound )
+                                {
+                                    botText = this.vote( to, command );
+                                }
+                                else
+                                {
+                                    botText = this.playCard( to, command );
+                                }
+                            }
+                    }
                 }
             }
             return botText;
         },
 
 
+        listPlayers : function()
+        {
+            var botText = 'current players:';
+
+            for ( var player in players )
+            {
+                botText += '\n' + player + ' - ';
+
+                if ( votingRound )
+                {
+                    botText += 'voted: ';
+                    botText += voted.indexOf( player ) === -1 ? false : true;
+                }
+                else
+                {
+                    botText += 'played: ' + players[ player ].played;
+                }
+            }
+
+            return botText;
+        },
+
+        startVotingRound : function()
+        {
+            var text = activeQuestion.text + '\nAnswers:';
+            var j = 0;
+            for ( var player in cardsPlayed )
+            {
+                j++;
+                answers[ j ] = player;
+                player = cardsPlayed[ player ];
+                text += '\n' + j + ': ';
+                for ( var i = 0, lenI = player.length; i < lenI; i++ )
+                {
+                    if ( i !== 0 )
+                    {
+                        text += ', ';
+                    }
+                    text += player[ i ].text;
+                }
+            }
+
+            text += '\n\n' + 'Cast your vote!';
+            _bot.say( userConfig.cahRoom, text );
+        },
+
+
+        switchToVoting : function()
+        {
+            clearTimeout( questionTimeout );
+            timer       = Date.now();
+
+            cardCount   = 0;
+            for ( var player in players )
+            {
+                player.played = false;
+            }
+
+            votingRound = true;
+            this.startVotingRound();
+        },
+
+
         useCard : function( player, cardNum )
         {
+            player = players[ player ];
             var card                = player.hand[ cardNum ];
             card.used               = false;
             player.hand.splice( cardNum, 1 );
 
             return card;
+        },
+
+
+        vote : function( player, vote )
+        {
+            if ( voted.indexOf( player ) === -1 )
+            {
+                voted.push( player );
+                votes.push( vote );
+
+                if ( voted.length === playerCount )
+                {
+                    votingRound = false;
+                    this.votingResult();
+                }
+            }
+            else
+            {
+                return 'I think you already voted';
+            }
+        },
+
+
+        votingResult : function()
+        {
+            var winner = this.checkMostCommon( votes );
+            _bot.say( userConfig.cahRoom, answers[ winner ] + ' wins this round.' );
+            activeQuestion = false;
+            this.dealCurrentHand();
+
+            for ( var player in cardsPlayed )
+            {
+                players[ player ].played    = false;
+                cardsPlayed[ player ]       = [];
+            }
+
+            answers         = [];
+            votes           = [];
+            voted           = [];
+
+            this.newQuestion();
         }
-    }
+    };
 };
