@@ -284,7 +284,11 @@ function listenToMessages( from, to, text )
             if ( botText !== '' && botText !== false )
             {
                 console.log( '<' + from + '> <' + to + '> :' + text );
-                console.log( '<' + from + '> <' + ( userConfig.botName ) + '> :' + botText );
+
+                if ( botText !== undefined )
+                {
+                    console.log( '<' + from + '> <' + ( userConfig.botName ) + '> :' + botText );
+                }
                 _bot.say ( from, botText );
             }
         }

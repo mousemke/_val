@@ -203,7 +203,7 @@ console.log( _arr, 'common ' + common );
             }
             else
             {
-                console.log( 'you must have private messages enabled to run CAH.  unloading module' );
+                console.log( 'you must have private messages enabled to run CAH.  unloading module.' );
                 delete modules.CAH;
             }
         },
@@ -255,7 +255,6 @@ console.log( _arr, 'common ' + common );
                 {
                     cardsOrig = body;
                     cards = self.shuffleCards();
-                    console.log( 'cl = ' + cards.length );
                 });
 
             } ).on( 'error', function( e )
@@ -277,7 +276,6 @@ console.log( _arr, 'common ' + common );
             {
                 if ( activeQuestion )
                 {
-
                     var min = ( Date.now() - timer ) / 1000 / 60;
 
                     if ( min > 4 )
@@ -299,7 +297,7 @@ console.log( _arr, 'common ' + common );
                 }
                 else
                 {
-                    if ( playerCount > userConfig.cahMinPlayers )
+                    if ( playerCount >= userConfig.cahMinPlayers )
                     {
                         activeQuestion      = this.getCard( 'Q' );
                         activeQuestion.used = true;
@@ -443,7 +441,7 @@ console.log( _arr, 'common ' + common );
                             this.dealCurrentHand( to );
                             break;
                         default:
-                            if ( command.match( /(10|[0-9])/ ) )
+                            if ( command.match( /(10|[0-9])/ ) && activeQuestion )
                             {
                                 if ( votingRound )
                                 {
@@ -463,7 +461,6 @@ console.log( _arr, 'common ' + common );
 
         shuffleCards : function()
         {
-            console.log( 'shuffling' );
             var num;
             cards = JSON.parse( cardsOrig );
             newDeck = new Array( cards.length );
@@ -483,6 +480,7 @@ console.log( _arr, 'common ' + common );
         {
             var text = activeQuestion.text + '\nAnswers:';
             var j = 0;
+
             for ( var player in cardsPlayed )
             {
                 j++;
@@ -542,7 +540,11 @@ console.log( _arr, 'common ' + common );
 
         vote : function( player, vote )
         {
-            if ( voted.indexOf( player ) === -1 )
+            if ( answers.length < vote )
+            {
+                return 'That\'s not a valid choice.';
+            }
+            else if ( voted.indexOf( player ) === -1 )
             {
                 voted.push( player );
                 votes.push( vote );
@@ -566,11 +568,28 @@ console.log( _arr, 'common ' + common );
 
         votingResult : function()
         {
-            var winner = this.checkMostCommon( votes );
-            _bot.say( userConfig.cahRoom, answers[ winner ] + '(' + winner +
+            var answer;
+            var winner          = this.checkMostCommon( votes );
+            var winningAnswer   = cardsPlayed[ answers[ winner ] ];
+
+            var text = activeQuestion.text;
+            if ( activeQuestion.text.indexOf( '__________' ) !== -1 )
+            {
+                for ( var i = 0, lenI = winningAnswer.length; i < lenI; i++ ) 
+                {
+                    answer = winningAnswer[ i ].text;
+                    text = text.replace( '__________', answer );
+                }
+            }
+            else
+            {
+                text += '   ' + winningAnswer[ 0 ].text;
+            }
+
+            _bot.say( userConfig.cahRoom, text + '\n' + answers[ winner ] + ' (answer ' + winner +
                             ') wins this round.' );
+            
             activeQuestion = false;
-            this.dealCurrentHands();
 
             for ( var player in cardsPlayed )
             {
@@ -583,6 +602,7 @@ console.log( _arr, 'common ' + common );
             voted           = [];
 
             this.newQuestion();
+            this.dealCurrentHands();
         }
     };
 };
