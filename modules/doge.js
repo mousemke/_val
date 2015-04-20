@@ -90,7 +90,7 @@ module.exports = function Doge( _bot, _modules, userConfig )
          *
          * @return {void}
          */
-        doge : function( from, text, full )
+        doge : function( from, text, full, to )
         {
             var textSplit = text.split( ' ' );
 
@@ -168,7 +168,7 @@ module.exports = function Doge( _bot, _modules, userConfig )
                 }
 
                 _bot.say( from, doge );
-            } );
+            }, true, from, to );
         },
 
 
@@ -212,26 +212,9 @@ module.exports = function Doge( _bot, _modules, userConfig )
          */
         loadMasterList : function()
         {
-            var url = '/_val/json/dcMasterList.json';
+            var url = 'json/dcMasterList.json';
 
-            http.get( url, function( res )
-            {
-                 var body = '', _json = '';
-
-                res.on( 'data', function( chunk )
-                {
-                    body += chunk;
-                });
-
-                res.on( 'end', function()
-                {
-                    dcMasterList =  JSON.parse( body );
-                });
-
-            } ).on( 'error', function( e )
-            {
-                console.log( 'Got error: ', e );
-            });
+            dcMasterList = JSON.parse( fs.readFileSync( url ) );
         },
 
 
@@ -252,10 +235,10 @@ module.exports = function Doge( _bot, _modules, userConfig )
             switch ( command )
             {
                 case 'doge':
-                    this.doge( from, text, false );
+                    this.doge( from, text, false, to );
                     break;
                 case 'market':
-                    this.doge( from, text, true );
+                    this.doge( from, text, true, to );
                     break;
                 case 'tip':
                     this.tip( from, to, text );
@@ -521,7 +504,7 @@ module.exports = function Doge( _bot, _modules, userConfig )
             //         {
             //             console.log( info, info.data, info.data.txid );
             //             _bot.say( from, 'Doge sent. https://dogechain.info/tx/' + info.data.txid );
-            //         } );
+            //         }, from, to );
             //     }
             // };
 

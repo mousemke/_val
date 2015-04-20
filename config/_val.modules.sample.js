@@ -123,9 +123,10 @@
         url     : './modules/cah.js',
         options : {
             cahRoom                     : '#mousemke',
-            cahMaxMin                   : 5
-        }   
-    },   
+            cahMaxMin                   : 5,
+            cahMinPlayers               : 3
+        }
+    },
 
 
     GuildWars   : {

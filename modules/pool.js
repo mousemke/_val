@@ -70,7 +70,7 @@ module.exports  = function Pool( _bot, _modules, userConfig )
                     }
                     _bot.say( from, botText );
 
-                }, false );
+                }, false, from, to );
             }
         },
 

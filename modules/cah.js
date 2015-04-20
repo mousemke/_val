@@ -1,7 +1,7 @@
 
 module.exports  = function CAH( _bot, _modules, userConfig )
 {
-    var http            = userConfig.req.http;
+    var fs              = userConfig.req.fs;
 
     var cahRoom         = userConfig.cahRoom;
     var cards           = {};
@@ -62,7 +62,7 @@ module.exports  = function CAH( _bot, _modules, userConfig )
             activeQuestion.used = false;
             activeQuestion      = false;
 
-            _bot.say( userConfig.cahRoom, 'Too late.  This question is expired.' );
+            _bot.say( userConfig.cahRoom, '5 min is up!  This question is expired.' );
         },
 
 
@@ -79,14 +79,14 @@ module.exports  = function CAH( _bot, _modules, userConfig )
 
             for( var i = 0, lenI = _arr.length;i < lenI; i++ )
             {
-                res[ _arr[ i ] ]++;
+                res[ _arr[ i ] ] = ( res[ _arr[ i ] ] ) ? res[ _arr[ i ] ] + 1 : 1;
 
                 if ( !common || res[ _arr[ i ] ] > res[ common ] )
                 {
                     common = _arr[ i ];
                 }
             }
-console.log( _arr, 'common ' + common );
+
             return common;
         },
 
@@ -135,10 +135,10 @@ console.log( _arr, 'common ' + common );
         {
             var text, hand;
 
-            hand = players[ playerName ].hand;
-
-            if ( hand )
+            if ( players[ playerName ] && players[ playerName ].hand )
             {
+                hand = players[ playerName ].hand;
+
                 if ( activeQuestion )
                 {
                     text = '--- CURRENT QUESTION --- ' + activeQuestion.text;
@@ -239,28 +239,11 @@ console.log( _arr, 'common ' + common );
          */
         loadCards : function()
         {
-            var url = '/_val/json/cards.json';
-            var self = this;
+            var url     = 'json/cards.json';
 
-            http.get( url, function( res )
-            {
-                 var body = '';
+            cardsOrig   = fs.readFileSync( url );
 
-                res.on( 'data', function( chunk )
-                {
-                    body += chunk;
-                });
-
-                res.on( 'end', function()
-                {
-                    cardsOrig = body;
-                    cards = self.shuffleCards();
-                });
-
-            } ).on( 'error', function( e )
-            {
-                console.log( 'Got error: ', e );
-            });
+            cards       = this.shuffleCards();
         },
 
 
@@ -575,7 +558,7 @@ console.log( _arr, 'common ' + common );
             var text = activeQuestion.text;
             if ( activeQuestion.text.indexOf( '__________' ) !== -1 )
             {
-                for ( var i = 0, lenI = winningAnswer.length; i < lenI; i++ ) 
+                for ( var i = 0, lenI = winningAnswer.length; i < lenI; i++ )
                 {
                     answer = winningAnswer[ i ].text;
                     text = text.replace( '__________', answer );
@@ -588,7 +571,7 @@ console.log( _arr, 'common ' + common );
 
             _bot.say( userConfig.cahRoom, text + '\n' + answers[ winner ] + ' (answer ' + winner +
                             ') wins this round.' );
-            
+
             activeQuestion = false;
 
             for ( var player in cardsPlayed )

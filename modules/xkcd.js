@@ -9,7 +9,7 @@ module.exports  = function XKCD( _bot, _modules, userConfig )
             {
                 _bot.say( from, response.url + '\n' + response.title );
 
-            }, false );
+            }, false, from, to );
         },
 
 

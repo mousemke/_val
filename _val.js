@@ -26,7 +26,7 @@ var channels            = userConfig.channels,
  *
  * @return {void}
  */
-function apiGet( _url, _cb, secure )
+function apiGet( _url, _cb, secure, from, to )
 {
     secure = ( secure === false ) ? false : true;
 
@@ -49,7 +49,14 @@ function apiGet( _url, _cb, secure )
             }
             catch( e )
             {
-                console.log( _url + ' appears to be down' );
+                if ( from && to )
+                {
+                    _bot.say( from, 'sorry, ' + to + ' bad query or url. (depends on what you were trying to do)' );
+                }
+                else
+                {
+                    console.log( _url + ' appears to be down' );
+                }
             }
         });
 
@@ -59,14 +66,16 @@ function apiGet( _url, _cb, secure )
     {
         https.get( _url, callback ).on( 'error', function( e )
         {
-            console.log( 'Got error: ', e );
+            _bot.say( from, 'sorry, ' + to + ' bad query or url. (depends on what you were trying to do)' );
+            // console.log( 'Got error: ', e );
         });
     }
     else
     {
         http.get( _url, callback ).on( 'error', function( e )
         {
-            console.log( 'Got error: ', e );
+            _bot.say( from, 'sorry, ' + to + ' bad query or url. (depends on what you were trying to do)' );
+            // console.log( 'Got error: ', e );
         });
     }
 }

@@ -4,7 +4,7 @@ module.exports  = function _4sq( _bot, _modules, userConfig )
 {
     return {
 
-        lunch : function( from, query )
+        lunch : function( from, to, query )
         {
             var _botText;
 
@@ -89,7 +89,7 @@ module.exports  = function _4sq( _bot, _modules, userConfig )
 
                 _bot.say( from, _botText );
 
-            }, true );
+            }, true, from, to );
         },
 
 
@@ -106,7 +106,7 @@ module.exports  = function _4sq( _bot, _modules, userConfig )
             {
                 case 'lunch':
                 case 'feedme':
-                    this.lunch( from, text );
+                    this.lunch( from, to, text );
                     break;
             }
 

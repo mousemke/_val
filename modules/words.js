@@ -17,7 +17,7 @@ module.exports  = function Words( _bot, _modules, userConfig )
 
     return {
 
-        define : function( from, word, current )
+        define : function( from, word, current, to )
         {
             var definition;
 
@@ -61,7 +61,7 @@ module.exports  = function Words( _bot, _modules, userConfig )
                         _bot.say( from, _def );
                     }
 
-                }, false );
+                }, false, from, to );
             }
         },
 
@@ -203,26 +203,9 @@ module.exports  = function Words( _bot, _modules, userConfig )
 
         readScores : function()
         {
-            var url = '/_val/json/unscrambleScores.json';
+            var url = 'json/unscrambleScores.json';
 
-            http.get( url, function( res )
-            {
-                var body = '';
-
-                res.on( 'data', function( chunk )
-                {
-                    body += chunk;
-                });
-
-                res.on( 'end', function()
-                {
-                    wordScores =  JSON.parse( body );
-                });
-
-            } ).on( 'error', function( e )
-            {
-                console.log( 'Got error: ', e );
-            });
+            wordScores = JSON.parse( fs.readFileSync( url ) );
         },
 
 
@@ -241,7 +224,7 @@ module.exports  = function Words( _bot, _modules, userConfig )
                 {
                     case 'word':
                     case 'whirred':
-                        this.word( from, text, false );
+                        this.word( from, to );
                         break;
                     case 'newWord':
                         this.newWord( from, to );
@@ -332,7 +315,7 @@ module.exports  = function Words( _bot, _modules, userConfig )
                         break;
                     case 'def':
                     case 'define':
-                        this.define( from, text.split( ' ' ).slice( 1 ).join( '%20' ) );
+                        this.define( from, text.split( ' ' ).slice( 1 ).join( '%20' ), to );
                         break;
                     case 'unscramble':
                         this.unscramble( from, to, text );
@@ -391,7 +374,7 @@ module.exports  = function Words( _bot, _modules, userConfig )
                 }
 
                 _bot.say( from, to + ': ' + langFrom + ' > ' + langTo + ' - ' + botText );
-            }, false );
+            }, false, from, to );
         },
 
 
@@ -481,7 +464,7 @@ module.exports  = function Words( _bot, _modules, userConfig )
         },
 
 
-        word : function()
+        word : function( from, to )
         {
             if ( currentWord === '' )
             {
@@ -509,13 +492,13 @@ module.exports  = function Words( _bot, _modules, userConfig )
                     {
                         currentWord     = result.word;
                         currentWordTime = Date.now();
-                        scope.define( userConfig.unscramble, currentWord, true );
+                        scope.define( userConfig.unscramble, currentWord, true, to );
                         scrambledWord   = scope.scramble( currentWord );
                         _bot.say( userConfig.unscramble, 'The new scramble word is: ' + scrambledWord + ' (' + ( currentWord[0] ) + ')' );
                         wordListener    = scope.listenToWord.bind( scope, result.word );
                         _bot.addListener( 'message' + userConfig.unscramble, wordListener );
                     }
-                }, false);
+                }, false, from, to );
             }
             else
             {

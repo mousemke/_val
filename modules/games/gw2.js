@@ -85,17 +85,17 @@ module.exports  = function GuildWars2( _bot, _modules, userConfig )
     // /v2/worlds [l]
 
 
-        test : function( botText )
+        test : function( from, to )
         {
             var url = apiBaseUrl + '/items';
 
             _modules.core.apiGet( url, function( result )
             {
-                console.log( result )
+                console.log( result );
 
                 // do a thing
 
-            } );
+            }, false, from, to );
 
             return botText;
         },
@@ -116,7 +116,7 @@ module.exports  = function GuildWars2( _bot, _modules, userConfig )
             }
 
             if ( moduleRoom === from )
-            {            
+            {
                 if ( typeof command !== 'string' )
                 {
                     command = command[ 0 ];
@@ -125,7 +125,7 @@ module.exports  = function GuildWars2( _bot, _modules, userConfig )
                 switch ( command )
                 {
                     case 'test':
-                        botText = this.test();
+                        botText = this.test( from, to );
                         break;
                     case 'gsc':
                         botText = this.decToGSC( textSplit[ 1 ] );

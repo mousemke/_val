@@ -95,7 +95,7 @@ module.exports  = function Worte( _bot, _modules, userConfig )
         },
 
 
-        define : function( from, word, current )
+        define : function( from, word, current, to )
         {
             var definition;
 
@@ -133,7 +133,7 @@ module.exports  = function Worte( _bot, _modules, userConfig )
                     _bot.say( from, _def );
                 }
 
-            }, false );
+            }, false, from, to );
         },
 
 
@@ -266,26 +266,9 @@ module.exports  = function Worte( _bot, _modules, userConfig )
 
         readScores : function()
         {
-            var url = '/_val/json/unscrambleScores.json';
+            var url = 'json/unscrambleScores.json';
 
-            http.get( url, function( res )
-            {
-                var body = '';
-
-                res.on( 'data', function( chunk )
-                {
-                    body += chunk;
-                });
-
-                res.on( 'end', function()
-                {
-                    wordScores =  JSON.parse( body );
-                });
-
-            } ).on( 'error', function( e )
-            {
-                console.log( 'Got error: ', e );
-            });
+            wordScores = JSON.parse( fs.readFileSync( url ) );
         },
 
 
@@ -303,7 +286,7 @@ module.exports  = function Worte( _bot, _modules, userConfig )
                 switch ( command )
                 {
                     case 'wort':
-                        this.wort( from, text, false );
+                        this.wort( from, to );
                         break;
                     case 'neuesWort':
                         this.neuesWort( from, to );
@@ -387,7 +370,7 @@ module.exports  = function Worte( _bot, _modules, userConfig )
                 {
                     func( botText );
                 }
-            }, false );
+            }, false, from, to );
         },
 
 
@@ -402,7 +385,7 @@ module.exports  = function Worte( _bot, _modules, userConfig )
         },
 
 
-        wort : function()
+        wort : function( from, to )
         {
             if ( currentWord === '' )
             {
@@ -431,7 +414,7 @@ module.exports  = function Worte( _bot, _modules, userConfig )
                         currentWord     = result.word;
                         englishWord     = result.word;
                         currentWordTime = Date.now();
-                        scope.define( userConfig.anagramm, currentWord, true );
+                        scope.define( userConfig.anagramm, currentWord, true, to );
 
                         scope.translate( 'en', 'de', 'internal', null, 'de ' + currentWord, function( translatedWord )
                         {
@@ -453,7 +436,7 @@ module.exports  = function Worte( _bot, _modules, userConfig )
                             }
                         } );
                     }
-                }, false);
+                }, false, from, to );
             }
             else
             {
