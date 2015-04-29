@@ -57,12 +57,15 @@ module.exports  = function CAH( _bot, _modules, userConfig )
         },
 
 
-        cancelQuestion : function()
+        cancelQuestion : function( silent )
         {
             activeQuestion.used = false;
             activeQuestion      = false;
 
-            _bot.say( userConfig.cahRoom, '5 min is up!  This question is expired.' );
+            if ( !silent )
+            {
+                _bot.say( userConfig.cahRoom, '5 min is up!  This question is expired.' );
+            }
         },
 
 
@@ -209,50 +212,82 @@ module.exports  = function CAH( _bot, _modules, userConfig )
         },
 
 
+        /**
+         * wrapper for listplayers to check whether or not is being called as an
+         * admin
+         *
+         * @param  {str}            _admin              should equal 'admin'
+         *
+         * @return {str}                                botText
+         */
         listPlayers : function( _admin )
         {
             _admin = _admin || null;
-            var botText = '', player;
 
             if ( _admin === 'admin' )
             {
-                botText = 'current players:';
+                return this.listPlayersAdmin();
+            }
+            else
+            {
+                return this.listPlayersPlayer();
+            }
+        },
 
-                for ( player in players )
+
+        listPlayersPlayer : function()
+        {
+            var botText = '';
+
+            var action = ( votingRound ) ? 'vote' : 'play';
+            var actionNeeded = false;
+
+
+            if ( votingRound )
+            {
+                for ( var voter in cardsPlayed )
                 {
-                    botText += '\n' + player + ' - ';
-
-                    if ( votingRound )
+                    if ( cardsPlayed[ voter ].length === activeQuestion.numAnswers )
                     {
-                        botText += 'voted: ';
-                        botText += voted.indexOf( player ) === -1 ? false : true;
-                        console.log( voted[ player ] );
-                    }
-                    else
-                    {
-                        botText += 'played: ' + players[ player ].played;
+                        actionNeeded = voted.indexOf( voter ) === -1;
+                        botText += actionNeeded ? voter + ' still needs to ' + action + '\n' : '';
                     }
                 }
             }
             else
             {
-                var action = votingRound ? 'vote' : 'play';
-                var actionNeeded = false;
-
-                for ( player in players )
+                for ( var player in players )
                 {
-                    if ( votingRound )
-                    {
-                        actionNeeded = voted.indexOf( player ) === -1;
-                    }
-                    else
-                    {
-                        actionNeeded = ! players[ player ].played;
-                    }
+                    actionNeeded = ! players[ player ].played;
                     botText += actionNeeded ? player + ' still needs to ' + action + '\n' : '';
                 }
             }
 
+            return botText;
+        },
+
+
+        listPlayersAdmin : function()
+        {
+            var botText = '';
+
+            for ( var player in players )
+            {
+                botText += '\n' + player + ' - ';
+
+                if ( votingRound )
+                {
+                    botText += 'voted: ';
+                    botText += voted.indexOf( player ) === -1 ? false : true;
+                    console.log( voted[ player ] );
+                }
+                else
+                {
+                    botText += 'played: ' + players[ player ].played;
+                }
+            }
+
+            botText = botText === '' ? 'no one is playing right now' : 'current players:' + botText;
 
             return botText;
         },
@@ -294,9 +329,9 @@ module.exports  = function CAH( _bot, _modules, userConfig )
                     }
                     else
                     {
-                        min     = ( userConfig.cahMaxMin - Math.floor( min + 1 ) );
+                        min = ( userConfig.cahMaxMin - Math.floor( min + 1 ) );
                         s   = ( min === 1 ) ? '' : 's';
-                        min     =  min + ' minute' + s + ' left.  ';
+                        min =  min + ' minute' + s + ' left.  ';
                     }
 
                     s   = ( activeQuestion.numAnswers === 1 ) ? '' : 's';
@@ -334,40 +369,10 @@ module.exports  = function CAH( _bot, _modules, userConfig )
         },
 
 
-        /**
-         * removes a player from the game
-         *
-         * @param  {str}            playerName          player to remove
-         *
-         * @return {str}                                confirmation or error text
-         */
-        removePlayer : function( playerName )
-        {
-            var player = players[ playerName ];
-
-            if ( player )
-            {
-                for ( var i = 0; i < player.hand.length; i++ )
-                {
-                    player.hand[ i ].user = false;
-                }
-
-                delete players[ playerName ];
-                delete cardsPlayed[ playerName ];
-
-                playerCount--;
-                return 'ok, ' + playerName + '. You\'re out of the game';
-            }
-            else
-            {
-                return 'Fine. You weren\'t playing anyways.';
-            }
-        },
-
-
         playCard : function( playerName, cardNum )
         {
             var player  = players[ playerName ];
+            cardNum = parseInt( cardNum );
 
             if ( player && player.played === false )
             {
@@ -378,7 +383,7 @@ module.exports  = function CAH( _bot, _modules, userConfig )
                     var card = this.useCard( playerName, cardNum );
 
                     if ( card )
-                        {
+                    {
                         cardsPlayed[ playerName ].push( card );
 
                         if ( cardsPlayed[ playerName ].length === activeQuestion.numAnswers )
@@ -408,6 +413,72 @@ module.exports  = function CAH( _bot, _modules, userConfig )
                 {
                     _bot.say( userConfig.cahRoom, playerName + ', you already used that card' );
                 }
+            }
+            else
+            {
+                _bot.say( userConfig.cahRoom, playerName + ', you\'ve already played.' );
+            }
+        },
+
+
+        /**
+         * removes a player from the game
+         *
+         * @param  {str}            playerName          player to remove
+         *
+         * @return {str}                                confirmation or error text
+         */
+        removePlayer : function( playerName )
+        {
+            var player = players[ playerName ];
+
+            if ( player )
+            {
+                for ( var i = 0; i < player.hand.length; i++ )
+                {
+                    player.hand[ i ].user = false;
+                }
+
+                var votedIndex = voted.indexOf( playerName );
+                if ( votedIndex !== -1 )
+                {
+                    voted[ votedIndex ] = null;
+                    voted = voted.filter( function( i ){ return i; } );
+                }
+                else if ( players[ playerName ] && players[ playerName ].played === true )
+                {
+                    cardCount--;
+                }
+
+                delete players[ playerName ];
+                delete cardsPlayed[ playerName ];
+
+                playerCount--;
+
+                if ( playerCount <= userConfig.cahMinPlayers )
+                {
+                    clearTimeout( questionTimeout );
+                    cardCount   = 0;
+                    votingRound = false;
+                    this.cancelQuestion( true );
+                    return 'well...  that\'s everyone!';
+                }
+
+                if ( votingRound && voted.length === playerCount )
+                {
+                    votingRound = false;
+                    this.votingResult();
+                }
+                else if ( !votingRound && cardCount === playerCount )
+                {
+                    this.switchToVoting();
+                }
+
+                return 'ok, ' + playerName + '. You\'re out of the game';
+            }
+            else
+            {
+                return 'Fine. You weren\'t playing anyways.';
             }
         },
 
@@ -515,6 +586,7 @@ module.exports  = function CAH( _bot, _modules, userConfig )
             }
 
             text += '\n\n' + 'Cast your vote!';
+
             _bot.say( userConfig.cahRoom, text );
         },
 
@@ -557,28 +629,37 @@ module.exports  = function CAH( _bot, _modules, userConfig )
 
         vote : function( player, vote )
         {
-            if ( answers.length < vote )
+            vote = parseInt( vote );
+
+            if ( vote < 1 || answers.length - 1 < vote )
             {
-                return 'That\'s not a valid choice.';
+                return 'That\'s not a valid choice, ' + player;
+            }
+            else if ( cardsPlayed[ player ].length !== activeQuestion.numAnswers )
+            {
+                return 'You joined late! You need to wait for the next round to start, ' + player;
             }
             else if ( voted.indexOf( player ) === -1 )
             {
+                var validVoters = [];
+                for ( var _player in cardsPlayed )
+                {
+                    validVoters.push( cardsPlayed[ _player ].length !== 0 );
+                }
+                validVoters = validVoters.filter( function( i ){ return i; } ).length;
+
                 voted.push( player );
                 votes.push( vote );
 
-                if ( voted.length === playerCount )
+                if ( voted.length === validVoters )
                 {
                     votingRound = false;
                     this.votingResult();
                 }
             }
-            else if ( !cardsPlayed[ player ] )
-            {
-                return 'You need to wait for the next round to start.';
-            }
             else
             {
-                return 'I think you already voted';
+                return 'I think you already voted, ' + player;
             }
         },
 
@@ -590,13 +671,14 @@ module.exports  = function CAH( _bot, _modules, userConfig )
             var winningAnswer   = cardsPlayed[ answers[ winner ] ];
 
             var text = activeQuestion.text;
-            if ( activeQuestion.text.indexOf( '__________' ) !== -1 )
+            if ( text.indexOf( '__________' ) !== -1 )
             {
-                console.log( cardsPlayed, answers[ winner ] );
                 for ( var i = 0, lenI = winningAnswer.length; i < lenI; i++ )
                 {
-                    answer = winningAnswer[ i ].text;
-                    text = text.replace( '__________', answer );
+                    answer  = winningAnswer[ i ].text;
+                    console.log( 'grabbed the answer' );
+                    text    = text.replace( '__________', answer );
+                    console.log( 'replaced' );
                 }
             }
             else
