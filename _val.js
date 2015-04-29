@@ -2,7 +2,7 @@
 // Loads the configuration and sets variables
 var channel, _bot, words, _modules = {},
     userConfig          = require( './config/_val.config.js' );
-    userConfig.version  = '0.1.4b';
+    userConfig.version  = '0.1.4c';
     userConfig.req      = {};
 
 var channels            = userConfig.channels,

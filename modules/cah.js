@@ -209,24 +209,50 @@ module.exports  = function CAH( _bot, _modules, userConfig )
         },
 
 
-        listPlayers : function()
+        listPlayers : function( _admin )
         {
-            var botText = 'current players:';
+            _admin = _admin || null;
+            var botText = '', player;
 
-            for ( var player in players )
+            if ( _admin === 'admin' )
             {
-                botText += '\n' + player + ' - ';
+                botText = 'current players:';
 
-                if ( votingRound )
+                for ( player in players )
                 {
-                    botText += 'voted: ';
-                    botText += voted.indexOf( player ) === -1 ? false : true;
-                }
-                else
-                {
-                    botText += 'played: ' + players[ player ].played;
+                    botText += '\n' + player + ' - ';
+
+                    if ( votingRound )
+                    {
+                        botText += 'voted: ';
+                        botText += voted.indexOf( player ) === -1 ? false : true;
+                        console.log( voted[ player ] );
+                    }
+                    else
+                    {
+                        botText += 'played: ' + players[ player ].played;
+                    }
                 }
             }
+            else
+            {
+                var action = votingRound ? 'vote' : 'play';
+                var actionNeeded = false;
+
+                for ( player in players )
+                {
+                    if ( votingRound )
+                    {
+                        actionNeeded = voted.indexOf( player ) === -1;
+                    }
+                    else
+                    {
+                        actionNeeded = ! players[ player ].played;
+                    }
+                    botText += actionNeeded ? player + ' still needs to ' + action + '\n' : '';
+                }
+            }
+
 
             return botText;
         },
@@ -437,6 +463,14 @@ module.exports  = function CAH( _bot, _modules, userConfig )
                             }
                     }
                 }
+                else if ( userConfig.admins.indexOf( to ) !== -1 )
+                {
+                    switch ( command )
+                    {
+                        case 'players':
+                            botText = this.listPlayers( 'admin' );
+                    }
+                }
             }
             return botText;
         },
@@ -558,6 +592,7 @@ module.exports  = function CAH( _bot, _modules, userConfig )
             var text = activeQuestion.text;
             if ( activeQuestion.text.indexOf( '__________' ) !== -1 )
             {
+                console.log( cardsPlayed, answers[ winner ] );
                 for ( var i = 0, lenI = winningAnswer.length; i < lenI; i++ )
                 {
                     answer = winningAnswer[ i ].text;

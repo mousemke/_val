@@ -74,10 +74,11 @@ a:active
     float:                      right;
     width:                      200px;
     background-color:           #195BB2;
-    height:                     60px;
+    height:                     54px;
     text-align:                 center;
-    line-height:                18px;
+    line-height:                24px;
     font-size:                  12px;
+    padding-top:                6px;
 }
 
 .icon
