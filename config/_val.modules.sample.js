@@ -47,6 +47,8 @@
             foursquareID        : '4sq ID - go get one',
             foursquareSecret    : '4sq secret - go get one',
             latLong             : '-88.987,-88.567',
+            foursquareSection   : 'food', // food, drinks, coffee, shops, arts, outdoors, sights, trending, specials, nextVenues, topPicks
+            foursquareRadius    : 2000 // in meters
         }
     },
 

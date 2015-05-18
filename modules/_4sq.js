@@ -9,8 +9,8 @@ module.exports  = function _4sq( _bot, _modules, userConfig )
             var _botText;
 
             //DEFAULT i suppose
-            var section     = 'food'; // food, drinks, coffee, shops, arts, outdoors, sights, trending, specials, nextVenues, topPicks
-            var radius      = '1000'; // in meters
+            var section     = userConfig.foursquareSection; // food, drinks, coffee, shops, arts, outdoors, sights, trending, specials, nextVenues, topPicks
+            var radius      = userConfig.foursquareRadius; // in meters
             var intent      = 'browse'; // checkin
             var searchType  = 'explore'; // search
 
