@@ -20,6 +20,7 @@ DOGE DQiQ8e62CQGqx378EuS8i8gUW2mLkfBuXu
 + added cards against humanity module
 + added donation wallets
 + added support for username prefixes (@username, etc)
++ added 4sq-range and foursquare module tweaks
 
 
 0.1.3 -

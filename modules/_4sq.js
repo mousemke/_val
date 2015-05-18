@@ -8,17 +8,22 @@ module.exports  = function _4sq( _bot, _modules, userConfig )
         {
             var _botText;
 
-            //DEFAULT i suppose
-            var section     = userConfig.foursquareSection; // food, drinks, coffee, shops, arts, outdoors, sights, trending, specials, nextVenues, topPicks
-            var radius      = userConfig.foursquareRadius; // in meters
+            var section     = userConfig.foursquareSection;
+            var radius      = userConfig.foursquareRadius;
             var intent      = 'browse'; // checkin
+            // var intent      = 'checkin';             // DEBUG
             var searchType  = 'explore'; // search
+            // var searchType  = 'search';              // DEBUG
 
             var noSpaces = new RegExp( ' ', 'g' );
 
             query = query.split( ' ' ).slice( 1 ).join( '%20' );
 
-            var url = 'https://api.foursquare.com/v2/venues/' + searchType + '?client_id=' + userConfig.foursquareID + '&client_secret=' + userConfig.foursquareSecret + '&v=20130815%20&ll=' + userConfig.latLong + '&llAcc=1000&openNow=1&radius=' + radius;
+            var url = 'https://api.foursquare.com/v2/venues/' + searchType +
+                                '?client_id=' + userConfig.foursquareID +
+                                '&client_secret=' + userConfig.foursquareSecret +
+                                '&v=20130815%20&ll=' + userConfig.latLong +
+                                '&llAcc=1000&openNow=1&radius=' + radius;
 
             if ( query !== '' )
             {
@@ -36,19 +41,24 @@ module.exports  = function _4sq( _bot, _modules, userConfig )
 
             // url += '&novelty=new&friendVisits=notvisited';
 
+
+// url = 'https://api.foursquare.com/v2/venues/suggestCompletion?ll=' + userConfig.latLong + '&query=' + query;
             _modules.core.apiGet( url, function( result )
             {
                 var _valsChoice;
                 var venues      = result.response.groups[0].items;
                 var venueCount  = venues.length;
 
-                if ( result.length === 0 )
+                if ( venues.length === 0 )
                 {
                     _botText = 'No results...  We shall all starve!';
                 }
                 else
                 {
-                    _valsChoice = venues[ Math.floor( Math.random() * venueCount ) ];
+                    _valsChoice = Math.floor( Math.random() * venueCount );
+                    console.log( result.response.groups[0].items.length, _valsChoice );
+                    _valsChoice = venues[ _valsChoice ];
+
                     var venue   = _valsChoice.venue.name;
                     var phone   = _valsChoice.venue.contact.formattedPhone;
                     var address = _valsChoice.venue.location.address;
@@ -107,6 +117,9 @@ module.exports  = function _4sq( _bot, _modules, userConfig )
                 case 'lunch':
                 case 'feedme':
                     this.lunch( from, to, text );
+                    break;
+                case '4sq-range':
+                    botText = 'Range is set to ' + ( userConfig.foursquareRadius ) + ' meters';
                     break;
             }
 
