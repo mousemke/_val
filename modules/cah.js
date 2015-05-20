@@ -134,7 +134,7 @@ module.exports  = function CAH( _bot, _modules, userConfig )
         },
 
 
-        dealCurrentHand : function( players, playerName )
+        dealCurrentHand : function( playerName )
         {
             var text, hand;
 
