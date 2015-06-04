@@ -184,8 +184,15 @@ module.exports  = function Words( _bot, _modules, userConfig )
             {
                 if ( currentWord !== '' )
                 {
-                    _bot.say( userConfig.unscramble, 'that\'s enough votes. The correct answer was:\n' +
-                                 currentWord + ' - ' + currentWordDef[0].text );
+                    var _whatTheBotSay = 'that\'s enough votes.';
+
+                    if ( currentWord && currentWordDef )
+                    {
+                        _whatTheBotSay += ' The correct answer was:\n' + currentWord +
+                                            ' - ' + currentWordDef[0].text;
+                    }
+
+                    _bot.say( userConfig.unscramble, _whatTheBotSay );
                     currentWord     = '';
                 }
 
