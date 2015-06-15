@@ -557,7 +557,7 @@ var guys = {
         'I think you meant ',
         'Perhaps you meant ',
         'Surely you meant ',
-        'Your probably meant '
+        'You probably meant '
     ]
 };
 
