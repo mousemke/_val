@@ -1,7 +1,7 @@
 
 module.exports  = function Admin( _bot, _modules, userConfig )
 {
-    var _channels               = userConfig.channels;
+    var _channels               = userConfig.channels,
         adminMessage            = userConfig.adminMessage,
         adminMessageInterval    = userConfig.adminMessageInterval,
         adminMessageChannels    = userConfig.adminMessageChannels || userConfig.channels,
@@ -37,9 +37,20 @@ module.exports  = function Admin( _bot, _modules, userConfig )
 
         yell : function( message, channels )
         {
-            for ( var i = 0, lenI = channels.length; i < lenI; i++ )
+            message = message.replace( '++yell', '' ).replace( '++y', '' );
+
+            if ( message && message !== '' )
             {
-                _bot.say( channels[ i ], message );
+                for ( var i = 0, lenI = channels.length; i < lenI; i++ )
+                {
+                    _bot.say( channels[ i ], message );
+                }
+
+                return false;
+            }
+            else
+            {
+                return 'You can\'t yell nothing';
             }
         },
 
@@ -123,6 +134,7 @@ module.exports  = function Admin( _bot, _modules, userConfig )
                     case 'm-clear':
                         botText = this.setMessage( [ '' ] );
                         break;
+                    case 'y':
                     case 'yell':
                         botText = this.yell( text, _channels );
                         break;

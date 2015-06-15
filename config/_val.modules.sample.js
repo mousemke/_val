@@ -6,12 +6,6 @@
     /**
      * load _val modules
      */
-    Guys   : {
-        enabled : true,
-        url     : './modules/guys.js'
-    },
-
-
     PlainText   : {
         enabled : true,
         url     : './modules/plainText.js'

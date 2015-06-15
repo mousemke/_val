@@ -261,45 +261,58 @@ function listenToMessages( from, to, text )
 
         if ( text === '_val' || text === '_val?' )
         {
-            _bot.say( from, 'yes?' );
+            botText = 'yes?';
         }
         else if ( text === '_val!' )
         {
-            _bot.say( from, 'what!?' );
+            botText = 'yes?';
         }
-        else if ( text === userConfig.trigger + 'moon?' )
+
+        var triggers = guys.triggers;
+
+        for ( var i = 0, lenI = triggers.length; i < lenI; i++ )
         {
-            _bot.say( from, 'An astronaut miner extracting the precious moon gas that promises to reverse the Earth\'s energy crisis nears the end of his three-year contract, and makes an ominous discovery in this psychological sci-fi film starring Sam Rockwell and Kevin Spacey.' );
+            if ( text.indexOf( guys.triggers[ i ] ) !== -1 )
+            {
+                botText = replaceGuys( to, text );
+                break;
+            }
         }
-        else if ( text === userConfig.trigger + 'isup' )
+
+        if ( text[ 0 ] === userConfig.trigger && text !== userConfig.trigger && botText === '' )
         {
-            _bot.say( from, 'Yes, but c\'mon!  At least use a full sentence!' );
-        }
-        else if ( text[ 0 ] === userConfig.trigger && text !== userConfig.trigger )
-        {
+            if ( text === userConfig.trigger + 'moon?' )
+            {
+                botText = 'The white or grey thing that you see at night if you look at the sky.';
+            }
+            else if ( text === userConfig.trigger + 'isup' )
+            {
+                botText = 'Yes, but c\'mon!  At least use a full sentence!';
+            }
+
             for ( var module in _modules )
             {
-                if ( module !== 'constructors' )
-                {
-                    botText = _modules[ module ].responses( from, to, text, botText );
-                }
-
                 if ( botText !== '' )
                 {
                     break;
                 }
-            }
 
-            if ( botText !== '' && botText !== false )
-            {
-                console.log( '<' + from + '> <' + to + '> :' + text );
-
-                if ( botText !== undefined )
+                if ( module !== 'constructors' )
                 {
-                    console.log( '<' + from + '> <' + ( userConfig.botName ) + '> :' + botText );
+                    botText = _modules[ module ].responses( from, to, text, botText );
                 }
-                _bot.say ( from, botText );
             }
+        }
+
+        if ( botText !== '' && botText !== false )
+        {
+            console.log( '<' + from + '> <' + to + '> :' + text );
+
+            if ( botText !== undefined )
+            {
+                console.log( '<' + from + '> <' + ( userConfig.botName ) + '> :' + botText );
+            }
+            _bot.say ( from, botText );
         }
     }
     else if ( userConfig.bots.indexOf( to ) !== -1 &&
@@ -370,6 +383,14 @@ function listenToPm( from, text )
     //     _modules.words.responses( from, from, text, '' );
     // }
 }
+
+
+function replaceGuys( to, text )
+{
+    var _alternative    = guys.alternatives[ Math.floor( Math.random() * guys.alternatives.length ) ];
+    var _speech         = guys.speech[ Math.floor( Math.random() * guys.speech.length ) ];
+    return to + ', ' + _speech + _alternative + '...';
+};
 
 
 function responses( from, to, text, botText )
@@ -497,6 +518,50 @@ function watchActive( from, to )
     }
     _bot.active[ from ][ to ] = Date.now();
 }
+
+
+var guys = {
+
+    triggers : [
+        'guys',
+        'dudes'
+    ],
+
+    alternatives : [
+        'team',
+        'squad',
+        'gang',
+        'pals',
+        'buds',
+        'posse',
+        'phalanx',
+        'crew',
+        'crüe',
+        'nerds',
+        'friends',
+        'fellow-humans',
+        'folks',
+        'people',
+        'peeps',
+        'friends',
+        'chums',
+        'everyone',
+        'you lot',
+        'youse',
+        'y\'all',
+        'peers',
+        'comrades'
+    ],
+
+    speech : [
+        'I think you meant ',
+        'Perhaps you meant ',
+        'Surely you meant ',
+        'Your probably meant '
+    ]
+};
+
+
 
 
 ini();

@@ -18,6 +18,12 @@ DOGE DQiQ8e62CQGqx378EuS8i8gUW2mLkfBuXu
 
 **Change log**
 
+0.1.5 -
++ folded guys module into core
++ aliased ++y to ++yell
++ changes to core
++ bug fixes
+
 0.1.4 -
 + added cards against humanity module
 + added donation wallets
