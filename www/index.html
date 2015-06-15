@@ -13,7 +13,7 @@
         <div class="header">
             <a href="#intro"><span class="val--title__logo"></span></a>
             <span class="val--title__text">
-                _val, an IRC Dogecoin tipbot.  And then some.  ( v 0.1.4c )
+                _val, an IRC Dogecoin tipbot.  And then some.  ( v 0.1.5 )
             </span>
             <span class="val--author">
                 _val is coded by @mousemke<br>
@@ -35,6 +35,7 @@
             <div class="nav-wrapper">
                 <div class="nav">
                     <a href="#core-module">CORE MODULE</a>
+                    <a href="#guys-module">GUYS MODULE</a>
                     <a href="#plaintext-module">PLAIN TEXT MODULE</a>
                     <a href="#doge-module">DOGE MODULE</a>
                     <a href="#words-module">WORDS MODULE</a>
@@ -131,6 +132,7 @@
                         <a href="#balance">balance (all)</a>
                         <a href="#wallet">wallet (all)</a>
                         <a href="#deposit">deposit</a>
+                        <a href="#makeitrain">makeitrain (number)</a>
                         <a href="#soak">soak (number)</a>
                     </div>
                     <br>
@@ -229,6 +231,8 @@
                         <a href="#admin-m-channels">m-channels (channels)</a>
                         <a href="#admin-m-cancel">m-cancel</a>
                         <a href="#admin-m-clear">m-clear</a>
+                        <a href="#admin-yell">yell</a>
+                        <a href="#admin-down">down</a>
                     </div>
                     <br>
                 </div>
@@ -252,12 +256,16 @@
                         <div class="module--title">Change log</div>
                         <br>
                         <div class="indented">
-                            0.1.4b -
+                            0.1.4 -
                             <div class="indented">
                                 + added cards against humanity module<br>
                                 + added donation wallets<br>
                                 + added support for username prefixes (@username, etc)<br>
                                 + added 4sq-range and foursquare module tweaks<br>
+                                + added admin:yell<br>
+                                + added admin:down<br>
+                                + added module guys.js<br>
+                                + aliased doge:soak to doge:makeitrain<br>
                                 <br>
                                 <a href="#old-changes">older change logs</a>
                             </div>
@@ -307,6 +315,16 @@
                         <p>Displays the number of active users in the current channel</p>
 
                     </div>
+
+                    <br>
+                    <br>
+                    <a name="guys-module"></a>
+                    <br>
+                    <br>
+                    <span class="module--title">GUYS MODULE</span>
+
+                    <p>This module trys to suggest alternatives to using guys and dudes as you plural.  No user servicable parts inside</p>
+
 
                     <br>
                     <br>
@@ -613,8 +631,10 @@
                         <p>Displays a deposit address specifically for the sending user to go into their account</p>
 
                         <a name="soak"></a>
+                        <a name="makeitrain"></a>
                         <br>
                         <span class="command">soak (number)</span>
+                        <span class="command">makeitrain (number)</span>
                         <p>Removes the given number of Doge from the sending user and splits it evenly between all active users if the sending user is identified.</p>
                     </div>
 
@@ -925,6 +945,15 @@
                         <span class="command">m-clear</span>
                             <p>Cancels the broadcast message</p>
 
+                        <a name="admin-yell"></a>
+                        <br>
+                        <span class="command">yell</span>
+                            <p>Broadcasts a one time message to all channels that _val is in</p>
+
+                        <a name="admin-down"></a>
+                        <br>
+                        <span class="command">down</span>
+                            <p>Broadcasts a message that _val is going town</p>
                     </div>
 
 

@@ -2,6 +2,8 @@
 
 erm.... bot.
 
+v. 0.1.5
+
 Go to http://knoblau.ch/_val for a list of commands.
 
 If you would like to have _val running on your irc/slack/twitch/whatever in our hosting pool let us know.  The hosting pool is run on an EC2 instance and is funded only by donations.  It's a good way to have your bots running without having to worry about it.
@@ -21,7 +23,10 @@ DOGE DQiQ8e62CQGqx378EuS8i8gUW2mLkfBuXu
 + added donation wallets
 + added support for username prefixes (@username, etc)
 + added 4sq-range and foursquare module tweaks
-
++ added admin:yell
++ added admin:down
++ added module guys.js
++ aliased doge:soak to doge:makeitrain
 
 0.1.3 -
 + added twitch module

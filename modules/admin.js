@@ -1,7 +1,8 @@
 
 module.exports  = function Admin( _bot, _modules, userConfig )
 {
-    var adminMessage            = userConfig.adminMessage,
+    var _channels               = userConfig.channels;
+        adminMessage            = userConfig.adminMessage,
         adminMessageInterval    = userConfig.adminMessageInterval,
         adminMessageChannels    = userConfig.adminMessageChannels || userConfig.channels,
         currentMessageInterval;
@@ -34,6 +35,15 @@ module.exports  = function Admin( _bot, _modules, userConfig )
         },
 
 
+        yell : function( message, channels )
+        {
+            for ( var i = 0, lenI = channels.length; i < lenI; i++ )
+            {
+                _bot.say( channels[ i ], message );
+            }
+        },
+
+
         /**
          * clears (if necessary) and sets the interval timer
          *
@@ -43,10 +53,7 @@ module.exports  = function Admin( _bot, _modules, userConfig )
         {
             var sayTheThing = function()
             {
-                for ( var i = 0, lenI = adminMessageChannels.length; i < lenI; i++ )
-                {
-                    _bot.say( adminMessageChannels[ i ], adminMessage );
-                }
+                this.yell( adminMessage, adminMessageChannels.length );
             };
 
             if ( currentMessageInterval )
@@ -114,7 +121,13 @@ module.exports  = function Admin( _bot, _modules, userConfig )
                         break;
                     case 'm-cancel':
                     case 'm-clear':
-                        botText = botText = this.setMessage( [ '' ] );
+                        botText = this.setMessage( [ '' ] );
+                        break;
+                    case 'yell':
+                        botText = this.yell( text, _channels );
+                        break;
+                    case 'down':
+                        botText = this.yell( 'I\m going down for a sec, bear with me!  ʕ •́؈•̀)', _channels );
                         break;
                 }
             }
