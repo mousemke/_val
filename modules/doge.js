@@ -136,7 +136,7 @@ module.exports = function Doge( _bot, _modules, userConfig )
                                 price += ' satoshi';
                             }
                         }
-                        else if ( ( dogePrices[ i ].price_base === 'USD' && dogePrices[ i ].exchange === 'cryptsy' ||
+                        else if ( ( dogePrices[ i ].price_base === 'USD' && dogePrices[ i ].exchange === 'cryptsy' ) ||
                             dogePrices[ i ].price_base === 'EUR' )
                         {
                             price = price + ' (' + ( dogePrices[ i ].price_base ) + '), ';
