@@ -38,7 +38,7 @@ module.exports = function Nico( _bot, _modules, userConfig )
                     break;
                 case 'flip' + ( userConfig.nico ):
                 case 'flipthe' + ( userConfig.nico ):
-                    botText     = '(╯°Д°）╯︵/(.□ . ) ᵇᵘᵗ ᴵ\'ᵐ ᶰᶦᶜᵒ﹗';
+                    botText     = '(╯°Д°）╯︵/(.□ . ) ᶰᵒᵒᵒᵒᵒᵒᵒᵒᵒ﹗';
                     nicoFlipped = true;
                     _bot.say( ( userConfig.nico ) + ', I\'m so sorry! ' + to + ' just flipped you like a little turtle. It\'s not my fault, I swear!! Now you\'re stuck on your back in ' + from + ' ' );
                     break;
@@ -56,7 +56,7 @@ module.exports = function Nico( _bot, _modules, userConfig )
                         botText = 'no';
                     }
                     break;
-                case 'is' + ( userConfig.nico ) + 'abadman?':
+                case 'is' + ( userConfig.nico ) + 'abadperson?':
                     botText = 'yes.  most definitely';
                     break;
                 case 'whoisit?':

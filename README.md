@@ -19,6 +19,7 @@ DOGE DQiQ8e62CQGqx378EuS8i8gUW2mLkfBuXu
 **Change log**
 
 0.1.5 -
++ changed nico module command from man to person
 + folded guys module into core
 + aliased ++y to ++yell
 + changes to core
