@@ -143,10 +143,8 @@ module.exports  = function CAH( _bot, _modules, userConfig )
         dealCurrentHand : function( playerName )
         {
             var text, hand;
-            console.log( '5' );
             if ( players[ playerName ] && players[ playerName ].hand )
             {
-                console.log( '6' );
                 hand = players[ playerName ].hand;
 
                 if ( activeQuestion )
@@ -167,7 +165,6 @@ module.exports  = function CAH( _bot, _modules, userConfig )
             {
                 text = 'one sec... still dealing';
             }
-            console.log( '7' );
             _bot.say( playerName, text );
         },
 
@@ -320,7 +317,6 @@ module.exports  = function CAH( _bot, _modules, userConfig )
                 {
                     botText += 'voted: ';
                     botText += voted.indexOf( player ) === -1 ? false : true;
-                    console.log( voted[ player ] );
                 }
                 else
                 {
@@ -554,10 +550,8 @@ module.exports  = function CAH( _bot, _modules, userConfig )
          */
         responses : function( from, to, text, botText )
         {
-            console.log( '1' );
             if ( cahRoom === from )
             {
-                console.log( '2' );
                 var command = text.slice( ' ' );
 
                 if ( typeof command !== 'string' )
@@ -573,7 +567,6 @@ module.exports  = function CAH( _bot, _modules, userConfig )
                 }
                 else if ( players[ to ] )
                 {
-                    console.log( '3' );
                     switch ( command )
                     {
                         case 'quit':
@@ -589,7 +582,6 @@ module.exports  = function CAH( _bot, _modules, userConfig )
                             botText = this.listPlayers();
                             break;
                         case 'cards':
-                        console.log( '4' );
                             botText = false;
                             this.dealCurrentHand( to );
                             break;
@@ -680,7 +672,6 @@ module.exports  = function CAH( _bot, _modules, userConfig )
         {
             var text    = activeQuestion.text + '\nAnswers:';
             var j       = 0;
-console.log( cardsPlayed );
             for ( var player in cardsPlayed )
             {
                 j++;
@@ -835,9 +826,7 @@ console.log( cardsPlayed );
         //         for ( var i = 0, lenI = winningAnswer.length; i < lenI; i++ )
         //         {
         //             answer  = winningAnswer[ i ].text;
-        //             console.log( 'grabbed the answer' );
         //             text    = text.replace( '__________', answer );
-        //             console.log( 'replaced' );
         //         }
         //     }
         //     else
@@ -882,9 +871,7 @@ console.log( cardsPlayed );
                 for ( var i = 0, lenI = winningAnswer.length; i < lenI; i++ )
                 {
                     answer  = winningAnswer[ i ].text;
-                    console.log( 'grabbed the answer' );
                     text    = text.replace( '__________', answer );
-                    console.log( 'replaced' );
                 }
             }
             else

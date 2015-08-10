@@ -56,7 +56,7 @@ module.exports  = function _4sq( _bot, _modules, userConfig )
                 else
                 {
                     _valsChoice = Math.floor( Math.random() * venueCount );
-                    console.log( result.response.groups[0].items.length, _valsChoice );
+
                     _valsChoice = venues[ _valsChoice ];
 
                     var venue   = _valsChoice.venue.name;
@@ -116,6 +116,7 @@ module.exports  = function _4sq( _bot, _modules, userConfig )
             {
                 case 'lunch':
                 case 'feedme':
+                case 'food':
                     this.lunch( from, to, text );
                     break;
                 case '4sq-range':

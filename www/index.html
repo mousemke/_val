@@ -61,6 +61,7 @@
                         <a href="#isup">isup</a>
                         <a href="#help">help</a>
                         <a href="#active">active</a>
+                        <a href="#active">seen</a>
                     </div>
                     <br>
 
@@ -174,6 +175,7 @@
                     <div class="indented">
                         <a href="#lunch">lunch (query)</a>
                         <a href="#feedme">feedme (query)</a>
+                        <a href="#feedme">food (query)</a>
                         <a href="#_4sq-range">4sq-range (query)</a>
                     </div>
                     <br>
@@ -258,6 +260,8 @@
                         <div class="indented">
                             0.1.5 -
                                 <div class="indented">
+                                    + added 'seen' to _val core
+                                    + added 'food' alias for 4sq
                                     + changed nico module command from man to person<br>
                                     + folded guys module into core<br>
                                     + aliased ++y to ++yell<br>
@@ -311,7 +315,12 @@
                         <a name="active"></a>
                         <br>
                         <span class="command">active</span>
-                        <p>Displays the number of active users in the current channel</p>
+                            <p>Displays the number of active users in the current channel</p>
+
+                        <a name="seen"></a>
+                        <br>
+                        <span class="command">seen [user]</span>
+                            <p>Displays the last time a user was seen</p>
 
                     </div>
 
@@ -730,6 +739,7 @@
 
                         <a name="lunch"></a>
                         <a name="feedme"></a>
+                        <a name="food"></a>
                         <br>
                         <span class="command">lunch (query)</span>
                         <span class="command">feedme (query)</span>

@@ -5,6 +5,7 @@ var channel, _bot, words, _modules = {},
     userConfig.version  = '0.1.5';
     userConfig.req      = {};
 
+var lastSeenList;
 var channels            = userConfig.channels,
 
     /**
@@ -145,6 +146,41 @@ function checkActive( from, to, text, talk )
 
 
 /**
+ * Check active
+ *
+ * returns a list of users that have posted within the defined amount of time
+ *
+ * @param  {str}            from                originating channel
+ * @param  {str}            to                  originating user
+ * @param  {str}            text                full message text
+ * @param  {bool}           talk                true to say, otherwise
+ *                                                      active only returns
+ *
+ * @return {arr}                                        active users
+ */
+function checkSeen( from, to, text, talk )
+{
+    text = text.split( ' ' ).slice( 1 );
+    var user = lastSeenList[ text ];
+
+    if ( user )
+    {
+        var dateObj = new Date( user.time );
+        var minutes = dateObj.getMinutes();
+        var dateString = userConfig.weekdays[ dateObj.getDay() ] + ' ';
+        dateString    += userConfig.months[ dateObj.getMonth() ] + ' ';
+        dateString    += dateObj.getDate() + ' at ' + dateObj.getHours() + ':' + minutes;
+
+        return to + ': last time I saw ' + text + ' was in ' + user.place + ' on ' + dateString;
+    }
+    else
+    {
+        return 'sorry, ' + to + '. I\'ve never met that user';
+    }
+}
+
+
+/**
  * init
  *
  * sets listeners and master list up
@@ -245,6 +281,7 @@ function listenToMessages( from, to, text )
     text = trimUsernames( text );
 
     watchActive( from, to );
+    watchSeen( from, to );
 
     if ( text.toLowerCase().indexOf( 'troll' ) !== -1 )
     {
@@ -358,41 +395,35 @@ function listenToPm( from, text )
         _bot.say ( from, botText );
         botText = '';
     }
-    // else if ( _modules.doge && textSplit[ 0 ] === 'doge' )
-    // {
-    //     _modules.doge.doge( from, text, false );
-    // }
-    // else if ( _modules.doge && textSplit[ 0 ] === 'market' )
-    // {
-    //     _modules.doge.doge( from, text, true );
-    // }
-    // else if ( _modules.doge && textSplit[ 0 ] === 'withdraw' )
-    // {
-    //     _modules.doge.withdraw( from, from, text );
-    // }
-    // else if ( _modules.doge && textSplit[ 0 ] === 'balance' )
-    // {
-    //     _modules.doge.balance( from, from, text );
-    // }
-    // else if ( _modules.doge && textSplit[ 0 ] === 'deposit' )
-    // {
-    //     _modules.doge.deposit( from, from, text );
-    // }
-    // else
-    // {
-    //     _modules.words.responses( from, from, text, '' );
-    // }
 }
 
 
+/**
+ * responds to 'guys' (and other trigger words) with alternative suggestions
+ *
+ * @param  {String} to              user
+ * @param  {String} text            original text
+ *
+ * @return {String} suggestion
+ */
 function replaceGuys( to, text )
 {
     var _alternative    = guys.alternatives[ Math.floor( Math.random() * guys.alternatives.length ) ];
     var _speech         = guys.speech[ Math.floor( Math.random() * guys.speech.length ) ];
     return to + ', ' + _speech + _alternative + '...';
-};
+}
 
 
+/**
+ * base reponse functions of val
+ *
+ * @param  {String}         from                channel of origin
+ * @param  {String}         to                  player of origin
+ * @param  {String}         text                full text
+ * @param  {String}         botText             response text
+ *
+ * @return {String}                             response text
+ */
 function responses( from, to, text, botText )
 {
     var command = text.slice( 1 ).split( ' ' )[ 0 ];
@@ -401,6 +432,9 @@ function responses( from, to, text, botText )
     {
         case 'active':
             checkActive( from, to, text );
+            break;
+        case 'seen':
+            botText = checkSeen( from, to, text );
             break;
         case 'help':
             if ( userConfig.enableHelp )
@@ -517,6 +551,37 @@ function watchActive( from, to )
         _bot.active[ from ] = {};
     }
     _bot.active[ from ][ to ] = Date.now();
+}
+
+
+/**
+ * watch seen
+ *
+ * records the latest place a user is seen
+ *
+ * @param  {str}            from                originating channel
+ * @param  {str}            to                  originating user
+ *
+ * @return {void}
+ */
+function watchSeen( from, to )
+{
+    var url = 'json/seen.json';
+
+    if ( ! lastSeenList )
+    {
+        lastSeenList = JSON.parse( ( fs.readFileSync( url ) ) );
+    }
+
+    lastSeenList[ to ] = { time: Date.now(), place: from };
+
+    fs.writeFile( url, JSON.stringify( lastSeenList ), function ( err )
+    {
+        if ( err )
+        {
+            console.log( err );
+        }
+    });
 }
 
 

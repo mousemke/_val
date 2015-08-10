@@ -34,7 +34,6 @@ for ( var j = 0, lenJ = a.whiteCards.length; j < lenJ; j++ )
 
 for ( var set in a )
 {
-    console.log( set );
     if ( set !== 'blackCards' && set !== 'whiteCards' )
     {
         name = a[ set ].name;
