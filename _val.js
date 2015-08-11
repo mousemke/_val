@@ -1,17 +1,17 @@
 
 // Loads the configuration and sets variables
-var channel, _bot, words, _modules = {},
-    userConfig          = require( './config/_val.config.js' );
-    userConfig.version  = '0.1.5';
+var channel, _bot, words, lastSeenList, _modules = {},
+    userConfig          = require( './config/_val.config.js' ),
+    modules             = require( './config/_val.modules.js' );
+    userConfig.version  = '0.1.6';
     userConfig.req      = {};
 
-var lastSeenList;
-var channels            = userConfig.channels,
+var channels            = [];
 
     /**
      * load node modules
      */
-    http    = userConfig.req.http   = require( 'http' ),
+var http    = userConfig.req.http   = require( 'http' ),
     https   = userConfig.req.https  = require( 'https' ),
     irc     = userConfig.req.irc    = require( 'irc' ),
     fs      = userConfig.req.fs     = require( 'fs' );
@@ -181,6 +181,112 @@ function checkSeen( from, to, text, talk )
 
 
 /**
+ * ## generateChannelList
+ *
+ * generates a channel list based on settings and environment.
+ *
+ * @return _Void_
+ */
+function generateChannelList()
+{
+    function addPrivateChannels()
+    {
+        var _p, _private    = userConfig.channelsPrivateJoin;
+        var _privateLength  = _private.length;
+
+        if ( _privateLength )
+        {
+            for ( var i = 0; i < _privateLength; i++ )
+            {
+                _p = _private[ i ];
+                if ( channels.indexOf( _p ) === -1 )
+                {
+                    channels.push( _p );
+                }
+            }
+        }
+    }
+
+    function removeBlacklistChannels()
+    {
+        var _b, _bIndex, _black      = userConfig.channelsOpenIgnore;
+        var _blackLength    = _black.length;
+
+        if ( _blackLength )
+        {
+            for ( var i = 0; i < _blackLength; i++ )
+            {
+                _b = _black[ i ];
+                _bIndex = channels.indexOf( _b );
+
+                if ( _bIndex !== -1 )
+                {
+                    channels.splice( _bIndex, 1 );
+                }
+            }
+        }
+    }
+
+
+    function finishChannels()
+    {
+        userConfig.publicChannels = [].concat( channels );
+
+        if ( modules.Slack.enabled )
+        {
+            addPrivateChannels();
+        }
+
+        removeBlacklistChannels();
+        userConfig.channels = channels;
+
+        ini();
+    }
+
+    if ( userConfig.autojoin )
+    {
+        if ( modules.Slack.enabled )
+        {
+            var _url    = 'https://sociomantic.slack.com/api/channels.list?token=' + userConfig.slackAPIKey;
+
+            apiGet( _url, function( res )
+            {
+                var _channels = res.channels;
+
+                for ( var _c in _channels )
+                {
+                    channels.push( _channels[ _c ].name );
+                }
+
+                finishChannels();
+            }, true );
+        }
+        else if ( modules.Twitch.enabled )
+        {
+            // just one i think
+            channels = userConfig.channels;
+            finishChannels();
+        }
+        else // irc
+        {
+            // theoretcally /list works
+            channels = userConfig.channels;
+            finishChannels();
+        }
+    }
+    else if ( userConfig.channels )
+    {
+        channels = userConfig.channels;
+        finishChannels();
+    }
+    else
+    {
+        console.log( 'no channels found' );
+    }
+}
+
+
+/**
  * init
  *
  * sets listeners and master list up
@@ -190,7 +296,7 @@ function checkSeen( from, to, text, talk )
 function ini()
 {
     _bot = new irc.Client( userConfig.server, userConfig.botName, {
-        channels                : userConfig.channels,
+        channels                : channels,
         password                : userConfig.serverPassword,
         showErrors              : false,
         autoRejoin              : true,
@@ -209,7 +315,7 @@ function ini()
 
     for ( var i = 0, lenI = channels.length; i < lenI; i++ )
     {
-        channel = userConfig.channels[ i ];
+        channel = channels[ i ];
         _bot.addListener( 'message' + channel, listenToMessages.bind( this, channels[ i ] ) );
     }
 
@@ -234,7 +340,6 @@ function ini()
     /**
      * load _val modules
      */
-    modules     = require( './config/_val.modules.js' );
 
     for ( var module in modules )
     {
@@ -320,7 +425,7 @@ function listenToMessages( from, to, text )
         {
             if ( text === userConfig.trigger + 'moon?' )
             {
-                botText = 'The white or grey thing that you see at night if you look at the sky.';
+                botText = 'The Moon has a long association with insanity and irrationality';
             }
             else if ( text === userConfig.trigger + 'isup' )
             {
@@ -436,6 +541,9 @@ function responses( from, to, text, botText )
         case 'seen':
             botText = checkSeen( from, to, text );
             break;
+        case 'test':
+            botText = testFunction( from, to, text );
+            break;
         case 'help':
             if ( userConfig.enableHelp )
             {
@@ -458,6 +566,23 @@ function responses( from, to, text, botText )
 }
 
 
+function testFunction( from, to, text )
+{
+    console.log( 'nothing here now' );
+
+    return false;
+}
+
+
+/**
+ * trimUsernames
+ *
+ * removes the set usernamePrefix from the front of usernames
+ *
+ * @param  {String} text            original text
+ *
+ * @return {String}
+ */
 function trimUsernames( text )
 {
     if ( userConfig.usernamePrefix && userConfig.usernamePrefix.length > 0 )
@@ -568,20 +693,23 @@ function watchSeen( from, to )
 {
     var url = 'json/seen.json';
 
-    if ( ! lastSeenList )
+    lastSeenList = lastSeenList || JSON.parse( ( fs.readFileSync( url ) ) ) || {};
+
+    if ( userConfig.publicChannels && userConfig.publicChannels.indexOf( from ) !== -1 )
     {
-        lastSeenList = JSON.parse( ( fs.readFileSync( url ) ) );
+        lastSeenList[ to ] = { time: Date.now(), place: from };
     }
 
-    lastSeenList[ to ] = { time: Date.now(), place: from };
-
-    fs.writeFile( url, JSON.stringify( lastSeenList ), function ( err )
+    if ( lastSeenList )
     {
-        if ( err )
+        fs.writeFile( url, JSON.stringify( lastSeenList ), function ( err )
         {
-            console.log( err );
-        }
-    });
+            if ( err )
+            {
+                console.log( err );
+            }
+        } );
+    }
 }
 
 
@@ -626,7 +754,4 @@ var guys = {
     ]
 };
 
-
-
-
-ini();
+generateChannelList();
