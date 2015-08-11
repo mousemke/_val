@@ -3,12 +3,32 @@
  */
 
  module.exports = {
-    /**
-     * load _val modules
-     */
-    PlainText   : {
+
+    Anagramm    : {
         enabled : true,
-        url     : './modules/plainText.js'
+        ini     : true,
+        url     : './modules/anagramm.js',
+        options : {
+            wordnikBaseUrl          : 'http://api.wordnik.com:80/v4/',
+            translationBaseUrl      : 'http://mymemory.translated.net/api/',
+            newWordVoteNeeded       : 0.6,
+            unscramblePointTimeout  : 86400000, // 24 hours
+            anagramm                : '#anagramm',
+            anagrammDogePayout      : true, // requires module: doge
+            anagrammDogeModifier    : 3,
+            wordnikAPIKey           : 'wordnik - it works bitches',
+        }
+    },
+
+
+    Admin       : {
+        enabled : true,
+        url     : './modules/admin.js',
+        options : {
+            adminMessage            : '5 minutes later test. well, this appears to work',
+            adminMessageInterval    : 300000, // 5 min
+            adminMessageChannels    : [ '#soc-bots' ] // optional.  otherwise it falls back to all channels
+        }
     },
 
 
@@ -18,18 +38,15 @@
     },
 
 
-    XKCD        : {
+    CAH        : {
         enabled : true,
-        url     : './modules/xkcd.js',
+        ini     : true,
+        url     : './modules/cah.js',
         options : {
-            appUrl      : 'http://xkcd-imgs.herokuapp.com/'
+            cahRoom                     : '#mousemke',
+            cahMaxMin                   : 5,
+            cahMinPlayers               : 3
         }
-    },
-
-
-    Nico        : {
-        enabled : true,
-        url     : './modules/nico.js'
     },
 
 
@@ -53,6 +70,59 @@
     },
 
 
+    GuildWars   : {
+        enabled : true,
+        url     : './modules/games/gw2.js',
+        options : {
+            guildWars2Trigger       : 'gw2',
+            guildWars2Room          : '#guildwars',
+            guildWars2apiUrl        : 'https://api.guildwars2.com/v2'
+        }
+    },
+
+
+    Nico        : {
+        enabled : true,
+        url     : './modules/nico.js'
+    },
+
+
+    PlainText   : {
+        enabled : true,
+        url     : './modules/plainText.js'
+    },
+
+
+    Pool        : {
+        enabled : true,
+        url     : './modules/pool.js',
+        options : {
+                poolApiUrl          : 'http://192.168.2.15:8001/api/'
+        }
+    },
+
+
+    Slack      : {
+        enabled : false,
+        url     : './modules/slack.js',
+        options : {
+            slackAPIKey    : 'you-ad-here'
+        }
+    },
+
+
+    Twitch      : {
+        enabled : true,
+        url     : './modules/twitch.js',
+        options : {
+            autoAuth                : true,
+            enablePM                : false,
+            floodProtection         : true,
+            floodProtectionDelay    : 1200
+        }
+    },
+
+
     Words       : {
         enabled : true,
         ini     : true,
@@ -70,74 +140,11 @@
     },
 
 
-    Anagramm    : {
+    XKCD        : {
         enabled : true,
-        ini     : true,
-        url     : './modules/anagramm.js',
+        url     : './modules/xkcd.js',
         options : {
-            wordnikBaseUrl          : 'http://api.wordnik.com:80/v4/',
-            translationBaseUrl      : 'http://mymemory.translated.net/api/',
-            newWordVoteNeeded       : 0.6,
-            unscramblePointTimeout  : 86400000, // 24 hours
-            anagramm                : '#anagramm',
-            anagrammDogePayout      : true, // requires module: doge
-            anagrammDogeModifier    : 3,
-            wordnikAPIKey           : 'wordnik - it works bitches',
-        }
-    },
-
-
-    Pool        : {
-        enabled : true,
-        url     : './modules/pool.js',
-        options : {
-                poolApiUrl          : 'http://192.168.2.15:8001/api/'
-        }
-    },
-
-
-    Admin       : {
-        enabled : true,
-        url     : './modules/admin.js',
-        options : {
-            adminMessage            : '5 minutes later test. well, this appears to work',
-            adminMessageInterval    : 300000, // 5 min
-            adminMessageChannels    : [ '#soc-bots' ] // optional.  otherwise it falls back to all channels
-        }
-    },
-
-
-    Twitch      : {
-        enabled : true,
-        url     : './modules/twitch.js',
-        options : {
-            autoAuth                : true,
-            enablePM                : false,
-            floodProtection         : true,
-            floodProtectionDelay    : 1200
-        }
-    },
-
-
-    CAH        : {
-        enabled : true,
-        ini     : true,
-        url     : './modules/cah.js',
-        options : {
-            cahRoom                     : '#mousemke',
-            cahMaxMin                   : 5,
-            cahMinPlayers               : 3
-        }
-    },
-
-
-    GuildWars   : {
-        enabled : true,
-        url     : './modules/games/gw2.js',
-        options : {
-            guildWars2Trigger       : 'gw2',
-            guildWars2Room          : '#guildwars',
-            guildWars2apiUrl        : 'https://api.guildwars2.com/v2'
+            appUrl      : 'http://xkcd-imgs.herokuapp.com/'
         }
     }
 };
