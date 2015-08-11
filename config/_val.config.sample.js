@@ -110,6 +110,12 @@ var userConfig = {
      * enables private messages
      */
     enablePM                : true,
+
+    /**
+     * provided in config in case translations are necessary
+     */
+    weekdays                : [ 'Sun.', 'Mon.', 'Tues.', 'Wed.', 'Thurs.', 'Fri.', 'Sat.' ],
+    months                  : [ 'Jan.', 'Feb.', 'Mar.', 'Apr.', 'May', 'June', 'July', 'Aug.', 'Sept.', 'Oct.', 'Nov.', 'Dec' ]
 };
 
 module.exports = userConfig;
