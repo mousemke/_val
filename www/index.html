@@ -13,7 +13,7 @@
         <div class="header">
             <a href="#intro"><span class="val--title__logo"></span></a>
             <span class="val--title__text">
-                _val, an IRC Dogecoin tipbot.  And then some.  ( v 0.1.5 )
+                _val, an IRC Dogecoin tipbot.  And then some.  ( v 0.2.0 )
             </span>
             <span class="val--author">
                 _val is coded by @mousemke<br>
@@ -61,7 +61,8 @@
                         <a href="#isup">isup</a>
                         <a href="#help">help</a>
                         <a href="#active">active</a>
-                        <a href="#active">seen</a>
+                        <a href="#seen">seen</a>
+                        <a href="#test">test</a>
                     </div>
                     <br>
 
@@ -258,17 +259,13 @@
                         <div class="module--title">Change log</div>
                         <br>
                         <div class="indented">
-                            0.1.5 -
+                            0.2.0 -
                                 <div class="indented">
-                                    + added 'seen' to _val core
-                                    + added 'food' alias for 4sq
-                                    + changed nico module command from man to person<br>
-                                    + folded guys module into core<br>
-                                    + aliased ++y to ++yell<br>
-                                    + changes to core<br>
-                                    + bug fixes<br>
+                                    + added autojoin for Slack<br>
+                                    + completely rebuilt the internal structure<br>
+                                    + added safeties to apiGet for before the bot is running<br>
+                                    + added +test<br>
                                     <br>
-                                    <a href="#old-changes">older change logs</a>
                                 </div>
                                 <a href="#old-changes">older change logs</a>
                             </div>
@@ -320,8 +317,13 @@
                         <a name="seen"></a>
                         <br>
                         <span class="command">seen [user]</span>
-                            <p>Displays the last time a user was seen</p>
+                            <p>Displays the last time a user was seen.  This ignores private channels, unless they are in the channel list in the config.  There is an available blacklist for public channels as well at
+                            userConfig.channelsSeenIgnore</p>
 
+                        <a name="test"></a>
+                        <br>
+                        <span class="command">test</span>
+                            <p>built in space for experimental functions</p>
                     </div>
 
 
@@ -968,6 +970,14 @@
                     <br>
                     <span class="module--title">older changes:</span>
                     <div class="indented">
+                        <span class="command">0.1.5 -</span>
+                        <p>+ added 'seen' to _val core<br>
+                            + added 'food' alias for 4sq<br>
+                            + changed nico module command from man to person<br>
+                            + folded guys module into core<br>
+                            + aliased ++y to ++yell<br>
+                            + changes to core<br>
+                            + bug fixes</p>
                         <br>
 
                         <span class="command">0.1.4 -</span>
@@ -1013,8 +1023,6 @@
                     </div>
                     <br>
                     <br>
-
-
                 </div>
             </div>
         </div>

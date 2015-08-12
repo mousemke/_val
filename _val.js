@@ -3,7 +3,7 @@
 var channel, _bot, words, lastSeenList, _modules = {},
     userConfig          = require( './config/_val.config.js' ),
     modules             = require( './config/_val.modules.js' );
-    userConfig.version  = '0.1.6';
+    userConfig.version  = '0.2.0';
     userConfig.req      = {};
 
 var channels            = [];
@@ -15,6 +15,25 @@ var http    = userConfig.req.http   = require( 'http' ),
     https   = userConfig.req.https  = require( 'https' ),
     irc     = userConfig.req.irc    = require( 'irc' ),
     fs      = userConfig.req.fs     = require( 'fs' );
+
+
+/**
+ * this function is run with the test command.  it exists purely for feature
+ * testing.  otherwise it does nothing
+ *
+ * @param  {str}            from                originating channel
+ * @param  {str}            to                  originating user
+ * @param  {str}            text                full message text
+ *
+ * @return _Bool_           false
+ */
+function testFunction( from, to, text )
+{
+    console.log( 'nothing here now' );
+
+    return false;
+}
+
 
 /**
  * API get
@@ -59,7 +78,7 @@ function apiGet( _url, _cb, secure, from, to )
                     console.log( _url + ' appears to be down' );
                 }
             }
-        });
+        } );
 
     };
 
@@ -67,17 +86,75 @@ function apiGet( _url, _cb, secure, from, to )
     {
         https.get( _url, callback ).on( 'error', function( e )
         {
-            _bot.say( from, 'sorry, ' + to + ' bad query or url. (depends on what you were trying to do)' );
-            // console.log( 'Got error: ', e );
+            if ( _bot )
+            {
+                _bot.say( from, 'sorry, ' + to + ' bad query or url. (depends on what you were trying to do)' );
+            }
+            else
+            {
+                console.log( 'Got error: ', e );
+            }
         });
     }
     else
     {
         http.get( _url, callback ).on( 'error', function( e )
         {
-            _bot.say( from, 'sorry, ' + to + ' bad query or url. (depends on what you were trying to do)' );
-            // console.log( 'Got error: ', e );
+            if ( _bot )
+            {
+                _bot.say( from, 'sorry, ' + to + ' bad query or url. (depends on what you were trying to do)' );
+            }
+            else
+            {
+                console.log( 'Got error: ', e );
+            }
         });
+    }
+}
+
+
+function buildClient()
+{
+    /*
+     * adds core components to an obj to be passed modules
+     */
+    _modules.core = {
+
+         checkActive    : checkActive,
+
+         userData       : userData,
+
+         apiGet         : apiGet,
+
+         responses      : responses
+    };
+
+    _modules.constructors = {};
+
+    /**
+     * load _val modules
+     */
+
+    for ( var module in modules )
+    {
+        var _module = modules[ module ];
+
+        if ( _module.enabled )
+        {
+            _modules.constructors[ module ] = require( _module.url );
+
+            if ( _module.options )
+            {
+                for ( var option in _module.options )
+                {
+                    userConfig[ option ] = _module.options[ option ];
+                }
+            }
+
+            // newModule               = module.toLowerCase();
+
+            _modules[ module ]   = new _modules.constructors[ module ]( _bot, _modules, userConfig );
+        }
     }
 }
 
@@ -209,8 +286,8 @@ function generateChannelList()
 
     function removeBlacklistChannels()
     {
-        var _b, _bIndex, _black      = userConfig.channelsOpenIgnore;
-        var _blackLength    = _black.length;
+        var _b, _bIndex, _black = userConfig.channelPublicIgnore;
+        var _blackLength        = _black.length;
 
         if ( _blackLength )
         {
@@ -240,7 +317,7 @@ function generateChannelList()
         removeBlacklistChannels();
         userConfig.channels = channels;
 
-        ini();
+        iniClient();
     }
 
     if ( userConfig.autojoin )
@@ -255,7 +332,10 @@ function generateChannelList()
 
                 for ( var _c in _channels )
                 {
-                    channels.push( _channels[ _c ].name );
+                    _c = _channels[ _c ].name;
+                    _c = _c[0] !== '#' ? '#' + _c : _c;
+
+                    channels.push( _c );
                 }
 
                 finishChannels();
@@ -269,7 +349,7 @@ function generateChannelList()
         }
         else // irc
         {
-            // theoretcally /list works
+            // theoretically /list works
             channels = userConfig.channels;
             finishChannels();
         }
@@ -287,13 +367,25 @@ function generateChannelList()
 
 
 /**
+ * start the thing!
+ *
+ * @return _Void_
+ */
+function start()
+{
+    buildClient();
+    generateChannelList();
+}
+
+
+/**
  * init
  *
  * sets listeners and master list up
  *
  * @return {void}
  */
-function ini()
+function iniClient()
 {
     _bot = new irc.Client( userConfig.server, userConfig.botName, {
         channels                : channels,
@@ -321,50 +413,11 @@ function ini()
 
     _bot.active = {};
 
-    /*
-     * adds core components to an obj to be passed modules
-     */
-    _modules.core = {
-
-         checkActive    : checkActive,
-
-         userData       : userData,
-
-         apiGet         : apiGet,
-
-         responses      : responses
-    };
-
-    _modules.constructors = {};
-
-    /**
-     * load _val modules
-     */
-
-    for ( var module in modules )
+    for ( var module in _modules )
     {
-        var _module = modules[ module ];
-
-        if ( _module.enabled )
+        if ( modules[ module ].ini )
         {
-            _modules.constructors[ module ] = require( _module.url );
-
-            if ( _module.options )
-            {
-                for ( var option in _module.options )
-                {
-                    userConfig[ option ] = _module.options[ option ];
-                }
-            }
-
-            newModule       = module.toLowerCase();
-
-            _modules[ newModule ] = new _modules.constructors[ module ]( _bot, _modules, userConfig );
-
-            if ( modules[ module ].ini )
-            {
-                _modules[ newModule ].ini();
-            }
+            _modules[ module ].ini();
         }
     }
 }
@@ -566,14 +619,6 @@ function responses( from, to, text, botText )
 }
 
 
-function testFunction( from, to, text )
-{
-    console.log( 'nothing here now' );
-
-    return false;
-}
-
-
 /**
  * trimUsernames
  *
@@ -695,7 +740,8 @@ function watchSeen( from, to )
 
     lastSeenList = lastSeenList || JSON.parse( ( fs.readFileSync( url ) ) ) || {};
 
-    if ( userConfig.publicChannels && userConfig.publicChannels.indexOf( from ) !== -1 )
+    if ( userConfig.publicChannels && userConfig.publicChannels.indexOf( from ) !== -1 &&
+            userConfig.channelsSeenIgnore.indexOf( from ) === -1 )
     {
         lastSeenList[ to ] = { time: Date.now(), place: from };
     }
@@ -754,4 +800,5 @@ var guys = {
     ]
 };
 
-generateChannelList();
+start();
+

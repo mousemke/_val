@@ -2,7 +2,7 @@
 
 erm.... bot.
 
-v. 0.1.5
+v. 0.2.0
 
 Go to http://knoblau.ch/_val for a list of commands.
 
@@ -18,6 +18,12 @@ DOGE DQiQ8e62CQGqx378EuS8i8gUW2mLkfBuXu
 
 
 **Change log**
+
+0.2.0 -
++ added autojoin for Slack
++ completely rebuilt the internal structure
++ added safeties to apiGet for before the bot is running
++ added +test
 
 0.1.5 -
 + added 'seen' to _val core
