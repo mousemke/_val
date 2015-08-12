@@ -150,10 +150,6 @@ function buildClient()
                     userConfig[ option ] = _module.options[ option ];
                 }
             }
-
-            // newModule               = module.toLowerCase();
-
-            _modules[ module ]   = new _modules.constructors[ module ]( _bot, _modules, userConfig );
         }
     }
 }
@@ -414,8 +410,10 @@ function iniClient()
 
     _bot.active = {};
 
-    for ( var module in _modules )
+    for ( var module in _modules.constructors )
     {
+        _modules[ module ]   = new _modules.constructors[ module ]( _bot, _modules, userConfig );
+
         if ( modules[ module ].ini )
         {
             _modules[ module ].ini();
