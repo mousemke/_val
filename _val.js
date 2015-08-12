@@ -284,26 +284,6 @@ function generateChannelList()
         }
     }
 
-    function removeBlacklistChannels()
-    {
-        var _b, _bIndex, _black = userConfig.channelPublicIgnore;
-        var _blackLength        = _black.length;
-
-        if ( _blackLength )
-        {
-            for ( var i = 0; i < _blackLength; i++ )
-            {
-                _b = _black[ i ];
-                _bIndex = channels.indexOf( _b );
-
-                if ( _bIndex !== -1 )
-                {
-                    channels.splice( _bIndex, 1 );
-                }
-            }
-        }
-    }
-
 
     function finishChannels()
     {
@@ -319,6 +299,27 @@ function generateChannelList()
 
         iniClient();
     }
+
+
+    function removeBlacklistChannels()
+    {
+        var _b, _bIndex, _black = userConfig.channelsPublicIgnore;
+        var _blackLength        = _black.length;
+        if ( _blackLength )
+        {
+            for ( var i = 0; i < _blackLength; i++ )
+            {
+                _b = _black[ i ];
+                _bIndex = channels.indexOf( _b );
+
+                if ( _bIndex !== -1 )
+                {
+                    channels.splice( _bIndex, 1 );
+                }
+            }
+        }
+    }
+
 
     if ( userConfig.autojoin )
     {

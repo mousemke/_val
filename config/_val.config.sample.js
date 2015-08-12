@@ -47,6 +47,28 @@ var userConfig = {
      * server, channel, name connection details
      **/
     channels                : [ '#channel-bots', '#channel1', '#channel2', '#channel3', '#channel4', '#channel5', '#channel6' ],
+
+    /**
+     * auto join all available public channels
+     */
+    autojoin                : true,
+
+    /**
+     * private channels to join
+     */
+    channelsPrivateJoin     : [ '#secretchannel1', '#secretchannel2' ],
+
+    /**
+     * public channels to not join
+     */
+    channelsPublicIgnore    : [],
+
+    /**
+     * channels that ignore seen (private channels ignore seen anyways)
+     */
+    channelsSeenIgnore      : [ '#channel4' ],
+
+
     server                  : '192.168.1.1',
     serverPassword          : 'just.another.irc.server.password.i.suppose',
     botName                 : 'justAnotherBot',
