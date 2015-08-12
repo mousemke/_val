@@ -106,7 +106,23 @@
         enabled : false,
         url     : './modules/slack.js',
         options : {
-            slackAPIKey    : 'you-ad-here'
+            autoAuth                : true,
+            slackAPIKey             : 'you-ad-here',
+            /**
+             * auto join all available public channels.  overrides the channel
+             * config option
+             */
+            autojoin                : true,
+
+            /**
+             * private channels to join
+             */
+            channelsPrivateJoin     : [ '#secretchannel1', '#secretchannel2' ],
+
+            /**
+             * public channels to not join
+             */
+            channelsPublicIgnore    : [],
         }
     },
 

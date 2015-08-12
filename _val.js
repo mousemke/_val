@@ -2,7 +2,8 @@
 // Loads the configuration and sets variables
 var channel, _bot, words, lastSeenList, _modules = {},
     userConfig          = require( './config/_val.config.js' ),
-    modules             = require( './config/_val.modules.js' );
+    modules             = require( './config/_val.modules.js' ),
+    guys                = require( './lists/guys.js' );
     userConfig.version  = '0.2.0';
     userConfig.req      = {};
 
@@ -50,6 +51,18 @@ function apiGet( _url, _cb, secure, from, to )
 {
     secure = ( secure === false ) ? false : true;
 
+    var _error = function( say )
+    {
+        if ( say )
+        {
+            _bot.say( from, 'sorry, ' + to + ' bad query or url. (depends on what you were trying to do)' );
+        }
+        else
+        {
+            console.log( _url + ' appears to be down' );
+        }
+    };
+
     var callback = function( res )
     {
         var body = '';
@@ -69,50 +82,33 @@ function apiGet( _url, _cb, secure, from, to )
             }
             catch( e )
             {
-                if ( from && to )
-                {
-                    _bot.say( from, 'sorry, ' + to + ' bad query or url. (depends on what you were trying to do)' );
-                }
-                else
-                {
-                    console.log( _url + ' appears to be down' );
-                }
+                _error( from && to );
             }
         } );
-
     };
 
     if ( secure )
     {
         https.get( _url, callback ).on( 'error', function( e )
         {
-            if ( _bot )
-            {
-                _bot.say( from, 'sorry, ' + to + ' bad query or url. (depends on what you were trying to do)' );
-            }
-            else
-            {
-                console.log( 'Got error: ', e );
-            }
-        });
+            _error( _bot );
+        } );
     }
     else
     {
         http.get( _url, callback ).on( 'error', function( e )
         {
-            if ( _bot )
-            {
-                _bot.say( from, 'sorry, ' + to + ' bad query or url. (depends on what you were trying to do)' );
-            }
-            else
-            {
-                console.log( 'Got error: ', e );
-            }
-        });
+            _error( _bot );
+        } );
     }
 }
 
 
+/**
+ * assembles the _val modules.  like Voltron but node
+ *
+ * @return _Void_
+ */
 function buildClient()
 {
     /*
@@ -134,7 +130,6 @@ function buildClient()
     /**
      * load _val modules
      */
-
     for ( var module in modules )
     {
         var _module = modules[ module ];
@@ -238,11 +233,11 @@ function checkSeen( from, to, text, talk )
 
     if ( user )
     {
-        var dateObj = new Date( user.time );
-        var minutes = dateObj.getMinutes();
-        var dateString = userConfig.weekdays[ dateObj.getDay() ] + ' ';
-        dateString    += userConfig.months[ dateObj.getMonth() ] + ' ';
-        dateString    += dateObj.getDate() + ' at ' + dateObj.getHours() + ':' + minutes;
+        var dateObj     = new Date( user.time );
+        var minutes     = dateObj.getMinutes();
+        var dateString  = userConfig.weekdays[ dateObj.getDay() ] + ' ';
+        dateString      += userConfig.months[ dateObj.getMonth() ] + ' ';
+        dateString      += dateObj.getDate() + ' at ' + dateObj.getHours() + ':' + minutes;
 
         return to + ': last time I saw ' + text + ' was in ' + user.place + ' on ' + dateString;
     }
@@ -262,6 +257,10 @@ function checkSeen( from, to, text, talk )
  */
 function generateChannelList()
 {
+    /**
+     * adds private channels from userConfig.channelsPrivateJoin to the list of
+     * channels to join.  These channels are exempt from "seen"
+     */
     function addPrivateChannels()
     {
         var _p, _private    = userConfig.channelsPrivateJoin;
@@ -280,7 +279,11 @@ function generateChannelList()
         }
     }
 
-
+    /**
+     * assembles the channel list and starts the client
+     *
+     * @return _Void_
+     */
     function finishChannels()
     {
         userConfig.publicChannels = [].concat( channels );
@@ -297,6 +300,10 @@ function generateChannelList()
     }
 
 
+    /**
+     * if any channels are blacklisted from entering from userConfig.channelsPublicIgnore,
+     * this removes them from the channels array
+     */
     function removeBlacklistChannels()
     {
         var _b, _bIndex, _black = userConfig.channelsPublicIgnore;
@@ -317,39 +324,24 @@ function generateChannelList()
     }
 
 
-    if ( userConfig.autojoin )
+    if ( modules.Slack.enabled && userConfig.autojoin )
     {
-        if ( modules.Slack.enabled )
-        {
-            var _url    = 'https://sociomantic.slack.com/api/channels.list?token=' + userConfig.slackAPIKey;
+        var _url    = 'https://sociomantic.slack.com/api/channels.list?token=' + userConfig.slackAPIKey;
 
-            apiGet( _url, function( res )
+        apiGet( _url, function( res )
+        {
+            var _channels = res.channels;
+
+            for ( var _c in _channels )
             {
-                var _channels = res.channels;
+                _c = _channels[ _c ].name;
+                _c = _c[0] !== '#' ? '#' + _c : _c;
 
-                for ( var _c in _channels )
-                {
-                    _c = _channels[ _c ].name;
-                    _c = _c[0] !== '#' ? '#' + _c : _c;
+                channels.push( _c );
+            }
 
-                    channels.push( _c );
-                }
-
-                finishChannels();
-            }, true );
-        }
-        else if ( modules.Twitch.enabled )
-        {
-            // just one i think
-            channels = userConfig.channels;
             finishChannels();
-        }
-        else // irc
-        {
-            // theoretically /list works
-            channels = userConfig.channels;
-            finishChannels();
-        }
+        }, true );
     }
     else if ( userConfig.channels )
     {
@@ -378,7 +370,7 @@ function start()
 /**
  * init
  *
- * sets listeners and master list up
+ * sets listeners and module list up
  *
  * @return {void}
  */
@@ -392,7 +384,6 @@ function iniClient()
         autoConnect             : true,
         floodProtection         : userConfig.floodProtection,
         floodProtectionDelay    : userConfig.floodProtectionDelay,
-        // encoding                : 'UTF-8'
     });
 
     _bot.addListener( 'error', function( message )
@@ -459,7 +450,7 @@ function listenToMessages( from, to, text )
         }
         else if ( text === '_val!' )
         {
-            botText = 'yes?';
+            botText = 'what!?';
         }
 
         var triggers = guys.triggers;
@@ -567,6 +558,7 @@ function replaceGuys( to, text )
 {
     var _alternative    = guys.alternatives[ Math.floor( Math.random() * guys.alternatives.length ) ];
     var _speech         = guys.speech[ Math.floor( Math.random() * guys.speech.length ) ];
+
     return to + ', ' + _speech + _alternative + '...';
 }
 
@@ -756,48 +748,6 @@ function watchSeen( from, to )
         } );
     }
 }
-
-
-var guys = {
-
-    triggers : [
-        'guys',
-        'dudes'
-    ],
-
-    alternatives : [
-        'team',
-        'squad',
-        'gang',
-        'pals',
-        'buds',
-        'posse',
-        'phalanx',
-        'crew',
-        'crüe',
-        'nerds',
-        'friends',
-        'fellow-humans',
-        'folks',
-        'people',
-        'peeps',
-        'friends',
-        'chums',
-        'everyone',
-        'you lot',
-        'youse',
-        'y\'all',
-        'peers',
-        'comrades'
-    ],
-
-    speech : [
-        'I think you meant ',
-        'Perhaps you meant ',
-        'Surely you meant ',
-        'You probably meant '
-    ]
-};
 
 start();
 
