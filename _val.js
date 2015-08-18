@@ -497,7 +497,7 @@ function listenToMessages( from, to, text )
             {
                 console.log( '<' + from + '> <' + ( userConfig.botName ) + '> :' + botText );
             }
-            _bot.say ( from, botText );
+            _bot.say( from, botText );
         }
     }
     else if ( userConfig.bots.indexOf( to ) !== -1 &&
@@ -513,6 +513,7 @@ function listenToMessages( from, to, text )
  * listen to private messages
  *
  * .... what do you think?
+ * if there is no whisper command, the text is passed to normal messages
  *
  * @param  {str}            from                originating user
  * @param  {str}            text                full message text
@@ -521,27 +522,42 @@ function listenToMessages( from, to, text )
  */
 function listenToPm( from, text )
 {
-    console.log( '<' + from + '> :' + text );
+    console.log( '<' + from + '>   ' + text );
 
-    var textSplit = text.split( ' ' );
-    if ( textSplit[ 0 ] === 'die' && userConfig.admins.indexOf( from ) !== -1 )
+    var textSplit   = text.split( ' ' );
+    var command     = textSplit[ 0 ];
+
+    if ( command[0] === userConfig.trigger )
     {
-        _bot.disconnect( 'Fine...  I was on my way out anyways.', function()
+        command = command.slice( 1 );
+    }
+
+    if ( userConfig.admins.indexOf( from ) !== -1 )
+    {
+        switch ( command )
         {
-            console.log( from + ' killed me' );
-        });
+            case 'die':
+                _bot.disconnect( 'Fine...  I was on my way out anyways.', function()
+                {
+                    console.log( from + ' killed me' );
+                });
+                break;
+            default:
+                listenToMessages( from, from, text );
+        }
     }
-    else if ( textSplit[ 0 ] === 'restart' && userConfig.admins.indexOf( from ) !== -1 )
+    else
     {
-        _bot.say ( userConfig.unscramble, 'I will restart after the next word is skipped or solved' );
-        _bot.say ( userConfig.anagramm, 'Nach diesem Wort werde ich neu gestartet' );
-    }
-    else if ( textSplit[ 0 ] === 'help' )
-    {
-        botText = userConfig.helpText();
-
-        _bot.say ( from, botText );
-        botText = '';
+        switch ( command )
+        {
+            case 'help':
+                botText = userConfig.helpText();
+                _bot.say ( from, botText );
+                botText = '';
+                break;
+            default:
+                listenToMessages( from, from, text );
+        }
     }
 }
 

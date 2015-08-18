@@ -106,15 +106,7 @@ module.exports = function Doge( _bot, _modules, userConfig )
                 }
 
                 var doge = '狗狗币!  Ð' + amount + ' =';
-
-                if ( full === true )
-                {
-                    doge += ' [ ';
-                }
-                else
-                {
-                    doge += ' ';
-                }
+                doge += full === true ? ' [ ': ' ';
 
                 for ( var i = 0, lenI = dogePrices.length; i < lenI; i++ )
                 {
@@ -126,15 +118,7 @@ module.exports = function Doge( _bot, _modules, userConfig )
                         if ( dogePrices[ i ].price_base === 'BTC' && dogePrices[ i ].exchange === 'cryptsy' )
                         {
                             price = Math.floor( price  * 100000000 );
-
-                            if ( full === true )
-                            {
-                                 price += ' (Satoshi), ';
-                            }
-                            else
-                            {
-                                price += ' satoshi';
-                            }
+                            price += full === true ? ' (Satoshi), ' : ' satoshi';
                         }
                         else if ( ( dogePrices[ i ].price_base === 'USD' && dogePrices[ i ].exchange === 'cryptsy' ) ||
                             dogePrices[ i ].price_base === 'EUR' )
@@ -169,6 +153,15 @@ module.exports = function Doge( _bot, _modules, userConfig )
         },
 
 
+        /**
+         * sends prize money from the bank
+         *
+         * @param  {String} to who to transfer doge to
+         * @param  {Number} amount amount to transfer
+         * @param  {String} silent silent or spoken
+         *
+         * @return {String}
+         */
         giveFromBank : function( to, amount, silent )
         {
             silent = silent || false;
