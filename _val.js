@@ -457,7 +457,7 @@ function listenToMessages( from, to, text )
 
         for ( var i = 0, lenI = triggers.length; i < lenI; i++ )
         {
-            if ( text.indexOf( guys.triggers[ i ] ) !== -1 )
+            if ( text.toLowerCase().indexOf( guys.triggers[ i ] ) !== -1 )
             {
                 botText = replaceGuys( to, text );
                 break;
