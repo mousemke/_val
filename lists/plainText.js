@@ -35,5 +35,5 @@ module.exports = {
     'magic'                 : '∴•:+*⁽⁽ଘ( ˊᵕˋ )ଓ⁾⁾*+:•*∴',
     'pacman'                : '( *<)  • • • • • • •',
     'dontcopythatfloppy'    : 'https://www.youtube.com/watch?v=up863eQKGUI',
-    'jackdawed'             : 'http://i.imgur.com/9pAAFvn.gif'
+    'jackdawed'             : 'http://media.giphy.com/media/rhaLXOOimBGN2/giphy.gif'
 };

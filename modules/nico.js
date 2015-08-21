@@ -17,7 +17,7 @@ module.exports = function Nico( _bot, _modules, userConfig )
                 case 'tag':
                     var newNico = text.split( ' ' )[1];
 
-                    if ( newNico[ newNico.length - 1 ] === '!' )
+                    if ( newNico && newNico[ newNico.length - 1 ] === '!' )
                     {
                         newNico = newNico.slice( 0, newNico.length - 1 );
 

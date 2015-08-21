@@ -303,7 +303,7 @@ module.exports = function Doge( _bot, _modules, userConfig )
                             {
                                 botText = 'Searching for active users....  ';
 
-                                botText += to + ' tipped Ð' + soakAmount + ' and is soaking ' + users +
+                                botText += to + ' tipped Ð' + soakTotal + ' and is soaking ' + users +
                                         ' people with Ð' + soakAmount + ' each! : ';
 
                                 dcMasterList[ to ]  = dcMasterList[ to ] - soakTotal;

@@ -723,11 +723,14 @@ function userData( to, from, _cb, origText )
  */
 function watchActive( from, to )
 {
-    if ( !_bot.active[ from ] )
+    if ( userConfig.bots.indexOf( to ) === -1 )
     {
-        _bot.active[ from ] = {};
+        if ( !_bot.active[ from ] )
+        {
+            _bot.active[ from ] = {};
+        }
+        _bot.active[ from ][ to ] = Date.now();
     }
-    _bot.active[ from ][ to ] = Date.now();
 }
 
 

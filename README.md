@@ -20,6 +20,9 @@ DOGE DQiQ8e62CQGqx378EuS8i8gUW2mLkfBuXu
 **Change log**
 
 0.2.0 -
++ fixed a bug inactive where bots registered
++ all command can now be passed as whispers
++ whispers now accept triggered input as well
 + added autojoin for Slack
 + completely rebuilt the internal structure
 + added safeties to apiGet for before the bot is running
