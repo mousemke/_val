@@ -394,7 +394,7 @@ module.exports  = function CAH( _bot, _modules, userConfig )
 
             if ( player && player.played === false )
             {
-                if ( playerName !== judge )
+                if ( playerName !== judge || !userConfig.judgeMode )
                 {
                     cardNum--;
 

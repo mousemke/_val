@@ -234,7 +234,8 @@ function checkSeen( from, to, text, talk )
     if ( user )
     {
         var dateObj     = new Date( user.time );
-        var minutes     = dateObj.getMinutes();
+        var minutes     = dateObj.getMinutes() + '';
+        minutes = minutes.length === 1 ? '0' + minutes : minutes;
         var dateString  = userConfig.weekdays[ dateObj.getDay() ] + ' ';
         dateString      += userConfig.months[ dateObj.getMonth() ] + ' ';
         dateString      += dateObj.getDate() + ' at ' + dateObj.getHours() + ':' + minutes;
