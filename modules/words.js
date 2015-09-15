@@ -178,7 +178,8 @@ module.exports  = function Words( _bot, _modules, userConfig )
 
             if ( newWordVote.length < votesNeeded )
             {
-                _bot.say( userConfig.unscramble, to + ': counted. that\'s ' + newWordVote.length + ' out of a necessary ' + votesNeeded );
+                _bot.say( userConfig.unscramble, to + ': counted. that\'s ' +
+                            newWordVote.length + ' out of a necessary ' + votesNeeded );
             }
             else
             {
@@ -498,6 +499,12 @@ module.exports  = function Words( _bot, _modules, userConfig )
                     else
                     {
                         currentWord     = result.word;
+                        var currentWordLength = currentWord.length;
+                        if ( currentWord[ currentWordLength - 1 ] === '.' )
+                        {
+                            currentWord.slice( currentWordLength - 1 );
+                        }
+
                         currentWordTime = Date.now();
                         scope.define( userConfig.unscramble, currentWord, true, to );
                         scrambledWord   = scope.scramble( currentWord );

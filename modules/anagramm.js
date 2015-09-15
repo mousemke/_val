@@ -10,12 +10,12 @@ module.exports  = function Worte( _bot, _modules, userConfig )
         currentWordDef  = '',
         scrambledWord   = '',
         wordScores      = {},
-        wordListener, newWordVote = [],
+        wordListener,
+        newWordVote     = [],
         verboseDef      = false;
 
     var http            = userConfig.req.http;
     var https           = userConfig.req.https;
-
     var fs              = userConfig.req.fs;
 
     return {
@@ -419,6 +419,10 @@ module.exports  = function Worte( _bot, _modules, userConfig )
                         scope.translate( 'en', 'de', 'internal', null, 'de ' + currentWord, function( translatedWord )
                         {
                             currentWord     = translatedWord;
+                            if ( currentWord[ currentWordLength - 1 ] === '.' )
+                            {
+                                currentWord.slice( currentWordLength - 1 );
+                            }
                             scrambledWord   = scope.scramble( currentWord );
 
                             if ( currentWord.indexOf( '-' ) !== -1 ||
