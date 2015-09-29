@@ -2,7 +2,7 @@
 
 erm.... bot.
 
-v. 0.2.0
+v. 0.2.1
 
 Go to http://knoblau.ch/_val for a list of commands.
 
@@ -18,6 +18,9 @@ DOGE DQiQ8e62CQGqx378EuS8i8gUW2mLkfBuXu
 
 
 **Change log**
+
+0.2.1 - 
++ added troll word blacklist
 
 0.2.0 -
 + fixed a bug inactive where bots registered

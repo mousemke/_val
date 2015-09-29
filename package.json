@@ -1,6 +1,6 @@
 {
   "name": "_val",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "description": "An IRC bot that rules.",
   "main": "_val.js",
   "scripts": {

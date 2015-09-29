@@ -4,7 +4,8 @@ var channel, _bot, words, lastSeenList, _modules = {},
     userConfig          = require( './config/_val.config.js' ),
     modules             = require( './config/_val.modules.js' ),
     guys                = require( './lists/guys.js' );
-    userConfig.version  = '0.2.0';
+    trollBlacklist      = require( './lists/trollBlacklist.js' );
+    userConfig.version  = '0.2.1';
     userConfig.req      = {};
 
 var channels            = [];
@@ -414,6 +415,24 @@ function iniClient()
 }
 
 
+function trollOn( text )
+{
+    if ( trollBlacklist.indexOf( text ) === -1 )
+    {
+        if ( text.toLowerCase().indexOf( 'troll' ) !== -1 )
+        {
+            text = userConfig.trigger + 'trollfetti';
+        }
+        else if ( text.toLowerCase().indexOf( 'trøll' ) !== -1 )
+        {
+            text = userConfig.trigger + 'trøllfetti';
+        }
+    }
+
+    return text;
+}
+
+
 /**
  * listen to messages
  *
@@ -432,14 +451,7 @@ function listenToMessages( from, to, text )
     watchActive( from, to );
     watchSeen( from, to );
 
-    if ( text.toLowerCase().indexOf( 'troll' ) !== -1 )
-    {
-        text = userConfig.trigger + 'trollfetti';
-    }
-    else if ( text.toLowerCase().indexOf( 'trøll' ) !== -1 )
-    {
-        text = userConfig.trigger + 'trøllfetti';
-    }
+    text = trollOn( text );
 
     if ( userConfig.bots.indexOf( to ) === -1 )
     {
