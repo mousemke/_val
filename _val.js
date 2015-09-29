@@ -415,24 +415,6 @@ function iniClient()
 }
 
 
-function trollOn( text )
-{
-    if ( trollBlacklist.indexOf( text ) === -1 )
-    {
-        if ( text.toLowerCase().indexOf( 'troll' ) !== -1 )
-        {
-            text = userConfig.trigger + 'trollfetti';
-        }
-        else if ( text.toLowerCase().indexOf( 'trøll' ) !== -1 )
-        {
-            text = userConfig.trigger + 'trøllfetti';
-        }
-    }
-
-    return text;
-}
-
-
 /**
  * listen to messages
  *
@@ -663,6 +645,40 @@ function trimUsernames( text )
         }
 
         return text.join( ' ' );
+    }
+
+    return text;
+}
+
+
+/**
+ * ## trollOn
+ *
+ * responds if the word "troll" or "trøll" is in the text.  ignores blacklist items
+ *
+ * @param {String} text original text string
+ *
+ * @return {String} original or modified text
+ */
+function trollOn( text )
+{
+    var textSplit = text.split( ' ' );
+
+    for ( var i = 0, lenI = textSplit.length; i < lenI; i++ )
+    {
+        if ( trollBlacklist.indexOf( textSplit[ i ] ) !== -1 )
+        {
+            return text;
+        }
+    }
+
+    if ( text.toLowerCase().indexOf( 'troll' ) !== -1 )
+    {
+        text = userConfig.trigger + 'trollfetti';
+    }
+    else if ( text.toLowerCase().indexOf( 'trøll' ) !== -1 )
+    {
+        text = userConfig.trigger + 'trøllfetti';
     }
 
     return text;

@@ -1,3 +1,4 @@
 module.exports = [
-    'controller'
+    'controller',
+    'controllers'
 ];
