@@ -241,10 +241,14 @@ module.exports = function PlainText( _bot, _modules, userConfig )
                             break;
                         case 'disappearinacloudofsmoke':
                             setTimeout( function()
-                                {
-                                    _bot.say( from, 'I mean...  why would you just assume you can have any new ability you want....' );
-                                }, 5500 );
-                            botText = 'no...  you don\'t have that ability.  stupid.';
+                            {
+                                _bot.say( from, 'I mean...  why would you just assume you can have any new ability you want....' );
+                            }, 7500 );
+                            setTimeout( function()
+                            {
+                                _bot.say( from, 'Stupid.' );
+                            }, 1500 );
+                            botText = 'no...  you don\'t have that ability.';
                             break;
                         case 'google':
                             text = text.split( ' ' ).slice( 1 ).join( '%20' );

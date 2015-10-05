@@ -1,18 +1,17 @@
 
-module.exports  = function Worte( _bot, _modules, userConfig )
+module.exports  = function Anagram( _bot, _modules, userConfig )
 {
-
-    var minLength       = 4,
-        maxLength       = 8,
-        currentWord     = '',
-        englishWord     = '',
-        currentWordTime = 0,
-        currentWordDef  = '',
-        scrambledWord   = '',
-        wordScores      = {},
-        wordListener,
-        newWordVote     = [],
-        verboseDef      = false;
+    var minLength   = 4,
+    maxLength       = 8,
+    currentWord     = '',
+    englishWord     = '',
+    currentWordTime = 0,
+    currentWordDef  = '',
+    scrambledWord   = '',
+    wordScores      = {},
+    wordListener,
+    newWordVote     = [],
+    verboseDef      = false;
 
     var http            = userConfig.req.http;
     var https           = userConfig.req.https;
@@ -81,7 +80,7 @@ module.exports  = function Worte( _bot, _modules, userConfig )
 
                     if ( points[ i ].points !== 1 )
                     {
-                        botText += 'e';
+                        botText += 's';
                     }
                     botText += '\n';
 
@@ -102,41 +101,53 @@ module.exports  = function Worte( _bot, _modules, userConfig )
             word = word.toLowerCase();
             var url = ( userConfig.wordnikBaseUrl ) + 'word.json/' + word + '/definitions?includeRelated=true&useCanonical=true&includeTags=false&api_key=' + userConfig.wordnikAPIKey;
 
-            _modules.core.apiGet( url, function( result )
+            if ( word === 'thoodle' )
             {
-                if ( current === true )
+                _bot.say( from, 'thoodle-oo!!' );
+            }
+            else
+            {
+                _modules.core.apiGet( url, function( result )
                 {
-                    currentWordDef = result;
-                }
-                else
-                {
-                    while ( word.indexOf( '%20' ) !== -1 )
+                    if ( current === true )
                     {
-                        word = word.replace( '%20', ' ' );
-                    }
-
-                    var _def = word;
-
-                    if ( result.length === 0 )
-                    {
-                        _def += ' ist keine Wort.';
+                        currentWordDef = result;
                     }
                     else
                     {
-                        _def += ' -\n';
-                        for ( var i = 0, lenI = result.length; i < lenI; i++ )
+                        while ( word.indexOf( '%20' ) !== -1 )
                         {
-                            _def += ( i + 1 ) + ': ' + result[ i ].text + '\n';
+                            word = word.replace( '%20', ' ' );
                         }
+
+                        var _def = word;
+
+                        if ( result.length === 0 )
+                        {
+                            _def += ' ist keine Wort.';
+                        }
+                        else
+                        {
+                            _def += ' -\n';
+                            for ( var i = 0, lenI = result.length; i < lenI; i++ )
+                            {
+                                _def += ( i + 1 ) + ': ' + result[ i ].text + '\n';
+                            }
+                        }
+
+                        _bot.say( from, _def );
                     }
 
-                    _bot.say( from, _def );
-                }
-
-            }, false, from, to );
+                }, false, from, to );
+            }
         },
 
 
+        /**
+         * reads the preexisting scores from json and gets an initial word
+         *
+         * @return {void}
+         */
         ini : function()
         {
             this.readScores();
@@ -188,7 +199,7 @@ module.exports  = function Worte( _bot, _modules, userConfig )
                 {
                     botText += 's';
                 }
-                botText += '! Many ' + solveTime + ' Sekunden';
+                botText += '! Many ' + solveTime + ' Sekunden!';
 
                 if ( _modules.doge && userConfig.anagrammDogePayout )
                 {
@@ -258,7 +269,10 @@ module.exports  = function Worte( _bot, _modules, userConfig )
                 currentWordTime = 0;
                 scrambledWord   = '';
                 newWordVote     = [];
-                _bot.removeListener( 'message' + userConfig.anagramm, wordListener );
+                if ( wordListener )
+                {
+                    _bot.removeListener( 'message' + userConfig.anagramm, wordListener );
+                }
                 this.wort();
             }
         },
@@ -286,6 +300,7 @@ module.exports  = function Worte( _bot, _modules, userConfig )
                 switch ( command )
                 {
                     case 'wort':
+                    case 'whirred':
                         this.wort( from, to );
                         break;
                     case 'neuesWort':
@@ -321,6 +336,7 @@ module.exports  = function Worte( _bot, _modules, userConfig )
                 word[  currentIndex ]  = word[ randomIndex ];
                 word[  randomIndex ]   = temporaryValue;
             }
+
             word = word.join( '' );
 
             return ( word === originalWord ) ? scramble( word ) : word;
@@ -389,7 +405,7 @@ module.exports  = function Worte( _bot, _modules, userConfig )
         {
             if ( currentWord === '' )
             {
-                var scope = this;
+                var scope       = this;
                 var excludeList = 'excludePartOfSpeech=affix&' +
                                     'excludePartOfSpeech=noun-plural&' +
                                     'excludePartOfSpeech=noun-possesive&' +
@@ -411,18 +427,21 @@ module.exports  = function Worte( _bot, _modules, userConfig )
                     }
                     else
                     {
-                        currentWord     = result.word;
+                        currentWord     = result.word.slice();
                         englishWord     = result.word;
                         currentWordTime = Date.now();
                         scope.define( userConfig.anagramm, currentWord, true, to );
 
                         scope.translate( 'en', 'de', 'internal', null, 'de ' + currentWord, function( translatedWord )
                         {
-                            currentWord     = translatedWord;
+                            currentWord             = translatedWord;
+                            var currentWordLength   = currentWord.length;
+
                             if ( currentWord[ currentWordLength - 1 ] === '.' )
                             {
                                 currentWord.slice( currentWordLength - 1 );
                             }
+
                             scrambledWord   = scope.scramble( currentWord );
 
                             if ( currentWord.indexOf( '-' ) !== -1 ||
