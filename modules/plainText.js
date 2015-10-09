@@ -262,16 +262,25 @@ module.exports = function PlainText( _bot, _modules, userConfig )
                         case 'g':
                         case 'pic':
                         case 'gif':
-                            text = text.split( ' ' ).slice( 1 ).join( '%20' );
-                            if ( command === 'gif' )
+                            text = text.split( ' ' ).slice( 1 ).join( ',' ).toLowerCase();
+                            var url = 'http://replygif.net/api/gifs?tag=' + text + '&tag-operator=and&api-key=39YAprx5Yi';
+                            _modules.core.apiGet( url, function( info )
                             {
-                                text += '%20filetype:gif';
-                            }
-                            botText = 'https://www.google.com/search?btnG=1&nfpr=1&pws=0&q=' + text;
-                            if ( command === 'gif' || command === 'pic' )
-                            {
-                                botText += '&tbm=isch';
-                            }
+                                var length = info.length;
+                                if ( length )
+                                {
+                                    var _r      = Math.floor( Math.random() * length );
+                                    console.log( _r );
+                                    var _file   =  info[ _r ].file;
+                                    console.log( _file );
+                                    _bot.say( from, _file );
+                                }
+                                else
+                                {
+                                    _bot.say( from, 'Nah.... I got nothing' );
+                                }
+                                // botText =
+                            }, false, from, to );
                             break;
                         case 'badyoutube':
                         case 'germanysgottalent':

@@ -21,6 +21,9 @@ DOGE DQiQ8e62CQGqx378EuS8i8gUW2mLkfBuXu
 
 0.2.1 - 
 + added troll word blacklist
++ updated nico module
++ updated +gif to use a gif api
+
 
 0.2.0 -
 + fixed a bug inactive where bots registered
