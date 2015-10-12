@@ -260,27 +260,8 @@ module.exports = function PlainText( _bot, _modules, userConfig )
                             botText = 'http://en.wikipedia.org/wiki/' + text;
                             break;
                         case 'g':
-                        case 'pic':
-                        case 'gif':
-                            text = text.split( ' ' ).slice( 1 ).join( ',' ).toLowerCase();
-                            var url = 'http://replygif.net/api/gifs?tag=' + text + '&tag-operator=and&api-key=39YAprx5Yi';
-                            _modules.core.apiGet( url, function( info )
-                            {
-                                var length = info.length;
-                                if ( length )
-                                {
-                                    var _r      = Math.floor( Math.random() * length );
-                                    console.log( _r );
-                                    var _file   =  info[ _r ].file;
-                                    console.log( _file );
-                                    _bot.say( from, _file );
-                                }
-                                else
-                                {
-                                    _bot.say( from, 'Nah.... I got nothing' );
-                                }
-                                // botText =
-                            }, false, from, to );
+                            text = text.split( ' ' ).slice( 1 ).join( '%20' );
+                            botText = 'https://www.google.de/search?hl=en&q=' + text;
                             break;
                         case 'badyoutube':
                         case 'germanysgottalent':
@@ -297,6 +278,9 @@ module.exports = function PlainText( _bot, _modules, userConfig )
                             break;
                         case 'wave':
                             botText = to + ' o/';
+                            break;
+                        case 'hug':
+                            botText = 'No.';
                             break;
                     }
                 }

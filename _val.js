@@ -48,7 +48,7 @@ function testFunction( from, to, text )
  *
  * @return {void}
  */
-function apiGet( _url, _cb, secure, from, to )
+function apiGet( options, _cb, secure, from, to )
 {
     secure = ( secure === false ) ? false : true;
 
@@ -60,7 +60,7 @@ function apiGet( _url, _cb, secure, from, to )
         }
         else
         {
-            console.log( _url + ' appears to be down' );
+            console.log( options + ' appears to be down' );
         }
     };
 
@@ -90,14 +90,14 @@ function apiGet( _url, _cb, secure, from, to )
 
     if ( secure )
     {
-        https.get( _url, callback ).on( 'error', function( e )
+        https.get( options, callback ).on( 'error', function( e )
         {
             _error( _bot );
         } );
     }
     else
     {
-        http.get( _url, callback ).on( 'error', function( e )
+        http.get( options, callback ).on( 'error', function( e )
         {
             _error( _bot );
         } );

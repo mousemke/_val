@@ -22,6 +22,7 @@ DOGE DQiQ8e62CQGqx378EuS8i8gUW2mLkfBuXu
 0.2.1 - 
 + added troll word blacklist
 + updated nico module
++ added popkey module to handle gif
 + updated +gif to use a gif api
 
 
