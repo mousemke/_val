@@ -4,6 +4,12 @@
 
  module.exports = {
 
+    _8Ball       : {
+        enabled : true,
+        url     : './modules/_8ball.js'
+    },
+
+
     Anagramm    : {
         enabled : true,
         ini     : true,

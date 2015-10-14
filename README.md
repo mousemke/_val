@@ -25,6 +25,7 @@ DOGE DQiQ8e62CQGqx378EuS8i8gUW2mLkfBuXu
 + updated nico module
 + added popkey module to handle gif
 + updated +gif to use a gif api
++ added 8ball
 
 
 0.2.0 -
