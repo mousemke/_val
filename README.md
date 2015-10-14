@@ -20,6 +20,7 @@ DOGE DQiQ8e62CQGqx378EuS8i8gUW2mLkfBuXu
 **Change log**
 
 0.2.1 - 
++ slight changes to apiGet to allow headers
 + added troll word blacklist
 + updated nico module
 + added popkey module to handle gif

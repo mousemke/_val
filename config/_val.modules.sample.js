@@ -102,6 +102,15 @@
     },
 
 
+    PopKey      : {
+        enabled : true,
+        url     : './modules/popkey.js',
+        options : {
+            popKeyAPIKey    : 'api-here'
+        }
+    },
+
+
     Slack      : {
         enabled : false,
         url     : './modules/slack.js',
