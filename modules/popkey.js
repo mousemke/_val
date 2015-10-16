@@ -33,7 +33,6 @@ module.exports  = function PopKey( _bot, _modules, userConfig )
                 }
                 else
                 {
-                    // _bot.say( from, 'https://popkey-assets.s3.amazonaws.com/original-2f13a673-9cc6-4648-8e95-a44f3eb9f843.gif' );
                     _bot.say( from, 'Nah.... I got nothing' );
                 }
             }, true, from, to );

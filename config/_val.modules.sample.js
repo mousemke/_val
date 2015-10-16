@@ -154,6 +154,20 @@
     },
 
 
+    Twitter     : {
+        enabled : true,
+        ini     : true,
+        url     : './modules/twitter.js',
+        options : {
+            twitterAdminOnly            : true,
+            twitterConsumerKey          : '...',
+            twitterConsumerSecret       : '...',
+            twitterAccessToken          : '...',
+            twitterAccessTokenSecret    : '...'
+        }
+    },
+
+
     Words       : {
         enabled : true,
         ini     : true,

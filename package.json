@@ -24,6 +24,7 @@
   },
   "homepage": "https://knoblau.ch/_val",
   "dependencies": {
-    "irc": "^0.3.8"
+    "irc": "^0.3.8",
+    "twit": "^2.1.0"
   }
 }
