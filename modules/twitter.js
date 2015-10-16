@@ -17,8 +17,6 @@ module.exports  = function Twitter( _bot, _modules, userConfig )
                 access_token        : userConfig.twitterAccessToken,
                 access_token_secret : userConfig.twitterAccessTokenSecret
             } );
-
-            // https://api.twitter.com/oauth/authenticate?oauth_token=Z6eEdO8MOmk394WozF5oKyuAv855l4Mlqo7hhlSLik
         },
 
 

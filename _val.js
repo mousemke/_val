@@ -5,7 +5,7 @@ var channel, _bot, words, lastSeenList, _modules = {},
     modules             = require( './config/_val.modules.js' ),
     guys                = require( './lists/guys.js' );
     trollBlacklist      = require( './lists/trollBlacklist.js' );
-    userConfig.version  = '0.2.1';
+    userConfig.version  = '0.2.2';
     userConfig.req      = {};
 
 var channels            = [];

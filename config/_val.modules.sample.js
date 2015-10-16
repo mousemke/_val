@@ -163,7 +163,11 @@
             twitterConsumerKey          : '...',
             twitterConsumerSecret       : '...',
             twitterAccessToken          : '...',
-            twitterAccessTokenSecret    : '...'
+            twitterAccessTokenSecret    : '...',
+            twitterWhiteRooms           : [],
+            twitterBlackRooms           : [],
+            twitterWhiteUsers           : [],
+            twitterBlackUsers           : []
         }
     },
 
