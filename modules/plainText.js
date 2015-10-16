@@ -282,6 +282,10 @@ module.exports = function PlainText( _bot, _modules, userConfig )
                         case 'hug':
                             botText = 'No.';
                             break;
+                        case 'sleep':
+                        case 'zzz':
+                            botText = '(- o - ) zzZ ☽';
+                            break;
                     }
                 }
              }
