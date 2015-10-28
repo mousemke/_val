@@ -35,6 +35,10 @@ module.exports = function Doge( _bot, _modules, userConfig )
                     {
                         botText += 'There are currently Ð' + amount + ' in circulation';
                     }
+                    if ( _to === '___bank___' )
+                    {
+                        botText += 'There are currently Ð' + amount + ' in the bank';
+                    }
                     else
                     {
                         if ( from !== _to )
@@ -51,6 +55,10 @@ module.exports = function Doge( _bot, _modules, userConfig )
             if ( text.split( ' ' )[ 1 ] === 'all' )
             {
                 _balanceCB( 'masterTotal', true );
+            }
+            else if ( text.split( ' ' )[ 1 ] === 'bank' )
+            {
+                _balanceCB( '___bank___', true );
             }
             else
             {

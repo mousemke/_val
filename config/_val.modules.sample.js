@@ -159,15 +159,33 @@
         ini     : true,
         url     : './modules/twitter.js',
         options : {
-            twitterAdminOnly            : true,
-            twitterConsumerKey          : '...',
-            twitterConsumerSecret       : '...',
-            twitterAccessToken          : '...',
-            twitterAccessTokenSecret    : '...',
-            twitterWhiteRooms           : [],
-            twitterBlackRooms           : [],
-            twitterWhiteUsers           : [],
-            twitterBlackUsers           : []
+            twitterRooms : {
+                'mouse' : {
+                    account             : '@mousemke',
+                    users               : [ 'user1' ],
+                    consumerKey         : '7J5ehvCKfo8Er3bnyMuenupMR',
+                    consumerSecret      : '1234567890',
+                    accessToken         : '1234567890-1234567890',
+                    accessTokenSecret   : '1234567890',
+                },
+                '#val-test' : {
+                    account             : '@mousemke',
+                    users               : [ 'user1' ],
+                    consumerKey         : '7J5ehvCKfo8Er3bnyMuenupMR',
+                    consumerSecret      : '1234567890',
+                    accessToken         : '1234567890-1234567890',
+                    accessTokenSecret   : '1234567890',
+                },
+                '#_teamdoinstuff' : {
+                    account             : '@teamdoinstuff',
+                    users               : [ 'user1', 'user2', 'user3' ],
+                    consumerKey         : '1234567890',
+                    consumerSecret      : '1234567890',
+                    accessToken         : '1234567890-1234567890',
+                    accessTokenSecret   : '1234567890',
+                }
+            },
+            twitterBlackUsers           : [ 'userBad' ]
         }
     },
 

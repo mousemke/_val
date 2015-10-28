@@ -2,53 +2,121 @@
 var Twit = require('twit');
 // https://github.com/ttezel/twit
 
-
 module.exports  = function Twitter( _bot, _modules, userConfig )
 {
     var apikey      = userConfig.popKeyAPIKey;
 
     return {
 
-        ini : function()
+        /**
+         * ## authenticate
+         *
+         * given twitter info, this authorizses the api for the accounr
+         *
+         * @param  {String} from room or person name
+         *
+         * @return _Object_ Twit object
+         */
+        authenticate : function( from )
         {
-            this.t = new Twit( {
-                consumer_key        : userConfig.twitterConsumerKey,
-                consumer_secret     : userConfig.twitterConsumerSecret,
-                access_token        : userConfig.twitterAccessToken,
-                access_token_secret : userConfig.twitterAccessTokenSecret
+            var _t      = userConfig.twitterRooms[ from ];
+
+            var auth    = new Twit( {
+                consumer_key        : _t.consumerKey,
+                consumer_secret     : _t.consumerSecret,
+                access_token        : _t.accessToken,
+                access_token_secret : _t.accessTokenSecret
             } );
+
+            auth.account    = _t.account;
+            auth.users      = _t.users;
+
+            return auth;
         },
 
 
+        /**
+         * ## ini
+         *
+         * builds the streams
+         *
+         * @return _Void_
+         */
+        ini : function()
+        {
+            this._tStreams = {};
+        },
+
+
+        /**
+         * ## responses
+         *
+         * main i/o for the module
+         *
+         * @param {String} from originating channel
+         * @param {String} to originating user
+         * @param {String} text full message text
+         * @param {String} botText old botText
+         *
+         * @return _String_ new botText
+         */
         responses : function( from, to, text, botText )
         {
+            var _t          = userConfig.twitterRooms[ from ];
+            var lowercaseTo = to.toLowerCase();
 
-            var textSplit = text.split( ' ' );
-            var command = textSplit[ 0 ].slice( 1 );
-
-            if ( typeof command !== 'string' )
+            if ( _t )
             {
-                command = command[ 0 ];
-            }
-            var realText = textSplit.slice( 1 ).join( ' ' );
+                if ( _t.users.indexOf( lowercaseTo ) !== -1 )
+                {
+                    if ( userConfig.twitterBlackUsers.indexOf( lowercaseTo ) === -1 )
+                    {
+                        var textSplit = text.split( ' ' );
+                        var command = textSplit[ 0 ].slice( 1 );
 
-            switch ( command )
-            {
-                case 't':
-                case 'tweet':
-                    botText = this.tweet( from, to, realText );
-                    break;
-                case 't-stream':
-                    botText = this.stream( from, to, realText );
-                    break;
+                        if ( typeof command !== 'string' )
+                        {
+                            command = command[ 0 ];
+                        }
+                        var realText = textSplit.slice( 1 ).join( ' ' );
+
+                        switch ( command )
+                        {
+                            case 't':
+                            case 'tweet':
+                                botText = this.tweet( from, to, realText );
+                                break;
+                            case 't-stream-filter':
+                                botText = this.streamFilter( from, to, realText );
+                                break;
+                            case 't-stream-stop':
+                                botText = this.streamStop( from, to, realText );
+                                break;
+                        }
+                    }
+                }
             }
 
             return botText;
         },
 
 
-        stream  : function()
+        stream  : function( from, to, text )
         {
+            var _t = this.authenticate( from );
+
+            var streams = this._tStreams[ from ] = this._tStreams[ from ] || [];
+
+            var stream = _t.stream( 'statuses/filter', { track : [ 'bananas', 'oranges', 'strawberries' ] } );
+            streams.push( stream );
+
+            stream.on( 'tweet', function ( tweet )
+            {
+                _bot.say( from, tweet.user.name + ' @' + tweet.user.screen_name + '\n' + tweet.text );
+            } );
+
+            return 'Stream started';
+
             // T.stream(path, [params])
             //
             // 'statuses/filter'
@@ -108,16 +176,63 @@ module.exports  = function Twitter( _bot, _modules, userConfig )
         },
 
 
+        streamFilter  : function( from, to, text )
+        {
+            var _t          = this.authenticate( from );
+            var streams     = this._tStreams[ from ] = this._tStreams[ from ] || [];
+            var searchText  = text.split( ' ' ).join( ',' );
+
+            var stream = _t.stream( 'statuses/filter', { track : searchText } );
+            streams.push( stream );
+
+            stream.on( 'tweet', function ( tweet )
+            {
+                _bot.say( from, tweet.user.name + ' @' + tweet.user.screen_name + '\n' + tweet.text );
+            } );
+
+            return 'Filter stream for ' + searchText + ' started';
+        },
+
+
+        /**
+         * ## streamStop
+         *
+         * stops all streams in the current room
+         *
+         * @param {String} from originating channel
+         * @param {String} to originating user
+         * @param {String} text full message text
+         *
+         * @return _String_ success message
+         */
+        streamStop  : function( from, to, text )
+        {
+            var streams = this._tStreams[ from ] = this._tStreams[ from ] || [];
+
+            for ( var i = 0, lenI = streams.length; i < lenI; i++ )
+            {
+                streams[ i ].stop();
+            }
+
+            return 'Streams in ' + from + ' stopped';
+        },
+
+
         tweet   : function( from, to, text )
         {
-            var t = this.t;
-            // T.post(path, [params], function (err, data, response){} )
-            //
-            // t.post( 'statuses/update', { status: '_val twitter module test.  find out more at https://github.com/mousemke/_val/tree/0.2.2' }, function( err, data, response )
-            // {
-            //   console.log( data );
-            // } );
-            return '';
+            var _t = this.authenticate( from );
+
+            _t.post( 'statuses/update', { status : text }, function( err, data, response )
+            {
+                if ( err )
+                {
+                    _bot.say( from, 'Sorry ' + to + ', ' + err.code + ' : ' + err.message );
+                }
+                else
+                {
+                    _bot.say( from, 'Tweet Posted to ' + _t.account + ': ' + text );
+                }
+            } );
         }
     }
 };

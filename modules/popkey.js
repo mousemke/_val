@@ -7,8 +7,8 @@ module.exports  = function PopKey( _bot, _modules, userConfig )
 
         getGif : function( from, to, text )
         {
-            text = text.replace( / /g, ',' ).toLowerCase();
-
+            text = text.replace( / /g, ',' ).toLowerCase().replace( /['"`’]/g, '' );
+            console.log( text );
             options = {
                 path: '/v2/media/search?q=' + text,
                 host: 'api.popkey.co',

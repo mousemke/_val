@@ -70,6 +70,9 @@ module.exports = function PlainText( _bot, _modules, userConfig )
 
             switch ( type )
             {
+                case 'emergency':
+                    word = [ '🚑 ', '🚨 ', '🚒 ', '🚓 ' ];
+                    break;
                 case 'doge':
                     word = [ 'wow ', 'Ð ', 'doge ', 'moon ', 'ÐÐÐ ', 'such ', 'is ' ];
                     break;

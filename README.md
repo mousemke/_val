@@ -2,7 +2,7 @@
 
 erm.... bot.
 
-v. 0.2.1
+v. 0.2.2
 
 Go to http://knoblau.ch/_val for a list of commands.
 
@@ -18,6 +18,12 @@ DOGE DQiQ8e62CQGqx378EuS8i8gUW2mLkfBuXu
 
 
 **Change log**
+
+0.2.2 - 
++ added twitter module
++ fixed +gif to accept apostrophes
++ added emergencyfetti
++ added bank to balance
 
 0.2.1 - 
 + slight changes to apiGet to allow headers
