@@ -1,7 +1,7 @@
 {
-  "name": "_val",
+  "name": "val-bot",
   "version": "0.2.1",
-  "description": "An IRC bot that rules.",
+  "description": "An IRC bot that does things.",
   "main": "_val.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
