@@ -19,14 +19,16 @@ DOGE DQiQ8e62CQGqx378EuS8i8gUW2mLkfBuXu
 
 **Change log**
 
-0.2.2 - 
+0.2.2 -
 + added twitter module
 + fixed +gif to accept apostrophes
 + added emergencyfetti
 + added balance bank
 + fixed unscramble and anagramm doge payout
++ changed package name to val-bot for npm compatability
 
-0.2.1 - 
+
+0.2.1 -
 + slight changes to apiGet to allow headers
 + added troll word blacklist
 + updated nico module

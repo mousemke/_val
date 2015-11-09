@@ -13,7 +13,7 @@
         <div class="header">
             <a href="#intro"><span class="val--title__logo"></span></a>
             <span class="val--title__text">
-                _val, an IRC Dogecoin tipbot.  And then some.  ( v 0.2.1 )
+                _val, an IRC Dogecoin tipbot.  And then some.  ( v 0.2.2 )
             </span>
             <span class="val--author">
                 _val is coded by @mousemke<br>
@@ -280,7 +280,8 @@
                                     + fixed +gif to accept apostrophes<br>
                                     + added emergencyfetti<br>
                                     + added bank to balance<br>
-                                    + fixed unscramble and anagramm doge payout
+                                    + fixed unscramble and anagramm doge payout<br>
+                                    + changed package name to val-bot for npm compatability
                                     <br>
                                 </div>
                                 <a href="#old-changes">older change logs</a>
@@ -357,6 +358,7 @@
                         <span class="command">(any text)fetti</span>
                         <p>displays confetti based on what you typed.  there are some special confetti commands that do special things.<br>
                             <ul class="fetti--list">
+                                <li>emergency</li>
                                 <li>doge</li>
                                 <li>con</li>
                                 <li>spooky</li>
@@ -1023,7 +1025,7 @@
 
 
                         <span class="command">0.2.0 -</span>
-                        <p>+ fixed a bug inactive where bots registered<br>
+                        <p>+ fixed a bug in active where bots registered<br>
                             + all command can now be passed as whispers<br>
                             + whispers now accept triggered input as well<br>
                             + added autojoin for Slack<br>
