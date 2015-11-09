@@ -23,7 +23,8 @@ DOGE DQiQ8e62CQGqx378EuS8i8gUW2mLkfBuXu
 + added twitter module
 + fixed +gif to accept apostrophes
 + added emergencyfetti
-+ added bank to balance
++ added balance bank
++ fixed unscramble and anagramm doge payout
 
 0.2.1 - 
 + slight changes to apiGet to allow headers

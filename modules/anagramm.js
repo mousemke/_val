@@ -201,11 +201,11 @@ module.exports  = function Anagram( _bot, _modules, userConfig )
                 }
                 botText += '! Many ' + solveTime + ' Sekunden!';
 
-                if ( _modules.doge && userConfig.anagrammDogePayout )
+                if ( _modules.Doge && userConfig.anagrammDogePayout )
                 {
                     var dogetip = currentWord.length * userConfig.anagrammDogeModifier;
 
-                    _modules.doge.giveFromBank( to, dogetip, true );
+                    _modules.Doge.giveFromBank( to, dogetip, true );
                     botText += ' You\'ve earned Ð' + dogetip + '!';
                 }
 

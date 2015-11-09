@@ -124,11 +124,11 @@ module.exports  = function Words( _bot, _modules, userConfig )
                 }
                 botText += '! Many ' + solveTime + ' seconds!';
 
-                if ( _modules.doge && userConfig.unscrambleDogePayout )
+                if ( _modules.Doge && userConfig.unscrambleDogePayout )
                 {
                     var dogetip = currentWord.length * userConfig.unscrambleDogeModifier;
 
-                    _modules.doge.giveFromBank( to, dogetip, true );
+                    _modules.Doge.giveFromBank( to, dogetip, true );
                     botText += ' You\'ve earned Ð' + dogetip + '!';
                 }
 

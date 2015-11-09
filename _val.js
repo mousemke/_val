@@ -1,22 +1,26 @@
 
+    /**
+     * load node modules
+     */
+var userConfig      = require( './config/_val.config.js' );
+    userConfig.req  = {};
+
+var http            = userConfig.req.http   = require( 'http' ),
+    https           = userConfig.req.https  = require( 'https' ),
+    irc             = userConfig.req.irc    = require( 'irc' ),
+    fs              = userConfig.req.fs     = require( 'fs' );
+
+
 // Loads the configuration and sets variables
-var channel, _bot, words, lastSeenList, _modules = {},
-    userConfig          = require( './config/_val.config.js' ),
+var channel, _bot, words, lastSeenList, _modules = {};
+var seenJsonUrl         = 'json/seen.json';
+var lastSeenList        = JSON.parse( fs.readFileSync( seenJsonUrl ) ),
     modules             = require( './config/_val.modules.js' ),
     guys                = require( './lists/guys.js' );
     trollBlacklist      = require( './lists/trollBlacklist.js' );
     userConfig.version  = '0.2.2';
-    userConfig.req      = {};
 
 var channels            = [];
-
-    /**
-     * load node modules
-     */
-var http    = userConfig.req.http   = require( 'http' ),
-    https   = userConfig.req.https  = require( 'https' ),
-    irc     = userConfig.req.irc    = require( 'irc' ),
-    fs      = userConfig.req.fs     = require( 'fs' );
 
 
 /**
@@ -358,18 +362,6 @@ function generateChannelList()
 
 
 /**
- * start the thing!
- *
- * @return _Void_
- */
-function start()
-{
-    buildClient();
-    generateChannelList();
-}
-
-
-/**
  * init
  *
  * sets listeners and module list up
@@ -622,6 +614,18 @@ function responses( from, to, text, botText )
 
 
 /**
+ * start the thing!
+ *
+ * @return _Void_
+ */
+function start()
+{
+    buildClient();
+    generateChannelList();
+}
+
+
+/**
  * trimUsernames
  *
  * removes the set usernamePrefix from the front of usernames
@@ -775,26 +779,21 @@ function watchActive( from, to )
  */
 function watchSeen( from, to )
 {
-    var url = 'json/seen.json';
-
-    lastSeenList = lastSeenList || JSON.parse( ( fs.readFileSync( url ) ) ) || {};
-
     if ( userConfig.publicChannels && userConfig.publicChannels.indexOf( from ) !== -1 &&
             userConfig.channelsSeenIgnore.indexOf( from ) === -1 )
     {
         lastSeenList[ to ] = { time: Date.now(), place: from };
     }
 
-    if ( lastSeenList )
+    var writeList =  JSON.stringify( lastSeenList );
+
+    fs.writeFile( seenJsonUrl, writeList, function ( err )
     {
-        fs.writeFile( url, JSON.stringify( lastSeenList ), function ( err )
+        if ( err )
         {
-            if ( err )
-            {
-                console.log( err );
-            }
-        } );
-    }
+            console.log( 'err: ',  err );
+        }
+    } );
 }
 
 start();
