@@ -35,50 +35,6 @@ module.exports  = function Admin( _bot, _modules, userConfig )
         },
 
 
-        yell : function( message, channels )
-        {
-            message = message.replace( '++yell', '' ).replace( '++y', '' );
-
-            if ( message && message !== '' )
-            {
-                for ( var i = 0, lenI = channels.length; i < lenI; i++ )
-                {
-                    _bot.say( channels[ i ], message );
-                }
-
-                return false;
-            }
-            else
-            {
-                return 'You can\'t yell nothing';
-            }
-        },
-
-
-        /**
-         * clears (if necessary) and sets the interval timer
-         *
-         * @return {void}
-         */
-        setBroadcastMessage : function()
-        {
-            var sayTheThing = function()
-            {
-                this.yell( adminMessage, adminMessageChannels.length );
-            };
-
-            if ( currentMessageInterval )
-            {
-                clearInterval( currentMessageInterval );
-            }
-
-            if ( adminMessage  )
-            {
-                currentMessageInterval = setInterval( sayTheThing, adminMessageInterval );
-            }
-        },
-
-
         /**
          * sets the initial timer
          *
@@ -125,7 +81,7 @@ module.exports  = function Admin( _bot, _modules, userConfig )
                         botText = this.displayMessageInfo();
                         break;
                     case 'm-interval':
-                        botText = this.setMessageRepeat( textSplit );
+                        botText = this.setMessageInterval( textSplit );
                         break;
                     case 'm-channels':
                         botText = this.setMessageChannels( textSplit );
@@ -149,6 +105,32 @@ module.exports  = function Admin( _bot, _modules, userConfig )
 
 
         /**
+         * clears (if necessary) and sets the interval timer
+         *
+         * @return {void}
+         */
+        setBroadcastMessage : function()
+        {
+            var self = this;
+
+            var sayTheThing = function()
+            {
+                self.yell( adminMessage, adminMessageChannels );
+            };
+
+            if ( currentMessageInterval )
+            {
+                clearInterval( currentMessageInterval );
+            }
+
+            if ( adminMessage && adminMessage !== '' )
+            {
+                currentMessageInterval = setInterval( sayTheThing, adminMessageInterval );
+            }
+        },
+
+
+        /**
          * sets the broadcast message text then resets the interval
          *
          * @param {arr}             _text               new message text
@@ -160,7 +142,11 @@ module.exports  = function Admin( _bot, _modules, userConfig )
             _text = _text.join( ' ' );
 
             adminMessage = _text;
-            this.setBroadcastMessage();
+
+            if ( !currentMessageInterval || adminMessage === '' )
+            {
+                this.setBroadcastMessage();
+            }
 
             if ( _text === '' )
             {
@@ -201,7 +187,10 @@ module.exports  = function Admin( _bot, _modules, userConfig )
                 text = 'New channels set';
             }
 
-            this.setBroadcastMessage();
+            if ( !currentMessageInterval )
+            {
+                this.setBroadcastMessage();
+            }
 
             return text;
         },
@@ -214,7 +203,7 @@ module.exports  = function Admin( _bot, _modules, userConfig )
          *
          * @return {str}                                text to say
          */
-        setMessageRepeat : function( _text )
+        setMessageInterval : function( _text )
         {
             if ( _text )
             {
@@ -231,9 +220,30 @@ module.exports  = function Admin( _bot, _modules, userConfig )
             }
 
             adminMessageInterval = _text;
+
             this.setBroadcastMessage();
 
-            return 'New Interval set';
+            return 'New Interval set - timer reset';
+        },
+
+
+        yell : function( message, channels )
+        {
+            message = message.replace( '++yell', '' ).replace( '++y', '' );
+
+            if ( message && message !== '' )
+            {
+                for ( var i = 0, lenI = channels.length; i < lenI; i++ )
+                {
+                    _bot.say( channels[ i ], message );
+                }
+
+                return false;
+            }
+            else
+            {
+                return 'You can\'t yell nothing';
+            }
         }
     };
 };
