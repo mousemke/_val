@@ -20,6 +20,7 @@ DOGE DQiQ8e62CQGqx378EuS8i8gUW2mLkfBuXu
 **Change log**
 
 0.2.2 - 
++ debug mode added
 + admin message broadcast re worked
 + added twitter module
 + fixed +gif to accept apostrophes
