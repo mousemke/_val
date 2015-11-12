@@ -126,7 +126,7 @@ var userConfig = {
     /**
      * outputs raw messages to the node console
      */
-    debugMode               : true
+    verbose                 : true
 };
 
 module.exports = userConfig;

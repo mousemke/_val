@@ -26,15 +26,15 @@ var channels            = [];
 var debugChalkBox = {
     'PING' : 'blue',
     'MODE' : 'magenta',
-    'PRIVMSG' : 'gray',
     'rpl_channelmodeis' : 'cyan',
     'rpl_myinfo' : 'cyan',
     'rpl_creationtime' : 'cyan',
     'rpl_namreply' : 'cyan',
     'rpl_endofnames' : 'cyan',
-    'rpl_topic' : 'cyan',
+    'rpl_topic' : 'gray',
     'JOIN' : 'green',
-    'KILL' : 'green'
+    'KILL' : 'green',
+    'NOTICE' : 'yellow'
 };
 
 
@@ -270,6 +270,36 @@ function checkSeen( from, to, text, talk )
 
 
 /**
+ * ## displayDebugInfo
+ *
+ * formats and displays debug information
+ *
+ * @return _Void_
+ */
+function displayDebugInfo( e )
+{
+    var command = e.command;
+
+    if ( command !== 'PRIVMSG' )
+    {
+        var _color  = debugChalkBox[ command ];
+        var text    = '     * ' + command + ' : ';
+
+        e.args.forEach( function( arg ){ text += arg + ' '; } );
+
+        if ( _color )
+        {
+            console.log( chalk[ _color ]( text ) );
+        }
+        else
+        {
+            console.log( e );
+        }
+    }
+};
+
+
+/**
  * ## generateChannelList
  *
  * generates a channel list based on settings and environment.
@@ -376,38 +406,6 @@ function generateChannelList()
 }
 
 
-function displayDebugInfo( e )
-{
-    var text    = '';
-    var command = e.command;
-    var _color  = debugChalkBox[ command ] || 'grey';
-
-    e.args.forEach( function( arg ){ text += arg + ' '; } );
-
-    switch ( command )
-    {
-        case 'PING':
-        case 'MODE':
-        case 'PRIVMSG':
-        case 'rpl_channelmodeis':
-        case 'rpl_myinfo':
-        case 'rpl_creationtime':
-        case 'rpl_namreply':
-        case 'rpl_endofnames':
-        case 'rpl_topic':
-        case 'JOIN':
-        case 'KILL':
-            break;
-        default:
-            console.log( e );
-            break;
-    }
-    text = '     * ' + command + ' : ' + text;
-
-    console.log( chalk[ _color ]( text ) );
-};
-
-
 /**
  * init
  *
@@ -436,9 +434,8 @@ function iniClient()
 
     _bot.addListener( 'message', listenToMessages.bind( this ) );
 
-    if ( userConfig.debugMode === true )
+    if ( userConfig.verbose === true )
     {
-        _bot.addListener( 'notice', function( e ){ console.log( chalk.yellow( 'notice: ', e.args ) ); } );
         _bot.addListener( 'raw', displayDebugInfo );
     }
 
@@ -469,9 +466,9 @@ function iniClient()
  */
 function listenToMessages( to, from, text )
 {
-    if ( userConfig.debugMode === true )
+    if ( userConfig.verbose === true )
     {
-        console.log( chalk.black.bgWhite( from, to, text ) );
+        console.log( chalk.green( from ), chalk.red( to ), text );
     }
 
     text = trimUsernames( text );
@@ -532,12 +529,6 @@ function listenToMessages( to, from, text )
 
         if ( botText !== '' && botText !== false )
         {
-            console.log( '<' + from + '> <' + to + '> :' + text );
-
-            if ( botText !== undefined )
-            {
-                console.log( '<' + from + '> <' + ( userConfig.botName ) + '> :' + botText );
-            }
             _bot.say( from, botText );
         }
     }
@@ -563,8 +554,6 @@ function listenToMessages( to, from, text )
  */
 function listenToPm( from, text )
 {
-    console.log( '<' + from + '>   ' + text );
-
     var textSplit   = text.split( ' ' );
     var command     = textSplit[ 0 ];
 
