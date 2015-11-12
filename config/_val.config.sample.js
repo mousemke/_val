@@ -121,7 +121,12 @@ var userConfig = {
      * provided in config in case translations are necessary
      */
     weekdays                : [ 'Sun.', 'Mon.', 'Tues.', 'Wed.', 'Thurs.', 'Fri.', 'Sat.' ],
-    months                  : [ 'Jan.', 'Feb.', 'Mar.', 'Apr.', 'May', 'June', 'July', 'Aug.', 'Sept.', 'Oct.', 'Nov.', 'Dec' ]
+    months                  : [ 'Jan.', 'Feb.', 'Mar.', 'Apr.', 'May', 'June', 'July', 'Aug.', 'Sept.', 'Oct.', 'Nov.', 'Dec' ],
+
+    /**
+     * outputs raw messages to the node console
+     */
+    debugMode               : true
 };
 
 module.exports = userConfig;

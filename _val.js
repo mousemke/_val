@@ -9,6 +9,7 @@ var http            = userConfig.req.http   = require( 'http' ),
     https           = userConfig.req.https  = require( 'https' ),
     irc             = userConfig.req.irc    = require( 'irc' ),
     fs              = userConfig.req.fs     = require( 'fs' );
+    chalk           = userConfig.req.chalk   = require( 'chalk' );
 
 
 // Loads the configuration and sets variables
@@ -21,6 +22,20 @@ var lastSeenList        = JSON.parse( fs.readFileSync( seenJsonUrl ) ),
     userConfig.version  = '0.2.2';
 
 var channels            = [];
+
+var debugChalkBox = {
+    'PING' : 'blue',
+    'MODE' : 'magenta',
+    'PRIVMSG' : 'gray',
+    'rpl_channelmodeis' : 'cyan',
+    'rpl_myinfo' : 'cyan',
+    'rpl_creationtime' : 'cyan',
+    'rpl_namreply' : 'cyan',
+    'rpl_endofnames' : 'cyan',
+    'rpl_topic' : 'cyan',
+    'JOIN' : 'green',
+    'KILL' : 'green'
+};
 
 
 /**
@@ -361,6 +376,38 @@ function generateChannelList()
 }
 
 
+function displayDebugInfo( e )
+{
+    var text    = '';
+    var command = e.command;
+    var _color  = debugChalkBox[ command ] || 'grey';
+
+    e.args.forEach( function( arg ){ text += arg + ' '; } );
+
+    switch ( command )
+    {
+        case 'PING':
+        case 'MODE':
+        case 'PRIVMSG':
+        case 'rpl_channelmodeis':
+        case 'rpl_myinfo':
+        case 'rpl_creationtime':
+        case 'rpl_namreply':
+        case 'rpl_endofnames':
+        case 'rpl_topic':
+        case 'JOIN':
+        case 'KILL':
+            break;
+        default:
+            console.log( e );
+            break;
+    }
+    text = '     * ' + command + ' : ' + text;
+
+    console.log( chalk[ _color ]( text ) );
+};
+
+
 /**
  * init
  *
@@ -382,15 +429,17 @@ function iniClient()
 
     _bot.addListener( 'error', function( message )
     {
-        console.log( 'error: ', message );
+        console.log( 'error: ', chalk.red( message ) );
     });
 
     _bot.addListener( 'pm', listenToPm );
 
-    for ( var i = 0, lenI = channels.length; i < lenI; i++ )
+    _bot.addListener( 'message', listenToMessages.bind( this ) );
+
+    if ( userConfig.debugMode === true )
     {
-        channel = channels[ i ];
-        _bot.addListener( 'message' + channel, listenToMessages.bind( this, channels[ i ] ) );
+        _bot.addListener( 'notice', function( e ){ console.log( chalk.yellow( 'notice: ', e.args ) ); } );
+        _bot.addListener( 'raw', displayDebugInfo );
     }
 
     _bot.active = {};
@@ -418,8 +467,13 @@ function iniClient()
  *
  * @return {void}
  */
-function listenToMessages( from, to, text )
+function listenToMessages( to, from, text )
 {
+    if ( userConfig.debugMode === true )
+    {
+        console.log( chalk.black.bgWhite( from, to, text ) );
+    }
+
     text = trimUsernames( text );
 
     watchActive( from, to );
