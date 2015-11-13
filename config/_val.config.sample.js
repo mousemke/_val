@@ -53,6 +53,11 @@ var userConfig = {
      */
     channelsSeenIgnore      : [ '#channel4' ],
 
+    /**
+     * ms to reconnection on disconnect
+     */
+    reconnectionTimeout     : 50000,
+
     server                  : '192.168.1.1',
     serverPassword          : 'just.another.irc.server.password.i.suppose',
     botName                 : 'justAnotherBot',

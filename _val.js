@@ -289,7 +289,25 @@ function displayDebugInfo( e )
 
         if ( _color )
         {
-            console.log( chalk[ _color ]( text ) );
+            if ( command === 'PING' )
+            {
+                var now                 = Date.now();
+
+                if ( connectionTimer )
+                {
+                    clearTimeout( connectionTimer );
+                }
+
+                console.log( chalk[ _color ]( text ), chalk.grey( now - lastPing ) );
+
+                lastPing = now;
+
+                connectionTimer = setTimeout( reConnection, userConfig.reconnectionTimeout );
+            }
+            else
+            {
+                console.log( chalk[ _color ]( text ) );
+            }
         }
         else
         {
@@ -297,6 +315,14 @@ function displayDebugInfo( e )
         }
     }
 };
+
+var connectionTimer = null;
+var lastPing        = Date.now();
+
+function reConnection()
+{
+    console.log( 'connection broken' );
+}
 
 
 /**
