@@ -34,14 +34,27 @@ var helpText = function()
 var userConfig = {
 
     /**
-     * commands from bots are ignored
+     * timout for a user to be considered active
      **/
-    bots                    : [ 'bot1', 'bot2', 'bot3' ],
+    activeTime              : 600000,
 
     /**
      * admins get to issue admin commands
      **/
     admins                  : [ 'user' ],
+
+    /**
+     * connection to nickserv bot.  in twitch, users are already identified,
+     * so there in no need for NickServ
+     */
+    autoAuth                : false,
+
+    /**
+     * commands from bots are ignored
+     **/
+    bots                    : [ 'bot1', 'bot2', 'bot3' ],
+
+    botName                 : 'justAnotherBot',
 
     /**
      * server, channel, name connection details
@@ -54,15 +67,55 @@ var userConfig = {
     channelsSeenIgnore      : [ '#channel4' ],
 
     /**
+     * some services (**cough* twitch**) dont support private messages or
+     * multiline messages.
+     */
+    enableHelp              : true,
+
+    /**
+     * uses the leaderboard api to track pool scores
+     * https://github.com/nicolasbrugneaux/leaderboard
+     */
+    enablePool              : true,
+
+
+    /**
+     * enables private messages
+     */
+    enablePM                : true,
+
+    /**
+     * anything ending in 'fetti'
+     */
+    fettiWordLength         : 15,
+    fettiLength             : 25,
+    fettiOptions            : [ '. ', '´ ', '\' ', ' ,' ],
+
+    floodProtection         : false,
+    floodProtectionDelay    : 1200,
+
+    helpText                : helpText,
+    helpUrl                 : 'http://knoblau.ch/_val/',
+
+    months                  : [ 'Jan.', 'Feb.', 'Mar.', 'Apr.', 'May', 'June', 'July', 'Aug.', 'Sept.', 'Oct.', 'Nov.', 'Dec' ],
+
+    nickservBot             : 'NickServ',
+    nickservAPI             : 'Help, I\'m trapped in an api factory',
+
+    /**
+     * sets a target for shenanigans
+     */
+    nico                    : 'nico',
+
+    poolApiUrl              : 'http://192.168.2.15:8001/api/',
+
+    /**
      * ms to reconnection on disconnect
      */
     reconnectionTimeout     : 50000,
 
     server                  : '192.168.1.1',
     serverPassword          : 'just.another.irc.server.password.i.suppose',
-    botName                 : 'justAnotherBot',
-    floodProtection         : false,
-    floodProtectionDelay    : 1200,
 
     /**
      * trigger to catch commands
@@ -78,60 +131,14 @@ var userConfig = {
     usernamePrefix         : [ '@' ],
 
     /**
-     * timout for a user to be considered active
-     **/
-    activeTime              : 600000,
-
-    /**
-     * sets a target for shenanigans
+     * outputs raw messages to the node console
      */
-    nico                    : 'nico',
-
-    /**
-     * anything ending in 'fetti'
-     */
-    fettiWordLength         : 15,
-    fettiLength             : 25,
-    fettiOptions            : [ '. ', '´ ', '\' ', ' ,' ],
-
-    /**
-     * connection to nickserv bot.  in twitch, users are already identified,
-     * so there in no need for NickServ
-     */
-    autoAuth                : false,
-    nickservBot             : 'NickServ',
-    nickservAPI             : 'Help, I\'m trapped in an api factory',
-
-    /**
-     * uses the leaderboard api to track pool scores
-     * https://github.com/nicolasbrugneaux/leaderboard
-     */
-    enablePool              : true,
-    poolApiUrl              : 'http://192.168.2.15:8001/api/',
-
-    /**
-     * some services (**cough* twitch**) dont support private messages or
-     * multiline messages.
-     */
-    enableHelp              : true,
-    helpUrl                 : 'http://knoblau.ch/_val/',
-    helpText                : helpText,
-
-    /**
-     * enables private messages
-     */
-    enablePM                : true,
+    verbose                 : true,
 
     /**
      * provided in config in case translations are necessary
      */
-    weekdays                : [ 'Sun.', 'Mon.', 'Tues.', 'Wed.', 'Thurs.', 'Fri.', 'Sat.' ],
-    months                  : [ 'Jan.', 'Feb.', 'Mar.', 'Apr.', 'May', 'June', 'July', 'Aug.', 'Sept.', 'Oct.', 'Nov.', 'Dec' ],
-
-    /**
-     * outputs raw messages to the node console
-     */
-    verbose                 : true
+    weekdays                : [ 'Sun.', 'Mon.', 'Tues.', 'Wed.', 'Thurs.', 'Fri.', 'Sat.' ]
 };
 
 module.exports = userConfig;

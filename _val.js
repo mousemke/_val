@@ -291,17 +291,16 @@ function displayDebugInfo( e )
         {
             if ( command === 'PING' )
             {
-                var now                 = Date.now();
+                var now    = Date.now();
+                var minUp  = Math.round( ( ( now - up ) / 1000 / 60 ) * 100 ) / 100;
+
+                console.log( chalk[ _color ]( text ), ( now - lastPing ) + 'ms', chalk.grey( '(' + minUp + 'min up)' ) );
+                lastPing = now;
 
                 if ( connectionTimer )
                 {
                     clearTimeout( connectionTimer );
                 }
-
-                console.log( chalk[ _color ]( text ), chalk.grey( now - lastPing ) );
-
-                lastPing = now;
-
                 connectionTimer = setTimeout( reConnection, userConfig.reconnectionTimeout );
             }
             else
@@ -317,11 +316,16 @@ function displayDebugInfo( e )
 };
 
 var connectionTimer = null;
+var up              = Date.now();
 var lastPing        = Date.now();
 
 function reConnection()
 {
-    console.log( 'connection broken' );
+    _bot.disconnect( 'Fine...  I was on my way out anyways.', function()
+    {
+        console.log( 'connection broken.  reconnecting...' );
+        start();
+    });
 }
 
 
