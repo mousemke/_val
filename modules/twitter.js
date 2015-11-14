@@ -1,6 +1,6 @@
 
-var Twit = require('twit');
 // https://github.com/ttezel/twit
+var Twit = require('twit');
 
 module.exports  = function Twitter( _bot, _modules, userConfig )
 {
@@ -34,11 +34,101 @@ module.exports  = function Twitter( _bot, _modules, userConfig )
             return auth;
         },
 
+        /**
+         * ## getStreamEvent
+         *
+         * used by streamRaw.  checks the given event and uses it if valid or
+         * defaults to tweet
+         *
+         * @param {Array} _text split text object
+         *
+         * @return _String_ chosen event
+         */
+        getStreamEvent : function( _text )
+        {
+            var _event;
+
+            switch ( _text[ 0 ] )
+            {
+                case 'message':
+                case 'delete':
+                case 'limit':
+                case 'scrub_geo':
+                case 'disconnect':
+                case 'connect':
+                case 'connected':
+                case 'reconnect':
+                case 'warning':
+                case 'status_withheld':
+                case 'user_withheld':
+                case 'friends':
+                case 'direct_message':
+                case 'user_event':
+                case 'blocked':
+                case 'unblocked':
+                case 'favorite':
+                case 'unfavorite':
+                case 'follow':
+                case 'unfollow':
+                case 'user_update':
+                case 'list_created':
+                case 'list_destroyed':
+                case 'list_updated':
+                case 'list_member_added':
+                case 'list_member_removed':
+                case 'list_user_subscribed':
+                case 'list_user_unsubscribed':
+                case 'unknown_user_event':
+                    _event = _text[ 0 ];
+                    _text = _text.slice( 1 );
+                    break;
+                default:
+                    _event = 'tweet';
+            }
+
+            return _event;
+        },
+
+
+        /**
+         * ## getStreamTarget
+         *
+         * used by streamRaw.  checks the given target and uses it if valid or
+         * defaults to 'statuses/filter'
+         *
+         * @param {Array} _text split text object
+         *
+         * @return _String_ chosen target
+         */
+        getStreamTarget : function( _text )
+        {
+            var target;
+
+            switch ( _text[ 0 ] )
+            {
+                case 'filter':
+                case 'sample':
+                case 'firehose':
+                    target = 'statuses/' + _text[ 0 ];
+                    _text = _text.slice( 1 );
+                    break;
+                case 'user':
+                case 'site':
+                    target = _text[ 0 ];
+                    _text = _text.slice( 1 );
+                    break;
+                default:
+                    target = 'statuses/filter';
+            }
+
+            return target;
+        },
+
 
         /**
          * ## ini
          *
-         * builds the streams
+         * builds the streams object
          *
          * @return _Void_
          */
@@ -51,7 +141,7 @@ module.exports  = function Twitter( _bot, _modules, userConfig )
         /**
          * ## responses
          *
-         * main i/o for the module
+         * main i/o for the twitter module
          *
          * @param {String} from originating channel
          * @param {String} to originating user
@@ -69,7 +159,7 @@ module.exports  = function Twitter( _bot, _modules, userConfig )
             {
                 if ( _t.users.indexOf( lowercaseTo ) !== -1 )
                 {
-                    if ( userConfig.twitterBlackUsers.indexOf( lowercaseTo ) === -1 )
+                    if ( userConfig.twitterUsersBlackList.indexOf( lowercaseTo ) === -1 )
                     {
                         var textSplit = text.split( ' ' );
                         var command = textSplit[ 0 ].slice( 1 );
@@ -89,8 +179,23 @@ module.exports  = function Twitter( _bot, _modules, userConfig )
                             case 't-stream-filter':
                                 botText = this.streamFilter( from, to, realText );
                                 break;
+                            case 't-stream-firehose':
+                                botText = this.streamFirehose( from, to, realText );
+                                break;
+                            case 't-user':
+                                botText = this.streamUser( from, to, realText );
+                                break;
+                            case 't-site':
+                                botText = this.streamSite( from, to, realText );
+                                break;
+                            case 't-stream':
+                                botText = this.streamRaw( from, to, realText );
+                                break;
                             case 't-stream-stop':
                                 botText = this.streamStop( from, to, realText );
+                                break;
+                            case 't-help':
+                                botText = this.twitterHelp( from, to, realText );
                                 break;
                         }
                     }
@@ -101,96 +206,138 @@ module.exports  = function Twitter( _bot, _modules, userConfig )
         },
 
 
-        stream  : function( from, to, text )
+        twitterHelp = function( from, to, text )
         {
-            var _t = this.authenticate( from );
+            var targets = 'statuses/filter statuses/sample statuses/firehose ' +
+                            'user site statuses/filter';
 
-            var streams = this._tStreams[ from ] = this._tStreams[ from ] || [];
+            var events  = ' message delete limit scrub_geo disconnect connect ' +
+                            'connected reconnect warning status_withheld user_withheld ' +
+                            'friends direct_message user_event blocked unblocked ' +
+                            'favorite unfavorite follow unfollow user_update ' +
+                            'list_created list_destroyed list_updated ' +
+                            'list_member_added list_member_removed list_user_subscribed' +
+                            'list_user_unsubscribed unknown_user_event';
 
-            var stream = _t.stream( 'statuses/filter', { track : [ 'bananas', 'oranges', 'strawberries' ] } );
+            _bot.say( to, 'targets: ' + targets + ' - ' + 'events: ' + events );
+        },
+
+
+        /**
+         * ## stream
+         *
+         * authenticates and initiates the chosen stream
+         *
+         * @param {String} from originating channel
+         * @param {String} target twitter api target
+         * @param {String} _event event to watch
+         * @param {String} filter text
+         *
+         * @return _String_ success message
+         */
+        stream : function( from, target, _event, searchText )
+        {
+            var _t          = this.authenticate( from );
+            var streams     = this._tStreams[ from ] = this._tStreams[ from ] || [];
+
+            var stream      = _t.stream( target, { track : searchText } );
             streams.push( stream );
 
-            stream.on( 'tweet', function ( tweet )
+            stream.on( _event, function ( tweet )
             {
                 _bot.say( from, tweet.user.name + ' @' + tweet.user.screen_name + '\n' + tweet.text );
             } );
 
             return 'Stream started';
-
-            // T.stream(path, [params])
-            //
-            // 'statuses/filter'
-            // 'statuses/sample'
-            // 'statuses/firehose'
-            // 'user'
-            // 'site'
-
-            // I only want to see tweets about my favorite fruits
-            // same result as doing { track: 'bananas,oranges,strawberries' }
-            // var stream = T.stream('statuses/filter', { track: ['bananas', 'oranges', 'strawberries'] })
-
-            // stream.on('tweet', function (tweet) {
-            //   //...
-            // })
-            //
-
-            //  filter the twitter public stream by the word 'mango'.
-            // var stream = T.stream('statuses/filter', { track: 'mango' })
-
-            // stream.on('tweet', function (tweet) {
-            //   console.log(tweet)
-            // })
-            //
-            // stream events
-            // =============
-            // message
-            // tweet
-            // delete
-            // limit
-            // scrub_geo
-            // disconnect
-            // connect
-            // connected
-            // reconnect
-            // warning
-            // status_withheld
-            // user_withheld
-            // friends
-            // direct_message
-            // user_event
-            // blocked
-            // unblocked
-            // favorite
-            // unfavorite
-            // follow
-            // unfollow
-            // user_update
-            // list_created
-            // list_destroyed
-            // list_updated
-            // list_member_added
-            // list_member_removed
-            // list_user_subscribed
-            // list_user_unsubscribed
-            // unknown_user_event
         },
 
 
-        streamFilter  : function( from, to, text )
+        /**
+         * ## streamFilter
+         *
+         * builds a 'statuses/filter' tweet stream filtered by the given text
+         *
+         * @param {String} from originating channel
+         * @param {String} to originating user
+         * @param {String} text full message text
+         *
+         * @return _String_ success message
+         */
+        streamFilter : function( from, to, text )
         {
-            var _t          = this.authenticate( from );
-            var streams     = this._tStreams[ from ] = this._tStreams[ from ] || [];
             var searchText  = text.split( ' ' ).join( ',' );
 
-            var stream = _t.stream( 'statuses/filter', { track : searchText } );
-            streams.push( stream );
+            this.stream( from, 'statuses/filter', 'tweet', searchText );
 
-            stream.on( 'tweet', function ( tweet )
-            {
-                _bot.say( from, tweet.user.name + ' @' + tweet.user.screen_name + '\n' + tweet.text );
-            } );
+            return 'Filtered tweet stream for ' + searchText + ' started';
+        },
 
-            return 'Filter stream for ' + searchText + ' started';
+
+        /**
+         * ## streamFirehose
+         *
+         * builds a 'statuses/firehose' tweet stream filtered by the given text
+         *
+         * @param {String} from originating channel
+         * @param {String} to originating user
+         * @param {String} text full message text
+         *
+         * @return _String_ success message
+         */
+        streamFirehose : function( from, to, text )
+        {
+            var searchText  = text.split( ' ' ).join( ',' );
+
+            this.stream( from, 'statuses/firehose', 'tweet', searchText );
+
+            return 'Firehose tweet stream for ' + searchText + ' started';
+        },
+
+
+        /**
+         * ## streamRaw
+         *
+         * builds a raw tweet stream filtered by the given text
+         *
+         * @param {String} from originating channel
+         * @param {String} to originating user
+         * @param {String} text full message text
+         *
+         * @return _String_ success message
+         */
+        streamRaw : function( from, to, text )
+        {
+            var searchText  = text.split( ' ' );
+
+            var target = this.getStreamTarget( searchText );
+            var _event = this.getStreamEvent( searchText );
+
+            var searchText  = searchText.join( ',' );
+
+            this.stream( from, target, _event, searchText );
+
+            return target + ' ' + _event + ' stream for ' + searchText + ' started';
+        },
+
+
+        /**
+         * ## streamSite
+         *
+         * builds a 'site' tweet stream filtered by the given text
+         *
+         * @param {String} from originating channel
+         * @param {String} to originating user
+         * @param {String} text full message text
+         *
+         * @return _String_ success message
+         */
+        streamSite : function( from, to, text )
+        {
+            var searchText  = text.split( ' ' ).join( ',' );
+
+            this.stream( from, 'site', 'tweet', searchText );
+
+            return 'Site tweet stream for ' + searchText + ' started';
         },
 
 
@@ -205,7 +352,7 @@ module.exports  = function Twitter( _bot, _modules, userConfig )
          *
          * @return _String_ success message
          */
-        streamStop  : function( from, to, text )
+        streamStop : function( from, to, text )
         {
             var streams = this._tStreams[ from ] = this._tStreams[ from ] || [];
 
@@ -218,7 +365,39 @@ module.exports  = function Twitter( _bot, _modules, userConfig )
         },
 
 
-        tweet   : function( from, to, text )
+        /**
+         * ## streamUser
+         *
+         * builds a 'user' tweet stream filtered by the given text
+         *
+         * @param {String} from originating channel
+         * @param {String} to originating user
+         * @param {String} text full message text
+         *
+         * @return _String_ success message
+         */
+        streamUser : function( from, to, text )
+        {
+            var searchText  = text.split( ' ' ).join( ',' );
+
+            this.stream( from, 'user', 'tweet', searchText );
+
+            return 'User tweet stream for ' + searchText + ' started';
+        },
+
+
+        /**
+         * ## tweet
+         *
+         * sends a tweet with the <text> text
+         *
+         * @param {String} from originating channel
+         * @param {String} to originating user
+         * @param {String} text full message text
+         *
+         * @return _String_ success message
+         */
+        tweet : function( from, to, text )
         {
             var _t = this.authenticate( from );
 

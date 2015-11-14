@@ -43,7 +43,7 @@
                     <a href="#4sq-module">FOURSQUARE MODULE</a>
                     <a href="#xkcd-module">XKCD MODULE</a>
                     <a href="#nico-module">NICO MODULE</a>
-                    <a href="#pool-module">POOL MODULE</a>
+                    <a href="#twitter-module">TWITTER MODULE</a>
                     <a href="#twitch-module">TWITCH MODULE</a>
                     <a href="#guildwars2-module">GUILD WARS 2 MODULE</a>
                     <a href="#CAH-module">CAH MODULE</a>
@@ -204,6 +204,21 @@
                     </div>
                     <br>
 
+
+                    <br>
+                    <br>
+                    <a href="#twitter-module">TWITTER MODULE</a>
+                    <div class="indented">
+                        <a href="#tweet">t<br>twitter</a>
+                        <a href="#t-stream-filter">t-stream-filter</a>
+                        <a href="#t-stream-firehose">t-stream-firehose</a>
+                        <a href="#t-stream-stop">t-stream-stop</a>
+                        <a href="#t-stream">t-stream</a>
+                        <a href="#t-help">t-help</a>
+                    </div>
+                    <br>
+
+
                     <a href="#twitch-module">TWITCH MODULE</a>
                     <div class="indented">
                         <!-- <a href="#xkcd"></a> -->
@@ -276,6 +291,7 @@
                         <div class="indented">
                             0.2.2 -
                                 <div class="indented">
+                                    + pool module removed<br>
                                     + verbose mode added<br>
                                     + admin message broadcast re worked<br>
                                     + added twitter module<br>
@@ -825,25 +841,57 @@
                         <span class="command">whosit?</span>
                         <span class="command">whoisit?</span>
                         <p>Tells you who the nico is.</p>
-
                     </div>
+                    <!--<div class="indented">
+                        <a href="#tweet">t<br>twitter</a>
+                        <a href="#t-stream-filter">t-stream-filter</a>
+                        <a href="#t-stream-firehose">t-stream-firehose</a>
+                        <a href="#t-stream-stop">t-stream-stop</a>
+                        <a href="#t-stream">t-stream</a>-->
+                    <br>
+                    <br>
+                    <a name="twitter-module"></a>
+                    <br>
+                    <span class="module--title">TWITTER MODULE</span>
 
-                    <br>
-                    <br>
-                    <a name="pool-module"></a>
-                    <br>
-                    <span class="module--title">POOL MODULE</span>
-
-                    <p>Connects to the leaderboard api (<a class="inline-link" href="https://github.com/nicolasbrugneaux/leaderboard" target="_blank">https://github.com/nicolasbrugneaux/leaderboard</a>) keeping track of pool scores.</p>
+                    <p>After the twitter api keys are setup (config file), accesses
+                    the twitter api to send tweets and setup live streams</p>
 
                     <div class="indented">
-
-                        <a name="#pool"></a>
+                        <a name="tweet"></a>
                         <br>
-                        <span class="command">pool (optional name or number)</span>
-                            <p>By default, displays a list of the top 5 players.  If a number is set it displays that many results.  If a name is displayed, it displays their score</p>
+                        <span class="command">t &lt;tweet contents&gt;</span>
+                        <span class="command">tweet &lt;tweet contents&gt;</span>
+                        <p>Sends a tweet to the account attached to the room if
+                        the user is authorized to do so</p>
 
+                        <a name="t-stream-filter"></a>
+                        <br>
+                        <span class="command">t-stream-filter &lt;stream search items&gt;</span>
+                        <p>starts a filter stream based on the enter search terms</p>
+
+                        <a name="t-stream-firehose"></a>
+                        <br>
+                        <span class="command">t-stream-firehose &lt;stream search items&gt;</span>
+                        <p>starts a firehose stream based on the enter search terms</p>
+
+                        <a name="t-stream"></a>
+                        <br>
+                        <span class="command">t-stream &lt;target&gt; &lt;event&gt; &lt;stream search items&gt;</span>
+                        <p>starts a custom stream based on the entered info</p>
+
+                        <a name="t-stream-stop"></a>
+                        <br>
+                        <span class="command">t-stream-stop</span>
+                        <p>stops all twitter streams in the current room</p>
+
+
+                        <a name="t-help"></a>
+                        <br>
+                        <span class="command">t-help</span>
+                        <p>displays the possible target and evemt variables</p>
                     </div>
+
 
                     <br>
                     <br>
@@ -854,13 +902,12 @@
                     <p>Sets config for twitch and holds commands exclusive to twitch.</p>
 
                     <div class="indented">
-
-                        <a name="#pool"></a>
+                        <a name="#placeholder"></a>
                         <br>
                         <span class="command">nothing yet</span>
                             <p></p>
-
                     </div>
+
 
                     <br>
                     <br>
@@ -871,13 +918,12 @@
                     <p>Retrieves data for guild wars 2 through the guild wars 2 api</p>
 
                     <div class="indented">
-
- <!--                        <a name="admin-v"></a>
+                        <a name="#placeholder"></a>
                         <br>
-                        <span class="command">v</span>
-                            <p>Shows _val's version number</p> -->
-
+                        <span class="command">nothing yet</span>
+                            <p></p>
                     </div>
+
 
                     <br>
                     <br>
@@ -916,6 +962,7 @@
                         <p>lists the active players and whether or not they've played/voted</p>
 
                     </div>
+
 
                     <br>
                     <br>

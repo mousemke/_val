@@ -1,5 +1,8 @@
 /**
  * _val Modules
+ *
+ * watch your options property names.  their names should reflect their module, as
+ * they are all moved into the same namespace.  All properties will be transfered.
  */
 
  module.exports = {
@@ -33,7 +36,7 @@
         options : {
             adminMessage            : '5 minutes later test. well, this appears to work',
             adminMessageInterval    : 300000, // 5 min
-            adminMessageChannels    : [ '#soc-bots' ] // optional.  otherwise it falls back to all channels
+            adminMessageChannels    : [ '#soc-bots' ] // optional default.  otherwise it falls back to all channels
         }
     },
 
@@ -49,7 +52,7 @@
         ini     : true,
         url     : './modules/cah.js',
         options : {
-            cahRoom                     : '#mousemke',
+            cahRoom                     : '#cards_against_humanity',
             cahMaxMin                   : 5,
             cahMinPlayers               : 3
         }
@@ -96,15 +99,6 @@
     PlainText   : {
         enabled : true,
         url     : './modules/plainText.js'
-    },
-
-
-    Pool        : {
-        enabled : true,
-        url     : './modules/pool.js',
-        options : {
-                poolApiUrl          : 'http://192.168.2.15:8001/api/'
-        }
     },
 
 
@@ -163,7 +157,7 @@
                 'mouse' : {
                     account             : '@mousemke',
                     users               : [ 'user1' ],
-                    consumerKey         : '7J5ehvCKfo8Er3bnyMuenupMR',
+                    consumerKey         : '1234567890',
                     consumerSecret      : '1234567890',
                     accessToken         : '1234567890-1234567890',
                     accessTokenSecret   : '1234567890',
@@ -171,7 +165,7 @@
                 '#val-test' : {
                     account             : '@mousemke',
                     users               : [ 'user1' ],
-                    consumerKey         : '7J5ehvCKfo8Er3bnyMuenupMR',
+                    consumerKey         : '1234567890',
                     consumerSecret      : '1234567890',
                     accessToken         : '1234567890-1234567890',
                     accessTokenSecret   : '1234567890',
@@ -185,7 +179,7 @@
                     accessTokenSecret   : '1234567890',
                 }
             },
-            twitterBlackUsers           : [ 'userBad' ]
+            twitterUsersBlackList       : [ 'userBad' ]
         }
     },
 
