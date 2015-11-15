@@ -8,8 +8,8 @@ var userConfig      = require( './config/_val.config.js' );
 var http            = userConfig.req.http   = require( 'http' ),
     https           = userConfig.req.https  = require( 'https' ),
     irc             = userConfig.req.irc    = require( 'irc' ),
-    fs              = userConfig.req.fs     = require( 'fs' );
-    chalk           = userConfig.req.chalk   = require( 'chalk' );
+    fs              = userConfig.req.fs     = require( 'fs' ),
+    chalk           = userConfig.req.chalk  = require( 'chalk' );
 
 
 // Loads the configuration and sets variables
@@ -24,29 +24,31 @@ var lastSeenList        = JSON.parse( fs.readFileSync( seenJsonUrl ) ),
 var channels            = [];
 
 var debugChalkBox = {
-    'PING' : 'blue',
-    'MODE' : 'magenta',
+    'PING'              : 'blue',
+    'MODE'              : 'magenta',
     'rpl_channelmodeis' : 'cyan',
-    'rpl_myinfo' : 'cyan',
-    'rpl_creationtime' : 'cyan',
-    'rpl_namreply' : 'cyan',
-    'rpl_endofnames' : 'cyan',
-    'rpl_topic' : 'gray',
-    'JOIN' : 'green',
-    'KILL' : 'green',
-    'NOTICE' : 'yellow'
+    'rpl_myinfo'        : 'cyan',
+    'rpl_creationtime'  : 'cyan',
+    'rpl_namreply'      : 'cyan',
+    'rpl_endofnames'    : 'cyan',
+    'rpl_topic'         : 'gray',
+    'JOIN'              : 'green',
+    'KILL'              : 'green',
+    'NOTICE'            : 'yellow'
 };
 
 
 /**
+ * ## testFunction
+ *
  * this function is run with the test command.  it exists purely for feature
  * testing.  otherwise it does nothing
  *
- * @param  {str}            from                originating channel
- * @param  {str}            to                  originating user
- * @param  {str}            text                full message text
+ * @param {String} from originating channel
+ * @param {String} to originating user
+ * @param {String} text full message text
  *
- * @return _Bool_           false
+ * @return _Boolean_           false
  */
 function testFunction( from, to, text )
 {
@@ -57,15 +59,15 @@ function testFunction( from, to, text )
 
 
 /**
- * API get
+ * ## apiGet
  *
  * gets and parses JSON from api sources
  *
- * @param  {str}                    _url                target url
- * @param  {func}                   _cb                 callback
- * @param  {bool}                   secure              https?
+ * @param {String} _url target url
+ * @param {Function} _cb callback
+ * @param {Boolean} secure https?
  *
- * @return {void}
+ * @return _Void_
  */
 function apiGet( options, _cb, secure, from, to )
 {
@@ -125,6 +127,8 @@ function apiGet( options, _cb, secure, from, to )
 
 
 /**
+ * ## buildClient
+ *
  * assembles the _val modules.  like Voltron but node
  *
  * @return _Void_
@@ -171,17 +175,16 @@ function buildClient()
 
 
 /**
- * Check active
+ * ## checkActive
  *
  * returns a list of users that have posted within the defined amount of time
  *
- * @param  {str}            from                originating channel
- * @param  {str}            to                  originating user
- * @param  {str}            text                full message text
- * @param  {bool}           talk                true to say, otherwise
- *                                                      active only returns
+ * @param {String} from originating channel
+ * @param {String} to originating user
+ * @param {String} text full message text
+ * @param {Boolean} talk true to say, otherwise active only returns
  *
- * @return {arr}                                        active users
+ * @return _Array_ active users
  */
 function checkActive( from, to, text, talk )
 {
@@ -234,19 +237,17 @@ function checkActive( from, to, text, talk )
 
 
 /**
- * Check active
+ * ## checkSeen
  *
- * returns a list of users that have posted within the defined amount of time
+ * returns the last time and room a user was seene
  *
- * @param  {str}            from                originating channel
- * @param  {str}            to                  originating user
- * @param  {str}            text                full message text
- * @param  {bool}           talk                true to say, otherwise
- *                                                      active only returns
+ * @param {String} from originating channel
+ * @param {String} to originating user
+ * @param {String} text full message text
  *
- * @return {arr}                                        active users
+ * @return _Array_ active users
  */
-function checkSeen( from, to, text, talk )
+function checkSeen( from, to, text )
 {
     text = text.split( ' ' ).slice( 1 );
     var user = lastSeenList[ text ];
@@ -319,6 +320,14 @@ var connectionTimer = null;
 var up              = Date.now();
 var lastPing        = Date.now();
 
+
+/**
+ * ## reConnection
+ *
+ * disconnects and reconnects _val
+ *
+ * @return _Void_
+ */
 function reConnection()
 {
     _bot.disconnect( 'Fine...  I was on my way out anyways.', function()
@@ -437,11 +446,11 @@ function generateChannelList()
 
 
 /**
- * init
+ * ## iniClient
  *
  * sets listeners and module list up
  *
- * @return {void}
+ * @return _Void_
  */
 function iniClient()
 {
@@ -484,15 +493,15 @@ function iniClient()
 
 
 /**
- * listen to messages
+ * ## listenToMessages
  *
  * .... what do you think?
  *
- * @param  {str}            from                originating channel
- * @param  {str}            to                  user
- * @param  {str}            text                full message text
+ * @param {String} from originating channel
+ * @param {String} to user
+ * @param {String} text full message text
  *
- * @return {void}
+ * @return _Void_
  */
 function listenToMessages( to, from, text )
 {
@@ -572,15 +581,15 @@ function listenToMessages( to, from, text )
 
 
 /**
- * listen to private messages
+ * ## listenToPm
  *
  * .... what do you think?
  * if there is no whisper command, the text is passed to normal messages
  *
- * @param  {str}            from                originating user
- * @param  {str}            text                full message text
+ * @param {String} from originating user
+ * @param {String} text full message text
  *
- * @return {void}
+ * @return _Void_
  */
 function listenToPm( from, text )
 {
@@ -623,12 +632,14 @@ function listenToPm( from, text )
 
 
 /**
+ * ## replaceGuys
+ *
  * responds to 'guys' (and other trigger words) with alternative suggestions
  *
- * @param  {String} to              user
- * @param  {String} text            original text
+ * @param {String} to user
+ * @param {String} text original text
  *
- * @return {String} suggestion
+ * @return _String_ suggestion
  */
 function replaceGuys( to, text )
 {
@@ -640,14 +651,16 @@ function replaceGuys( to, text )
 
 
 /**
+ * ## responses
+ *
  * base reponse functions of val
  *
- * @param  {String}         from                channel of origin
- * @param  {String}         to                  player of origin
- * @param  {String}         text                full text
- * @param  {String}         botText             response text
+ * @param {String} from channel of origin
+ * @param {String} to player of origin
+ * @param {String} text full text
+ * @param {String} botText response text
  *
- * @return {String}                             response text
+ * @return _String_ response text
  */
 function responses( from, to, text, botText )
 {
@@ -687,6 +700,8 @@ function responses( from, to, text, botText )
 
 
 /**
+ * ## start
+ *
  * start the thing!
  *
  * @return _Void_
@@ -699,13 +714,13 @@ function start()
 
 
 /**
- * trimUsernames
+ * ## trimUsernames
  *
  * removes the set usernamePrefix from the front of usernames
  *
- * @param  {String} text            original text
+ * @param {String} text original text
  *
- * @return {String}
+ * @return _String_
  */
 function trimUsernames( text )
 {
@@ -735,7 +750,7 @@ function trimUsernames( text )
  *
  * @param {String} text original text string
  *
- * @return {String} original or modified text
+ * @return _String_ original or modified text
  */
 function trollOn( text )
 {
@@ -763,16 +778,16 @@ function trollOn( text )
 
 
 /**
- * userdata
+ * ## userData
  *
  * gets userdata from the nickserv authentication bot
  *
- * @param  {str}            to                  user
- * @param  {str}            from                originating channel
- * @param  {func}           _cb                 callback
- * @param  {str}            origText            original message text
+ * @param {String} to user
+ * @param {String} from originating channel
+ * @param {Function} _cb callback
+ * @param {String} origText original message text
  *
- * @return {void}
+ * @return _Void_
  */
 function userData( to, from, _cb, origText )
 {
@@ -818,14 +833,14 @@ function userData( to, from, _cb, origText )
 
 
 /**
- * watch active
+ * ## watchActive
  *
  * sets the latest active time for a user in a channel
  *
- * @param  {str}            from                originating channel
- * @param  {str}            to                  originating user
+ * @param {String} from originating channel
+ * @param {String} to originating user
  *
- * @return {void}
+ * @return _Void_
  */
 function watchActive( from, to )
 {
@@ -841,14 +856,14 @@ function watchActive( from, to )
 
 
 /**
- * watch seen
+ * ## watchSeen
  *
  * records the latest place a user is seen
  *
- * @param  {str}            from                originating channel
- * @param  {str}            to                  originating user
+ * @param {String} from originating channel
+ * @param {String} to originating user
  *
- * @return {void}
+ * @return _Void_
  */
 function watchSeen( from, to )
 {
