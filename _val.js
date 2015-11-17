@@ -295,7 +295,7 @@ function displayDebugInfo( e )
                 var now    = Date.now();
                 var minUp  = Math.round( ( ( now - up ) / 1000 / 60 ) * 100 ) / 100;
 
-                console.log( chalk[ _color ]( text ), ( now - lastPing ) + 'ms', chalk.grey( '(' + minUp + 'min up)' ) );
+                console.log( chalk[ _color ]( text ), ( now - lastPing ) + 'ms', chalk.grey( '(' + minUp + 'min up)' ), new Date().toLocaleString() );
                 lastPing = now;
 
                 if ( connectionTimer )
@@ -330,11 +330,15 @@ var lastPing        = Date.now();
  */
 function reConnection()
 {
-    _bot.disconnect( 'Fine...  I was on my way out anyways.', function()
+
+    _bot.disconnect( 'Fine...  I was on my way out anyways.', function( e )
     {
-        console.log( 'connection broken.  reconnecting...' );
-        start();
-    });
+        console.log( 'disconnected? ', e );
+    } );
+
+    console.log( 'pre iniClient' );
+    iniClient();
+    console.log( 'post iniClient' );
 }
 
 
@@ -489,6 +493,8 @@ function iniClient()
             _modules[ module ].ini();
         }
     }
+
+    console.log( '_bot built' );
 }
 
 
