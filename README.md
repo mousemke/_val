@@ -2,7 +2,7 @@
 
 erm.... bot.
 
-v. 0.2.2
+v. 0.2.3
 
 Go to http://knoblau.ch/_val for a list of commands.
 
@@ -18,6 +18,10 @@ DOGE DQiQ8e62CQGqx378EuS8i8gUW2mLkfBuXu
 
 
 **Change log**
+
+0.2.3 -
++ nothing yet
+
 
 0.2.2 -
 + pool module removed
