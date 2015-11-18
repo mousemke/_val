@@ -116,6 +116,9 @@
         url     : './modules/slack.js',
         options : {
             autoAuth                : true,
+
+            slackChannel            : 'company-or-whatever',
+
             slackAPIKey             : 'you-ad-here',
             /**
              * auto join all available public channels.  overrides the channel

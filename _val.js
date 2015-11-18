@@ -420,7 +420,7 @@ function generateChannelList()
 
     if ( modules.Slack.enabled && userConfig.autojoin )
     {
-        var _url    = 'https://sociomantic.slack.com/api/channels.list?token=' + userConfig.slackAPIKey;
+        var _url    = 'https://' + userConfig.slackChannel + '.slack.com/api/channels.list?token=' + userConfig.slackAPIKey;
 
         apiGet( _url, function( res )
         {
@@ -850,7 +850,9 @@ function userData( to, from, _cb, origText )
  */
 function watchActive( from, to )
 {
-    if ( userConfig.bots.indexOf( to ) === -1 )
+    var ignoreTheBots = userConfig.bots || [];
+
+    if ( ignoreTheBots.indexOf( to ) === -1 )
     {
         if ( !_bot.active[ from ] )
         {

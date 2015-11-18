@@ -20,7 +20,8 @@ DOGE DQiQ8e62CQGqx378EuS8i8gUW2mLkfBuXu
 **Change log**
 
 0.2.3 -
-+ nothing yet
++ built safeties around the bot ignore list
++ further abstracted slack connections
 
 
 0.2.2 -
