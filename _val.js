@@ -19,7 +19,8 @@ var lastSeenList        = JSON.parse( fs.readFileSync( seenJsonUrl ) ),
     modules             = require( './config/_val.modules.js' ),
     guys                = require( './lists/guys.js' );
     trollBlacklist      = require( './lists/trollBlacklist.js' );
-    userConfig.version  = '0.2.2';
+
+    userConfig.version  = '0.2.3';
 
 var channels            = [];
 

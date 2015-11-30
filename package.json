@@ -1,11 +1,8 @@
 {
   "name": "val-bot",
-  "version": "0.2.2",
+  "version": "0.2.3",
   "description": "An IRC bot that does things.",
   "main": "_val.js",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
   "repository": {
     "type": "git",
     "url": "https://github.com/mousemke/_val.git"
@@ -15,7 +12,9 @@
     "bot",
     "doge",
     "twitch",
-    "moon"
+    "moon",
+    "_val",
+    "slack"
   ],
   "author": "@mousemke",
   "license": "MIT",
