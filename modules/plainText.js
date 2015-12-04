@@ -11,6 +11,7 @@ module.exports = function PlainText( _bot, _modules, userConfig )
         /**
          * Lists
          */
+        travolta        = require( '../lists/travolta.js' ),
         nouns           = require( '../lists/nouns.js' ),
         cars            = require( '../lists/cars.js' ),
         textResponses   = require( '../lists/plainText.js' );
@@ -231,6 +232,9 @@ module.exports = function PlainText( _bot, _modules, userConfig )
                         case 'dodge':
                             botText = this.dodge( from, to, text );
                             break;
+                        case 'travolta':
+                            botText = this.travolta();
+                            break;
                         case 'dance':
                             var dancer = Math.floor( Math.random() * 80 );
                             if ( dancer === 3 )
@@ -294,6 +298,23 @@ module.exports = function PlainText( _bot, _modules, userConfig )
              }
 
             return botText;
+        },
+
+
+        /**
+         * Travolta
+         *
+         * because
+         *
+         * @param  {str}                    from                originating channel
+         * @param  {str}                    to                  originating user
+         * @param  {str}                    text                message text
+         *
+         * @return {void}
+         */
+        travolta : function()
+        {
+            return travolta[ Math.floor( Math.random() * travolta.length ) ];
         }
     };
 };

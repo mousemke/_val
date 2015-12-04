@@ -3,7 +3,6 @@ module.exports = {
     triggers : [
         'guys',
         'dudes',
-        'men',
         'bros'
     ],
 
