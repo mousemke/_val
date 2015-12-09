@@ -35,7 +35,7 @@ module.exports = function Doge( _bot, _modules, userConfig )
                     {
                         botText += 'There are currently Ð' + amount + ' in circulation';
                     }
-                    if ( _to === '___bank___' )
+                    else if ( _to === '___bank___' )
                     {
                         botText += 'There are currently Ð' + amount + ' in the bank';
                     }
