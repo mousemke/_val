@@ -26,10 +26,25 @@ module.exports  = function PopKey( _bot, _modules, userConfig )
 
                 if ( length )
                 {
-                    var _r      = Math.floor( Math.random() * length );
-                    var _file   =  info[ _r ];
-                    console.log( 'GIF Called.  Rating: ' + _file.rating );
-                    _bot.say( from, _file.source.url );
+                    var choose = function()
+                    {
+                        var _r      = Math.floor( Math.random() * length );
+                        var _file   =  info[ _r ];
+
+                        var rating = _file.rating;
+                        console.log( 'GIF Called.  Rating: ' + rating );
+
+                        if ( rating === 'E' )
+                        {
+                            return _file.source.url;
+                        }
+                        else
+                        {
+                            return choose();
+                        }
+                    };
+
+                    _bot.say( from, choose() );
                 }
                 else
                 {
