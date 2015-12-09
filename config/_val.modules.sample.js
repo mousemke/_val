@@ -106,7 +106,8 @@
         enabled : true,
         url     : './modules/popkey.js',
         options : {
-            popKeyAPIKey    : 'api-here'
+            popKeyComtentFilter : true,
+            popKeyAPIKey        : 'api-here'
         }
     },
 

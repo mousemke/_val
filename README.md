@@ -22,6 +22,8 @@ DOGE DQiQ8e62CQGqx378EuS8i8gUW2mLkfBuXu
 0.2.3 -
 + built safeties around the bot ignore list
 + further abstracted slack connections
++ fixed balance bank
++ added popkey content filter
 
 
 0.2.2 -
