@@ -24,7 +24,7 @@
   "homepage": "https://knoblau.ch/_val",
   "dependencies": {
     "chalk": "^1.1.1",
-    "irc": "^0.3.8",
+    "irc": "^0.4.0",
     "twit": "^2.1.0"
   }
 }

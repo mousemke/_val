@@ -35,7 +35,8 @@ var debugChalkBox = {
     'rpl_topic'         : 'gray',
     'JOIN'              : 'green',
     'KILL'              : 'green',
-    'NOTICE'            : 'yellow'
+    'NOTICE'            : 'yellow',
+    'TOPIC'             : 'yellow'
 };
 
 
