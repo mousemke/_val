@@ -24,6 +24,8 @@ DOGE DQiQ8e62CQGqx378EuS8i8gUW2mLkfBuXu
 + further abstracted slack connections
 + fixed balance bank
 + added popkey content filter
++ added notice colors
++ bumped node irc version
 
 
 0.2.2 -
