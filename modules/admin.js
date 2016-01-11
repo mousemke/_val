@@ -1,4 +1,8 @@
 
+/**
+ * this modules contains admin only functions.  they are generally called with
+ * a double trigger ( '++', '!!', etc)
+ */
 module.exports  = function Admin( _bot, _modules, userConfig )
 {
     var _channels               = userConfig.channels,
@@ -11,9 +15,11 @@ module.exports  = function Admin( _bot, _modules, userConfig )
 
 
         /**
+         * ## displayMessageInfo
+         *
          * displays info on the current message
          *
-         * @return {str}                                message info
+         * @return _String_ message info
          */
         displayMessageInfo : function()
         {
@@ -36,9 +42,11 @@ module.exports  = function Admin( _bot, _modules, userConfig )
 
 
         /**
+         * ## ini
+         *
          * sets the initial timer
          *
-         * @return {void}
+         * @return _Void_
          */
         ini : function()
         {
@@ -49,12 +57,12 @@ module.exports  = function Admin( _bot, _modules, userConfig )
         /**
          * admin responses
          *
-         * @param  {str}            from                originating channel
-         * @param  {str}            to                  originating user
-         * @param  {str}            text                full input string
-         * @param  {str}            botText             text to say
+         * @param {String} from originating channel
+         * @param {String} to originating user
+         * @param {String} text full input string
+         * @param {String} botText text to say
          *
-         * @return {str}                                changed botText
+         * @return _String_ changed botText
          */
         responses : function( from, to, text, botText )
         {
@@ -105,9 +113,11 @@ module.exports  = function Admin( _bot, _modules, userConfig )
 
 
         /**
+         * ## setBroadcastMessage
+         *
          * clears (if necessary) and sets the interval timer
          *
-         * @return {void}
+         * @return _Void_
          */
         setBroadcastMessage : function()
         {
@@ -131,11 +141,13 @@ module.exports  = function Admin( _bot, _modules, userConfig )
 
 
         /**
+         * ## setMessage
+         *
          * sets the broadcast message text then resets the interval
          *
-         * @param {arr}             _text               new message text
+         * @param {Array} _text new message text
          *
-         * @return {str}                                text to say
+         * @return _String_ text to say
          */
         setMessage : function( _text )
         {
@@ -158,11 +170,13 @@ module.exports  = function Admin( _bot, _modules, userConfig )
 
 
         /**
+         * ## setMessageChannels
+         *
          * sets the broadcast message channels then resets the interval
          *
-         * @param {arr}             _text               new message channels
+         * @param {Array} _text new message channels
          *
-         * @return {str}                                text to say
+         * @return _String_ text to say
          */
         setMessageChannels : function( _text )
         {
@@ -197,11 +211,13 @@ module.exports  = function Admin( _bot, _modules, userConfig )
 
 
         /**
+         * ## setMessageInterval
+         *
          * sets the broadcast message interval time then resets the interval
          *
-         * @param {arr}             _text               new message time (in ms)
+         * @param {Array} _text new message time (in ms)
          *
-         * @return {str}                                text to say
+         * @return _String_ text to say
          */
         setMessageInterval : function( _text )
         {
@@ -227,6 +243,16 @@ module.exports  = function Admin( _bot, _modules, userConfig )
         },
 
 
+        /**
+         * ## yell
+         *
+         * says something to all channels once
+         *
+         * @param {String} message message to yell
+         * @param {Array} channels chennels to yell to
+         *
+         * @return _Mixed_
+         */
         yell : function( message, channels )
         {
             message = message.replace( '++yell', '' ).replace( '++y', '' );

@@ -1,27 +1,112 @@
 
-module.exports  = function Words( _bot, _modules, userConfig )
+var copy = require( './i18n/words.i18n.js' );
+
+module.exports  = function Words( _bot, _modules, userConfig, lang )
 {
+    lang = lang || 'en';
+
     var minLength   = 4,
     maxLength       = 8,
     currentWord     = '',
     currentWordTime = 0,
     currentWordDef  = '',
+    englishWord     = '',
     scrambledWord   = '',
     wordScores      = {},
     wordListener, newWordVote = [],
     verboseDef      = false;
+
+    var dogePayout      = userConfig.wordsDogePayout;
+    var dogeModifier    = userConfig.wordsDogeModifier;
+    var pointTimeout    = userConfig.wordsPointTimeout;
 
     var http            = userConfig.req.http;
     var https           = userConfig.req.https;
     var fs              = userConfig.req.fs;
 
     return {
+        /**
+         * ## buildPlayerPointsRequest
+         *
+         * builds the string to output a specific player's points
+         *
+         * @return _String_ new botText
+         */
+        buildPlayerPointsRequest : function( to, playerRequest, playerPoints )
+        {
+            var botText;
 
+            if ( playerPoints )
+            {
+                if ( to === playerRequest )
+                {
+                    botText =  copy.youHavePoints[ lang ]( to, playerPoints );
+                }
+                else
+                {
+                    botText =  copy.theyHavePoints[ lang ]( to, playerRequest, playerPoints );
+                }
+
+                if ( playerPoints !== 1 )
+                {
+                    botText += copy.plural[ lang ];
+                }
+            }
+            else
+            {
+                botText =  copy.nonplayer[ lang ]( to, playerRequest );
+            }
+        },
+
+
+        /**
+         * ## buildPointsList
+         *
+         * builds the string to output the points list
+         *
+         * @return _String_ new botText
+         */
+        buildPointsList : function( points )
+        {
+            var botText = copy.scoreHeader[ lang ];
+
+            for ( var i = 0, lenI = points.length; i < lenI; i++ )
+            {
+                botText += ( i + 1 ) + ': ' + points[ i ].name + ' - ' + points[ i ].points + copy.points[ lang ];
+
+                if ( points[ i ].points !== 1 )
+                {
+                    botText += copy.plural[ lang ];
+                }
+                botText += '\n';
+
+                if ( i >= 9 )
+                {
+                    break;
+                }
+            }
+
+            return botText;
+        },
+
+
+        /**
+         * ## define
+         *
+         * grabs the definition of a word anf prints it
+         *
+         * @param {String} from originating channel
+         * @param {String} word word to define
+         * @param {Boolean} current current word or not
+         * @param {String} to originating user
+         *
+         * @return _Void_
+         */
         define : function( from, word, current, to )
         {
             var definition;
 
-            word = word.toLowerCase();
+            word    = word.toLowerCase();
             var url = ( userConfig.wordnikBaseUrl ) + 'word.json/' + word + '/definitions?includeRelated=true&useCanonical=true&includeTags=false&api_key=' + userConfig.wordnikAPIKey;
 
             if ( word === 'thoodle' )
@@ -47,7 +132,7 @@ module.exports  = function Words( _bot, _modules, userConfig )
 
                         if ( result.length === 0 )
                         {
-                            _def += ' is, sadly, not a word.';
+                            _def += copy.isNotAWord[ lang ];
                         }
                         else
                         {
@@ -67,9 +152,11 @@ module.exports  = function Words( _bot, _modules, userConfig )
 
 
         /**
+         * ## ini
+         *
          * reads the preexisting scores from json and gets an initial word
          *
-         * @return {void}
+         * @return _Void_
          */
         ini : function()
         {
@@ -78,20 +165,23 @@ module.exports  = function Words( _bot, _modules, userConfig )
         },
 
 
+        /**
+         * ## listenToWord
+         *
+         * listens to a word and reacts if someone needs a definition or
+         * matches a word
+         *
+         * @param {String} word user input
+         * @param {String} to originating user
+         * @param {String} text full input string
+         *
+         * @return _Void_
+         */
         listenToWord : function( word, to, text )
         {
             if ( verboseDef !== false && verboseDef[0] === to && text === '-def' )
             {
-                var _def = verboseDef[1] + ' -\n';
-
-                for ( var ii = 0, lenII = verboseDef[2].length; ii < lenII; ii++ )
-                {
-                    _def += ( ii + 1 ) + ': ' + verboseDef[2][ ii ].text + '\n';
-                }
-
-                _bot.say( userConfig.unscramble, _def );
-
-                verboseDef = false;
+                this.showVerboseDef();
             }
             else if ( text.toLowerCase() === word.toLowerCase() )
             {
@@ -101,7 +191,7 @@ module.exports  = function Words( _bot, _modules, userConfig )
                 {
                     for ( var i = 0, lenI = wordScores[ to ].length; i < lenI; i++ )
                     {
-                        if ( wordScores[ to ][ i ] < now - userConfig.unscramblePointTimeout )
+                        if ( wordScores[ to ][ i ] < now - pointTimeout )
                         {
                             wordScores[ to ].splice( i, 1 );
                         }
@@ -117,34 +207,37 @@ module.exports  = function Words( _bot, _modules, userConfig )
                 points = wordScores[ to ].length;
 
                 var solveTime   = Math.floor( ( now - currentWordTime ) / 10 ) / 100;
-                var botText     = 'WOW ' + to + '! Such ' + points + ' point';
+                var botText     = 'WOW ' + to + '! Such ' + points + copy.point[ lang ];
                 if ( points !== 1 )
                 {
-                    botText += 's';
+                    botText += copy.plural[ lang ];
                 }
-                botText += '! Many ' + solveTime + ' seconds!';
+                botText += '! Many ' + solveTime + copy.seconds[ lang ];
 
-                if ( _modules.Doge && userConfig.unscrambleDogePayout )
+                if ( _modules.Doge && dogePayout )
                 {
-                    var dogetip = currentWord.length * userConfig.unscrambleDogeModifier;
+                    var dogetip = currentWord.length * dogeModifier;
 
                     _modules.Doge.giveFromBank( to, dogetip, true );
-                    botText += ' You\'ve earned Ð' + dogetip + '!';
+                    botText += copy.youveEarned[ lang ] + dogetip + '!';
                 }
 
                 var additionalDefs = currentWordDef.length - 1;
 
                 if ( ! currentWordDef || ! currentWordDef[0] )
                 {
-                    currentWordDef = [ { text: 'ummm....    I forgot' } ];
+                    currentWordDef = [ { text: copy.forgot[ lang ] } ];
                 }
 
-                botText += '\n' + currentWord + ': ' + currentWordDef[0].text;
+                botText += '\n' + currentWord + ': ';
+
+                botText += englishWord && currentWord !== englishWord ?  englishWord + ': ' : '';
+                botText += currentWordDef[0].text;
 
                 if ( additionalDefs !== 0 )
                 {
-                    botText += '\n (' + to + ' hit -def for ' + additionalDefs + ' more definitions)';
-                    verboseDef      = [ to, currentWord, currentWordDef ];
+                    botText     += copy.additionalDefs[ lang ]( to, additionalDefs );
+                    verboseDef  = [ to, currentWord, currentWordDef ];
                 }
                 else
                 {
@@ -152,22 +245,32 @@ module.exports  = function Words( _bot, _modules, userConfig )
                 }
 
                 this.writeScores();
-                _bot.say( userConfig.unscramble, botText );
+                _bot.say( userConfig.wordsChannel, botText );
 
                 currentWord     = '';
                 currentWordDef  = '';
                 currentWordTime = '';
                 newWordVote     = [];
 
-                _bot.removeListener( 'message' + userConfig.unscramble, wordListener );
+                _bot.removeListener( 'message' + userConfig.wordsChannel, wordListener );
                 this.word();
             }
         },
 
 
+        /**
+         * ## newWord
+         *
+         * registers votes, then starts the new word process when necessary
+         *
+         * @param {String} from originating channel
+         * @param {String} to originating user
+         *
+         * @return _Void_
+         */
         newWord : function( from, to )
         {
-            var active =  _modules.core.checkActive( from, to, '', false );
+            var active = _modules.core.checkActive( from, to, '', false );
 
             if ( newWordVote.indexOf( to ) === -1 )
             {
@@ -178,22 +281,17 @@ module.exports  = function Words( _bot, _modules, userConfig )
 
             if ( newWordVote.length < votesNeeded )
             {
-                _bot.say( userConfig.unscramble, to + ': counted. that\'s ' +
-                            newWordVote.length + ' out of a necessary ' + votesNeeded );
+                _bot.say( userConfig.wordsChannel, to + copy.voteCounted[ lang ]( newWordVote ) + votesNeeded );
             }
             else
             {
                 if ( currentWord !== '' )
                 {
-                    var _whatTheBotSay = 'that\'s enough votes.';
+                    var _whatTheBotSay = copy.wordVotedOut[ lang ] + currentWord + ': ';
+                    _whatTheBotSay += englishWord && currentWord !== englishWord ?  englishWord + ': ' : '';
+                    _whatTheBotSay += currentWordDef[0].text;
 
-                    if ( currentWord && currentWordDef )
-                    {
-                        _whatTheBotSay += ' The correct answer was:\n' + currentWord +
-                                            ' - ' + currentWordDef[0].text;
-                    }
-
-                    _bot.say( userConfig.unscramble, _whatTheBotSay );
+                    _bot.say( userConfig.wordsChannel, _whatTheBotSay );
                     currentWord     = '';
                 }
 
@@ -202,13 +300,50 @@ module.exports  = function Words( _bot, _modules, userConfig )
                 newWordVote     = [];
                 if ( wordListener )
                 {
-                    _bot.removeListener( 'message' + userConfig.unscramble, wordListener );
+                    _bot.removeListener( 'message' + userConfig.wordsChannel, wordListener );
                 }
                 this.word();
             }
         },
 
 
+        /**
+         * ## processNewWord
+         *
+         * processes a new word grabbed from the api and does anything needed
+         * to make it ready
+         *
+         * @param  {[type]} result [description]
+         * @param  {String} to originating user
+         *
+         * @return _Void_
+         */
+        processNewWord : function( result, to )
+        {
+            currentWord         = result.word;
+            var currentWordLength = currentWord.length;
+
+            if ( currentWord[ currentWordLength - 1 ] === '.' )
+            {
+                currentWord.slice( currentWordLength - 1 );
+            }
+
+            currentWordTime = Date.now();
+            this.define( userConfig.wordsChannel, currentWord, true, to );
+            scrambledWord   = this.scramble( currentWord );
+            _bot.say( userConfig.wordsChannel, copy.newWord[ lang ] + scrambledWord + ' (' + ( currentWord[0] ) + ')' );
+            wordListener    = this.listenToWord.bind( this, result.word );
+            _bot.addListener( 'message' + userConfig.wordsChannel, wordListener );
+        },
+
+
+        /**
+         * ## readScores
+         *
+         * reads the scores from the json file
+         *
+         * @return _Void_
+         */
         readScores : function()
         {
             var url = 'json/unscrambleScores.json';
@@ -217,6 +352,16 @@ module.exports  = function Words( _bot, _modules, userConfig )
         },
 
 
+        /**
+         * words responses
+         *
+         * @param {String} from originating channel
+         * @param {String} to originating user
+         * @param {String} text full input string
+         * @param {String} botText text to say
+         *
+         * @return _String_ changed botText
+         */
         responses : function( from, to, text, botText )
         {
             if ( text[0] === userConfig.trigger )
@@ -226,15 +371,14 @@ module.exports  = function Words( _bot, _modules, userConfig )
 
             var command = text.split( ' ' )[ 0 ];
 
-            if ( from === userConfig.unscramble )
+            if ( from === userConfig.wordsChannel )
             {
                 switch ( command )
                 {
-                    case 'word':
-                    case 'whirred':
+                    case copy.wordRes[ lang ]:
                         this.word( from, to );
                         break;
-                    case 'newWord':
+                    case copy.newWordRes[ lang ]:
                         this.newWord( from, to );
                         break;
                 }
@@ -335,6 +479,15 @@ module.exports  = function Words( _bot, _modules, userConfig )
         },
 
 
+        /**
+         * ## scramble
+         *
+         * scrambles a word
+         *
+         * @param {String} word word to scramble
+         *
+         * @return _Void_ scrambled word
+         */
         scramble : function( word )
         {
             var originalWord = word;
@@ -358,7 +511,43 @@ module.exports  = function Words( _bot, _modules, userConfig )
         },
 
 
-        translate : function( langFrom, langTo, from, to, text )
+        /**
+         * ## showVerboseDef
+         *
+         * shows the verbose definition to the last winner, then clears the listener
+         *
+         * @return _Void_
+         */
+        showVerboseDef : function()
+        {
+            var _def = verboseDef[1] + ' -\n';
+
+            for ( var ii = 0, lenII = verboseDef[2].length; ii < lenII; ii++ )
+            {
+                _def += ( ii + 1 ) + ': ' + verboseDef[2][ ii ].text + '\n';
+            }
+
+            _bot.say( userConfig.wordsChannel, _def );
+
+            verboseDef = false;
+        },
+
+
+        /**
+         * ## translate
+         *
+         * translates a word from one language to another
+         *
+         * @param {String} langFrom language to translate from
+         * @param {String} langTo language to translate to
+         * @param {String} from originating channel
+         * @param {String} to originating user
+         * @param {String} text original text
+         * @param {Function} func callback function
+         *
+         * @return _Void_
+         */
+        translate : function( langFrom, langTo, from, to, text, func )
         {
             if ( text[0] === userConfig.trigger )
             {
@@ -375,17 +564,47 @@ module.exports  = function Words( _bot, _modules, userConfig )
 
             _modules.core.apiGet( url, function( response )
             {
-                var botText    = response.responseData.translatedText;
+                var botText;
+                response = response.matches;
+
+                for ( var i = 0, lenI = response.length; i < lenI; i++ )
+                {
+                    if ( response[ i ].quality !== '0' )
+                    {
+                        botText = response[ i ].translation;
+                        break;
+                    }
+                }
+
                 if ( botText.indexOf( '|' ) !== -1 )
                 {
                     botText = botText.split( '|' )[1].slice( 1 );
                 }
 
-                _bot.say( from, to + ': ' + langFrom + ' > ' + langTo + ' - ' + botText );
+                if ( from !== 'internal' )
+                {
+                    _bot.say( from, to + ': ' + langFrom + ' > ' + langTo + ' - ' + botText );
+                }
+
+                if ( func )
+                {
+                    func( botText );
+                }
             }, false, from, to );
         },
 
 
+        /**
+         * ## unscramble
+         *
+         * preps the scores and decides how best to display them
+         *
+         * @param  {[type]} from [description]
+         * @param  {[type]} to   [description]
+         * @param  {[type]} text [description]
+         *
+         * @return {[type]}      [description]
+         */
         unscramble : function( from, to, text )
         {
             this.readScores();
@@ -399,12 +618,12 @@ module.exports  = function Words( _bot, _modules, userConfig )
             {
                 if ( player === playerRequest )
                 {
-                    playerPoints = wordScores[player].length;
+                    playerPoints = wordScores[ player ].length;
                 }
 
                 var _obj = {
                     name    : player,
-                    points  : wordScores[player].length
+                    points  : wordScores[ player ].length
                 };
 
                 points.push( _obj );
@@ -417,50 +636,24 @@ module.exports  = function Words( _bot, _modules, userConfig )
 
             if ( playerRequest )
             {
-                if ( playerPoints )
-                {
-                    if ( to === playerRequest )
-                    {
-                        botText =  'Hey ' + to + '! You have ' + playerPoints + ' point';
-                    }
-                    else
-                    {
-                        botText =  'Why hello ' + to + '! ' + playerRequest + ' has ' + playerPoints + ' point';
-                    }
-
-                    if ( playerPoints !== 1 )
-                    {
-                        botText += 's';
-                    }
-                }
-                else
-                {
-                    botText =  'Well... ' + to + '... I don\'t think ' + playerRequest + ' is a real person';
-                }
+                botText = this.buildPlayerPointsRequest( playerRequest, playerPoints )
             }
             else
             {
-                botText = 'Unscramble Scores - \n';
-                for ( var i = 0, lenI = points.length; i < lenI; i++ )
-                {
-                    botText += ( i + 1 ) + ': ' + points[ i ].name + ' - ' + points[ i ].points + ' point';
-
-                    if ( points[ i ].points !== 1 )
-                    {
-                        botText += 's';
-                    }
-                    botText += '\n';
-
-                    if ( i >= 9 )
-                    {
-                        break;
-                    }
-                }
+                botText = this.buildPointsList( points );
             }
-             _bot.say( from, botText );
+
+            _bot.say( from, botText );
         },
 
 
+        /**
+         * ## writeScores
+         *
+         * writes the json score object to the file system
+         *
+         * @return _Void_
+         */
         writeScores : function()
         {
             var wordScoresJson = JSON.stringify( wordScores );
@@ -472,11 +665,21 @@ module.exports  = function Words( _bot, _modules, userConfig )
         },
 
 
+        /**
+         * ## word
+         *
+         * gets a new english word
+         *
+         * @param {String} from originating channel
+         * @param {String} to originating user
+         *
+         * @return _Void_
+         */
         word : function( from, to )
         {
             if ( currentWord === '' )
             {
-                var scope = this;
+                var self = this;
                 var excludeList = 'excludePartOfSpeech=affix&' +
                                     'excludePartOfSpeech=noun-plural&' +
                                     'excludePartOfSpeech=noun-possesive&' +
@@ -494,29 +697,17 @@ module.exports  = function Words( _bot, _modules, userConfig )
                             result.word.indexOf( '-' ) !== -1 ||
                             result.word.match( /^[a-zA-Z]+$/ ) === null )
                     {
-                        scope.word();
+                        self.word();
                     }
                     else
                     {
-                        currentWord     = result.word;
-                        var currentWordLength = currentWord.length;
-                        if ( currentWord[ currentWordLength - 1 ] === '.' )
-                        {
-                            currentWord.slice( currentWordLength - 1 );
-                        }
-
-                        currentWordTime = Date.now();
-                        scope.define( userConfig.unscramble, currentWord, true, to );
-                        scrambledWord   = scope.scramble( currentWord );
-                        _bot.say( userConfig.unscramble, 'The new scramble word is: ' + scrambledWord + ' (' + ( currentWord[0] ) + ')' );
-                        wordListener    = scope.listenToWord.bind( scope, result.word );
-                        _bot.addListener( 'message' + userConfig.unscramble, wordListener );
+                        self.processNewWord.call( self, result, to );
                     }
                 }, false, from, to );
             }
             else
             {
-                _bot.say( userConfig.unscramble, 'The current scramble word is: ' + scrambledWord + ' (' + ( currentWord[0] ) + ')\n' );
+                _bot.say( userConfig.wordsChannel, copy.currentWord[ lang ] + scrambledWord.toLowerCase() + ' (' + ( currentWord[0].toLowerCase() ) + ')\n' );
             }
         }
     };

@@ -77,6 +77,7 @@ function apiGet( options, _cb, secure, from, to )
 
     var _error = function( say )
     {
+        console.log( say );
         if ( say )
         {
             _bot.say( from, 'sorry, ' + to + ' bad query or url. (depends on what you were trying to do)' );
@@ -106,7 +107,7 @@ function apiGet( options, _cb, secure, from, to )
             }
             catch( e )
             {
-                _error( from && to );
+                _error( e );
             }
         } );
     };

@@ -4,6 +4,18 @@ module.exports = function Beats( _bot, _modules, userConfig )
 {
     return {
 
+        /**
+         * beats responses
+         *
+         * if called, this returns the current time converted to beats
+         *
+         * @param {String} from originating channel
+         * @param {String} to originating user
+         * @param {String} text full input string
+         * @param {String} botText text to say
+         *
+         * @return _String_ beat time or ''
+         */
         responses : function( from, to, text, botText )
         {
             var command = text.slice( 1 ).split( ' ' )[ 0 ];

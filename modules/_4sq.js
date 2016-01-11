@@ -1,5 +1,8 @@
 
-//4sq api https://developer.foursquare.com/docs/venues/explore
+/**
+ * this modules uses the Foursquare API (https://developer.foursquare.com/docs/venues/explore)
+ * to find places to eat nearby
+ */
 module.exports  = function _4sq( _bot, _modules, userConfig )
 {
     return {
@@ -58,11 +61,11 @@ module.exports  = function _4sq( _bot, _modules, userConfig )
                     _valsChoice = Math.floor( Math.random() * venueCount );
 
                     _valsChoice = venues[ _valsChoice ];
-
-                    var venue   = _valsChoice.venue.name;
-                    var phone   = _valsChoice.venue.contact.formattedPhone;
-                    var address = _valsChoice.venue.location.address;
-                    var url     = _valsChoice.venue.url;
+                    var venue   = _valsChoice.venue;
+                    var name    = venue.name;
+                    var phone   = venue.contact.formattedPhone;
+                    var address = venue.location.address;
+                    var url     = venue.url;
 
                     var tip     = _valsChoice.tips;
                     var tips    = tip.length;
@@ -76,7 +79,7 @@ module.exports  = function _4sq( _bot, _modules, userConfig )
 
                     tip         = tipUser + ' says, "' + tip.text + '"';
 
-                    _botText = 'Try ' + venue + '\n' + address;
+                    _botText = 'Try ' + name + '\n' + address;
 
                     if ( phone )
                     {
@@ -91,8 +94,8 @@ module.exports  = function _4sq( _bot, _modules, userConfig )
                          _botText += '\n' + tip;
                     }
 
-                    var venueUrl = _valsChoice.venue.name.replace( noSpaces, '-' ) +
-                                '/' + _valsChoice.venue.id;
+                    var venueUrl = name.replace( noSpaces, '-' ) +
+                                '/' + venue.id;
 
                     _botText += '\nhttps://foursquare.com/v/' + venueUrl;
                 }
@@ -103,6 +106,16 @@ module.exports  = function _4sq( _bot, _modules, userConfig )
         },
 
 
+        /**
+         * 4sq responses
+         *
+         * @param {String} from originating channel
+         * @param {String} to originating user
+         * @param {String} text full input string
+         * @param {String} botText text to say
+         *
+         * @return _String_ changed botText
+         */
         responses : function( from, to, text, botText )
         {
             if ( text[0] === userConfig.trigger )
