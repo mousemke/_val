@@ -15,22 +15,21 @@ module.exports = function Anagramm( _bot, _modules, userConfig )
         wordScores      : {},
         wordListener    : undefined,
         newWordVote     : [],
-        verboseDef      : false
+        verboseDef      : false,
+        lang            : userConfig.anagrammLang,
+        channel         : userConfig.anagrammChannel,
+        dogePayout      : userConfig.anagrammDogePayout,
+        dogeModifier    : userConfig.anagrammDogeModifier,
+        pointTimeout    : userConfig.anagrammPointTimeout
     };
-
 
     var lang = userConfig.anagrammLang;
 
-    words = new Words( _bot, _modules, userConfig, {
-        lang                : userConfig.anagrammLang,
-        wordsChannel        : userConfig.anagrammChannel,
-        wordsDogePayout     : userConfig.anagrammDogePayout,
-        wordsDogeModifier   : userConfig.anagrammDogeModifier,
-        wordsPointTimeout   : userConfig.anagrammPointTimeout
-    }, activeAnagramm );
+    words = new Words( _bot, _modules, userConfig, activeAnagramm );
 
     words.processNewWord = function( result, to, activeWord )
     {
+        console.log( 'moon' );
         activeWord.currentWord      = result.word.slice();
         activeWord.englishWord      = result.word;
         activeWord.currentWordTime  = Date.now();

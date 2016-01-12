@@ -1,16 +1,8 @@
 
 var copy = require( './i18n/words.i18n.js' );
 
-module.exports  = function Words( _bot, _modules, userConfig, extraOptions, activeWord )
+module.exports  = function Words( _bot, _modules, userConfig, activeWord )
 {
-    if ( typeof extraOptions === 'object' )
-    {
-        for ( var opt in extraOptions )
-        {
-            userConfig[ opt ] = extraOptions[ opt ];
-        }
-    }
-
     activeWord = activeWord || {
         minLength       : 4,
         maxLength       : 8,
@@ -22,14 +14,19 @@ module.exports  = function Words( _bot, _modules, userConfig, extraOptions, acti
         wordScores      : {},
         wordListener    : undefined,
         newWordVote     : [],
-        verboseDef      : false
+        verboseDef      : false,
+        lang            : userConfig.wordsLang,
+        channel         : userConfig.wordsChannel,
+        dogePayout      : userConfig.wordsDogePayout,
+        dogeModifier    : userConfig.wordsDogeModifier,
+        pointTimeout    : userConfig.wordsPointTimeout
     };
 
-    var lang            = userConfig.lang;
-
-    var dogePayout      = userConfig.wordsDogePayout;
-    var dogeModifier    = userConfig.wordsDogeModifier;
-    var pointTimeout    = userConfig.wordsPointTimeout;
+    var lang            = activeWord.lang;
+    var wordsChannel    = activeWord.channel;
+    var dogePayout      = activeWord.dogePayout;
+    var dogeModifier    = activeWord.dogeModifier;
+    var pointTimeout    = activeWord.pointTimeout;
 
     var http            = userConfig.req.http;
     var https           = userConfig.req.https;
@@ -256,14 +253,14 @@ module.exports  = function Words( _bot, _modules, userConfig, extraOptions, acti
                 }
 
                 this.writeScores();
-                _bot.say( userConfig.wordsChannel, botText );
+                _bot.say( wordsChannel, botText );
 
                 activeWord.currentWord     = '';
                 activeWord.currentWordDef  = '';
                 activeWord.currentWordTime = '';
                 activeWord.newWordVote     = [];
 
-                _bot.removeListener( 'message' + userConfig.wordsChannel, activeWord.wordListener );
+                _bot.removeListener( 'message' + wordsChannel, activeWord.wordListener );
                 this.word();
             }
         },
@@ -292,7 +289,7 @@ module.exports  = function Words( _bot, _modules, userConfig, extraOptions, acti
 
             if ( activeWord.newWordVote.length < votesNeeded )
             {
-                _bot.say( userConfig.wordsChannel, to + copy.voteCounted[ lang ]( activeWord.newWordVote ) + votesNeeded );
+                _bot.say( wordsChannel, to + copy.voteCounted[ lang ]( activeWord.newWordVote ) + votesNeeded );
             }
             else
             {
@@ -302,7 +299,7 @@ module.exports  = function Words( _bot, _modules, userConfig, extraOptions, acti
                     _whatTheBotSay += activeWord.englishWord && activeWord.currentWord !== activeWord.englishWord ?  activeWord.englishWord + ': ' : '';
                     _whatTheBotSay += activeWord.currentWordDef[0].text;
 
-                    _bot.say( userConfig.wordsChannel, _whatTheBotSay );
+                    _bot.say( wordsChannel, _whatTheBotSay );
                     activeWord.currentWord     = '';
                 }
 
@@ -311,7 +308,7 @@ module.exports  = function Words( _bot, _modules, userConfig, extraOptions, acti
                 activeWord.newWordVote     = [];
                 if ( activeWord.wordListener )
                 {
-                    _bot.removeListener( 'message' + userConfig.wordsChannel, activeWord.wordListener );
+                    _bot.removeListener( 'message' + wordsChannel, activeWord.wordListener );
                 }
                 this.word();
             }
@@ -340,11 +337,11 @@ module.exports  = function Words( _bot, _modules, userConfig, extraOptions, acti
             }
 
             activeWord.currentWordTime = Date.now();
-            this.define( userConfig.wordsChannel, activeWord.currentWord, true, to );
+            this.define( wordsChannel, activeWord.currentWord, true, to );
             activeWord.scrambledWord   = this.scramble( activeWord.currentWord );
-            _bot.say( userConfig.wordsChannel, copy.newWord[ lang ] + activeWord.scrambledWord + ' (' + ( activeWord.currentWord[0] ) + ')' );
+            _bot.say( wordsChannel, copy.newWord[ lang ] + activeWord.scrambledWord + ' (' + ( activeWord.currentWord[0] ) + ')' );
             activeWord.wordListener    = this.listenToWord.bind( this, activeWord.currentWord );
-            _bot.addListener( 'message' + userConfig.wordsChannel, activeWord.wordListener );
+            _bot.addListener( 'message' + wordsChannel, activeWord.wordListener );
         },
 
 
@@ -382,7 +379,7 @@ module.exports  = function Words( _bot, _modules, userConfig, extraOptions, acti
 
             var command = text.split( ' ' )[ 0 ];
 
-            if ( from === userConfig.wordsChannel )
+            if ( from === wordsChannel )
             {
                 switch ( command )
                 {
@@ -538,7 +535,7 @@ module.exports  = function Words( _bot, _modules, userConfig, extraOptions, acti
                 _def += ( ii + 1 ) + ': ' + activeWord.verboseDef[2][ ii ].text + '\n';
             }
 
-            _bot.say( userConfig.wordsChannel, _def );
+            _bot.say( wordsChannel, _def );
 
             activeWord.verboseDef = false;
         },
@@ -719,7 +716,7 @@ module.exports  = function Words( _bot, _modules, userConfig, extraOptions, acti
             }
             else
             {
-                _bot.say( userConfig.wordsChannel, copy.currentWord[ lang ] + activeWord.scrambledWord.toLowerCase() + ' (' + ( activeWord.currentWord[0].toLowerCase() ) + ')\n' );
+                _bot.say( wordsChannel, copy.currentWord[ lang ] + activeWord.scrambledWord.toLowerCase() + ' (' + ( activeWord.currentWord[0].toLowerCase() ) + ')\n' );
             }
         }
     };

@@ -18,14 +18,15 @@
         ini     : true,
         url     : './modules/anagramm.js',
         options : {
-            wordnikBaseUrl          : 'http://api.wordnik.com:80/v4/',
-            translationBaseUrl      : 'http://mymemory.translated.net/api/',
-            newWordVoteNeeded       : 0.6,
-            unscramblePointTimeout  : 86400000, // 24 hours
-            anagramm                : '#anagramm',
+            anagrammLang            : 'de',
+            anagrammChannel         : '#bots',
             anagrammDogePayout      : true, // requires module: doge
             anagrammDogeModifier    : 3,
-            wordnikAPIKey           : 'wordnik - it works bitches',
+            anagrammPointTimeout    : 86400000, // 24 hours
+            newWordVoteNeeded       : 0.6,
+            wordnikBaseUrl          : 'http://api.wordnik.com:80/v4/',
+            translationBaseUrl      : 'http://mymemory.translated.net/api/',
+            wordnikAPIKey           : 'api-like-things-go-here-but-this-isnt-it'
         }
     },
 
@@ -193,14 +194,15 @@
         ini     : true,
         url     : './modules/words.js',
         options : {
+            wordsLang               : 'en',
+            wordsChannel            : '#unscramble',
+            wordsDogePayout         : true, // requires module: doge
+            wordsDogeModifier       : 1,
+            wordsPointTimeout       : 86400000, // 24 hours
+            newWordVoteNeeded       : 0.6,
             wordnikBaseUrl          : 'http://api.wordnik.com:80/v4/',
             translationBaseUrl      : 'http://mymemory.translated.net/api/',
-            newWordVoteNeeded       : 0.6,
-            unscramblePointTimeout  : 86400000, // 24 hours
-            unscramble              : '#unscramble',
-            unscrambleDogePayout    : true, // requires module: doge
-            unscrambleDogeModifier  : 1,
-            wordnikAPIKey           : 'wordnik - it works bitches',
+            wordnikAPIKey           : 'api-key'
         }
     },
 
