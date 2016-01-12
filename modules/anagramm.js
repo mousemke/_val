@@ -27,9 +27,19 @@ module.exports = function Anagramm( _bot, _modules, userConfig )
 
     words = new Words( _bot, _modules, userConfig, activeAnagramm );
 
+    /**
+     * ## processNewWord
+     *
+     * processes a new word grabbed from the api and does anything needed
+     * to make it ready
+     *
+     * @param  {Object} result word with all related properties
+     * @param  {String} to originating user
+     *
+     * @return _Void_
+     */
     words.processNewWord = function( result, to, activeWord )
     {
-        console.log( 'moon' );
         activeWord.currentWord      = result.word.slice();
         activeWord.englishWord      = result.word;
         activeWord.currentWordTime  = Date.now();
