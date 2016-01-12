@@ -1,7 +1,4 @@
 
-    /**
-     * load node modules
-     */
 var userConfig      = require( './config/_val.config.js' );
     userConfig.req  = {};
 
@@ -20,7 +17,8 @@ var lastSeenList        = JSON.parse( fs.readFileSync( seenJsonUrl ) ),
     guys                = require( './lists/guys.js' );
     trollBlacklist      = require( './lists/trollBlacklist.js' );
 
-    userConfig.version  = '0.2.3';
+var packageJSON         = require( './package.json' );
+    userConfig.version  = packageJSON.version;
 
 var channels            = [];
 

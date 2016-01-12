@@ -1,20 +1,31 @@
 
 var copy = require( './i18n/words.i18n.js' );
 
-module.exports  = function Words( _bot, _modules, userConfig, lang )
+module.exports  = function Words( _bot, _modules, userConfig, extraOptions, activeWord )
 {
-    lang = lang || 'en';
+    if ( typeof extraOptions === 'object' )
+    {
+        for ( var opt in extraOptions )
+        {
+            userConfig[ opt ] = extraOptions[ opt ];
+        }
+    }
 
-    var minLength   = 4,
-    maxLength       = 8,
-    currentWord     = '',
-    currentWordTime = 0,
-    currentWordDef  = '',
-    englishWord     = '',
-    scrambledWord   = '',
-    wordScores      = {},
-    wordListener, newWordVote = [],
-    verboseDef      = false;
+    activeWord = activeWord || {
+        minLength       : 4,
+        maxLength       : 8,
+        currentWord     : '',
+        currentWordTime : 0,
+        currentWordDef  : '',
+        englishWord     : '',
+        scrambledWord   : '',
+        wordScores      : {},
+        wordListener    : undefined,
+        newWordVote     : [],
+        verboseDef      : false
+    };
+
+    var lang            = userConfig.lang;
 
     var dogePayout      = userConfig.wordsDogePayout;
     var dogeModifier    = userConfig.wordsDogeModifier;
@@ -119,7 +130,7 @@ module.exports  = function Words( _bot, _modules, userConfig, lang )
                 {
                     if ( current === true )
                     {
-                        currentWordDef = result;
+                        activeWord.currentWordDef = result;
                     }
                     else
                     {
@@ -179,7 +190,7 @@ module.exports  = function Words( _bot, _modules, userConfig, lang )
          */
         listenToWord : function( word, to, text )
         {
-            if ( verboseDef !== false && verboseDef[0] === to && text === '-def' )
+            if ( activeWord.verboseDef !== false && activeWord.verboseDef[0] === to && text === '-def' )
             {
                 this.showVerboseDef();
             }
@@ -187,26 +198,26 @@ module.exports  = function Words( _bot, _modules, userConfig, lang )
             {
                 var points, now = Date.now();
 
-                if ( wordScores[ to ] )
+                if ( activeWord.wordScores[ to ] )
                 {
-                    for ( var i = 0, lenI = wordScores[ to ].length; i < lenI; i++ )
+                    for ( var i = 0, lenI = activeWord.wordScores[ to ].length; i < lenI; i++ )
                     {
-                        if ( wordScores[ to ][ i ] < now - pointTimeout )
+                        if ( activeWord.wordScores[ to ][ i ] < now - pointTimeout )
                         {
-                            wordScores[ to ].splice( i, 1 );
+                            activeWord.wordScores[ to ].splice( i, 1 );
                         }
                     }
 
-                    wordScores[ to ].push( now );
+                    activeWord.wordScores[ to ].push( now );
                 }
                 else
                 {
-                    wordScores[ to ] = [ now ];
+                    activeWord.wordScores[ to ] = [ now ];
                 }
 
-                points = wordScores[ to ].length;
+                points = activeWord.wordScores[ to ].length;
 
-                var solveTime   = Math.floor( ( now - currentWordTime ) / 10 ) / 100;
+                var solveTime   = Math.floor( ( now - activeWord.currentWordTime ) / 10 ) / 100;
                 var botText     = 'WOW ' + to + '! Such ' + points + copy.point[ lang ];
                 if ( points !== 1 )
                 {
@@ -216,43 +227,43 @@ module.exports  = function Words( _bot, _modules, userConfig, lang )
 
                 if ( _modules.Doge && dogePayout )
                 {
-                    var dogetip = currentWord.length * dogeModifier;
+                    var dogetip = activeWord.currentWord.length * dogeModifier;
 
                     _modules.Doge.giveFromBank( to, dogetip, true );
                     botText += copy.youveEarned[ lang ] + dogetip + '!';
                 }
 
-                var additionalDefs = currentWordDef.length - 1;
+                var additionalDefs = activeWord.currentWordDef.length - 1;
 
-                if ( ! currentWordDef || ! currentWordDef[0] )
+                if ( ! activeWord.currentWordDef || ! activeWord.currentWordDef[0] )
                 {
-                    currentWordDef = [ { text: copy.forgot[ lang ] } ];
+                    activeWord.currentWordDef = [ { text: copy.forgot[ lang ] } ];
                 }
 
-                botText += '\n' + currentWord + ': ';
+                botText += '\n' + activeWord.currentWord + ': ';
 
-                botText += englishWord && currentWord !== englishWord ?  englishWord + ': ' : '';
-                botText += currentWordDef[0].text;
+                botText += activeWord.englishWord && activeWord.currentWord !== activeWord.englishWord ?  activeWord.englishWord + ': ' : '';
+                botText += activeWord.currentWordDef[0].text;
 
                 if ( additionalDefs !== 0 )
                 {
                     botText     += copy.additionalDefs[ lang ]( to, additionalDefs );
-                    verboseDef  = [ to, currentWord, currentWordDef ];
+                    activeWord.verboseDef  = [ to, activeWord.currentWord, activeWord.currentWordDef ];
                 }
                 else
                 {
-                    verboseDef      = false;
+                    activeWord.verboseDef      = false;
                 }
 
                 this.writeScores();
                 _bot.say( userConfig.wordsChannel, botText );
 
-                currentWord     = '';
-                currentWordDef  = '';
-                currentWordTime = '';
-                newWordVote     = [];
+                activeWord.currentWord     = '';
+                activeWord.currentWordDef  = '';
+                activeWord.currentWordTime = '';
+                activeWord.newWordVote     = [];
 
-                _bot.removeListener( 'message' + userConfig.wordsChannel, wordListener );
+                _bot.removeListener( 'message' + userConfig.wordsChannel, activeWord.wordListener );
                 this.word();
             }
         },
@@ -272,35 +283,35 @@ module.exports  = function Words( _bot, _modules, userConfig, lang )
         {
             var active = _modules.core.checkActive( from, to, '', false );
 
-            if ( newWordVote.indexOf( to ) === -1 )
+            if ( activeWord.newWordVote.indexOf( to ) === -1 )
             {
-                newWordVote.push( to );
+                activeWord.newWordVote.push( to );
             }
 
             var votesNeeded = active.length * userConfig.newWordVoteNeeded;
 
-            if ( newWordVote.length < votesNeeded )
+            if ( activeWord.newWordVote.length < votesNeeded )
             {
-                _bot.say( userConfig.wordsChannel, to + copy.voteCounted[ lang ]( newWordVote ) + votesNeeded );
+                _bot.say( userConfig.wordsChannel, to + copy.voteCounted[ lang ]( activeWord.newWordVote ) + votesNeeded );
             }
             else
             {
-                if ( currentWord !== '' )
+                if ( activeWord.currentWord !== '' )
                 {
-                    var _whatTheBotSay = copy.wordVotedOut[ lang ] + currentWord + ': ';
-                    _whatTheBotSay += englishWord && currentWord !== englishWord ?  englishWord + ': ' : '';
-                    _whatTheBotSay += currentWordDef[0].text;
+                    var _whatTheBotSay = copy.wordVotedOut[ lang ] + activeWord.currentWord + ': ';
+                    _whatTheBotSay += activeWord.englishWord && activeWord.currentWord !== activeWord.englishWord ?  activeWord.englishWord + ': ' : '';
+                    _whatTheBotSay += activeWord.currentWordDef[0].text;
 
                     _bot.say( userConfig.wordsChannel, _whatTheBotSay );
-                    currentWord     = '';
+                    activeWord.currentWord     = '';
                 }
 
-                currentWordTime = 0;
-                scrambledWord   = '';
-                newWordVote     = [];
-                if ( wordListener )
+                activeWord.currentWordTime = 0;
+                activeWord.scrambledWord   = '';
+                activeWord.newWordVote     = [];
+                if ( activeWord.wordListener )
                 {
-                    _bot.removeListener( 'message' + userConfig.wordsChannel, wordListener );
+                    _bot.removeListener( 'message' + userConfig.wordsChannel, activeWord.wordListener );
                 }
                 this.word();
             }
@@ -320,20 +331,20 @@ module.exports  = function Words( _bot, _modules, userConfig, lang )
          */
         processNewWord : function( result, to )
         {
-            currentWord         = result.word;
-            var currentWordLength = currentWord.length;
+            activeWord.currentWord         = result.word;
+            var currentWordLength = activeWord.currentWord.length;
 
-            if ( currentWord[ currentWordLength - 1 ] === '.' )
+            if ( activeWord.currentWord[ currentWordLength - 1 ] === '.' )
             {
-                currentWord.slice( currentWordLength - 1 );
+                activeWord.currentWord.slice( currentWordLength - 1 );
             }
 
-            currentWordTime = Date.now();
-            this.define( userConfig.wordsChannel, currentWord, true, to );
-            scrambledWord   = this.scramble( currentWord );
-            _bot.say( userConfig.wordsChannel, copy.newWord[ lang ] + scrambledWord + ' (' + ( currentWord[0] ) + ')' );
-            wordListener    = this.listenToWord.bind( this, result.word );
-            _bot.addListener( 'message' + userConfig.wordsChannel, wordListener );
+            activeWord.currentWordTime = Date.now();
+            this.define( userConfig.wordsChannel, activeWord.currentWord, true, to );
+            activeWord.scrambledWord   = this.scramble( activeWord.currentWord );
+            _bot.say( userConfig.wordsChannel, copy.newWord[ lang ] + activeWord.scrambledWord + ' (' + ( activeWord.currentWord[0] ) + ')' );
+            activeWord.wordListener    = this.listenToWord.bind( this, activeWord.currentWord );
+            _bot.addListener( 'message' + userConfig.wordsChannel, activeWord.wordListener );
         },
 
 
@@ -348,7 +359,7 @@ module.exports  = function Words( _bot, _modules, userConfig, lang )
         {
             var url = 'json/unscrambleScores.json';
 
-            wordScores = JSON.parse( fs.readFileSync( url ) );
+            activeWord.wordScores = JSON.parse( fs.readFileSync( url ) );
         },
 
 
@@ -507,7 +518,7 @@ module.exports  = function Words( _bot, _modules, userConfig, lang )
 
             word = word.join( '' );
 
-            return ( word === originalWord ) ? scramble( word ) : word;
+            return ( word === originalWord ) ? this.scramble( word ) : word;
         },
 
 
@@ -520,16 +531,16 @@ module.exports  = function Words( _bot, _modules, userConfig, lang )
          */
         showVerboseDef : function()
         {
-            var _def = verboseDef[1] + ' -\n';
+            var _def = activeWord.verboseDef[1] + ' -\n';
 
-            for ( var ii = 0, lenII = verboseDef[2].length; ii < lenII; ii++ )
+            for ( var ii = 0, lenII = activeWord.verboseDef[2].length; ii < lenII; ii++ )
             {
-                _def += ( ii + 1 ) + ': ' + verboseDef[2][ ii ].text + '\n';
+                _def += ( ii + 1 ) + ': ' + activeWord.verboseDef[2][ ii ].text + '\n';
             }
 
             _bot.say( userConfig.wordsChannel, _def );
 
-            verboseDef = false;
+            activeWord.verboseDef = false;
         },
 
 
@@ -614,16 +625,16 @@ module.exports  = function Words( _bot, _modules, userConfig, lang )
             var botText;
             var playerRequest = text.split( ' ' )[1];
 
-            for ( var player in wordScores )
+            for ( var player in activeWord.wordScores )
             {
                 if ( player === playerRequest )
                 {
-                    playerPoints = wordScores[ player ].length;
+                    playerPoints = activeWord.wordScores[ player ].length;
                 }
 
                 var _obj = {
                     name    : player,
-                    points  : wordScores[ player ].length
+                    points  : activeWord.wordScores[ player ].length
                 };
 
                 points.push( _obj );
@@ -656,7 +667,7 @@ module.exports  = function Words( _bot, _modules, userConfig, lang )
          */
         writeScores : function()
         {
-            var wordScoresJson = JSON.stringify( wordScores );
+            var wordScoresJson = JSON.stringify( activeWord.wordScores );
 
             fs.writeFile( './json/unscrambleScores.json', wordScoresJson, function ( err )
             {
@@ -677,7 +688,7 @@ module.exports  = function Words( _bot, _modules, userConfig, lang )
          */
         word : function( from, to )
         {
-            if ( currentWord === '' )
+            if ( activeWord.currentWord === '' )
             {
                 var self = this;
                 var excludeList = 'excludePartOfSpeech=affix&' +
@@ -690,7 +701,8 @@ module.exports  = function Words( _bot, _modules, userConfig, lang )
                                     'excludePartOfSpeech=idiom&' +
                                     'excludePartOfSpeech=phrasal-prefix&';
 
-                var url =  ( userConfig.wordnikBaseUrl ) + 'words.json/randomWord?hasDictionaryDef=true&' + excludeList + 'minCorpusCount=0&maxCorpusCount=-1&minDictionaryCount=3&maxDictionaryCount=-1&minLength=' + minLength + '&maxLength=' + maxLength + '&api_key=' + userConfig.wordnikAPIKey;
+                var url =  ( userConfig.wordnikBaseUrl ) + 'words.json/randomWord?hasDictionaryDef=true&' + excludeList + 'minCorpusCount=0&maxCorpusCount=-1&minDictionaryCount=3&maxDictionaryCount=-1&minLength=' + activeWord.minLength + '&maxLength=' + activeWord.maxLength + '&api_key=' + userConfig.wordnikAPIKey;
+
                 _modules.core.apiGet( url, function( result )
                 {
                     if ( result.word[0] !== result.word[0].toLowerCase() ||
@@ -701,13 +713,13 @@ module.exports  = function Words( _bot, _modules, userConfig, lang )
                     }
                     else
                     {
-                        self.processNewWord.call( self, result, to );
+                        self.processNewWord.call( self, result, to, activeWord );
                     }
                 }, false, from, to );
             }
             else
             {
-                _bot.say( userConfig.wordsChannel, copy.currentWord[ lang ] + scrambledWord.toLowerCase() + ' (' + ( currentWord[0].toLowerCase() ) + ')\n' );
+                _bot.say( userConfig.wordsChannel, copy.currentWord[ lang ] + activeWord.scrambledWord.toLowerCase() + ' (' + ( activeWord.currentWord[0].toLowerCase() ) + ')\n' );
             }
         }
     };

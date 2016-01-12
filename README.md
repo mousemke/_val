@@ -19,6 +19,12 @@ DOGE DQiQ8e62CQGqx378EuS8i8gUW2mLkfBuXu
 
 **Change log**
 
+0.2.4 -
++ rebuilt words and anagramm
++ version is now loaded from package.json
++ added activeWord object
+
+
 0.2.3 -
 + built safeties around the bot ignore list
 + further abstracted slack connections
