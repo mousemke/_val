@@ -48,7 +48,7 @@ module.exports = function Anagramm( _bot, _modules, userConfig )
 
         var self = this;
 
-        this.translate( 'en', 'de', 'internal', null, 'de ' + activeWord.currentWord,
+        this.translate( 'en', lang, 'internal', null, lang + ' ' + activeWord.currentWord,
         function( translatedWord )
         {
             activeWord.currentWord             = translatedWord;
