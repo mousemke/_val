@@ -10,7 +10,7 @@ install
 npm i val-bot
 ```
 
-Go to http://knoblau.ch/_val for a list of commands.
+Go to `http://knoblau.ch/_val` for a list of commands.
 
 If you would like to have _val running on your irc/slack/twitch/whatever in our hosting pool let us know.  The hosting pool is run on an EC2 instance and is funded only by donations.  It's a good way to have your bots running without having to worry about it.
 
@@ -21,6 +21,10 @@ Feel free to donate to keep _val's hosting server up and running!
 BTC `17KYpA1dL32nwwRE47Xj2V5Pb9GNEcByan`
 
 DOGE `DQiQ8e62CQGqx378EuS8i8gUW2mLkfBuXu`
+
+This project adheres to the [Contributor Covenant](http://contributor-covenant.org/). By participating, you are expected to honor this code.
+
+[_val - Code of Conduct](https://github.com/mousemke/_val/blob/master/CODE_OF_CONDUCT.md)
 
 
 **Change log**
