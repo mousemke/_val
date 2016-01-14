@@ -258,6 +258,14 @@ module.exports  = function Twitter( _bot, _modules, userConfig )
                         }
                     }
                 }
+                else
+                {
+                    return 'Sorry, ' + to + '. You can\'t access twitter in thie room';
+                }
+            }
+            else
+            {
+                return 'This room isn\'t connected to a twitter account, ' + to + '.';
             }
 
             return botText;
