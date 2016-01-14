@@ -2,13 +2,13 @@
 
 erm.... bot.
 
-v. 0.2.3
+v. 0.2.4
 
 Go to http://knoblau.ch/_val for a list of commands.
 
 If you would like to have _val running on your irc/slack/twitch/whatever in our hosting pool let us know.  The hosting pool is run on an EC2 instance and is funded only by donations.  It's a good way to have your bots running without having to worry about it.
 
-All json files are missing.  Be sure to copy the example files to the correct name.
+All json configuration files are missing.  Be sure to copy the example files to the correct name.
 
 Feel free to donate to keep _val's hosting server up and running!
 
@@ -23,6 +23,10 @@ DOGE DQiQ8e62CQGqx378EuS8i8gUW2mLkfBuXu
 + rebuilt words and anagramm
 + version is now loaded from package.json
 + added activeWord object
++ added rr
++ fixed bad country code queries in words
++ added an option to words to enable def and translation
++ reenabled most twitter feeds
 
 
 0.2.3 -

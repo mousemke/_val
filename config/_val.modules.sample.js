@@ -2,7 +2,7 @@
  * _val Modules
  *
  * watch your options property names.  their names should reflect their module, as
- * they are all moved into the same namespace.  All properties will be transfered.
+ * they are all moved into the same namespace for intercompatability.  All option will be transfered.
  */
 
  module.exports = {
@@ -13,8 +13,19 @@
     },
 
 
-    Anagramm    : {
+    Admin       : {
         enabled : true,
+        url     : './modules/admin.js',
+        options : {
+            adminMessage            : '5 minutes later test. well, this appears to work',
+            adminMessageInterval    : 300000, // 5 min
+            adminMessageChannels    : [ '#soc-bots' ] // optional default.  otherwise it falls back to all channels
+        }
+    },
+
+
+    Anagramm    : {
+        enabled : true, // requires module: words
         ini     : true,
         url     : './modules/anagramm.js',
         options : {
@@ -26,18 +37,7 @@
             newWordVoteNeeded       : 0.6,
             wordnikBaseUrl          : 'http://api.wordnik.com:80/v4/',
             translationBaseUrl      : 'http://mymemory.translated.net/api/',
-            wordnikAPIKey           : 'api-like-things-go-here-but-this-isnt-it'
-        }
-    },
-
-
-    Admin       : {
-        enabled : true,
-        url     : './modules/admin.js',
-        options : {
-            adminMessage            : '5 minutes later test. well, this appears to work',
-            adminMessageInterval    : 300000, // 5 min
-            adminMessageChannels    : [ '#soc-bots' ] // optional default.  otherwise it falls back to all channels
+            wordnikAPIKey           : 'api-key'
         }
     },
 
@@ -110,6 +110,13 @@
             popKeyComtentFilter : true,
             popKeyAPIKey        : 'api-here'
         }
+    },
+
+
+    RR          : {
+        enabled : true,
+        ini     : true,
+        url     : './modules/rr.js',
     },
 
 
@@ -195,7 +202,7 @@
         url     : './modules/words.js',
         options : {
             wordsLang               : 'en',
-            wordsChannel            : '#unscramble',
+            wordsChannel            : '#bots',
             wordsDogePayout         : true, // requires module: doge
             wordsDogeModifier       : 1,
             wordsPointTimeout       : 86400000, // 24 hours

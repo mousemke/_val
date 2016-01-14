@@ -50,6 +50,7 @@
                     <a href="#admin-module">ADMIN MODULE</a>
                     <a href="#popkey-module">POPKEY MODULE</span>
                     <a href="#8ball-module">8BALL MODULE</span>
+                    <a href="#rr-module">RR MODULE</span>
 
                     <div class="hr"></div>
 
@@ -211,7 +212,8 @@
                     <div class="indented">
                         <a href="#tweet">t<br>twitter</a>
                         <a href="#t-stream-filter">t-stream-filter</a>
-                        <a href="#t-stream-firehose">t-stream-firehose</a>
+                        <a href="#t-stream-following">t-stream-following</a>
+                        <a href="#t-stream-followers">t-stream-followers</a>
                         <a href="#t-stream-stop">t-stream-stop</a>
                         <a href="#t-stream">t-stream</a>
                         <a href="#t-help">t-help</a>
@@ -268,6 +270,11 @@
                     </div>
                     <br>
 
+                    <a href="#rr-module">RR MODULE</a>
+                    <div class="indented">
+                        <a href="#rr">rr</a>
+                    </div>
+                    <br>
                 </div>
             </div>
 
@@ -289,12 +296,15 @@
                         <div class="module--title">Change log</div>
                         <br>
                         <div class="indented">
-                            0.2.3 -
+                            0.2.4 -
                                 <div class="indented">
-                                    + built safeties around the bot ignore list<br>
-                                    + further abstracted slack connections<br>
-                                    + fixed balance bank<br>
-                                    + added popkey content filter<br>
+                                    + rebuilt words and anagramm<br>
+                                    + version is now loaded from package.json<br>
+                                    + added activeWord object<br>
+                                    + added rr<br>
+                                    + fixed bad country code queries in words<br>
+                                    + added an option to words to enable def and translation<br>
+                                    + reenabled most twitter feeds<br>
                                 </div>
                                 <a href="#old-changes">older change logs</a>
                             </div>
@@ -836,12 +846,6 @@
                         <span class="command">whoisit?</span>
                         <p>Tells you who the nico is.</p>
                     </div>
-                    <!--<div class="indented">
-                        <a href="#tweet">t<br>twitter</a>
-                        <a href="#t-stream-filter">t-stream-filter</a>
-                        <a href="#t-stream-firehose">t-stream-firehose</a>
-                        <a href="#t-stream-stop">t-stream-stop</a>
-                        <a href="#t-stream">t-stream</a>-->
                     <br>
                     <br>
                     <a name="twitter-module"></a>
@@ -864,10 +868,15 @@
                         <span class="command">t-stream-filter &lt;stream search items&gt;</span>
                         <p>starts a filter stream based on the enter search terms</p>
 
-                        <a name="t-stream-firehose"></a>
+                        <a name="t-stream-following"></a>
                         <br>
-                        <span class="command">t-stream-firehose &lt;stream search items&gt;</span>
-                        <p>starts a firehose stream based on the enter search terms</p>
+                        <span class="command">t-stream-following &lt;stream search items&gt;</span>
+                        <p>starts a following stream based on the enter search terms</p>
+
+                        <a name="t-stream-followers"></a>
+                        <br>
+                        <span class="command">t-stream-followers &lt;stream search items&gt;</span>
+                        <p>starts a followers stream based on the enter search terms</p>
 
                         <a name="t-stream"></a>
                         <br>
@@ -1049,6 +1058,23 @@
 
                     <br>
                     <br>
+                    <a name="rr-module"></a>
+                    <br>
+                    <span class="module--title">RR MODULE</span>
+
+                    <p>tells the future!</p>
+
+                    <div class="indented">
+
+                        <a name="rr"></a>
+                        <br>
+                        <span class="command">rr</span>
+                            <p>Take your chances</p>
+                    </div>
+
+
+                    <br>
+                    <br>
                     <div class="hr hr-blue"></div>
                     <br>
                     <br>
@@ -1056,6 +1082,13 @@
                     <br>
                     <span class="module--title">older changes:</span>
                     <div class="indented">
+
+                        <span class="command">0.2.3 -</span>
+                        <p>+ built safeties around the bot ignore list<br>
+                            + further abstracted slack connections<br>
+                            + fixed balance bank<br>
+                            + added popkey content filter</p>
+                        <br>
 
                         <span class="command">0.2.2 -</span>
                         <p>+ pool module removed<br>
