@@ -35,6 +35,65 @@ module.exports  = function Twitter( _bot, _modules, userConfig )
         },
 
 
+        getFollowers : function( from, to, _text )
+        {
+            var _t          = this.authenticate( from );
+            _t.get( 'followers/list', { screen_name : _text },  function ( err, data, response )
+            {
+                if ( err )
+                {
+                    console.log( err );
+                    _bot.say( from, err );
+                }
+                else
+                {
+                    var _u = '';
+                    data.users.forEach( function( user )
+                    {
+                        _u += user.name + ' (@' + user.screen_name + ') - ' + user.url + '\n';
+                    } );
+
+                    _bot.say( from, _u );
+                }
+            } );
+        },
+
+
+        getFollowing : function( from, to, _text )
+        {
+            var _t          = this.authenticate( from );
+            _t.get( 'friends/list', { screen_name : _text },  function ( err, data, response )
+            {
+                if ( err )
+                {
+                    console.log( err );
+                    _bot.say( from, err );
+                }
+                else
+                {
+                    var _u = '';
+                    data.users.forEach( function( user )
+                    {
+                        _u += user.name + ' (@' + user.screen_name + ') - ' + user.url + '\n';
+                    } );
+
+                    _bot.say( from, _u );
+                }
+            } );
+        },
+
+
+        getSlug : function( from, to, _text )
+        {
+            var _t  = this.authenticate( from );
+
+            _t.get( 'users/suggestions/:slug', { slug : _text }, function ( err, data, response )
+            {
+                console.log( data )
+            } );
+        },
+
+
         /**
          * ## getStreamEvent
          *
@@ -110,16 +169,16 @@ module.exports  = function Twitter( _bot, _modules, userConfig )
                 case 'filter':
                 case 'sample':
                 case 'firehose':
-                    target = 'statuses/' + _text[ 0 ];
-                    _text = _text.slice( 1 );
+                    target  = 'statuses/' + _text[ 0 ];
+                    _text   = _text.slice( 1 );
                     break;
                 case 'user':
                 case 'site':
-                    target = _text[ 0 ];
-                    _text = _text.slice( 1 );
+                    target  = _text[ 0 ];
+                    _text   = _text.slice( 1 );
                     break;
                 default:
-                    target = 'statuses/filter';
+                    target  = 'statuses/filter';
             }
 
             return target;
@@ -158,7 +217,8 @@ module.exports  = function Twitter( _bot, _modules, userConfig )
 
             if ( _t )
             {
-                if ( _t.users.indexOf( lowercaseTo ) !== -1 )
+                if ( _t.users.indexOf( lowercaseTo ) !== -1 ||
+                        from[ 0 ] !== '#' )
                 {
                     if ( userConfig.twitterUsersBlackList.indexOf( lowercaseTo ) === -1 )
                     {
@@ -183,6 +243,18 @@ module.exports  = function Twitter( _bot, _modules, userConfig )
                             case 't-stream-stop':
                                 botText = this.streamStop( from, to, realText );
                                 break;
+                            case 't-stream':
+                                botText = this.streamRaw( from, to, realText );
+                                break;
+                            case 't-following':
+                                botText = this.getFollowing( from, to, realText );
+                                break;
+                            case 't-followers':
+                                botText = this.getFollowers( from, to, realText );
+                                break;
+                            case 't-slug':
+                                botText = this.getSlug( from, to, realText );
+                                break;
                         }
                     }
                 }
@@ -190,6 +262,16 @@ module.exports  = function Twitter( _bot, _modules, userConfig )
 
             return botText;
         },
+
+
+        // searchTwitter : function( from, to, _text )
+        // {
+        //     var _t          = this.authenticate( from );
+        //     _t.get( 'search/tweets', { q: _text, count: 100 }, function( err, data, response )
+        //     {
+        //         console.log( data )
+        //     } );
+        // },
 
 
         /**
@@ -252,6 +334,32 @@ module.exports  = function Twitter( _bot, _modules, userConfig )
 
 
         /**
+         * ## streamRaw
+         *
+         * builds a raw tweet stream filtered by the given text
+         *
+         * @param {String} from originating channel
+         * @param {String} to originating user
+         * @param {String} text full message text
+         *
+         * @return _String_ success message
+         */
+        streamRaw : function( from, to, text )
+        {
+            var searchText  = text.split( ' ' );
+
+            var target = this.getStreamTarget( searchText );
+            var _event = this.getStreamEvent( searchText );
+
+            var searchText  = searchText.join( ',' );
+
+            this.stream( from, target, _event, searchText );
+
+            return target + ' ' + _event + ' stream for ' + searchText + ' started';
+        },
+
+
+        /**
          * ## streamStop
          *
          * stops all streams in the current room
@@ -272,6 +380,27 @@ module.exports  = function Twitter( _bot, _modules, userConfig )
             }
 
             return 'Streams in ' + from + ' stopped';
+        },
+
+
+        /**
+         * ## streamUser
+         *
+         * builds a 'user' tweet stream filtered by the given text
+         *
+         * @param {String} from originating channel
+         * @param {String} to originating user
+         * @param {String} text full message text
+         *
+         * @return _String_ success message
+         */
+        streamUser : function( from, to, text )
+        {
+            var searchText  = text.split( ' ' ).join( ',' );
+
+            this.stream( from, 'user', 'tweet', searchText );
+
+            return 'User tweet stream for ' + searchText + ' started';
         },
 
 
@@ -304,131 +433,3 @@ module.exports  = function Twitter( _bot, _modules, userConfig )
         }
     }
 };
-
-
-// totally functional
-// too much info for a irc stream
-    // case 't-stream':
-    //     botText = this.streamRaw( from, to, realText );
-    //     break;
-    // case 't-following':
-    //     botText = this.getFollowing( from, to, realText );
-    //     break;
-    // case 't-followers':
-    //     botText = this.getFollowers( from, to, realText );
-    //     break;
-    // case 't-slug':
-    //     botText = this.getSlug( from, to, realText );
-    //     break;
-        // getFollowers : function( from, to, _text )
-        // {
-        //     var _t          = this.authenticate( from );
-        //     _t.get( 'followers/list', { screen_name : _text },  function ( err, data, response )
-        //     {
-        //         if ( err )
-        //         {
-        //             console.log( err );
-        //             _bot.say( from, err );
-        //         }
-        //         else
-        //         {
-        //             var _u = '';
-        //             data.users.forEach( function( user )
-        //             {
-        //                 _u += user.name + ' (@' + user.screen_name + ') - ' + user.url + '\n';
-        //             } );
-
-        //             _bot.say( from, _u );
-        //         }
-        //     } );
-        // },
-
-
-        // getFollowing : function( from, to, _text )
-        // {
-        //     var _t          = this.authenticate( from );
-        //     _t.get( 'friends/list', { screen_name : _text },  function ( err, data, response )
-        //     {
-        //         if ( err )
-        //         {
-        //             console.log( err );
-        //             _bot.say( from, err );
-        //         }
-        //         else
-        //         {
-        //             var _u = '';
-        //             data.users.forEach( function( user )
-        //             {
-        //                 _u += user.name + ' (@' + user.screen_name + ') - ' + user.url + '\n';
-        //             } );
-
-        //             _bot.say( from, _u );
-        //         }
-        //     } );
-        // },
-
-
-        // getSlug : function( from, to, _text )
-        // {
-        //     var _t          = this.authenticate( from );
-        //     _t.get( 'users/suggestions/:slug', { slug : _text }, function ( err, data, response )
-        //     {
-        //         console.log( data )
-        //     } );
-        // },
-
-
-        // searchTwitter : function( from, to, _text )
-        // {
-        //     var _t          = this.authenticate( from );
-        //     _t.get( 'search/tweets', { q: _text, count: 100 }, function( err, data, response )
-        //     {
-        //         console.log( data )
-        //     } );
-        // },
-
-        // /**
-        //  * ## streamRaw
-        //  *
-        //  * builds a raw tweet stream filtered by the given text
-        //  *
-        //  * @param {String} from originating channel
-        //  * @param {String} to originating user
-        //  * @param {String} text full message text
-        //  *
-        //  * @return _String_ success message
-        //  */
-        // streamRaw : function( from, to, text )
-        // {
-        //     var searchText  = text.split( ' ' );
-
-        //     var target = this.getStreamTarget( searchText );
-        //     var _event = this.getStreamEvent( searchText );
-
-        //     var searchText  = searchText.join( ',' );
-
-        //     this.stream( from, target, _event, searchText );
-
-        //     return target + ' ' + _event + ' stream for ' + searchText + ' started';
-        // },
-        //
-        //
-        // /**
-        //  * ## streamUser
-        //  *
-        //  * builds a 'user' tweet stream filtered by the given text
-        //  *
-        //  * @param {String} from originating channel
-        //  * @param {String} to originating user
-        //  * @param {String} text full message text
-        //  *
-        //  * @return _String_ success message
-        //  */
-        // streamUser : function( from, to, text )
-        // {
-        //     var searchText  = text.split( ' ' ).join( ',' );
-
-        //     this.stream( from, 'user', 'tweet', searchText );
-
-        //     return 'User tweet stream for ' + searchText + ' started';
-        // },

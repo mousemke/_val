@@ -5,16 +5,16 @@ var copy    = require( './i18n/words.i18n.js' );
 module.exports = function Anagramm( _bot, _modules, userConfig )
 {
     var activeAnagramm = {
-        minLength       : 4,
-        maxLength       : 8,
         currentWord     : '',
         currentWordTime : 0,
         currentWordDef  : '',
         englishWord     : '',
+        minLength       : 4,
+        maxLength       : 8,
+        newWordVote     : [],
         scrambledWord   : '',
         wordScores      : {},
         wordListener    : undefined,
-        newWordVote     : [],
         verboseDef      : false,
         lang            : userConfig.anagrammLang,
         channel         : userConfig.anagrammChannel,

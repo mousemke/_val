@@ -4,16 +4,17 @@ var copy = require( './i18n/words.i18n.js' );
 module.exports  = function Words( _bot, _modules, userConfig, activeWord )
 {
     activeWord = activeWord || {
-        minLength       : 4,
-        maxLength       : 8,
         currentWord     : '',
         currentWordTime : 0,
         currentWordDef  : '',
+        define          : true,
         englishWord     : '',
+        minLength       : 4,
+        maxLength       : 8,
+        newWordVote     : [],
         scrambledWord   : '',
         wordScores      : {},
         wordListener    : undefined,
-        newWordVote     : [],
         verboseDef      : false,
         lang            : userConfig.wordsLang,
         channel         : userConfig.wordsChannel,
@@ -393,7 +394,7 @@ module.exports  = function Words( _bot, _modules, userConfig, activeWord )
             }
 
             var complexTranslation = /[a-z]{2}\|[a-z]{2}/;
-            if ( complexTranslation.test( command ) )
+            if ( complexTranslation.test( command ) && activeWord.define )
             {
                 text = text.replace( command, '' ).trim();
                 command = command.split( '|' );
@@ -471,11 +472,17 @@ module.exports  = function Words( _bot, _modules, userConfig, activeWord )
                     case 'yi':
                     case 'zh':
                     case 'zu':
-                        this.translate( 'en', command, from, to, text );
+                        if ( activeWord.define )
+                        {
+                            this.translate( 'en', command, from, to, text );
+                        }
                         break;
                     case 'def':
                     case 'define':
-                        this.define( from, text.split( ' ' ).slice( 1 ).join( '%20' ), to );
+                        if ( activeWord.define )
+                        {
+                            this.define( from, text.split( ' ' ).slice( 1 ).join( '%20' ), to );
+                        }
                         break;
                     case 'unscramble':
                         this.unscramble( from, to, text );
@@ -584,19 +591,26 @@ module.exports  = function Words( _bot, _modules, userConfig, activeWord )
                     }
                 }
 
-                if ( botText.indexOf( '|' ) !== -1 )
+                if ( botText )
                 {
-                    botText = botText.split( '|' )[1].slice( 1 );
-                }
+                    if ( botText.indexOf( '|' ) !== -1 )
+                    {
+                        botText = botText.split( '|' )[1].slice( 1 );
+                    }
 
-                if ( from !== 'internal' )
-                {
-                    _bot.say( from, to + ': ' + langFrom + ' > ' + langTo + ' - ' + botText );
-                }
+                    if ( from !== 'internal' )
+                    {
+                        _bot.say( from, to + ': ' + langFrom + ' > ' + langTo + ' - ' + botText );
+                    }
 
-                if ( func )
+                    if ( func )
+                    {
+                        func( botText );
+                    }
+                }
+                else
                 {
-                    func( botText );
+                    _bot.say( from, 'Sorry ' + to + ', that didnt work.  Check your country codes maybe.' );
                 }
             }, false, from, to );
         },
