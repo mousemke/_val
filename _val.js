@@ -555,7 +555,7 @@ function listenToMessages( to, from, text )
         {
             if ( text === userConfig.trigger + 'moon?' )
             {
-                botText = 'The Moon has a long association with insanity and irrationality';
+                botText = 'In 500 million years, the moon will be 14,600 miles farther away than it is right now. When it is that far, total eclipses will not take place';
             }
             else if ( text === userConfig.trigger + 'isup' )
             {
@@ -585,7 +585,6 @@ function listenToMessages( to, from, text )
         ( text[ 0 ] ===  userConfig.trigger && text !==  userConfig.trigger ) )
     {
         // automated response to automated people
-        // _bot.say( from, 'nice try....' );
     }
 }
 
@@ -594,7 +593,7 @@ function listenToMessages( to, from, text )
  * ## listenToPm
  *
  * .... what do you think?
- * if there is no whisper command, the text is passed to normal messages
+ * if there is no specific whisper command, the text is passed to normal messages
  *
  * @param {String} from originating user
  * @param {String} text full message text
