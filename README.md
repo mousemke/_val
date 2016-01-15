@@ -29,6 +29,12 @@ This project adheres to the [Contributor Covenant](http://contributor-covenant.o
 
 **Change log**
 
+#### 0.2.5
+
++ fixed a twitter bug
++ rr can now target people
+
+
 #### 0.2.4
 
 + rebuilt words and anagramm

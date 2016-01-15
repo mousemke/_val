@@ -47,6 +47,18 @@ module.exports  = function RR( _bot, _modules, userConfig )
         },
 
 
+        /**
+         * ## rr
+         *
+         * take the shot
+         *
+         * @param {String} from originating channel
+         * @param {String} to originating user
+         * @param {String} text original text
+         * @param {String} botText text to write
+         *
+         * @return _String_ botText
+         */
         rr : function( from, to, text, botText )
         {
             var shot    = Math.floor( Math.random() * clipSize );
@@ -59,6 +71,13 @@ module.exports  = function RR( _bot, _modules, userConfig )
             }
             else
             {
+                text = text.split( ' ' );
+
+                if ( text[ 1 ] )
+                {
+                    to = text[ 1 ];
+                }
+
                 if ( bullet === 'bang!' )
                 {
                     var chairType = chairs[ Math.floor( Math.random() * chairs.length ) ];
