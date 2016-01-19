@@ -294,7 +294,16 @@ function displayDebugInfo( e )
             if ( command === 'PING' )
             {
                 var now    = Date.now();
-                var minUp  = Math.round( ( ( now - up ) / 1000 / 60 ) * 100 ) / 100;
+                var minUp  = ( Math.round( ( ( now - up ) / 1000 / 60 ) * 100 ) / 100 ) + '';
+
+                if ( minUp.indexOf( '.' ) === -1 )
+                {
+                    minUp += '.00';
+                }
+                else if ( minUp.split( '.' )[1].length !== 2 )
+                {
+                    minUp += '0';
+                }
 
                 console.log( chalk[ _color ]( text ), ( now - lastPing ) + 'ms', chalk.grey( '(' + minUp + 'min up)' ), new Date().toLocaleString() );
                 lastPing = now;
