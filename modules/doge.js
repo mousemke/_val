@@ -120,7 +120,7 @@ module.exports = function Doge( _bot, _modules, userConfig )
                 var res         = info.result[0];
                 var dogeBase    = res.Last;
                 var lastPrice   = amount * toSatoshi( res.Last );
-                var doge        = '狗狗币!  Ð' + amount + ' = ' + lastPrice + ' satoshi';
+                var doge        = '狗狗币!  Ð' + amount + ' = ' + lastPrice + ' Satoshi';
 
                 if ( full )
                 {
@@ -132,7 +132,7 @@ module.exports = function Doge( _bot, _modules, userConfig )
                         var eur = ( info.btc_eur.last * dogeBase * amount ).toFixed( 4 );
                         var ltc = ( 1 / info.ltc_btc.last * dogeBase * amount ).toFixed( 4 );
 
-                        doge += ', ' + usd + ' usd, ' + eur + ' eur, ' + ltc + ' ltc.';
+                        doge += ', $' + usd + ', ' + eur + '€, ' + ltc + ' LTC.';
 
                         _bot.say( from, doge );
                     }, true, from, to )

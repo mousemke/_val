@@ -33,6 +33,7 @@ This project adheres to the [Contributor Covenant](http://contributor-covenant.o
 
 + fixed a twitter bug
 + rr can now target people
++ changed the doge/market api
 
 
 #### 0.2.4
