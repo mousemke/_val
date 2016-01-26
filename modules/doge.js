@@ -100,63 +100,51 @@ module.exports = function Doge( _bot, _modules, userConfig )
          */
         doge : function( from, text, full, to )
         {
-            var textSplit = text.split( ' ' );
+            var toSatoshi = function( num )
+            {
+                return Math.floor( num * 100000000 );
+            }
 
-            var url = 'https://block.io/api/v1/get_current_price/?api_key=' + dcMasterList[ 'api-key' ];
+            var textSplit = text.split( ' ' );
+            var url = 'https://bittrex.com/api/v1.1/public/getmarketsummary?market=BTC-DOGE';
+
             _modules.core.apiGet( url, function( info )
             {
-                var price, dogePrices = info.data.prices,
-                    amount = parseInt( textSplit[ 1 ] );
+                var price, amount = parseInt( textSplit[ 1 ] );
 
                 if ( typeof amount !== 'number' || isNaN( amount ) === true )
                 {
                     amount = 1;
                 }
 
-                var doge = '狗狗币!  Ð' + amount + ' =';
-                doge += full === true ? ' [ ': ' ';
+                var res         = info.result[0];
+                var dogeBase    = res.Last;
+                var lastPrice   = amount * toSatoshi( res.Last );
+                var doge        = '狗狗币!  Ð' + amount + ' = ' + lastPrice + ' satoshi';
 
-                for ( var i = 0, lenI = dogePrices.length; i < lenI; i++ )
+                if ( full )
                 {
-                    if ( ( dogePrices[ i ].price_base === 'BTC' &&
-                         dogePrices[ i ].exchange === 'cryptsy' && full === false ) ||
-                        ( full === true ) )
+                    url = 'https://btc-e.com/api/3/ticker/btc_usd-btc_eur-ltc_btc';
+
+                    _modules.core.apiGet( url, function( info )
                     {
-                        price = dogePrices[ i ].price * amount;
-                        if ( dogePrices[ i ].price_base === 'BTC' && dogePrices[ i ].exchange === 'cryptsy' )
-                        {
-                            price = Math.floor( price  * 100000000 );
-                            price += full === true ? ' (Satoshi), ' : ' satoshi';
-                        }
-                        else if ( ( dogePrices[ i ].price_base === 'USD' && dogePrices[ i ].exchange === 'cryptsy' ) ||
-                            dogePrices[ i ].price_base === 'EUR' )
-                        {
-                            price = price + ' (' + ( dogePrices[ i ].price_base ) + '), ';
-                        }
-                        else if ( dogePrices[ i ].price_base !== 'BTC' &&
-                            dogePrices[ i ].price_base !== 'USD' &&
-                            dogePrices[ i ].price_base !== 'EUR' )
-                        {
-                            price = price + ' (' + ( dogePrices[ i ].price_base ) + '), ';
-                        }
-                        else
-                        {
-                            price = '';
-                        }
+                        var usd = ( info.btc_usd.last * dogeBase * amount ).toFixed( 4 );
+                        var eur = ( info.btc_eur.last * dogeBase * amount ).toFixed( 4 );
+                        var ltc = ( 1 / info.ltc_btc.last * dogeBase * amount ).toFixed( 4 );
 
-                        doge += price;
-                    }
-                }
-                if ( full === false )
-                {
-                    doge += '. TO THE MOON!!!!';
+                        doge += ', ' + usd + ' usd, ' + eur + ' eur, ' + ltc + ' ltc.';
+
+                        _bot.say( from, doge );
+                    }, true, from, to )
                 }
                 else
                 {
-                    doge = doge.slice( 0, doge.length - 2 ) + ' ]';
-                }
+                    var highPrice   = amount * toSatoshi( res.High );
+                    var lowPrice    = amount * toSatoshi( res.Low );
+                    doge += '. TO THE MOON!!!! ( H: ' + highPrice + ', L: ' + lowPrice + ' )';
 
-                _bot.say( from, doge );
+                    _bot.say( from, doge );
+                }
             }, true, from, to );
         },
 
