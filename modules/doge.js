@@ -128,9 +128,15 @@ module.exports = function Doge( _bot, _modules, userConfig )
 
                     _modules.core.apiGet( url, function( info )
                     {
-                        var usd = ( info.btc_usd.last * dogeBase * amount ).toFixed( 4 );
-                        var eur = ( info.btc_eur.last * dogeBase * amount ).toFixed( 4 );
-                        var ltc = ( 1 / info.ltc_btc.last * dogeBase * amount ).toFixed( 4 );
+                        var formatPrice = function( price )
+                        {
+                            price = ( price * dogeBase * amount );
+                            return price > 1 ? price.toFixed( 2 ) : price.toFixed( 4 );
+                        };
+
+                        var usd = formatPrice( info.btc_usd.last );
+                        var eur = formatPrice( info.btc_eur.last );
+                        var ltc = formatPrice( 1 / info.ltc_btc.last );
 
                         doge += ', $' + usd + ', ' + eur + '€, ' + ltc + ' LTC.';
 
