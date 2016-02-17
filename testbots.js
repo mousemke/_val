@@ -1,5 +1,5 @@
 // var channel = '#backend';
-var channel = '#soc-bots';
+var channel = '#bots';
 
 // Create the configuration
 var userConfig = {

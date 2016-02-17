@@ -18,8 +18,6 @@ All json configuration files are missing.  Be sure to copy the example files to 
 
 Feel free to donate to keep _val's hosting server up and running!
 
-BTC `17KYpA1dL32nwwRE47Xj2V5Pb9GNEcByan`
-
 DOGE `DQiQ8e62CQGqx378EuS8i8gUW2mLkfBuXu`
 
 This project adheres to the [Contributor Covenant](http://contributor-covenant.org/). By participating, you are expected to honor this code.
@@ -29,13 +27,15 @@ This project adheres to the [Contributor Covenant](http://contributor-covenant.o
 Need to report something? [val@knoblau.ch](mailto:val@knoblau.ch)
 
 
-**Change log**
+Change log
+==========
 
 #### 0.2.5
 
 + fixed a twitter bug
 + rr can now target people
 + changed the doge/market api
++ removed old CAH json
 
 
 #### 0.2.4
