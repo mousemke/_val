@@ -26,6 +26,8 @@ This project adheres to the [Contributor Covenant](http://contributor-covenant.o
 
 [_val - Code of Conduct](https://github.com/mousemke/_val/blob/master/CODE_OF_CONDUCT.md)
 
+Need to report something? [val@knoblau.ch](mailto:val@knoblau.ch)
+
 
 **Change log**
 
