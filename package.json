@@ -1,6 +1,6 @@
 {
   "name": "val-bot",
-  "version": "0.2.8",
+  "version": "0.2.9",
   "description": "An IRC bot that does things.",
   "main": "_val.js",
   "repository": {
@@ -34,8 +34,7 @@
     "testbots.js",
     "README.md",
     "_val.js",
-    "json/seen.sample.js",
-    "json/unscrambleScores.example.json",
+    "json/unscrambleScores.sample.json",
     "json/dcMasterList.sample.json",
     "json/seen.sample.json",
     "json/cards.json",
