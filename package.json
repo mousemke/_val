@@ -1,6 +1,6 @@
 {
   "name": "val-bot",
-  "version": "0.2.6",
+  "version": "0.2.8",
   "description": "An IRC bot that does things.",
   "main": "_val.js",
   "repository": {
@@ -40,7 +40,7 @@
     "json/seen.sample.json",
     "json/cards.json",
     "config/_val.config.sample.js",
-    "cofig/_val.modules.sample.js",
+    "config/_val.modules.sample.js",
     "lists/",
     "modules/"
   ]
