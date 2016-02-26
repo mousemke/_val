@@ -67,17 +67,15 @@ module.exports  = function Admin( _bot, _modules, userConfig )
          */
         responses : function( from, to, text, botText, command )
         {
-            if ( userConfig.admins.indexOf( to.toLowerCase() ) !== -1 )
+            console.log( command[ 0 ] );
+            if ( userConfig.admins.indexOf( to.toLowerCase() ) !== -1  &&
+                command[ 0 ] === userConfig.trigger )
             {
-                var command     = text.split( ' ' );
-                var textSplit   = text.split( ' ' ).slice( 1 );
-                if ( typeof command !== 'string' )
-                {
-                    command = command[0];
-                }
-                command = command.slice( 2 );
+                var adminCommand = command.slice( 1 );
 
-                switch ( command )
+                var textSplit   = text.split( ' ' ).slice( 1 );
+
+                switch ( adminCommand )
                 {
                     case 'v':
                         botText = 'Well, ' + to + ', thanks for asking!  I\'m currently running version ' + userConfig.version;

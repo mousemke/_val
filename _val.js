@@ -689,7 +689,6 @@ function replaceGuys( to, text )
  */
 function responses( from, to, text, botText, command )
 {
-    console.log( command );
     switch ( command )
     {
         case 'active':
