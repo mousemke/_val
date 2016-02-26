@@ -235,7 +235,7 @@ module.exports  = function CAH( _bot, _modules, userConfig )
             else
             {
                 console.log( 'you must have private messages enabled to run CAH.  unloading module.' );
-                delete modules.CAH;
+                delete _modules.CAH;
             }
         },
 
