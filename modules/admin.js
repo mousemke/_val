@@ -61,10 +61,11 @@ module.exports  = function Admin( _bot, _modules, userConfig )
          * @param {String} to originating user
          * @param {String} text full input string
          * @param {String} botText text to say
+         * @param {String} command bot command (first word)
          *
          * @return _String_ changed botText
          */
-        responses : function( from, to, text, botText )
+        responses : function( from, to, text, botText, command )
         {
             if ( userConfig.admins.indexOf( to.toLowerCase() ) !== -1 )
             {

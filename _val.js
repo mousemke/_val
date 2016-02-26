@@ -571,6 +571,13 @@ function listenToMessages( to, from, text )
                 botText = 'Yes, but c\'mon!  At least use a full sentence!';
             }
 
+            if ( text[0] === userConfig.trigger )
+            {
+                text = text.slice( 1 );
+            }
+
+            var command = text.split( ' ' )[ 0 ];
+
             for ( var module in _modules )
             {
                 if ( botText !== '' )
@@ -580,7 +587,7 @@ function listenToMessages( to, from, text )
 
                 if ( module !== 'constructors' )
                 {
-                    botText = _modules[ module ].responses( from, to, text, botText );
+                    botText = _modules[ module ].responses( from, to, text, botText, command );
                 }
             }
         }

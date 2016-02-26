@@ -162,10 +162,17 @@ module.exports = function PlainText( _bot, _modules, userConfig )
 
         /**
          * Responses
-         **/
-        responses : function( from, to, text, botText )
+         *
+         * @param {String} from originating channel
+         * @param {String} to originating user
+         * @param {String} text full input string
+         * @param {String} botText text to say
+         * @param {String} command bot command (first word)
+         *
+         * @return _String_ changed botText
+         */
+        responses : function( from, to, text, botText, command )
         {
-            var command = text.slice( 1 ).split( ' ' )[ 0 ];
             var moon    = moonRegex.exec( command );
             var space   = spaceRegex.exec( command );
             var khan    = khanRegex.exec( command );

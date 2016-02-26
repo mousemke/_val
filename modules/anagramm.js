@@ -27,6 +27,7 @@ module.exports = function Anagramm( _bot, _modules, userConfig )
 
     words = new Words( _bot, _modules, userConfig, activeAnagramm );
 
+
     /**
      * ## processNewWord
      *

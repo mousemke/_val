@@ -541,26 +541,18 @@ module.exports  = function CAH( _bot, _modules, userConfig )
         /**
          * possible responses to commands
          *
-         * @param  {String}         from                channel of origin
-         * @param  {String}         to                  player of origin
-         * @param  {String}         text                full text
-         * @param  {String}         botText             response text
+         * @param {String} from originating channel
+         * @param {String} to originating user
+         * @param {String} text full input string
+         * @param {String} botText text to say
+         * @param {String} command bot command (first word)
          *
-         * @return {String}                             response text
+         * @return _String_ changed botText
          */
-        responses : function( from, to, text, botText )
+        responses : function( from, to, text, botText, command )
         {
             if ( cahRoom === from )
             {
-                var command = text.slice( ' ' );
-
-                if ( typeof command !== 'string' )
-                {
-                    command = command[0];
-                }
-
-                command = command.slice( 1 );
-
                 if ( command === 'play' )
                 {
                     botText = this.addPlayer( to );

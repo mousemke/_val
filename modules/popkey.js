@@ -56,12 +56,17 @@ module.exports  = function PopKey( _bot, _modules, userConfig )
         },
 
 
-        responses : function( from, to, text, botText )
+        /**
+         * @param {String} from originating channel
+         * @param {String} to originating user
+         * @param {String} text full input string
+         * @param {String} botText text to say
+         * @param {String} command bot command (first word)
+         *
+         * @return _String_ changed botText
+         */
+        responses : function( from, to, text, botText, command )
         {
-
-            var textSplit = text.split( ' ' );
-            var command = textSplit[ 0 ].slice( 1 );
-
             if ( typeof command !== 'string' )
             {
                 command = command[ 0 ];

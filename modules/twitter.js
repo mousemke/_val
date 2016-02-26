@@ -205,12 +205,13 @@ module.exports  = function Twitter( _bot, _modules, userConfig )
          *
          * @param {String} from originating channel
          * @param {String} to originating user
-         * @param {String} text full message text
-         * @param {String} botText old botText
+         * @param {String} text full input string
+         * @param {String} botText text to say
+         * @param {String} command bot command (first word)
          *
-         * @return _String_ new botText
+         * @return _String_ changed botText
          */
-        responses : function( from, to, text, botText )
+        responses : function( from, to, text, botText, command )
         {
             var _t          = userConfig.twitterRooms[ from ];
             var lowercaseTo = to.toLowerCase();
@@ -223,12 +224,7 @@ module.exports  = function Twitter( _bot, _modules, userConfig )
                     if ( userConfig.twitterUsersBlackList.indexOf( lowercaseTo ) === -1 )
                     {
                         var textSplit = text.split( ' ' );
-                        var command = textSplit[ 0 ].slice( 1 );
 
-                        if ( typeof command !== 'string' )
-                        {
-                            command = command[ 0 ];
-                        }
                         var realText = textSplit.slice( 1 ).join( ' ' );
 
                         switch ( command )
