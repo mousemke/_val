@@ -72,6 +72,8 @@ module.exports  = function PopKey( _bot, _modules, userConfig )
                 command = command[ 0 ];
             }
 
+            var textSplit   = text.split( ' ' ).slice( 1 );
+
             switch ( command )
             {
                 case 'gif':
