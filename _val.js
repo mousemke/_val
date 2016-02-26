@@ -637,7 +637,7 @@ function listenToPm( from, text )
                 });
                 break;
             default:
-                listenToMessages( from, from, text );
+                listenToMessages( from, from, text, command );
         }
     }
     else
@@ -650,7 +650,7 @@ function listenToPm( from, text )
                 botText = '';
                 break;
             default:
-                listenToMessages( from, from, text );
+                listenToMessages( from, from, text, command );
         }
     }
 }
@@ -687,10 +687,9 @@ function replaceGuys( to, text )
  *
  * @return _String_ response text
  */
-function responses( from, to, text, botText )
+function responses( from, to, text, botText, command )
 {
-    var command = text.slice( 1 ).split( ' ' )[ 0 ];
-
+    console.log( command );
     switch ( command )
     {
         case 'active':
