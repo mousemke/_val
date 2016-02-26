@@ -34,8 +34,13 @@
     "testbots.js",
     "README.md",
     "_val.js",
-    "config/",
-    "json/",
+    "json/seen.sample.js",
+    "json/unscrambleScores.example.json",
+    "json/dcMasterList.sample.json",
+    "json/seen.sample.json",
+    "json/cards.json",
+    "config/_val.config.sample.js",
+    "cofig/_val.modules.sample.js",
     "lists/",
     "modules/"
   ]
