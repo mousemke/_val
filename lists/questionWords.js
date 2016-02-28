@@ -29,5 +29,6 @@ module.exports = [  'who',
                     'whose',
                     'whom',
                     'wherefore',
-                    'did'
+                    'did',
+                    'which'
                 ];
