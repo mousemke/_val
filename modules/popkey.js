@@ -77,7 +77,7 @@ module.exports  = function PopKey( _bot, _modules, userConfig )
             switch ( command )
             {
                 case 'gif':
-                    botText = this.getGif( from, to, textSplit.slice( 1 ).join( ' ' ) );
+                    botText = this.getGif( from, to, textSplit.join( ' ' ) );
                     break;
             }
 
