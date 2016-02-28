@@ -91,6 +91,8 @@ module.exports  = function PopKey( _bot, _modules, userConfig )
          */
         responses : function( from, to, text, botText, command )
         {
+            var textSplit   = text.split( ' ' ).slice( 1 );
+
             switch ( command )
             {
                 case '8ball':
