@@ -2,7 +2,7 @@
 
 erm.... bot.
 
-v. 0.2.11
+v. 0.2.12
 
 install
 

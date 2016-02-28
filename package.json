@@ -1,6 +1,6 @@
 {
   "name": "val-bot",
-  "version": "0.2.11",
+  "version": "0.2.12",
   "description": "An IRC bot that does things.",
   "main": "_val.js",
   "repository": {
