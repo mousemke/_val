@@ -417,7 +417,7 @@ module.exports  = function Twitter( _bot, _modules, userConfig )
         {
             if ( text.length > 140 )
             {
-                _bot.say( from, 'psst... ' + to + ' twitter only supports 140 characters' );
+                _bot.say( from, 'psst... ' + to + ', twitter only supports 140 characters' );
             }
             else
             {
