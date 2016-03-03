@@ -213,7 +213,9 @@ module.exports  = function Twitter( _bot, _modules, userConfig )
          */
         responses : function( from, to, text, botText, command )
         {
-            var _t          = userConfig.twitterRooms[ from ];
+            var twitterRooms    = userConfig.twitterRooms;
+            var _t              = twitterRooms[ from ] || twitterRooms[ '*' ];
+
             var lowercaseTo = to.toLowerCase();
 
             if ( _t )
