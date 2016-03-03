@@ -415,19 +415,26 @@ module.exports  = function Twitter( _bot, _modules, userConfig )
          */
         tweet : function( from, to, text )
         {
-            var _t = this.authenticate( from );
-
-            _t.post( 'statuses/update', { status : text }, function( err, data, response )
+            if ( text.length > 140 )
             {
-                if ( err )
+                _bot.say( from, 'psst... ' + to + ' twitter only supports 140 characters' );
+            }
+            else
+            {
+                var _t = this.authenticate( from );
+
+                _t.post( 'statuses/update', { status : text }, function( err, data, response )
                 {
-                    _bot.say( from, 'Sorry ' + to + ', ' + err.code + ' : ' + err.message );
-                }
-                else
-                {
-                    _bot.say( from, 'Tweet Posted to ' + _t.account + ': ' + text );
-                }
-            } );
+                    if ( err )
+                    {
+                        _bot.say( from, 'Sorry ' + to + ', ' + err.code + ' : ' + err.message );
+                    }
+                    else
+                    {
+                        _bot.say( from, 'Tweet Posted to ' + _t.account + ': ' + text );
+                    }
+                } );
+            }
         }
     }
 };
