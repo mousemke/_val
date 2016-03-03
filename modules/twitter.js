@@ -19,7 +19,8 @@ module.exports  = function Twitter( _bot, _modules, userConfig )
          */
         authenticate : function( from )
         {
-            var _t      = userConfig.twitterRooms[ from ];
+            var twitterRooms    = userConfig.twitterRooms;
+            var _t              = twitterRooms[ from ] || twitterRooms[ '*' ];
 
             var auth    = new Twit( {
                 consumer_key        : _t.consumerKey,
