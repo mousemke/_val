@@ -3,6 +3,50 @@ Older changes
 
 This is truncated from the readme file to keep down the size
 
+#### 0.2.3
+
++ built safeties around the bot ignore list
++ further abstracted slack connections
++ fixed balance bank
++ added popkey content filter
++ added notice colors
++ bumped node irc version
+
+
+#### 0.2.2
+
++ pool module removed
++ verbose mode added
++ admin message broadcast re worked
++ added twitter module
++ fixed +gif to accept apostrophes
++ added emergencyfetti
++ added balance bank
++ fixed unscramble and anagramm doge payout
++ changed package name to val-bot for npm compatability
+
+
+#### 0.2.1
+
++ slight changes to apiGet to allow headers
++ added troll word blacklist
++ updated nico module
++ added popkey module to handle gif
++ updated +gif to use a gif api
++ added 8ball
+
+
+#### 0.2.0
+
++ fixed a bug inactive where bots registered
++ all command can now be passed as whispers
++ whispers now accept triggered input as well
++ added autojoin for Slack
++ completely rebuilt the internal structure
++ added safeties to apiGet for before the bot is running
++ added +test
+
+
 #### 0.1.5
 + added 'seen' to _val core
 + added 'food' alias for 4sq
