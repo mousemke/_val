@@ -218,7 +218,7 @@ module.exports  = function Twitter( _bot, _modules, userConfig )
 
             if ( _t )
             {
-                if ( _t.users.indexOf( lowercaseTo ) !== -1 || _.users[0] === '*' )
+                if ( _t.users.indexOf( lowercaseTo ) !== -1 || _t.users[0] === '*' )
                 {
                     if ( userConfig.twitterUsersBlackList.indexOf( lowercaseTo ) === -1 )
                     {
