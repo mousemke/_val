@@ -33,6 +33,8 @@ Change log
 #### 0.2.13
 
  + twitter module now accepts '*' as all users
+ + twitter module now accepts '*' as all rooms
+ + tweets limited to 140 characters
 
 
 #### 0.2.11
