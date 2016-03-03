@@ -176,7 +176,7 @@
                 },
                 '#val-test' : {
                     account             : '@mousemke',
-                    users               : [ 'user1' ],
+                    users               : [ '*' ],
                     consumerKey         : '1234567890',
                     consumerSecret      : '1234567890',
                     accessToken         : '1234567890-1234567890',
