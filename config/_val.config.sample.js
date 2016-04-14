@@ -50,6 +50,11 @@ var userConfig = {
     autoAuth                : false,
 
     /**
+     * autojoin all channels (unless they're specifically blacklisted)
+     */
+    autojoin                : false,
+
+    /**
      * commands from bots are ignored
      **/
     bots                    : [ 'bot1', 'bot2', 'bot3' ],

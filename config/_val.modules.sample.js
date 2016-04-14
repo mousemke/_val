@@ -25,7 +25,7 @@
 
 
     Anagramm    : {
-        enabled : true, // requires module: words
+        enabled : false, // requires module: words
         ini     : true,
         url     : './modules/anagramm.js',
         options : {
@@ -68,7 +68,7 @@
 
 
     Foursquare        : {
-        enabled : true,
+        enabled : false,
         url     : './modules/_4sq.js',
         options : {
             foursquareID        : '4sq ID - go get one',
@@ -81,7 +81,7 @@
 
 
     GuildWars   : {
-        enabled : true,
+        enabled : false,
         url     : './modules/games/gw2.js',
         options : {
             guildWars2Trigger       : 'gw2',
@@ -149,7 +149,7 @@
 
 
     Twitch      : {
-        enabled : true,
+        enabled : false,
         url     : './modules/twitch.js',
         options : {
             autoAuth                : true,
@@ -161,7 +161,7 @@
 
 
     Twitter     : {
-        enabled : true,
+        enabled : false,
         ini     : true,
         url     : './modules/twitter.js',
         options : {
@@ -197,7 +197,7 @@
 
 
     Words       : {
-        enabled : true,
+        enabled : false,
         ini     : true,
         url     : './modules/words.js',
         options : {
