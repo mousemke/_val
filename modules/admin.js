@@ -61,22 +61,21 @@ module.exports  = function Admin( _bot, _modules, userConfig )
          * @param {String} to originating user
          * @param {String} text full input string
          * @param {String} botText text to say
+         * @param {String} command bot command (first word)
          *
          * @return _String_ changed botText
          */
-        responses : function( from, to, text, botText )
+        responses : function( from, to, text, botText, command )
         {
-            if ( userConfig.admins.indexOf( to.toLowerCase() ) !== -1 )
+            console.log( command[ 0 ] );
+            if ( userConfig.admins.indexOf( to.toLowerCase() ) !== -1  &&
+                command[ 0 ] === userConfig.trigger )
             {
-                var command     = text.split( ' ' );
-                var textSplit   = text.split( ' ' ).slice( 1 );
-                if ( typeof command !== 'string' )
-                {
-                    command = command[0];
-                }
-                command = command.slice( 2 );
+                var adminCommand = command.slice( 1 );
 
-                switch ( command )
+                var textSplit   = text.split( ' ' ).slice( 1 );
+
+                switch ( adminCommand )
                 {
                     case 'v':
                         botText = 'Well, ' + to + ', thanks for asking!  I\'m currently running version ' + userConfig.version;

@@ -213,17 +213,16 @@ module.exports = function Doge( _bot, _modules, userConfig )
         /**
          * dogecoin module responses
          *
-         * @param  {str}            from                originating channel
-         * @param  {str}            to                  originating user
-         * @param  {str}            text                full message text
-         * @param  {str}            botText             old botText
+         * @param {String} from originating channel
+         * @param {String} to originating user
+         * @param {String} text full input string
+         * @param {String} botText text to say
+         * @param {String} command bot command (first word)
          *
-         * @return {str}                                        new botText
+         * @return _String_ changed botText
          */
-        responses : function( from, to, text, botText )
+        responses : function( from, to, text, botText, command )
         {
-            var command = text.slice( 1 ).split( ' ' )[ 0 ];
-
             switch ( command )
             {
                 case 'doge':

@@ -8,10 +8,19 @@ module.exports = function Nico( _bot, _modules, userConfig )
 
     return {
 
-        responses : function( from, to, text, botText )
+        /**
+         * ## dont be the nico
+         *
+         * @param {String} from originating channel
+         * @param {String} to originating user
+         * @param {String} text full input string
+         * @param {String} botText text to say
+         * @param {String} command bot command (first word)
+         *
+         * @return _String_ changed botText
+         */
+        responses : function( from, to, text, botText, command )
         {
-
-            var command = text.slice( 1 ).split( ' ' )[ 0 ];
             if ( nicoFlipped === true && to === userConfig.nico && command !== 'is' + ( userConfig.nico ) + 'flipped' )
             {
                 botText = 'I\'m sorry, ' + ( userConfig.nico ) + '... I can\'t hear you while you\'re flipped';

@@ -346,9 +346,8 @@ function reConnection()
         console.log( 'disconnected? ', e );
     } );
 
-    console.log( 'pre iniClient' );
     iniClient();
-    console.log( 'post iniClient' );
+    console.log( 're-initializing client...' );
 }
 
 
@@ -410,7 +409,7 @@ function generateChannelList()
      */
     function removeBlacklistChannels()
     {
-        var _b, _bIndex, _black = userConfig.channelsPublicIgnore || [];
+        var _b, _bIndex, _black = userConfig.channelsPublicIgnore || [];
         var _blackLength        = _black.length;
 
         if ( _blackLength )
@@ -570,6 +569,13 @@ function listenToMessages( to, from, text )
                 botText = 'Yes, but c\'mon!  At least use a full sentence!';
             }
 
+            if ( text[0] === userConfig.trigger )
+            {
+                text = text.slice( 1 );
+            }
+
+            var command = text.split( ' ' )[ 0 ];
+
             for ( var module in _modules )
             {
                 if ( botText !== '' )
@@ -579,7 +585,7 @@ function listenToMessages( to, from, text )
 
                 if ( module !== 'constructors' )
                 {
-                    botText = _modules[ module ].responses( from, to, text, botText );
+                    botText = _modules[ module ].responses( from, to, text, botText, command );
                 }
             }
         }
@@ -629,7 +635,7 @@ function listenToPm( from, text )
                 });
                 break;
             default:
-                listenToMessages( from, from, text );
+                listenToMessages( from, from, text, command );
         }
     }
     else
@@ -642,7 +648,7 @@ function listenToPm( from, text )
                 botText = '';
                 break;
             default:
-                listenToMessages( from, from, text );
+                listenToMessages( from, from, text, command );
         }
     }
 }
@@ -679,10 +685,8 @@ function replaceGuys( to, text )
  *
  * @return _String_ response text
  */
-function responses( from, to, text, botText )
+function responses( from, to, text, botText, command )
 {
-    var command = text.slice( 1 ).split( ' ' )[ 0 ];
-
     switch ( command )
     {
         case 'active':
@@ -886,8 +890,9 @@ function watchActive( from, to )
  */
 function watchSeen( from, to )
 {
-    if ( userConfig.publicChannels && userConfig.publicChannels.indexOf( from ) !== -1 &&
-            userConfig.channelsSeenIgnore.indexOf( from ) === -1 )
+    if ( userConfig.publicChannels &&
+            userConfig.publicChannels.indexOf( from )       !== -1 &&
+            userConfig.channelsSeenIgnore.indexOf( from )   === -1 )
     {
         lastSeenList[ to ] = { time: Date.now(), place: from };
     }

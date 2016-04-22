@@ -33,4 +33,5 @@ module.exports = [
                     'whom',
                     'wherefore',
                     'would',
+                    'which'
                 ];

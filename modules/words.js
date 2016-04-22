@@ -368,18 +368,12 @@ module.exports  = function Words( _bot, _modules, userConfig, activeWord )
          * @param {String} to originating user
          * @param {String} text full input string
          * @param {String} botText text to say
+         * @param {String} command bot command (first word)
          *
          * @return _String_ changed botText
          */
-        responses : function( from, to, text, botText )
+        responses : function( from, to, text, botText, command )
         {
-            if ( text[0] === userConfig.trigger )
-            {
-                text = text.slice( 1 );
-            }
-
-            var command = text.split( ' ' )[ 0 ];
-
             if ( from === wordsChannel )
             {
                 switch ( command )

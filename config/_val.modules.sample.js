@@ -14,12 +14,12 @@
 
 
     Admin       : {
-        enabled : true,
+        enabled : false,
         url     : './modules/admin.js',
         options : {
             adminMessage            : '5 minutes later test. well, this appears to work',
             adminMessageInterval    : 300000, // 5 min
-            adminMessageChannels    : [ '#soc-bots' ] // optional default.  otherwise it falls back to all channels
+            adminMessageChannels    : [ '#bots' ] // optional default.  otherwise it falls back to all channels
         }
     },
 
@@ -49,7 +49,7 @@
 
 
     CAH        : {
-        enabled : true,
+        enabled : false,
         ini     : true,
         url     : './modules/cah.js',
         options : {
@@ -61,7 +61,7 @@
 
 
     Doge        : {
-        enabled : true,
+        enabled : false,
         ini     : true,
         url     : './modules/doge.js'
     },
@@ -104,7 +104,7 @@
 
 
     PopKey      : {
-        enabled : true,
+        enabled : false,
         url     : './modules/popkey.js',
         options : {
             popKeyComtentFilter : true,
@@ -176,7 +176,7 @@
                 },
                 '#val-test' : {
                     account             : '@mousemke',
-                    users               : [ 'user1' ],
+                    users               : [ '*' ],
                     consumerKey         : '1234567890',
                     consumerSecret      : '1234567890',
                     accessToken         : '1234567890-1234567890',

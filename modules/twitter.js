@@ -19,7 +19,8 @@ module.exports  = function Twitter( _bot, _modules, userConfig )
          */
         authenticate : function( from )
         {
-            var _t      = userConfig.twitterRooms[ from ];
+            var twitterRooms    = userConfig.twitterRooms;
+            var _t              = twitterRooms[ from ] || twitterRooms[ '*' ];
 
             var auth    = new Twit( {
                 consumer_key        : _t.consumerKey,
@@ -205,30 +206,27 @@ module.exports  = function Twitter( _bot, _modules, userConfig )
          *
          * @param {String} from originating channel
          * @param {String} to originating user
-         * @param {String} text full message text
-         * @param {String} botText old botText
+         * @param {String} text full input string
+         * @param {String} botText text to say
+         * @param {String} command bot command (first word)
          *
-         * @return _String_ new botText
+         * @return _String_ changed botText
          */
-        responses : function( from, to, text, botText )
+        responses : function( from, to, text, botText, command )
         {
-            var _t          = userConfig.twitterRooms[ from ];
+            var twitterRooms    = userConfig.twitterRooms;
+            var _t              = twitterRooms[ from ] || twitterRooms[ '*' ];
+
             var lowercaseTo = to.toLowerCase();
 
             if ( _t )
             {
-                if ( _t.users.indexOf( lowercaseTo ) !== -1 ||
-                        from[ 0 ] !== '#' )
+                if ( _t.users.indexOf( lowercaseTo ) !== -1 || _t.users[0] === '*' )
                 {
                     if ( userConfig.twitterUsersBlackList.indexOf( lowercaseTo ) === -1 )
                     {
                         var textSplit = text.split( ' ' );
-                        var command = textSplit[ 0 ].slice( 1 );
 
-                        if ( typeof command !== 'string' )
-                        {
-                            command = command[ 0 ];
-                        }
                         var realText = textSplit.slice( 1 ).join( ' ' );
 
                         switch ( command )
@@ -417,19 +415,26 @@ module.exports  = function Twitter( _bot, _modules, userConfig )
          */
         tweet : function( from, to, text )
         {
-            var _t = this.authenticate( from );
-
-            _t.post( 'statuses/update', { status : text }, function( err, data, response )
+            if ( text.length > 140 )
             {
-                if ( err )
+                _bot.say( from, 'psst... ' + to + ', twitter only supports 140 characters' );
+            }
+            else
+            {
+                var _t = this.authenticate( from );
+
+                _t.post( 'statuses/update', { status : text }, function( err, data, response )
                 {
-                    _bot.say( from, 'Sorry ' + to + ', ' + err.code + ' : ' + err.message );
-                }
-                else
-                {
-                    _bot.say( from, 'Tweet Posted to ' + _t.account + ': ' + text );
-                }
-            } );
+                    if ( err )
+                    {
+                        _bot.say( from, 'Sorry ' + to + ', ' + err.code + ' : ' + err.message );
+                    }
+                    else
+                    {
+                        _bot.say( from, 'Tweet Posted to ' + _t.account + ': ' + text );
+                    }
+                } );
+            }
         }
     }
 };
