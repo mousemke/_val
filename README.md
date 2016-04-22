@@ -2,7 +2,7 @@
 
 erm.... bot.
 
-v. 0.2.5
+v. 0.2.13
 
 install
 
@@ -29,6 +29,11 @@ Need to report something? [val@knoblau.ch](mailto:val@knoblau.ch)
 
 Change log
 ==========
+
+#### 0.2.13
+
++ fixed a blacklist bug
+
 
 #### 0.2.5
 

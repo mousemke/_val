@@ -410,7 +410,7 @@ function generateChannelList()
      */
     function removeBlacklistChannels()
     {
-        var _b, _bIndex, _black = userConfig.channelsPublicIgnore;
+        var _b, _bIndex, _black = userConfig.channelsPublicIgnore || [];
         var _blackLength        = _black.length;
 
         if ( _blackLength )
@@ -424,7 +424,6 @@ function generateChannelList()
                 if ( _bIndex !== -1 )
                 {
                     channels.splice( _bIndex, 1 );
-
                 }
             }
         }
