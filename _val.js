@@ -1,10 +1,10 @@
 
-var userConfig      = require( './config/_val.config.js' );
-    userConfig.req  = {};
+var userConfig          = require( './config/_val.config.js' );
+    userConfig.req      = {};
+    userConfig.command  = {};
 
 var http            = userConfig.req.http   = require( 'http' ),
     https           = userConfig.req.https  = require( 'https' ),
-    irc             = userConfig.req.irc    = require( 'irc' ),
     fs              = userConfig.req.fs     = require( 'fs' ),
     chalk           = userConfig.req.chalk  = require( 'chalk' );
 
@@ -346,7 +346,7 @@ function reConnection()
         console.log( 'disconnected? ', e );
     } );
 
-    iniClient();
+    ini();
     console.log( 're-initializing client...' );
 }
 
@@ -399,7 +399,7 @@ function generateChannelList()
         removeBlacklistChannels();
         userConfig.channels = channels;
 
-        iniClient();
+        ini();
     }
 
 
@@ -461,37 +461,16 @@ function generateChannelList()
 
 
 /**
- * ## iniClient
+ * ## ini
  *
  * sets listeners and module list up
  *
  * @return _Void_
  */
-function iniClient()
+function ini()
 {
-    _bot = new irc.Client( userConfig.server, userConfig.botName, {
-        channels                : channels,
-        password                : userConfig.serverPassword,
-        showErrors              : false,
-        autoRejoin              : true,
-        autoConnect             : true,
-        floodProtection         : userConfig.floodProtection,
-        floodProtectionDelay    : userConfig.floodProtectionDelay,
-    });
-
-    _bot.addListener( 'error', function( message )
-    {
-        console.log( 'error: ', chalk.red( message ) );
-    });
-
-    _bot.addListener( 'pm', listenToPm );
-
-    _bot.addListener( 'message', listenToMessages.bind( this ) );
-
-    if ( userConfig.verbose === true )
-    {
-        _bot.addListener( 'raw', displayDebugInfo );
-    }
+    ircBot();
+    // telegramBot();
 
     _bot.active = {};
 
@@ -507,6 +486,63 @@ function iniClient()
 
     console.log( '_bot built' );
 }
+
+
+function ircBot()
+{
+    var irc  = userConfig.command.irc = require( 'irc' );
+
+    var ircConfig = userConfig.command.irc;
+
+    _bot = new irc.Client( ircConfig.server, userConfig.botName, {
+        channels                : channels,
+        password                : ircConfig.serverPassword,
+        showErrors              : false,
+        autoRejoin              : true,
+        autoConnect             : true,
+        floodProtection         : ircConfig.floodProtection,
+        floodProtectionDelay    : ircConfig.floodProtectionDelay,
+    });
+
+    _bot.addListener( 'error', function( message )
+    {
+        console.log( 'error: ', chalk.red( message ) );
+    });
+
+    _bot.addListener( 'pm', listenToPm );
+
+    _bot.addListener( 'message', listenToMessages.bind( this ) );
+
+    if ( userConfig.verbose === true )
+    {
+        _bot.addListener( 'raw', displayDebugInfo );
+    }
+}
+
+
+// function telegramBot()
+// {
+//     var Telegram = require( 'telegram-api' ).default;
+//     var Message = require( 'telegram-api/types/Message');
+//     var File    = require( 'telegram-api/types/File' );
+
+//     var telegramConfig = userConfig.command.telegram;
+
+//     _bot = new Telegram( {
+//         token   : telegramConfig.apiKey
+//     } );
+
+//     _bot.start();
+
+//     _bot.get( /./, function( message )
+//     {
+//         console.log( message );
+//         // var answer = new Message()
+//         //                 .text( 'Hi! \\o' + message.chat.id )
+//         //                 .to( message.chat.id );
+//         // _bot.send( answer );
+//     });
+// }
 
 
 /**

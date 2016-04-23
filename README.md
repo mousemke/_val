@@ -2,7 +2,7 @@
 
 erm.... bot.
 
-v. 0.2.13
+v. 0.3
 
 install
 
@@ -30,19 +30,25 @@ Need to report something? [val@knoblau.ch](mailto:val@knoblau.ch)
 Change log
 ==========
 
+#### 0.3.0
+
++ seperated command modules
+
+
 #### 0.2.13
 
-
- + fixed a blacklist bug
- + twitter module now accepts '*' as all users
- + twitter module now accepts '*' as all rooms
- + tweets limited to 140 characters
++ fixed a blacklist bug
++ twitter module now accepts '*' as all users
++ twitter module now accepts '*' as all rooms
++ tweets limited to 140 characters
++ t-stream-filter now aliased to +t-stream
++ twitter streams now filter out retweets
 
 
 #### 0.2.11
 
- + 8ball fixed
- + question words updated
++ 8ball fixed
++ question words updated
 
 
 #### 0.2.6

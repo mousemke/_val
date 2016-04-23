@@ -4,8 +4,6 @@ var Twit = require('twit');
 
 module.exports  = function Twitter( _bot, _modules, userConfig )
 {
-    var apikey      = userConfig.popKeyAPIKey;
-
     return {
 
         /**
@@ -36,6 +34,17 @@ module.exports  = function Twitter( _bot, _modules, userConfig )
         },
 
 
+        /**
+         * ## getFollowers
+         *
+         * gets the followers of the names or attached twitter account
+         *
+         * @param {String} from originating channel
+         * @param {String} to originating user
+         * @param {String} _text full input string
+         *
+         * @return _Void_
+         */
         getFollowers : function( from, to, _text )
         {
             var _t          = this.authenticate( from );
@@ -60,6 +69,17 @@ module.exports  = function Twitter( _bot, _modules, userConfig )
         },
 
 
+        /**
+         * ## getFollowing
+         *
+         * gets the following of the names or attached twitter account
+         *
+         * @param {String} from originating channel
+         * @param {String} to originating user
+         * @param {String} _text full input string
+         *
+         * @return _Void_
+         */
         getFollowing : function( from, to, _text )
         {
             var _t          = this.authenticate( from );
@@ -235,13 +255,14 @@ module.exports  = function Twitter( _bot, _modules, userConfig )
                             case 'tweet':
                                 botText = this.tweet( from, to, realText );
                                 break;
+                            case 't-stream':
                             case 't-stream-filter':
                                 botText = this.streamFilter( from, to, realText );
                                 break;
                             case 't-stream-stop':
                                 botText = this.streamStop( from, to, realText );
                                 break;
-                            case 't-stream':
+                            case 't-stream-raw':
                                 botText = this.streamRaw( from, to, realText );
                                 break;
                             case 't-following':
@@ -303,7 +324,13 @@ module.exports  = function Twitter( _bot, _modules, userConfig )
 
             stream.on( _event, function ( tweet )
             {
-                _bot.say( from, tweet.user.name + ' @' + tweet.user.screen_name + '\n' + tweet.text );
+                var text = tweet.text;
+
+                if ( text.slice( 0, 2 ) !== 'RT' )
+                {
+                    var user = tweet.user;
+                    _bot.say( from, user.name + ' (@' + user.screen_name + ')\n' + text );
+                }
             } );
 
             return 'Stream started';
