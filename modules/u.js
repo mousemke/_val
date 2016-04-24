@@ -22,11 +22,11 @@ module.exports = function U( _bot, _modules, userConfig )
 
             for ( var i = 0, lenI = textSplit.length; i < lenI; i++ )
             {
-                _ts = textSplit[ i ].replace( /\W/g, '' );
+                _ts = textSplit[ i ].replace( /\W/g, '' ).toLowerCase();
 
                 words.forEach( function( _w )
                 {
-                    _w      = _w.replace( /[^\da-zA-Z\s]/g, '' );
+                    _w      = _w.replace( /[^\da-zA-Z\s]/g, '' ).toLowerCase();
 
                     if ( _w.indexOf( _ts ) !== -1 && res.indexOf( _w ) === -1 )
                     {
