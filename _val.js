@@ -469,7 +469,7 @@ function generateChannelList()
  */
 function ini()
 {
-    // ircBot();
+    ircBot();
     telegramBot();
 
     _bot.active = {};
