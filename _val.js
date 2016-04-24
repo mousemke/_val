@@ -494,7 +494,7 @@ function ircBot()
 
     var ircConfig = userConfig.command.irc;
 
-    _bot = new Irc.Client( ircConfig.server, userConfig.botName, {
+    _bot = new Irc.Client( ircConfig.server, ircConfig.botName, {
         channels                : channels,
         password                : ircConfig.serverPassword,
         showErrors              : false,
