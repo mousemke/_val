@@ -33,6 +33,8 @@ Change log
 #### 0.3.0
 
 + seperated command modules
++ added the u conversations
++ slight xkcd organizatonial fixes
 
 
 #### 0.2.13

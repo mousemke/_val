@@ -67,7 +67,6 @@ module.exports  = function Admin( _bot, _modules, userConfig )
          */
         responses : function( from, to, text, botText, command )
         {
-            console.log( command[ 0 ] );
             if ( userConfig.admins.indexOf( to.toLowerCase() ) !== -1  &&
                 command[ 0 ] === userConfig.trigger )
             {

@@ -1,7 +1,7 @@
 
-var userConfig          = require( './config/_val.config.js' );
-    userConfig.req      = {};
-    userConfig.command  = {};
+var userConfig                  = require( './config/_val.config.js' );
+    userConfig.req              = {};
+    userConfig.commandModules   = [];
 
 var http            = userConfig.req.http   = require( 'http' ),
     https           = userConfig.req.https  = require( 'https' ),
@@ -469,8 +469,8 @@ function generateChannelList()
  */
 function ini()
 {
-    ircBot();
-    // telegramBot();
+    // ircBot();
+    telegramBot();
 
     _bot.active = {};
 
@@ -490,11 +490,11 @@ function ini()
 
 function ircBot()
 {
-    var irc  = userConfig.command.irc = require( 'irc' );
+    var Irc = require( 'irc' );
 
     var ircConfig = userConfig.command.irc;
 
-    _bot = new irc.Client( ircConfig.server, userConfig.botName, {
+    _bot = new Irc.Client( ircConfig.server, userConfig.botName, {
         channels                : channels,
         password                : ircConfig.serverPassword,
         showErrors              : false,
@@ -504,14 +504,26 @@ function ircBot()
         floodProtectionDelay    : ircConfig.floodProtectionDelay,
     });
 
+    userConfig.commandModules.push( _bot );
+
     _bot.addListener( 'error', function( message )
     {
         console.log( 'error: ', chalk.red( message ) );
     });
 
-    _bot.addListener( 'pm', listenToPm );
+    // _bot.addListener( 'pm', listenToPm );
 
-    _bot.addListener( 'message', listenToMessages.bind( this ) );
+    var boundListenToMessages = listenToMessages.bind( this );
+
+    _bot.addListener( 'message', function( to, from, text )
+    {
+        var botText = boundListenToMessages( to, from, text );
+
+        if ( botText !== '' && botText !== false )
+        {
+            _bot.say( from, botText );
+        }
+    } );
 
     if ( userConfig.verbose === true )
     {
@@ -520,29 +532,55 @@ function ircBot()
 }
 
 
-// function telegramBot()
-// {
-//     var Telegram = require( 'telegram-api' ).default;
-//     var Message = require( 'telegram-api/types/Message');
-//     var File    = require( 'telegram-api/types/File' );
+function telegramBot()
+{
+    var Telegram = require( 'telegram-api' ).default;
+    var Message = require( 'telegram-api/types/Message' );
+    var File    = require( 'telegram-api/types/File' );
 
-//     var telegramConfig = userConfig.command.telegram;
+    var telegramConfig = userConfig.command.telegram;
 
-//     _bot = new Telegram( {
-//         token   : telegramConfig.apiKey
-//     } );
+    _bot = new Telegram( {
+        token   : telegramConfig.apiKey
+    } );
 
-//     _bot.start();
+    userConfig.commandModules.push( _bot );
 
-//     _bot.get( /./, function( message )
-//     {
-//         console.log( message );
-//         // var answer = new Message()
-//         //                 .text( 'Hi! \\o' + message.chat.id )
-//         //                 .to( message.chat.id );
-//         // _bot.send( answer );
-//     });
-// }
+    _bot.start();
+
+    var boundListenToMessages = listenToMessages.bind( this );
+
+    _bot.say = function( to, text )
+    {
+        var answer = new Message()
+                        .text( text )
+                        .to( to );
+        _bot.send( answer );
+    };
+
+    _bot.get( /./, function( message )
+    {
+        try
+        {
+            var text    = message.text
+            var chat    = message.chat
+            var from    = chat.id;
+            var to      = chat[ 'first_name' ] || message.from[ 'first_name' ];
+            text        = text[0] === '/' ? userConfig.trigger + text.slice( 1 ) : text;
+
+            var botText = boundListenToMessages( to, from, text );
+
+            if ( botText )
+            {
+                _bot.say( from, botText );
+            }
+        }
+        catch( e )
+        {
+            console.log( e );
+        }
+    } );
+}
 
 
 /**
@@ -626,10 +664,7 @@ function listenToMessages( to, from, text )
             }
         }
 
-        if ( botText !== '' && botText !== false )
-        {
-            _bot.say( from, botText );
-        }
+        return botText;
     }
     else if ( userConfig.bots.indexOf( to ) !== -1 &&
         ( text[ 0 ] ===  userConfig.trigger && text !==  userConfig.trigger ) )

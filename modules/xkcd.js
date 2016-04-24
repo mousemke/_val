@@ -5,7 +5,7 @@ module.exports  = function XKCD( _bot, _modules, userConfig )
 
         getComic : function( from, to, text, botText )
         {
-            _modules.core.apiGet( userConfig.appUrl, function( response )
+            _modules.core.apiGet( userConfig.xkcdAppUrl, function( response )
             {
                 _bot.say( from, response.url + '\n' + response.title );
 
