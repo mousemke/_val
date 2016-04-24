@@ -26,9 +26,9 @@ module.exports = function U( _bot, _modules, userConfig )
 
                 words.forEach( function( _w )
                 {
-                    _w      = _w.replace( /[^\da-zA-Z\s]/g, '' ).toLowerCase();
+                    _wSmall     = _w.replace( /[^\da-zA-Z\s]/g, '' ).toLowerCase();
 
-                    if ( _w.indexOf( _ts ) !== -1 && res.indexOf( _w ) === -1 )
+                    if ( _wSmall.indexOf( _ts ) !== -1 && res.indexOf( _wSmall ) === -1 )
                     {
                         res.push( _w );
                     }
