@@ -1,8 +1,8 @@
 
 /**
- * [exports description]
+ * ## val irc loader
  *
- * @return {[type]} [description]
+ * @return _Object_ irc chatbot
  */
 module.exports = function ircBot( userConfig, _bot, channels, listenToMessages, displayDebugInfo, context )
 {

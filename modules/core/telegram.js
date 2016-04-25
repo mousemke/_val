@@ -1,14 +1,14 @@
 
 /**
- * [exports description]
+ * ## val telegram loader
  *
- * @return {[type]} [description]
+ * @return _Object_ telegram chatbot
  */
 module.exports = function telegramBot( userConfig, _bot, channels, listenToMessages, displayDebugInfo, context )
 {
-    var Telegram = require( 'telegram-api' ).default;
-    var Message = require( 'telegram-api/types/Message' );
-    var File    = require( 'telegram-api/types/File' );
+    var Telegram    = require( 'telegram-api' ).default;
+    var Message     = require( 'telegram-api/types/Message' );
+    var File        = require( 'telegram-api/types/File' );
 
     var telegramConfig = userConfig.command.telegram;
 

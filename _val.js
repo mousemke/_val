@@ -1,8 +1,7 @@
 
 
-var _Val = function( commandModule )
+var _Val = function( commandModule, userConfig )
 {
-    var userConfig                  = require( './config/_val.config.js' );
         userConfig.req              = {};
         userConfig.commandModules   = [];
 
@@ -19,9 +18,6 @@ var _Val = function( commandModule )
         modules             = require( './config/_val.modules.js' ),
         guys                = require( './lists/guys.js' );
         trollBlacklist      = require( './lists/trollBlacklist.js' );
-
-    var packageJSON         = require( './package.json' );
-        userConfig.version  = packageJSON.version;
 
     var channels            = [];
 
@@ -50,7 +46,9 @@ var _Val = function( commandModule )
      */
     function buildCore()
     {
-        _bot = commandModule( userConfig, _bot, channels, listenToMessages, displayDebugInfo , this );
+        commandModule = userConfig.command[ commandModule ];
+        var commander = require( commandModule.url );
+        _bot = commander( userConfig, _bot, channels, listenToMessages, displayDebugInfo , this );
     }
 
 
@@ -903,11 +901,15 @@ var _Val = function( commandModule )
     return this;
 };
 
-var irc         = require( './modules/core/irc.js' );
-var telegram    = require( './modules/core/telegram.js' );
 
-module.exports = [
-            new _Val( irc ),
-            new _Val( telegram )
-        ];
+function _val( commander )
+{
+    return new _Val( commander, userConfig );
+}
+
+var userConfig          = require( './config/_val.config.js' );
+var packageJSON         = require( './package.json' );
+    userConfig.version  = packageJSON.version;
+
+module.exports = [ _val( 'irc' ), _val( 'telegram' ) ];
 
