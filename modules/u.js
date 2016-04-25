@@ -2,6 +2,8 @@
 /**
  * the u conversations
  *
+ * based on http://www.flashforwardpod.com/2016/04/05/episode-10-rude-bot-rises/ (5:30)
+ *
  * @author  Mouse Braun <mouse@knoblau.ch>
  *
  * @for _val <git@github.com:mousemke/_val.git>
