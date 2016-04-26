@@ -933,6 +933,20 @@ var req                 = userConfig.req = {};
 
     userConfig.commandModules   = [];
 
-// module.exports = [ _val( 'telegram' ) ];
-module.exports = [ _val( 'irc' ), _val( 'telegram' ) ];
+
+var commanders  = userConfig.command;
+var cores       = [];
+var commandObj;
+
+for ( var _c in commanders )
+{
+    commandObj = commanders[ _c ];
+
+    if ( commandObj.disabled !== true )
+    {
+        cores.push( _val( _c ) );
+    }
+}
+
+module.exports = cores;
 
