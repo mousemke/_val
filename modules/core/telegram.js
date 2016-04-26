@@ -30,6 +30,7 @@ module.exports = function telegramBot( userConfig, _bot, channels, listenToMessa
         _bot.send( answer );
     };
 
+
     _bot.get( /./, function( message )
     {
         try

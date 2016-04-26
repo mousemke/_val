@@ -2,20 +2,19 @@
 
 var _Val = function( commandModule, userConfig )
 {
-        userConfig.req              = {};
-        userConfig.commandModules   = [];
+    commandModule       = userConfig.command[ commandModule ];
+    var commandType     = commandModule.botName;
 
-    var http            = userConfig.req.http   = require( 'http' ),
-        https           = userConfig.req.https  = require( 'https' ),
-        fs              = userConfig.req.fs     = require( 'fs' ),
-        chalk           = userConfig.req.chalk  = require( 'chalk' );
-
+    var req             = userConfig.req;
+    var http            = req.http,
+        https           = req.https,
+        fs              = req.fs,
+        chalk           = req.chalk;
 
     // Loads the configuration and sets variables
     var channel, _bot, words, lastSeenList, _modules = {};
     var seenJsonUrl         = 'json/seen.json';
-    var lastSeenList        = JSON.parse( fs.readFileSync( seenJsonUrl ) ),
-        modules             = require( './config/_val.modules.js' ),
+    var modules             = require( './config/_val.modules.js' ),
         guys                = require( './lists/guys.js' );
         trollBlacklist      = require( './lists/trollBlacklist.js' );
 
@@ -46,7 +45,6 @@ var _Val = function( commandModule, userConfig )
      */
     function buildCore()
     {
-        commandModule = userConfig.command[ commandModule ];
         var commander = require( commandModule.url );
         _bot = commander( userConfig, _bot, channels, listenToMessages, displayDebugInfo , this );
     }
@@ -264,19 +262,25 @@ var _Val = function( commandModule, userConfig )
      */
     function checkSeen( from, to, text )
     {
-        text = text.split( ' ' ).slice( 1 );
-        var user = lastSeenList[ text ];
+        user            = text.split( ' ' )[ 1 ];
 
-        if ( user )
+        lastSeenList    = fs.readFileSync( seenJsonUrl );
+        lastSeenList    = JSON.parse( lastSeenList );
+        _user           = user.toLowerCase();
+        _user           = lastSeenList[ _user ];
+
+        if ( _user )
         {
-            var dateObj     = new Date( user.time );
+            var dateObj     = new Date( _user.time );
             var minutes     = dateObj.getMinutes() + '';
-            minutes = minutes.length === 1 ? '0' + minutes : minutes;
+            minutes         = minutes.length === 1 ? '0' + minutes : minutes;
             var dateString  = userConfig.weekdays[ dateObj.getDay() ] + ' ';
             dateString      += userConfig.months[ dateObj.getMonth() ] + ' ';
             dateString      += dateObj.getDate() + ' at ' + dateObj.getHours() + ':' + minutes;
 
-            return to + ': last time I saw ' + text + ' was in ' + user.place + ' on ' + dateString;
+            var service     = _user.service || 'slack';
+
+            return to + ': last time I saw ' + user + ' was on ' +  service + '/' + _user.place + ' on ' + dateString;
         }
         else
         {
@@ -339,10 +343,6 @@ var _Val = function( commandModule, userConfig )
             }
         }
     };
-
-    var connectionTimer = null;
-    var up              = Date.now();
-    var lastPing        = Date.now();
 
 
     /**
@@ -477,7 +477,7 @@ var _Val = function( commandModule, userConfig )
             }
         }
 
-        console.log( '_bot built' );
+        console.log( commandType + ' built' );
     }
 
 
@@ -496,13 +496,13 @@ var _Val = function( commandModule, userConfig )
     {
         if ( userConfig.verbose === true )
         {
-            console.log( chalk.green( from ), chalk.red( to ), text );
+            console.log( commandType, chalk.green( from ), chalk.red( to ), text );
         }
 
         text = trimUsernames( text );
 
         watchActive( from, to );
-        watchSeen( from, to );
+        watchSeen( from, to, text );
 
         text = trollOn( text );
 
@@ -878,22 +878,31 @@ var _Val = function( commandModule, userConfig )
      */
     function watchSeen( from, to )
     {
-        if ( userConfig.publicChannels &&
-                userConfig.publicChannels.indexOf( from )       !== -1 &&
-                userConfig.channelsSeenIgnore.indexOf( from )   === -1 )
+        var _watchSeen = function()
         {
-            lastSeenList[ to ] = { time: Date.now(), place: from };
-        }
-
-        var writeList =  JSON.stringify( lastSeenList );
-
-        fs.writeFile( seenJsonUrl, writeList, function ( err )
-        {
-            if ( err )
+            if ( commandModule.loggedChannels && commandModule.loggedChannels.indexOf( from ) ||
+                    userConfig.publicChannels &&
+                    userConfig.publicChannels.indexOf( from )       !== -1 &&
+                    userConfig.channelsSeenIgnore.indexOf( from )   === -1 )
             {
-                console.log( 'err: ',  err );
+                to                  = to.toLowerCase();
+                lastSeenList        = JSON.parse( fs.readFileSync( seenJsonUrl ) );
+                var place           = from + '';
+                lastSeenList[ to ]  = { time: Date.now(), place: place, service: commandType };
+
+                var writeList       =  JSON.stringify( lastSeenList );
+
+                fs.writeFile( seenJsonUrl, writeList, function ( err )
+                {
+                    if ( err )
+                    {
+                        console.log( 'err: ',  err );
+                    }
+                } );
             }
-        } );
+        };
+
+        setTimeout( _watchSeen, 25 );
     }
 
     start();
@@ -907,9 +916,23 @@ function _val( commander )
     return new _Val( commander, userConfig );
 }
 
+
+var connectionTimer     = null;
+var up                  = Date.now();
+var lastPing            = Date.now();
+
 var userConfig          = require( './config/_val.config.js' );
 var packageJSON         = require( './package.json' );
     userConfig.version  = packageJSON.version;
+var req                 = userConfig.req = {};
 
+    req.http            = require( 'http' ),
+    req.https           = require( 'https' ),
+    req.fs              = require( 'fs' ),
+    req.chalk           = require( 'chalk' );
+
+    userConfig.commandModules   = [];
+
+// module.exports = [ _val( 'telegram' ) ];
 module.exports = [ _val( 'irc' ), _val( 'telegram' ) ];
 

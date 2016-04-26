@@ -24,6 +24,8 @@ module.exports = function Doge( _bot, _modules, userConfig )
         {
             var _balanceCB = function( _to, success )
             {
+                _to = _to.toLowerCase();
+
                 if ( success )
                 {
                     var amount      = dcMasterList[ _to ];
@@ -43,7 +45,7 @@ module.exports = function Doge( _bot, _modules, userConfig )
                     {
                         if ( from !== _to )
                         {
-                          botText += _to + ', ';
+                          botText += to + ', ';
                         }
                         botText += 'you currently have Ð' + amount;
                     }
@@ -71,6 +73,7 @@ module.exports = function Doge( _bot, _modules, userConfig )
         {
             // var _depositCB = function( from, _to, _info, _whois )
             // {
+            //      _to = _to.toLowerCase();
             //      var botText = '';
             //      if ( from !== _to )
             //      {
@@ -278,7 +281,9 @@ module.exports = function Doge( _bot, _modules, userConfig )
 
             var _soakCB = function( _to, success, textSplit, origText )
             {
-                if ( !dcMasterList[ to ] || dcMasterList[ to ] < soakTotal )
+                _to = _to.toLowerCase();
+
+                if ( !dcMasterList[ _to ] || dcMasterList[ _to ] < soakTotal )
                 {
                     botText = 'Sorry, ' + to + ', you need more doge';
                 }
@@ -311,7 +316,7 @@ module.exports = function Doge( _bot, _modules, userConfig )
 
                                 for ( i = 0, lenI = list.length; i < lenI; i++)
                                 {
-                                    if ( list[ i ] !== to )
+                                    if ( list[ i ] !== _to )
                                     {
                                         if ( dcMasterList[ list[ i ] ] )
                                         {
@@ -384,6 +389,8 @@ module.exports = function Doge( _bot, _modules, userConfig )
 
             var _tipCB = function( _to, success, textSplit, origText )
             {
+                _to = _to.toLowerCase();
+
                 var origTextSplit = origText.split( ' ' );
 
                 var reciever        = origTextSplit[ 1 ],
@@ -418,11 +425,12 @@ module.exports = function Doge( _bot, _modules, userConfig )
                     {
                         amount = parseInt( amount );
 
-                        dcMasterList[ to.toLowerCase() ]  = dcMasterList[ to.toLowerCase() ]  - amount;
+                        dcMasterList[ _to ]  = dcMasterList[ _to ]  - amount;
 
                         if ( reciever !== userConfig.botName )
                         {
-                            dcMasterList[ reciever.toLowerCase() ] = ( dcMasterList[ reciever.toLowerCase() ] ) ? dcMasterList[ reciever.toLowerCase() ] + amount : amount;
+                            dcMasterList[ reciever.toLowerCase() ] = ( dcMasterList[ reciever.toLowerCase() ] ) ?
+                                                                            dcMasterList[ reciever.toLowerCase() ] + amount : amount;
                             if ( userConfig.enablePM )
                             {
                                 _bot.say( reciever,   'Such ' + to + ' tipped you Ð' + amount + ' (to claim /msg ' + ( userConfig.botName ) + ' help)' );
