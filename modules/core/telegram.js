@@ -6,7 +6,7 @@
  */
 module.exports = function telegramBot( userConfig, _bot, channels, listenToMessages, displayDebugInfo, context )
 {
-    var Telegram    = require( 'telegram-api' ).default;
+    var Telegram    = require( 'telegram-api' );
     var Message     = require( 'telegram-api/types/Message' );
     var File        = require( 'telegram-api/types/File' );
 
@@ -43,9 +43,19 @@ module.exports = function telegramBot( userConfig, _bot, channels, listenToMessa
 
             var botText = boundListenToMessages( to, from, text );
 
-            if ( botText )
+            if ( botText !== '' && botText !== false )
             {
-                _bot.say( from, botText );
+                if ( typeof botText.then === 'function' )
+                {
+                    botText.then( function( text )
+                    {
+                        _bot.say( from, text )
+                    } );
+                }
+                else
+                {
+                    _bot.say( from, botText );
+                }
             }
         }
         catch( e )

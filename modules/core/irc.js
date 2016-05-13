@@ -37,7 +37,17 @@ module.exports = function ircBot( userConfig, _bot, channels, listenToMessages, 
 
         if ( botText !== '' && botText !== false )
         {
-            _bot.say( from, botText );
+            if ( typeof botText.then === 'function' )
+            {
+                botText.then( function( text )
+                {
+                    _bot.say( from, text )
+                } );
+            }
+            else
+            {
+                _bot.say( from, botText );
+            }
         }
     } );
 

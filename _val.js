@@ -29,25 +29,17 @@ var _Val = function( commandModule, userConfig )
         'rpl_namreply'      : 'cyan',
         'rpl_endofnames'    : 'cyan',
         'rpl_topic'         : 'gray',
+        'rpl_isupport'      : 'magenta',
+        'rpl_welcome'       : 'magenta',
+        'rpl_luserclient'   : 'magenta',
+        'rpl_motdstart'     : 'bgMagenta',
+        'rpl_motd'          : 'bgMagenta',
+        'rpl_endofmotd'     : 'bgMagenta',
         'JOIN'              : 'green',
         'KILL'              : 'green',
         'NOTICE'            : 'yellow',
         'TOPIC'             : 'yellow'
     };
-
-
-    /**
-     * ## buildCore
-     *
-     * this will develop into a dynamic core loader.  for noe, it is what it is
-     *
-     * @return {[type]} [description]
-     */
-    function buildCore()
-    {
-        var commander = require( commandModule.url );
-        _bot = commander( userConfig, _bot, channels, listenToMessages, displayDebugInfo , this );
-    }
 
 
     /**
@@ -64,9 +56,31 @@ var _Val = function( commandModule, userConfig )
      */
     function testFunction( from, to, text )
     {
-        console.log( 'nothing here now' );
+        text = text.split( ' ' ).slice( 1 ).join( ' ' );
+        // console.log( 'nothing here now' );
+        // return false;
 
-        return false;
+        const Nightmare     = require( 'nightmare' );
+
+        return new Promise( function( resolve, reject )
+        {
+            var url = 'http://www.codecogs.com/latex/eqneditor.php';
+
+            var nightmare = new Nightmare();
+
+            return nightmare.goto( url )
+                    .wait( '#latex_formula' )
+                    .type( '#latex_formula', text )
+                    .evaluate( function()
+                    {
+                        var _i = document.querySelector( '#equationview' );
+                        return _i.src;
+                    } )
+                    .then( function( src )
+                    {
+                        resolve( src );
+                    } );
+        } ).then( _r => _r );
     }
 
 
@@ -184,6 +198,20 @@ var _Val = function( commandModule, userConfig )
                 }
             }
         }
+    }
+
+
+    /**
+     * ## buildCore
+     *
+     * this will develop into a dynamic core loader.  for noe, it is what it is
+     *
+     * @return {[type]} [description]
+     */
+    function buildCore()
+    {
+        var commander = require( commandModule.url );
+        _bot = commander( userConfig, _bot, channels, listenToMessages, displayDebugInfo , this );
     }
 
 
@@ -613,7 +641,7 @@ var _Val = function( commandModule, userConfig )
             {
                 case 'help':
                     botText = userConfig.helpText();
-                    _bot.say ( from, botText );
+                    _bot.say( from, botText );
                     botText = '';
                     break;
                 default:
@@ -902,7 +930,7 @@ var _Val = function( commandModule, userConfig )
             }
         };
 
-        setTimeout( _watchSeen, 25 );
+        // setTimeout( _watchSeen, 50 );
     }
 
     start();
