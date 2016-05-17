@@ -52,35 +52,12 @@ var _Val = function( commandModule, userConfig )
      * @param {String} to originating user
      * @param {String} text full message text
      *
-     * @return _Boolean_           false
+     * @return _Boolean_  false
      */
     function testFunction( from, to, text )
     {
-        text = text.split( ' ' ).slice( 1 ).join( ' ' );
-        // console.log( 'nothing here now' );
-        // return false;
-
-        const Nightmare     = require( 'nightmare' );
-
-        return new Promise( function( resolve, reject )
-        {
-            var url = 'http://www.codecogs.com/latex/eqneditor.php';
-
-            var nightmare = new Nightmare();
-
-            return nightmare.goto( url )
-                    .wait( '#latex_formula' )
-                    .type( '#latex_formula', text )
-                    .evaluate( function()
-                    {
-                        var _i = document.querySelector( '#equationview' );
-                        return _i.src;
-                    } )
-                    .then( function( src )
-                    {
-                        resolve( src );
-                    } );
-        } ).then( _r => _r );
+        console.log( 'nothing here now' );
+        return false;
     }
 
 

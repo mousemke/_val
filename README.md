@@ -2,7 +2,7 @@
 
 erm.... bot.
 
-v. 0.3
+v. 0.3.0
 
 install
 
@@ -32,6 +32,7 @@ Change log
 
 #### 0.3.0
 
++ botText now supports promises
 + seperated command modules
 + added the u conversations
 + slight xkcd organizatonial fixes
