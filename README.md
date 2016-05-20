@@ -32,6 +32,7 @@ Change log
 
 #### 0.3.0
 
++ removed seen - given expansion into other command modules, this presents a security risk
 + seperated command modules
 + added the u conversations
 + slight xkcd organizatonial fixes

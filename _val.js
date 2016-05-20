@@ -12,8 +12,7 @@ var _Val = function( commandModule, userConfig )
         chalk           = req.chalk;
 
     // Loads the configuration and sets variables
-    var channel, _bot, words, lastSeenList, _modules = {};
-    var seenJsonUrl         = 'json/seen.json';
+    var channel, _bot, words, _modules = {};
     var modules             = require( './config/_val.modules.js' ),
         guys                = require( './lists/guys.js' );
         trollBlacklist      = require( './lists/trollBlacklist.js' );
@@ -250,46 +249,6 @@ var _Val = function( commandModule, userConfig )
 
 
     /**
-     * ## checkSeen
-     *
-     * returns the last time and room a user was seene
-     *
-     * @param {String} from originating channel
-     * @param {String} to originating user
-     * @param {String} text full message text
-     *
-     * @return _Array_ active users
-     */
-    function checkSeen( from, to, text )
-    {
-        user            = text.split( ' ' )[ 1 ];
-
-        lastSeenList    = fs.readFileSync( seenJsonUrl );
-        lastSeenList    = JSON.parse( lastSeenList );
-        _user           = user.toLowerCase();
-        _user           = lastSeenList[ _user ];
-
-        if ( _user )
-        {
-            var dateObj     = new Date( _user.time );
-            var minutes     = dateObj.getMinutes() + '';
-            minutes         = minutes.length === 1 ? '0' + minutes : minutes;
-            var dateString  = userConfig.weekdays[ dateObj.getDay() ] + ' ';
-            dateString      += userConfig.months[ dateObj.getMonth() ] + ' ';
-            dateString      += dateObj.getDate() + ' at ' + dateObj.getHours() + ':' + minutes;
-
-            var service     = _user.service || 'slack';
-
-            return to + ': last time I saw ' + user + ' was on ' +  service + '/' + _user.place + ' on ' + dateString;
-        }
-        else
-        {
-            return 'sorry, ' + to + '. I\'ve never met that user';
-        }
-    }
-
-
-    /**
      * ## displayDebugInfo
      *
      * formats and displays debug information
@@ -356,7 +315,7 @@ var _Val = function( commandModule, userConfig )
     {
         /**
          * adds private channels from userConfig.channelsPrivateJoin to the list of
-         * channels to join.  These channels are exempt from "seen"
+         * channels to join.
          */
         function addPrivateChannels()
         {
@@ -502,7 +461,6 @@ var _Val = function( commandModule, userConfig )
         text = trimUsernames( text );
 
         watchActive( from, to );
-        watchSeen( from, to, text );
 
         text = trollOn( text );
 
@@ -679,9 +637,6 @@ var _Val = function( commandModule, userConfig )
         {
             case 'active':
                 checkActive( from, to, text );
-                break;
-            case 'seen':
-                botText = checkSeen( from, to, text );
                 break;
             case 'test':
                 botText = testFunction( from, to, text );
@@ -865,45 +820,6 @@ var _Val = function( commandModule, userConfig )
         }
     }
 
-
-    /**
-     * ## watchSeen
-     *
-     * records the latest place a user is seen
-     *
-     * @param {String} from originating channel
-     * @param {String} to originating user
-     *
-     * @return _Void_
-     */
-    function watchSeen( from, to )
-    {
-        var _watchSeen = function()
-        {
-            if ( commandModule.loggedChannels && commandModule.loggedChannels.indexOf( from ) ||
-                    userConfig.publicChannels &&
-                    userConfig.publicChannels.indexOf( from )       !== -1 &&
-                    userConfig.channelsSeenIgnore.indexOf( from )   === -1 )
-            {
-                to                  = to.toLowerCase();
-                lastSeenList        = JSON.parse( fs.readFileSync( seenJsonUrl ) );
-                var place           = from + '';
-                lastSeenList[ to ]  = { time: Date.now(), place: place, service: commandType };
-
-                var writeList       =  JSON.stringify( lastSeenList );
-
-                fs.writeFile( seenJsonUrl, writeList, function ( err )
-                {
-                    if ( err )
-                    {
-                        console.log( 'err: ',  err );
-                    }
-                } );
-            }
-        };
-
-        setTimeout( _watchSeen, 25 );
-    }
 
     start();
 

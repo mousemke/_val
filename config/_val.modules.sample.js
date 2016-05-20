@@ -14,18 +14,18 @@
 
 
     Admin       : {
-        enabled : false,
+        enabled : true,
         url     : './modules/admin.js',
         options : {
             adminMessage            : '5 minutes later test. well, this appears to work',
             adminMessageInterval    : 300000, // 5 min
-            adminMessageChannels    : [ '#bots' ] // optional default.  otherwise it falls back to all channels
+            adminMessageChannels    : [ '#soc-bots' ] // optional default.  otherwise it falls back to all channels
         }
     },
 
 
     Anagramm    : {
-        enabled : false, // requires module: words
+        enabled : true, // requires module: words
         ini     : true,
         url     : './modules/anagramm.js',
         options : {
@@ -49,7 +49,7 @@
 
 
     CAH        : {
-        enabled : false,
+        enabled : true,
         ini     : true,
         url     : './modules/cah.js',
         options : {
@@ -61,14 +61,14 @@
 
 
     Doge        : {
-        enabled : false,
+        enabled : true,
         ini     : true,
         url     : './modules/doge.js'
     },
 
 
     Foursquare        : {
-        enabled : false,
+        enabled : true,
         url     : './modules/_4sq.js',
         options : {
             foursquareID        : '4sq ID - go get one',
@@ -81,7 +81,7 @@
 
 
     GuildWars   : {
-        enabled : false,
+        enabled : true,
         url     : './modules/games/gw2.js',
         options : {
             guildWars2Trigger       : 'gw2',
@@ -104,7 +104,7 @@
 
 
     PopKey      : {
-        enabled : false,
+        enabled : true,
         url     : './modules/popkey.js',
         options : {
             popKeyComtentFilter : true,
@@ -149,7 +149,7 @@
 
 
     Twitch      : {
-        enabled : false,
+        enabled : true,
         url     : './modules/twitch.js',
         options : {
             autoAuth                : true,
@@ -161,7 +161,7 @@
 
 
     Twitter     : {
-        enabled : false,
+        enabled : true,
         ini     : true,
         url     : './modules/twitter.js',
         options : {
@@ -176,7 +176,7 @@
                 },
                 '#val-test' : {
                     account             : '@mousemke',
-                    users               : [ '*' ],
+                    users               : [ 'user1' ],
                     consumerKey         : '1234567890',
                     consumerSecret      : '1234567890',
                     accessToken         : '1234567890-1234567890',
@@ -197,7 +197,7 @@
 
 
     Words       : {
-        enabled : false,
+        enabled : true,
         ini     : true,
         url     : './modules/words.js',
         options : {
