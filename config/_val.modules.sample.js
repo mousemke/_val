@@ -24,6 +24,12 @@
     },
 
 
+    Allthemaths : { // not included - https://www.npmjs.com/package/allthemaths
+        enabled : false,
+        url     : './node_modules/allthemaths/allthemaths.js'
+    },
+
+
     Anagramm    : {
         enabled : true, // requires module: words
         ini     : true,
@@ -56,6 +62,15 @@
             cahRoom                     : '#cards_against_humanity',
             cahMaxMin                   : 5,
             cahMinPlayers               : 3
+        }
+    },
+
+
+    DnD         : {
+        enabled : true,
+        url     : './modules/dnd.js',
+        options : {
+            dndRooms                    : [ '#wizardlands' ], // '*' for all
         }
     },
 
@@ -218,7 +233,13 @@
         enabled : true,
         url     : './modules/xkcd.js',
         options : {
-            appUrl      : 'http://xkcd-imgs.herokuapp.com/'
+            xkcdAppUrl      : 'http://xkcd-imgs.herokuapp.com/'
         }
+    },
+
+
+    U   : {
+        enabled : true,
+        url     : './modules/u.js'
     }
 };

@@ -12,7 +12,7 @@ var _Val = function( commandModule, userConfig )
         chalk           = req.chalk;
 
     // Loads the configuration and sets variables
-    var channel, _bot, words, _modules = {};
+    var channel, _bot, _modules = {};
     var modules             = require( './config/_val.modules.js' ),
         guys                = require( './lists/guys.js' );
         trollBlacklist      = require( './lists/trollBlacklist.js' );
@@ -33,20 +33,6 @@ var _Val = function( commandModule, userConfig )
         'NOTICE'            : 'yellow',
         'TOPIC'             : 'yellow'
     };
-
-
-    /**
-     * ## buildCore
-     *
-     * this will develop into a dynamic core loader.  for noe, it is what it is
-     *
-     * @return {[type]} [description]
-     */
-    function buildCore()
-    {
-        var commander = require( commandModule.url );
-        _bot = commander( userConfig, _bot, channels, listenToMessages, displayDebugInfo , this );
-    }
 
 
     /**
@@ -183,6 +169,20 @@ var _Val = function( commandModule, userConfig )
                 }
             }
         }
+    }
+
+
+    /**
+     * ## buildCore
+     *
+     * this will develop into a dynamic core loader.  for noe, it is what it is
+     *
+     * @return _Void_
+     */
+    function buildCore()
+    {
+        var commander = require( commandModule.url );
+        _bot = commander( userConfig, _bot, channels, listenToMessages, displayDebugInfo , this );
     }
 
 
