@@ -71,6 +71,7 @@
         url     : './modules/dnd.js',
         options : {
             dndRooms                    : [ '#wizardlands' ], // '*' for all
+            dndMaxDice                  : 100
         }
     },
 

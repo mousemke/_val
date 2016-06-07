@@ -4,7 +4,9 @@ module.exports  = function CAH( _bot, _modules, userConfig )
     var fs              = userConfig.req.fs;
 
     var dndRooms        = userConfig.dndRooms;
-    var rollRegex       = /^(\d+)?(?:d([\d]+))(?:[+](\d+))?$/;
+    var rollRegex       = /^(\d+)?(?:d([0-9][\d]+|[1-9]))(?:[+](\d+))?$/;
+
+    var maxDice         = userConfig.dndMaxDice;
 
     return {
 
@@ -22,7 +24,8 @@ module.exports  = function CAH( _bot, _modules, userConfig )
          */
         responses : function( from, to, text, botText, command )
         {
-            if ( dndRooms.indexOf( from ) !== -1 || dndRooms === '*' )
+            if ( dndRooms.indexOf( from ) !== -1 || dndRooms === '*' || 
+                    dndRooms[ 0 ] === '*' )
             {
                 var roll    = rollRegex.exec( command );
 
@@ -63,14 +66,24 @@ module.exports  = function CAH( _bot, _modules, userConfig )
                 return Math.floor( Math.random() * _max ) + 1
             }
 
-
-            var rolls       = parseInt( roll[ 1 ] || 1 );
+            var rolls       = parseInt( roll[ 1 ] );
             var max         = parseInt( roll[ 2 ] );
-            var multiple    = rolls > 1;
             var bonus       = parseInt( roll[ 3 ] || 0 );
+
+            if ( rolls > maxDice )
+            {
+                return 'Come on ' + to + '...   do you *really* need that many dice?';
+            }
+            else if ( rolls === 0 )
+            {
+                return 'Really? Fine ' + to + '...   you roll 0d' + max;
+            }
+
+            rolls           = rolls || 1;
+            var multiple    = rolls > 1;
             var total       = 0;
 
-            botText = to + ', your ' + text + ' rolls: ';
+            botText = to + ', your ' + rolls + 'd' + max + bonusText + ' rolls: ';
 
             for ( var i = 0; i < rolls; i++ )
             {
