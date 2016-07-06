@@ -63,6 +63,7 @@ module.exports  = function PopKey( _bot, _modules, userConfig )
 
             switch ( command )
             {
+                case 'm':
                 case 'mtg':
                     botText = this.mtg( from, to, textSplit.join( ' ' ) );
                     break;
