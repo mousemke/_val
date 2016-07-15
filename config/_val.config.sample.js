@@ -26,12 +26,38 @@ var getMoment = function()
 
 var helpText = function()
 {
-    return 'Moin Moin!  My name is ' + ( userConfig.botName ) + ', and I\'ll be your IRC bot for the' + getMoment() + '. ' +
+    return 'Moin Moin!  I\'ll be your IRC bot for the' + getMoment() + '. ' +
             'Valid commands are listed here: ' + ( userConfig.helpUrl );
 };
 
 
 var userConfig = {
+
+    command     : {
+        irc         : {
+            url                     : './modules/core/irc.js',
+            botName                 : '_val',
+            server                  : 'irc.server',
+            serverPassword          : 'srever.password',
+            floodProtection         : true,
+            floodProtectionDelay    : 50
+        },
+
+        slack       : {
+            url                     : './modules/core/slack.js',
+            botName                 : '_val',
+            apiKey                  : 'slackapi',
+            slackTeam               : 'teamName',
+            channelsPrivateJoin     : []
+        },
+
+        telegram    : {
+            url                     : './modules/core/telegram.js',
+            botName                 : 'val2000bot',
+            apiKey                  : 'telegram-api-key'
+        }
+    },
+
 
     /**
      * timout for a user to be considered active
@@ -54,30 +80,16 @@ var userConfig = {
      **/
     bots                    : [ 'bot1', 'bot2', 'bot3' ],
 
-    botName                 : 'justAnotherBot',
-
     /**
      * server, channel, name connection details
      **/
     channels                : [ '#channel-bots', '#channel1', '#channel2', '#channel3', '#channel4', '#channel5', '#channel6' ],
 
     /**
-     * channels that ignore seen (private channels ignore seen anyways)
-     */
-    channelsSeenIgnore      : [ '#channel4' ],
-
-    /**
      * some services (**cough* twitch**) dont support private messages or
      * multiline messages.
      */
     enableHelp              : true,
-
-    /**
-     * uses the leaderboard api to track pool scores
-     * https://github.com/nicolasbrugneaux/leaderboard
-     */
-    enablePool              : true,
-
 
     /**
      * enables private messages
@@ -103,19 +115,14 @@ var userConfig = {
     nickservAPI             : 'Help, I\'m trapped in an api factory',
 
     /**
-     * sets a target for shenanigans
+     * sets the default target for shenanigans
      */
     nico                    : 'nico',
-
-    poolApiUrl              : 'http://192.168.2.15:8001/api/',
 
     /**
      * ms to reconnection on disconnect
      */
     reconnectionTimeout     : 50000,
-
-    server                  : '192.168.1.1',
-    serverPassword          : 'just.another.irc.server.password.i.suppose',
 
     /**
      * trigger to catch commands

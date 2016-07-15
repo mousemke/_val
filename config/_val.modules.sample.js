@@ -17,9 +17,6 @@
         enabled : true,
         url     : './modules/admin.js',
         options : {
-            adminMessage            : '5 minutes later test. well, this appears to work',
-            adminMessageInterval    : 300000, // 5 min
-            adminMessageChannels    : [ '#soc-bots' ] // optional default.  otherwise it falls back to all channels
         }
     },
 
@@ -98,12 +95,18 @@
 
     GuildWars   : {
         enabled : true,
-        url     : './modules/games/gw2.js',
+        url     : './modules/gw2.js',
         options : {
             guildWars2Trigger       : 'gw2',
             guildWars2Room          : '#guildwars',
             guildWars2apiUrl        : 'https://api.guildwars2.com/v2'
         }
+    },
+
+
+    Mtg         : {
+        enabled : true,
+        url     : './modules/mtg.js'
     },
 
 
@@ -123,7 +126,7 @@
         enabled : true,
         url     : './modules/popkey.js',
         options : {
-            popKeyComtentFilter : true,
+            popKeyContentFilter : true,
             popKeyAPIKey        : 'api-here'
         }
     },
