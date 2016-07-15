@@ -31,6 +31,9 @@ module.exports = function telegramBot( userConfig, _bot, channels, listenToMessa
     };
 
 
+    _bot.sayNow = _bot.say;
+
+
     _bot.get( /./, function( message )
     {
         try

@@ -51,10 +51,27 @@ module.exports = function ircBot( userConfig, _bot, channels, listenToMessages, 
         }
     } );
 
+
     if ( userConfig.verbose === true )
     {
         _bot.addListener( 'raw', displayDebugInfo );
     }
+
+    /**
+     * ## sayNow
+     *
+     * special function for val saying things without being prompted
+     *
+     * @param {String} from detsination
+     * @param {String} text message text
+     * @param {Boolean} pm private message or not (doesnt matter to irc)
+     *
+     * @return _Void_
+     */
+    _bot.sayNow = function( from, text, pm )
+    {
+        _bot.say( from, text );
+    };
 
     return _bot;
 }

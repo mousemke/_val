@@ -3,6 +3,37 @@ Older changes
 
 This is truncated from the readme file to keep down the size
 
+#### 0.2.11
+
++ 8ball fixed
++ question words updated
+
+
+#### 0.2.6
+
++ command is now generated in _val and passed to responses
+
+
+
+#### 0.2.5
+
++ fixed a twitter bug
++ rr can now target people
++ changed the doge/market api
++ removed old CAH json
+
+
+#### 0.2.4
+
++ rebuilt words and anagramm
++ version is now loaded from package.json
++ added activeWord object
++ added rr
++ fixed bad country code queries in words
++ added an option to words to enable def and translation
++ reenabled most twitter feeds
+
+
 #### 0.2.3
 
 + built safeties around the bot ignore list

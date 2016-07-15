@@ -136,34 +136,6 @@
     },
 
 
-    Slack      : {
-        enabled : false,
-        url     : './modules/slack.js',
-        options : {
-            autoAuth                : true,
-
-            slackChannel            : 'company-or-whatever',
-
-            slackAPIKey             : 'you-ad-here',
-            /**
-             * auto join all available public channels.  overrides the channel
-             * config option
-             */
-            autojoin                : true,
-
-            /**
-             * private channels to join
-             */
-            channelsPrivateJoin     : [ '#secretchannel1', '#secretchannel2' ],
-
-            /**
-             * public channels to not join
-             */
-            channelsPublicIgnore    : [],
-        }
-    },
-
-
     Twitch      : {
         enabled : true,
         url     : './modules/twitch.js',

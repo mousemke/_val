@@ -83,9 +83,14 @@ module.exports = function slackBot( userConfig, _bot, channels, listenToMessages
 
             _bot.sendMessage( botText, from );
         };
+
+
+        _bot.sayNow = function(){};
     } );
 
-    _bot.say = function(){};
+
+    _bot.say    = function(){};
+    _bot.sayNow = function(){};
 
     return _bot;
 };

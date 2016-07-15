@@ -40,6 +40,7 @@ Change log
 + slight xkcd organizatonial fixes
 + removed _bot.say when promises would be a better fit
 + added slack command module
++ added sayNow to command modules
 
 
 #### 0.2.13
@@ -50,37 +51,6 @@ Change log
 + tweets limited to 140 characters
 + t-stream-filter now aliased to +t-stream
 + twitter streams now filter out retweets
-
-
-#### 0.2.11
-
-+ 8ball fixed
-+ question words updated
-
-
-#### 0.2.6
-
-+ command is now generated in _val and passed to responses
-
-
-
-#### 0.2.5
-
-+ fixed a twitter bug
-+ rr can now target people
-+ changed the doge/market api
-+ removed old CAH json
-
-
-#### 0.2.4
-
-+ rebuilt words and anagramm
-+ version is now loaded from package.json
-+ added activeWord object
-+ added rr
-+ fixed bad country code queries in words
-+ added an option to words to enable def and translation
-+ reenabled most twitter feeds
 
 
 
