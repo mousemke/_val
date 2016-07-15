@@ -287,7 +287,7 @@ var _Val = function( commandModule, userConfig )
                         minUp += '0';
                     }
 
-                    console.log( chalk[ _color ]( text ), `${now - lastPing}ms`, chalk.grey( `(${minUp}min up)`, new Date().toLocaleString() );
+                    console.log( chalk[ _color ]( text ), `${now - lastPing}ms`, chalk.grey( `(${minUp}min up)`, new Date().toLocaleString() ) );
                     lastPing = now;
 
                     if ( connectionTimer )

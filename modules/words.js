@@ -144,7 +144,7 @@ module.exports  = function Words( _bot, _modules, userConfig, activeWord )
                             _def += ' -\n';
                             for ( var i = 0, lenI = result.length; i < lenI; i++ )
                             {
-                                _def += `${i + 1 )}: ${result[ i ].text}\n`;
+                                _def += `${i + 1}: ${result[ i ].text}\n`;
                             }
                         }
 
@@ -583,7 +583,7 @@ module.exports  = function Words( _bot, _modules, userConfig, activeWord )
 
                         if ( from !== 'internal' )
                         {
-                            resolve( `${to}: ${langFrom} > ${langTo} - ${botText}`;
+                            resolve( `${to}: ${langFrom} > ${langTo} - ${botText}` );
                         }
 
                         if ( func )
