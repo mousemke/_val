@@ -51,7 +51,7 @@ module.exports = function U( _bot, _modules, userConfig )
             switch ( command )
             {
                 case 'u':
-                    botText = this.talk( from, to, textSplit );
+                    return this.talk( from, to, textSplit );
             }
 
             return botText;

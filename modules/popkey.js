@@ -8,7 +8,7 @@ module.exports  = function PopKey( _bot, _modules, userConfig )
         getGif : function( from, to, text )
         {
             text = text.replace( / /g, ',' ).toLowerCase().replace( /['"`’]/g, '' );
-            console.log( text );
+
             options = {
                 path: '/v2/media/search?q=' + text,
                 host: 'api.popkey.co',
@@ -19,40 +19,41 @@ module.exports  = function PopKey( _bot, _modules, userConfig )
                 }
             };
 
-
-            _modules.core.apiGet( options, function( info )
+            return new Promise( function( resolve, reject )
             {
-                var length = info.length;
-
-                if ( length )
+                _modules.core.apiGet( options, function( info )
                 {
-                    var choose = function()
+                    var length = info.length;
+
+                    if ( length )
                     {
-                        var _r      = Math.floor( Math.random() * length );
-                        var _file   =  info[ _r ];
-
-                        var rating = _file.rating;
-                        console.log( 'GIF Called.  Rating: ' + rating );
-
-                        if ( rating === 'E' )
+                        var choose = function()
                         {
-                            return _file.source.url;
-                        }
-                        else
-                        {
-                            return choose();
-                        }
-                    };
+                            var _r      = Math.floor( Math.random() * length );
+                            var _file   =  info[ _r ];
 
-                    _bot.say( from, choose() );
-                }
-                else
-                {
-                    _bot.say( from, 'Nah.... I got nothing' );
-                }
-            }, true, from, to );
+                            var rating = _file.rating;
+                            console.log( 'GIF Called.  Rating: ' + rating );
 
-            return '';
+                            if ( rating === 'E' )
+                            {
+                                return _file.source.url;
+                            }
+                            else
+                            {
+                                return choose();
+                            }
+                        };
+
+                        resolve( choose() );
+                    }
+                    else
+                    {
+                        resolve( 'Nah.... I got nothing' );
+                    }
+                }, true, from, to );
+
+            } );
         },
 
 
@@ -77,8 +78,7 @@ module.exports  = function PopKey( _bot, _modules, userConfig )
             switch ( command )
             {
                 case 'gif':
-                    botText = this.getGif( from, to, textSplit.join( ' ' ) );
-                    break;
+                    return this.getGif( from, to, textSplit.join( ' ' ) );
             }
 
             return botText;

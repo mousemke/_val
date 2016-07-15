@@ -23,7 +23,7 @@ module.exports = function Nico( _bot, _modules, userConfig )
         {
             if ( nicoFlipped === true && to === userConfig.nico && command !== 'is' + ( userConfig.nico ) + 'flipped' )
             {
-                botText = 'I\'m sorry, ' + ( userConfig.nico ) + '... I can\'t hear you while you\'re flipped';
+                return 'I\'m sorry, ' + ( userConfig.nico ) + '... I can\'t hear you while you\'re flipped';
             }
             else
             {
@@ -51,16 +51,16 @@ module.exports = function Nico( _bot, _modules, userConfig )
                             }
                         }
                         break;
+
                     case 'flip' + ( userConfig.nico ):
                     case 'flipthe' + ( userConfig.nico ):
-                        botText     = '(╯°Д°）╯︵/(.□ . ) ᶰᵒᵒᵒᵒᵒᵒᵒᵒᵒ﹗';
                         nicoFlipped = true;
-                        _bot.say( ( userConfig.nico ) + ', I\'m so sorry! ' + to + ' just flipped you like a little turtle. It\'s not my fault, I swear!! Now you\'re stuck on your back in ' + from + ' ' );
-                        break;
+                        return '(╯°Д°）╯︵/(.□ . ) ᶰᵒᵒᵒᵒᵒᵒᵒᵒᵒ﹗';
+
                     case 'putthe' +( userConfig.nico ) + 'back':
-                        botText     = '(._. ) ノ( ゜-゜ノ)';
                         nicoFlipped = false;
-                        break;
+                        return '(._. ) ノ( ゜-゜ノ)';
+
                     case 'is' + ( userConfig.nico ) + 'flipped':
                         if ( nicoFlipped === true )
                         {
@@ -71,13 +71,13 @@ module.exports = function Nico( _bot, _modules, userConfig )
                             botText = 'no';
                         }
                         break;
+
                     case 'is' + ( userConfig.nico ) + 'abadperson?':
-                        botText = 'yes.  most definitely';
-                        break;
+                        return 'yes.  most definitely';
+
                     case 'whoisit?':
                     case 'whosit?':
-                        botText = ( userConfig.nico ) + ' is it!';
-                        break;
+                        return ( userConfig.nico ) + ' is it!';
                 }
             }
 

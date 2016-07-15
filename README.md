@@ -32,15 +32,14 @@ Change log
 
 #### 0.3.0
 
-<<<<<<< HEAD
 + botText now supports promises
-=======
 + added dnd module
 + removed seen - given expansion into other command modules, this presents a security risk
->>>>>>> cbf5d431726a6a138e0f1b9db25da86944d24fe9
 + seperated command modules
 + added the u conversations
 + slight xkcd organizatonial fixes
++ removed _bot.say when promises would be a better fit
++ added slack command module
 
 
 #### 0.2.13

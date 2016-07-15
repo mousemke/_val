@@ -96,8 +96,7 @@ module.exports  = function PopKey( _bot, _modules, userConfig )
             switch ( command )
             {
                 case '8ball':
-                    botText = this.getPrediction( from, to, textSplit.join( ' ' ) );
-                    break;
+                    return this.getPrediction( from, to, textSplit.join( ' ' ) );
             }
 
             return botText;

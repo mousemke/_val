@@ -5,11 +5,13 @@ module.exports  = function XKCD( _bot, _modules, userConfig )
 
         getComic : function( from, to, text, botText )
         {
-            _modules.core.apiGet( userConfig.xkcdAppUrl, function( response )
+            return new Promise( function( resolve, reject )
             {
-                _bot.say( from, response.url + '\n' + response.title );
-
-            }, false, from, to );
+                _modules.core.apiGet( userConfig.xkcdAppUrl, function( response )
+                {
+                    resolve( response.url + '\n' + response.title );
+                }, false, from, to );
+            } );
         },
 
 
@@ -27,8 +29,7 @@ module.exports  = function XKCD( _bot, _modules, userConfig )
             switch ( command )
             {
                 case 'xkcd':
-                    this.getComic( from, to, text );
-                    break;
+                    return this.getComic( from, to, text );
             }
 
             return botText;

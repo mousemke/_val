@@ -1,9 +1,9 @@
 
 // https://github.com/ttezel/twit
 /**
- * ## val telegram loader
+ * ## val twitter loader
  *
- * @return _Object_ telegram chatbot
+ * @return _Object_ twitter chatbot
  */
 module.exports = function twitterBot( userConfig, _bot, channels, listenToMessages, displayDebugInfo, context )
 {

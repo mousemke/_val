@@ -31,7 +31,7 @@ module.exports  = function CAH( _bot, _modules, userConfig )
 
                 if ( roll && roll[2] )
                 {
-                    botText = this.roll( from, to, text, roll )
+                    return this.roll( from, to, text, roll )
                 }
                 else
                 {

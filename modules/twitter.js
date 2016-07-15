@@ -47,24 +47,28 @@ module.exports  = function Twitter( _bot, _modules, userConfig )
          */
         getFollowers : function( from, to, _text )
         {
-            var _t          = this.authenticate( from );
-            _t.get( 'followers/list', { screen_name : _text },  function ( err, data, response )
-            {
-                if ( err )
-                {
-                    console.log( err );
-                    _bot.say( from, err );
-                }
-                else
-                {
-                    var _u = '';
-                    data.users.forEach( function( user )
-                    {
-                        _u += user.name + ' (@' + user.screen_name + ') - ' + user.url + '\n';
-                    } );
+            var _t = this.authenticate( from );
 
-                    _bot.say( from, _u );
-                }
+            return new Promise( function( resolve, reject )
+            {
+                _t.get( 'followers/list', { screen_name : _text },  function ( err, data, response )
+                {
+                    if ( err )
+                    {
+                        console.log( err );
+                        resolve( err );
+                    }
+                    else
+                    {
+                        var _u = '';
+                        data.users.forEach( function( user )
+                        {
+                            _u += user.name + ' (@' + user.screen_name + ') - ' + user.url + '\n';
+                        } );
+
+                        resolve( _u );
+                    }
+                } );
             } );
         },
 
@@ -82,24 +86,28 @@ module.exports  = function Twitter( _bot, _modules, userConfig )
          */
         getFollowing : function( from, to, _text )
         {
-            var _t          = this.authenticate( from );
-            _t.get( 'friends/list', { screen_name : _text },  function ( err, data, response )
-            {
-                if ( err )
-                {
-                    console.log( err );
-                    _bot.say( from, err );
-                }
-                else
-                {
-                    var _u = '';
-                    data.users.forEach( function( user )
-                    {
-                        _u += user.name + ' (@' + user.screen_name + ') - ' + user.url + '\n';
-                    } );
+            var _t = this.authenticate( from );
 
-                    _bot.say( from, _u );
-                }
+            return new Promise( function( resolve, reject )
+            {
+                _t.get( 'friends/list', { screen_name : _text },  function ( err, data, response )
+                {
+                    if ( err )
+                    {
+                        console.log( err );
+                        resolve( err );
+                    }
+                    else
+                    {
+                        var _u = '';
+                        data.users.forEach( function( user )
+                        {
+                            _u += user.name + ' (@' + user.screen_name + ') - ' + user.url + '\n';
+                        } );
+
+                        resolve( _u );
+                    }
+                } );
             } );
         },
 
@@ -253,27 +261,26 @@ module.exports  = function Twitter( _bot, _modules, userConfig )
                         {
                             case 't':
                             case 'tweet':
-                                botText = this.tweet( from, to, realText );
-                                break;
+                                return this.tweet( from, to, realText );
+
                             case 't-stream':
                             case 't-stream-filter':
-                                botText = this.streamFilter( from, to, realText );
-                                break;
+                                return this.streamFilter( from, to, realText );
+
                             case 't-stream-stop':
-                                botText = this.streamStop( from, to, realText );
-                                break;
+                                return this.streamStop( from, to, realText );
+
                             case 't-stream-raw':
-                                botText = this.streamRaw( from, to, realText );
-                                break;
+                                return this.streamRaw( from, to, realText );
+
                             case 't-following':
-                                botText = this.getFollowing( from, to, realText );
-                                break;
+                                return this.getFollowing( from, to, realText );
+
                             case 't-followers':
-                                botText = this.getFollowers( from, to, realText );
-                                break;
+                                return this.getFollowers( from, to, realText );
+
                             case 't-slug':
-                                botText = this.getSlug( from, to, realText );
-                                break;
+                                return this.getSlug( from, to, realText );
                         }
                     }
                 }
@@ -442,26 +449,29 @@ module.exports  = function Twitter( _bot, _modules, userConfig )
          */
         tweet : function( from, to, text )
         {
-            if ( text.length > 140 )
+            return new Promise( function( resolve, reject )
             {
-                _bot.say( from, 'psst... ' + to + ', twitter only supports 140 characters' );
-            }
-            else
-            {
-                var _t = this.authenticate( from );
-
-                _t.post( 'statuses/update', { status : text }, function( err, data, response )
+                if ( text.length > 140 )
                 {
-                    if ( err )
+                    resolve( 'psst... ' + to + ', twitter only supports 140 characters' );
+                }
+                else
+                {
+                    var _t = this.authenticate( from );
+
+                    _t.post( 'statuses/update', { status : text }, function( err, data, response )
                     {
-                        _bot.say( from, 'Sorry ' + to + ', ' + err.code + ' : ' + err.message );
-                    }
-                    else
-                    {
-                        _bot.say( from, 'Tweet Posted to ' + _t.account + ': ' + text );
-                    }
-                } );
-            }
+                        if ( err )
+                        {
+                            resolve( 'Sorry ' + to + ', ' + err.code + ' : ' + err.message );
+                        }
+                        else
+                        {
+                            resolve( 'Tweet Posted to ' + _t.account + ': ' + text );
+                        }
+                    } );
+                }
+            } );
         }
     }
 };

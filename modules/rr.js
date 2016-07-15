@@ -42,7 +42,7 @@ module.exports  = function RR( _bot, _modules, userConfig )
             {
                 case 'rr':
                     return this.rr( from, to, text );
-                    break;
+
             }
 
             return botText;

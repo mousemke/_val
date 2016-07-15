@@ -27,28 +27,46 @@ module.exports = function slackBot( userConfig, _bot, channels, listenToMessages
 
     _bot.on( RTM_EVENTS.MESSAGE, function( message )
     {
-        var from    = message.channel;
-        var to      = message.user;
-        var botText = message.text;
+        var msgType     = message.type;
+        var msgSubtype  = message.subtype;
+        var msgHidden   = message.hidden;
 
-        var user    = _bot.dataStore.getUserById( message.user );
-
-        var confObj = { to: to, user: user };
-
-        var botText = boundListenToMessages( to, from, botText );
-
-        if ( botText !== '' && botText !== false )
+        if ( !msgHidden && message.user && message.channel )
         {
-            if ( typeof botText.then === 'function' )
+            var from        = message.channel;
+            var to          = message.user;
+            var botText     = message.text;
+
+
+            var channel     = _bot.dataStore.getChannelGroupOrDMById( message.channel ).name;
+            var user        = _bot.dataStore.getUserById( message.user ).name;
+
+            var confObj = { to: to, from: from, user: user, channel: channel };
+
+            botText         = boundListenToMessages( user, channel, botText );
+
+            if ( botText && botText !== '' )
             {
-                botText.then( function( text )
+                if ( msgSubtype === 'message_changed' )
                 {
-                    _bot.say( from, text, confObj );
-                } );
-            }
-            else
-            {
-                _bot.say( from, botText, confObj );
+                    _bot.updateMessage( msg, function( err, res )
+                    {
+                        msg.text = 'test message update';
+                    } );
+                }
+                else if ( typeof botText.then === 'function' )
+                {
+                    // refactor to use message updating?
+                    // https://github.com/slackhq/node-slack-sdk#update-messages
+                    botText.then( function( text )
+                    {
+                        _bot.say( from, text, confObj );
+                    } );
+                }
+                else
+                {
+                    _bot.say( from, botText, confObj );
+                }
             }
         }
     } );
@@ -60,8 +78,7 @@ module.exports = function slackBot( userConfig, _bot, channels, listenToMessages
         {
             if ( confObj )
             {
-                console.log( confObj.to, confObj.user.name, botText );
-                botText = botText.replace( confObj.to, confObj.user.name );
+                from = confObj.from;
             }
 
             _bot.sendMessage( botText, from );

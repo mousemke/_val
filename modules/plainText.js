@@ -179,11 +179,11 @@ module.exports = function PlainText( _bot, _modules, userConfig )
 
             if ( command.slice( command.length - 3 ) === 'end' )
             {
-                botText = this.end( command, text );
+                return this.end( command, text );
             }
             else if ( command.slice( command.length - 5 ) === 'fetti' )
             {
-                botText = this.fetti( command );
+                return this.fetti( command );
             }
             else if ( moon && moon[1] && text !== '+moonflakes' )
             {
@@ -197,11 +197,11 @@ module.exports = function PlainText( _bot, _modules, userConfig )
 
                 if ( moonLength < 4 )
                 {
-                  botText = 'To the ' + botText + '!';
+                  return 'To the ' + botText + '!';
                 }
                 if ( moonLength > 6 )
                 {
-                  botText = botText.toUpperCase() + '!!!!!!!!';
+                  return botText.toUpperCase() + '!!!!!!!!';
                 }
             }
             else if ( space && space[1] )
@@ -213,7 +213,7 @@ module.exports = function PlainText( _bot, _modules, userConfig )
                   botText += 'aa';
                 }
                 botText += 'ce';
-                botText = botText.toUpperCase() + '!!!!';
+                return botText.toUpperCase() + '!!!!';
             }
             else if ( khan && khan[1] )
             {
@@ -224,59 +224,59 @@ module.exports = function PlainText( _bot, _modules, userConfig )
                   botText += 'aa';
                 }
                 botText += 'n';
-                botText = botText.toUpperCase() + '!!!!';
+                return botText.toUpperCase() + '!!!!';
             }
             else
             {
                 if ( !! textResponses[ command ] )
                 {
-                    botText = textResponses[ command ];
+                    return textResponses[ command ];
                 }
                 else
                 {
                     switch ( command )
                     {
                         case 'dodge':
-                            botText = this.dodge( from, to, text );
-                            break;
+                            return this.dodge( from, to, text );
+
                         case 'travolta':
-                            botText = this.travolta();
-                            break;
+                            return this.travolta();
+
                         case 'dance':
                             var dancer = Math.floor( Math.random() * 80 );
                             if ( dancer === 3 )
                             {
-                                botText = '└[∵┌]└[ ∵ ]┘[┐∵]┘';
+                                return '└[∵┌]└[ ∵ ]┘[┐∵]┘';
                             }
                             else
                             {
-                                botText = '♪┏(・o･)┛♪┗ ( ･o･) ┓♪';
+                                return '♪┏(・o･)┛♪┗ ( ･o･) ┓♪';
                             }
-                            break;
+
                         case 'disappearinacloudofsmoke':
-                            setTimeout( function()
-                            {
-                                _bot.say( from, 'I mean...  why would you just assume you can have any new ability you want....' );
-                            }, 7500 );
-                            setTimeout( function()
-                            {
-                                _bot.say( from, 'Stupid.' );
-                            }, 1500 );
-                            botText = 'no...  you don\'t have that ability.';
-                            break;
+                            // setTimeout( function()
+                            // {
+                            //     _bot.say( from, 'I mean...  why would you just assume you can have any new ability you want....' );
+                            // }, 7500 );
+                            // setTimeout( function()
+                            // {
+                            //     _bot.say( from, 'Stupid.' );
+                            // }, 1500 );
+                            return 'no...  you don\'t have that ability.';
+
                         case 'google':
                             text = text.split( ' ' ).slice( 1 ).join( '%20' );
-                            botText = 'http://www.lmgtfy.com/?q=' + text;
-                            break;
+                            return 'http://www.lmgtfy.com/?q=' + text;
+
                         case 'w':
                         case 'wiki':
                             text = text.split( ' ' ).slice( 1 ).join( '%20' );
-                            botText = 'http://en.wikipedia.org/wiki/' + text;
-                            break;
+                            return 'http://en.wikipedia.org/wiki/' + text;
+
                         case 'g':
                             text = text.split( ' ' ).slice( 1 ).join( '%20' );
-                            botText = 'https://www.google.de/search?hl=en&q=' + text;
-                            break;
+                            return 'https://www.google.de/search?hl=en&q=' + text;
+
                         case 'badyoutube':
                         case 'germanysgottalent':
                             var choices = [ 'https://www.youtube.com/watch?v=IeWAPVWXLtM',
@@ -285,21 +285,21 @@ module.exports = function PlainText( _bot, _modules, userConfig )
                                             'https://www.youtube.com/watch?v=xRVvegLwK_o'
                                             ];
                             var choice = Math.floor( Math.random() * choices.length );
-                            botText = choices[ choice ];
-                            break;
+                            return choices[ choice ];
+
                         case 'ping':
-                            botText = to + ': pong';
-                            break;
+                            return to + ': pong';
+
                         case 'wave':
-                            botText = to + ' o/';
-                            break;
+                            return to + ' o/';
+
                         case 'hug':
-                            botText = 'No.';
-                            break;
+                            return 'No.';
+
                         case 'sleep':
                         case 'zzz':
-                            botText = '(- o - ) zzZ ☽';
-                            break;
+                            return '(- o - ) zzZ ☽';
+
                     }
                 }
              }

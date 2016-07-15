@@ -324,11 +324,12 @@ var _Val = function( commandModule, userConfig )
          */
         function addPrivateChannels()
         {
-            var _p, _private    = userConfig.channelsPrivateJoin;
-            var _privateLength  = _private.length;
+            var _p, _private    = commandModule.channelsPrivateJoin;
 
-            if ( _privateLength )
+            if ( _private )
             {
+                var _privateLength  = _private.length;
+
                 for ( var i = 0; i < _privateLength; i++ )
                 {
                     _p = _private[ i ];
@@ -349,7 +350,7 @@ var _Val = function( commandModule, userConfig )
         {
             userConfig.publicChannels = [].concat( channels );
 
-            if ( modules.Slack.enabled )
+            if ( commandModule.slackTeam )
             {
                 addPrivateChannels();
             }
@@ -385,11 +386,39 @@ var _Val = function( commandModule, userConfig )
                 }
             }
         }
+    //     if ( modules.Slack.enabled && userConfig.autojoin )
+    //     {
+    //         var _url    = 'https://' + userConfig.slackChannel + '.slack.com/api/channels.list?token=' + userConfig.slackAPIKey;
 
+    //         apiGet( _url, function( res )
+    //         {
+    //             var _channels = res.channels;
 
-        if ( modules.Slack.enabled && userConfig.autojoin )
+    //             for ( var _c in _channels )
+    //             {
+    //                 _c = _channels[ _c ].name;
+    //                 _c = _c[0] !== '#' ? '#' + _c : _c;
+
+    //                 channels.push( _c );
+    //             }
+
+    //             finishChannels();
+    //         }, true );
+    //     }
+    //     else if ( userConfig.channels )
+    //     {
+    //         channels = userConfig.channels;
+    //         finishChannels();
+    //     }
+    //     else
+    //     {
+    //         console.log( 'no channels found' );
+    //     }
+    // }
+
+        if ( commandModule.slackTeam && commandModule.autojoin )
         {
-            var _url    = 'https://' + userConfig.slackChannel + '.slack.com/api/channels.list?token=' + userConfig.slackAPIKey;
+            var _url    = 'https://' + commandModule.slackTeam + '.slack.com/api/channels.list?token=' + userConfig.slackAPIKey;
 
             apiGet( _url, function( res )
             {
@@ -458,79 +487,82 @@ var _Val = function( commandModule, userConfig )
      */
     function listenToMessages( to, from, text )
     {
-        if ( userConfig.verbose === true )
+        if ( text )
         {
-            console.log( commandType, chalk.green( from ), chalk.red( to ), text );
-        }
-
-        text = trimUsernames( text );
-
-        watchActive( from, to );
-
-        text = trollOn( text );
-
-        if ( userConfig.bots.indexOf( to ) === -1 )
-        {
-            var botText = '';
-
-            if ( text === '_val' || text === '_val?' )
+            if ( userConfig.verbose === true )
             {
-                botText = 'yes?';
-            }
-            else if ( text === '_val!' )
-            {
-                botText = 'what!?';
+                console.log( commandType, chalk.green( from ), chalk.red( to ), text );
             }
 
-            var triggers = guys.triggers;
+            text = trimUsernames( text );
 
-            for ( var i = 0, lenI = triggers.length; i < lenI; i++ )
+            watchActive( from, to );
+
+            text = trollOn( text );
+
+            if ( userConfig.bots.indexOf( to ) === -1 )
             {
-                if ( text.toLowerCase().indexOf( guys.triggers[ i ] ) !== -1 )
-                {
-                    botText = replaceGuys( to, text );
-                    break;
-                }
-            }
+                var botText = '';
 
-            if ( text[ 0 ] === userConfig.trigger && text !== userConfig.trigger && botText === '' )
-            {
-                if ( text === userConfig.trigger + 'moon?' )
+                if ( text === '_val' || text === '_val?' )
                 {
-                    botText = 'In 500 million years, the moon will be 14,600 miles farther away than it is right now. When it is that far, total eclipses will not take place';
+                    botText = 'yes?';
                 }
-                else if ( text === userConfig.trigger + 'isup' )
+                else if ( text === '_val!' )
                 {
-                    botText = 'Yes, but c\'mon!  At least use a full sentence!';
+                    botText = 'what!?';
                 }
 
-                if ( text[0] === userConfig.trigger )
-                {
-                    text = text.slice( 1 );
-                }
+                var triggers = guys.triggers;
 
-                var command = text.split( ' ' )[ 0 ];
-
-                for ( var module in _modules )
+                for ( var i = 0, lenI = triggers.length; i < lenI; i++ )
                 {
-                    if ( botText !== '' )
+                    if ( text.toLowerCase().indexOf( guys.triggers[ i ] ) !== -1 )
                     {
+                        botText = replaceGuys( to, text );
                         break;
                     }
+                }
 
-                    if ( module !== 'constructors' )
+                if ( text[ 0 ] === userConfig.trigger && text !== userConfig.trigger && botText === '' )
+                {
+                    if ( text === userConfig.trigger + 'moon?' )
                     {
-                        botText = _modules[ module ].responses( from, to, text, botText, command );
+                        botText = 'In 500 million years, the moon will be 14,600 miles farther away than it is right now. When it is that far, total eclipses will not take place';
+                    }
+                    else if ( text === userConfig.trigger + 'isup' )
+                    {
+                        botText = 'Yes, but c\'mon!  At least use a full sentence!';
+                    }
+
+                    if ( text[0] === userConfig.trigger )
+                    {
+                        text = text.slice( 1 );
+                    }
+
+                    var command = text.split( ' ' )[ 0 ];
+
+                    for ( var module in _modules )
+                    {
+                        if ( botText !== '' )
+                        {
+                            break;
+                        }
+
+                        if ( module !== 'constructors' )
+                        {
+                            botText = _modules[ module ].responses( from, to, text, botText, command );
+                        }
                     }
                 }
-            }
 
-            return botText;
-        }
-        else if ( userConfig.bots.indexOf( to ) !== -1 &&
-            ( text[ 0 ] ===  userConfig.trigger && text !==  userConfig.trigger ) )
-        {
-            // automated response to automated people
+                return botText;
+            }
+            else if ( userConfig.bots.indexOf( to ) !== -1 &&
+                ( text[ 0 ] ===  userConfig.trigger && text !==  userConfig.trigger ) )
+            {
+                // automated response to automated people
+            }
         }
     }
 
@@ -649,15 +681,14 @@ var _Val = function( commandModule, userConfig )
             case 'help':
                 if ( userConfig.enableHelp )
                 {
-                    if ( userConfig.enablePM )
-                    {
-                        _bot.say ( to, userConfig.helpText() );
-                    }
-                    else
-                    {
-                        _bot.say ( from, to + ': ' + userConfig.helpText() );
-                    }
-                    botText = '';
+                    // if ( userConfig.enablePM )
+                    // {
+                    //     _bot.say ( to, userConfig.helpText() );
+                    // }
+                    // else
+                    // {
+                        return to + ': ' + userConfig.helpText();
+                    // }
                 }
                 break;
             default:
