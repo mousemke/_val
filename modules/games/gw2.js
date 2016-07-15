@@ -18,7 +18,7 @@
 
 //*****************************************
 
-module.exports  = function GuildWars2( _bot, _modules, userConfig )
+module.exports  = function GuildWars2( _bot, _modules, userConfig, confObj )
 {
     var apiBaseUrl      = userConfig.guildWars2apiUrl;
     var moduleTrigger   = userConfig.guildWars2Trigger;

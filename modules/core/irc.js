@@ -1,4 +1,6 @@
 
+const Irc = require( 'irc' );
+
 /**
  * ## val irc loader
  *
@@ -6,8 +8,6 @@
  */
 module.exports = function ircBot( userConfig, _bot, channels, listenToMessages, displayDebugInfo, context )
 {
-    var Irc = require( 'irc' );
-
     var ircConfig = userConfig.command.irc;
 
     _bot = new Irc.Client( ircConfig.server, ircConfig.botName, {
@@ -22,24 +22,28 @@ module.exports = function ircBot( userConfig, _bot, channels, listenToMessages, 
 
     userConfig.commandModules.push( _bot );
 
-    _bot.addListener( 'error', function( message )
+    _bot.addListener( 'error', message =>
     {
         console.log( 'error: ', chalk.red( message ) );
     });
 
     // _bot.addListener( 'pm', listenToPm );
 
-    var boundListenToMessages = listenToMessages.bind( context );
+    let boundListenToMessages = listenToMessages.bind( context );
 
-    _bot.addListener( 'message', function( to, from, text )
+    _bot.addListener( 'message', ( to, from, botText ) =>
     {
-        var botText = boundListenToMessages( to, from, text );
+        botText = boundListenToMessages( to, from, botText );
 
-        if ( botText !== '' && botText !== false )
+        if ( botText === undefined )
+        {
+            console.log( `Undefined botText... That's probably not good.` );
+        }
+        else if ( botText !== '' && botText !== false )
         {
             if ( typeof botText.then === 'function' )
             {
-                botText.then( function( text )
+                botText.then( text =>
                 {
                     _bot.say( from, text )
                 } );
@@ -57,21 +61,6 @@ module.exports = function ircBot( userConfig, _bot, channels, listenToMessages, 
         _bot.addListener( 'raw', displayDebugInfo );
     }
 
-    /**
-     * ## sayNow
-     *
-     * special function for val saying things without being prompted
-     *
-     * @param {String} from detsination
-     * @param {String} text message text
-     * @param {Boolean} pm private message or not (doesnt matter to irc)
-     *
-     * @return _Void_
-     */
-    _bot.sayNow = function( from, text, pm )
-    {
-        _bot.say( from, text );
-    };
 
     return _bot;
 }

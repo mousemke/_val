@@ -12,7 +12,7 @@ module.exports  = function Twitch( _bot, _modules, userConfig )
          *
          * @return _String_ changed botText
          */
-        responses : function( from, to, text, botText, command )
+        responses : function( from, to, text, botText, command, confObj )
         {
             switch ( command )
             {

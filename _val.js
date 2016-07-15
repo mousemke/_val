@@ -246,7 +246,7 @@ var _Val = function( commandModule, userConfig )
 
             botText += ' in ' + from;
 
-            _bot.say( from, botText );
+            return botText;
         }
 
         return activeUsers;
@@ -386,35 +386,7 @@ var _Val = function( commandModule, userConfig )
                 }
             }
         }
-    //     if ( modules.Slack.enabled && userConfig.autojoin )
-    //     {
-    //         var _url    = 'https://' + userConfig.slackChannel + '.slack.com/api/channels.list?token=' + userConfig.slackAPIKey;
 
-    //         apiGet( _url, function( res )
-    //         {
-    //             var _channels = res.channels;
-
-    //             for ( var _c in _channels )
-    //             {
-    //                 _c = _channels[ _c ].name;
-    //                 _c = _c[0] !== '#' ? '#' + _c : _c;
-
-    //                 channels.push( _c );
-    //             }
-
-    //             finishChannels();
-    //         }, true );
-    //     }
-    //     else if ( userConfig.channels )
-    //     {
-    //         channels = userConfig.channels;
-    //         finishChannels();
-    //     }
-    //     else
-    //     {
-    //         console.log( 'no channels found' );
-    //     }
-    // }
 
         if ( commandModule.slackTeam && commandModule.autojoin )
         {
@@ -485,7 +457,7 @@ var _Val = function( commandModule, userConfig )
      *
      * @return _Void_
      */
-    function listenToMessages( to, from, text )
+    function listenToMessages( to, from, text, confObj )
     {
         if ( text )
         {
@@ -551,7 +523,7 @@ var _Val = function( commandModule, userConfig )
 
                         if ( module !== 'constructors' )
                         {
-                            botText = _modules[ module ].responses( from, to, text, botText, command );
+                            botText = _modules[ module ].responses( from, to, text, botText, command, confObj );
                         }
                     }
                 }
@@ -673,11 +645,11 @@ var _Val = function( commandModule, userConfig )
         switch ( command )
         {
             case 'active':
-                checkActive( from, to, text );
-                break;
+                return checkActive( from, to, text );
+
             case 'test':
-                botText = testFunction( from, to, text );
-                break;
+                return testFunction( from, to, text );
+
             case 'help':
                 if ( userConfig.enableHelp )
                 {

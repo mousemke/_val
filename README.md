@@ -4,6 +4,8 @@ erm.... bot.
 
 v. 0.3.0
 
+`requires node 6.2.2+`
+
 install
 
 ```
@@ -41,6 +43,10 @@ Change log
 + removed _bot.say when promises would be a better fit
 + added slack command module
 + added sayNow to command modules
++ started es6ification.  node requirements bumped to 6.2.2
++ all responses now get confObj passed from onMessage to say for the sake of switching between readable and programatic channel and user names
++ unscramble scoring removed.  doge can still be earned
++ comment updates everywhere
 
 
 #### 0.2.13

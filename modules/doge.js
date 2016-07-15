@@ -14,81 +14,87 @@ module.exports = function Doge( _bot, _modules, userConfig )
          *
          * returns a users balance
          *
-         * @param  {str}            from                originating channel
-         * @param  {str}            to                  user
-         * @param  {str}            text                full message text
+         * @param {String} from originating channel
+         * @param {String} to user
+         * @param {String} text full message text
          *
-         * @return {void}
+         * @return _Void_
          */
         balance : function( from, to, text )
         {
-            var _balanceCB = function( _to, success )
+            return new Promise( ( resolve, reject ) =>
             {
-                _to = _to.toLowerCase();
-
-                if ( success )
+                var _balanceCB = function( _to, success )
                 {
-                    var amount      = dcMasterList[ _to ];
-                    amount          = ( amount ) ? amount : 0;
+                    _to = _to.toLowerCase();
 
-                    var botText     = '';
+                    if ( success )
+                    {
+                        var amount      = dcMasterList[ _to ];
+                        amount          = ( amount ) ? amount : 0;
 
-                    if ( _to === 'masterTotal' )
-                    {
-                        botText += 'There are currently Ð' + amount + ' in circulation';
-                    }
-                    else if ( _to === '___bank___' )
-                    {
-                        botText += 'There are currently Ð' + amount + ' in the bank';
-                    }
-                    else
-                    {
-                        if ( from !== _to )
+                        var botText     = '';
+
+                        if ( _to === 'masterTotal' )
                         {
-                          botText += to + ', ';
+                            botText += 'There are currently Ð' + amount + ' in circulation';
                         }
-                        botText += 'you currently have Ð' + amount;
+                        else if ( _to === '___bank___' )
+                        {
+                            botText += 'There are currently Ð' + amount + ' in the bank';
+                        }
+                        else
+                        {
+                            if ( from !== _to )
+                            {
+                              botText += to + ', ';
+                            }
+                            botText += 'you currently have Ð' + amount;
+                        }
+
+                        resolve( botText );
                     }
+                };
 
-                    _bot.say( from, botText );
+                if ( text.split( ' ' )[ 1 ] === 'all' )
+                {
+                    _balanceCB( 'masterTotal', true );
                 }
-            };
-
-            if ( text.split( ' ' )[ 1 ] === 'all' )
-            {
-                _balanceCB( 'masterTotal', true );
-            }
-            else if ( text.split( ' ' )[ 1 ] === 'bank' )
-            {
-                _balanceCB( '___bank___', true );
-            }
-            else
-            {
-                _modules.core.userData( to, from, _balanceCB, text );
-            }
+                else if ( text.split( ' ' )[ 1 ] === 'bank' )
+                {
+                    _balanceCB( '___bank___', true );
+                }
+                else
+                {
+                    _modules.core.userData( to, from, _balanceCB, text );
+                }
+            } );
         },
 
 
         deposit : function( from, to, text )
         {
-            // var _depositCB = function( from, _to, _info, _whois )
+            // return new Promise( ( resolve, reject ) =>
             // {
-            //      _to = _to.toLowerCase();
-            //      var botText = '';
-            //      if ( from !== _to )
-            //      {
-            //          botText += _to + ', ';
-            //      }
-            //
-            //      botText += 'please deposit your Ð to ' + dcMasterList[ _whois.host ];
-            //
-            //     _bot.say( from, botText );
-            // };
+            //     var _depositCB = function( from, _to, _info, _whois )
+            //     {
+            //          _to = _to.toLowerCase();
+            //          var botText = '';
+            //          if ( from !== _to )
+            //          {
+            //              botText += _to + ', ';
+            //          }
 
-            // _modules.core.userData( from, to, _depositCB );
-            //
+            //          botText += 'please deposit your Ð to ' + dcMasterList[ _whois.host ];
 
-            _bot.say( to, 'deposit and withdraw are in between APIs at the moment.  Ask mouse for more info' );
+            //         resolve( botText );
+            //     };
+
+            //     _modules.core.userData( from, to, _depositCB );
+
+            // });
+
+            return 'deposit and withdraw are in between APIs at the moment.  Ask mouse for more info';
         },
 
 
@@ -97,9 +103,9 @@ module.exports = function Doge( _bot, _modules, userConfig )
          *
          * returns satoshi value of 1 doge
          *
-         * @param  {str}                    from                originating channel
+         * @param {String} from originating channel
          *
-         * @return {void}
+         * @return _Void_
          */
         doge : function( from, text, full, to )
         {
@@ -111,50 +117,53 @@ module.exports = function Doge( _bot, _modules, userConfig )
             var textSplit = text.split( ' ' );
             var url = 'https://bittrex.com/api/v1.1/public/getmarketsummary?market=BTC-DOGE';
 
-            _modules.core.apiGet( url, function( info )
+            return new Promise( ( resolve, reject ) =>
             {
-                var price, amount = parseInt( textSplit[ 1 ] );
-
-                if ( typeof amount !== 'number' || isNaN( amount ) === true )
+                _modules.core.apiGet( url, function( info )
                 {
-                    amount = 1;
-                }
+                    var price, amount = parseInt( textSplit[ 1 ] );
 
-                var res         = info.result[0];
-                var dogeBase    = res.Last;
-                var lastPrice   = amount * toSatoshi( res.Last );
-                var doge        = '狗狗币!  Ð' + amount + ' = ' + lastPrice + ' Satoshi';
-
-                if ( full )
-                {
-                    url = 'https://btc-e.com/api/3/ticker/btc_usd-btc_eur-ltc_btc';
-
-                    _modules.core.apiGet( url, function( info )
+                    if ( typeof amount !== 'number' || isNaN( amount ) === true )
                     {
-                        var formatPrice = function( price )
+                        amount = 1;
+                    }
+
+                    var res         = info.result[0];
+                    var dogeBase    = res.Last;
+                    var lastPrice   = amount * toSatoshi( res.Last );
+                    var doge        = '狗狗币!  Ð' + amount + ' = ' + lastPrice + ' Satoshi';
+
+                    if ( full )
+                    {
+                        url = 'https://btc-e.com/api/3/ticker/btc_usd-btc_eur-ltc_btc';
+
+                        _modules.core.apiGet( url, function( info )
                         {
-                            price = ( price * dogeBase * amount );
-                            return price > 1 ? price.toFixed( 2 ) : price.toFixed( 4 );
-                        };
+                            var formatPrice = function( price )
+                            {
+                                price = ( price * dogeBase * amount );
+                                return price > 1 ? price.toFixed( 2 ) : price.toFixed( 4 );
+                            };
 
-                        var usd = formatPrice( info.btc_usd.last );
-                        var eur = formatPrice( info.btc_eur.last );
-                        var ltc = formatPrice( 1 / info.ltc_btc.last );
+                            var usd = formatPrice( info.btc_usd.last );
+                            var eur = formatPrice( info.btc_eur.last );
+                            var ltc = formatPrice( 1 / info.ltc_btc.last );
 
-                        doge += ', $' + usd + ', ' + eur + '€, ' + ltc + ' LTC.';
+                            doge += ', $' + usd + ', ' + eur + '€, ' + ltc + ' LTC.';
 
-                        _bot.say( from, doge );
-                    }, true, from, to )
-                }
-                else
-                {
-                    var highPrice   = amount * toSatoshi( res.High );
-                    var lowPrice    = amount * toSatoshi( res.Low );
-                    doge += '. TO THE MOON!!!! ( H: ' + highPrice + ', L: ' + lowPrice + ' )';
+                            resolve( doge );
+                        }, true, from, to )
+                    }
+                    else
+                    {
+                        var highPrice   = amount * toSatoshi( res.High );
+                        var lowPrice    = amount * toSatoshi( res.Low );
+                        doge += '. TO THE MOON!!!! ( H: ' + highPrice + ', L: ' + lowPrice + ' )';
 
-                    _bot.say( from, doge );
-                }
-            }, true, from, to );
+                        resolve( doge );
+                    }
+                }, true, from, to );
+            } );
         },
 
 
@@ -165,7 +174,7 @@ module.exports = function Doge( _bot, _modules, userConfig )
          * @param  {Number} amount amount to transfer
          * @param  {String} silent silent or spoken
          *
-         * @return {String}
+         * @return _String_
          */
         giveFromBank : function( to, amount, silent )
         {
@@ -190,7 +199,7 @@ module.exports = function Doge( _bot, _modules, userConfig )
          *
          * sets the active listener and loads the dogecoin bank
          *
-         * @return {void}
+         * @return _Void_
          */
         ini : function()
         {
@@ -203,7 +212,7 @@ module.exports = function Doge( _bot, _modules, userConfig )
          *
          * loads the json for the master bank list
          *
-         * @return {void}
+         * @return _Void_
          */
         loadMasterList : function()
         {
@@ -221,36 +230,36 @@ module.exports = function Doge( _bot, _modules, userConfig )
          * @param {String} text full input string
          * @param {String} botText text to say
          * @param {String} command bot command (first word)
+         * @param {Object} confObj extra config object that some command modules need
          *
          * @return _String_ changed botText
          */
-        responses : function( from, to, text, botText, command )
+        responses : function( from, to, text, botText, command, confObj )
         {
             switch ( command )
             {
                 case 'doge':
-                    this.doge( from, text, false, to );
-                    break;
+                    return this.doge( from, text, false, to );
+
                 case 'market':
-                    this.doge( from, text, true, to );
-                    break;
+                    return this.doge( from, text, true, to );
+
                 case 'tip':
-                    this.tip( from, to, text );
-                    break;
+                    return this.tip( from, to, text );
+
                 case 'withdraw':
-                    this.withdraw( from, to, text );
-                    break;
+                    return this.withdraw( from, to, text );
+
                 case 'balance':
                 case 'wallet':
-                    this.balance( from, to, text );
-                    break;
+                    return this.balance( from, to, text );
+
                 case 'deposit':
-                    this.deposit( from, to, text );
-                    break;
+                    return this.deposit( from, to, text );
+
                 case 'makeitrain':
                 case 'soak':
-                    this.soak( from, to, text );
-                    break;
+                    return this.soak( from, to, text );
             }
 
             return botText;
@@ -262,11 +271,11 @@ module.exports = function Doge( _bot, _modules, userConfig )
          *
          * takes a tip and splits it up between all active users after nickserv authentication
          *
-         * @param  {str}            from                originating channel
-         * @param  {str}            to                  originating user
-         * @param  {str}            text                full message text
+         * @param {String} from originating channel
+         * @param {String} to originating user
+         * @param {String} text full message text
          *
-         * @return {void}
+         * @return _Void_
          */
         soak : function( from, to, text )
         {
@@ -278,97 +287,99 @@ module.exports = function Doge( _bot, _modules, userConfig )
             var soakAmount      = Math.floor( soakTotal / users );
             var soakRemainder   = soakTotal - ( soakAmount * users );
 
-
-            var _soakCB = function( _to, success, textSplit, origText )
+            return new Promise( ( resolve, reject ) =>
             {
-                _to = _to.toLowerCase();
+                var _soakCB = function( _to, success, textSplit, origText )
+                {
+                    _to = _to.toLowerCase();
 
-                if ( !dcMasterList[ _to ] || dcMasterList[ _to ] < soakTotal )
-                {
-                    botText = 'Sorry, ' + to + ', you need more doge';
-                }
-                else if ( soakTotal < 1 )
-                {
-                    botText = 'Don\'t be so down, ' + to + '...  Stay positive!';
-                }
-                else
-                {
-                    if ( ! text[1] || typeof soakTotal !== 'number' || isNaN( soakTotal ) )
+                    if ( !dcMasterList[ _to ] || dcMasterList[ _to ] < soakTotal )
                     {
-                        botText  = 'you must give an amount ( ' + ( userConfig.trigger ) + 'soak <amount> )';
+                        botText = 'Sorry, ' + to + ', you need more doge';
                     }
-                    else if ( users === 0 )
+                    else if ( soakTotal < 1 )
                     {
-                        botText  = 'so, you just want to soak yourself then?';
+                        botText = 'Don\'t be so down, ' + to + '...  Stay positive!';
                     }
                     else
                     {
-                        if ( success === 'true' )
+                        if ( ! text[1] || typeof soakTotal !== 'number' || isNaN( soakTotal ) )
                         {
-                            if ( users !== 1 )
-                            {
-                                botText = 'Searching for active users....  ';
-
-                                botText += to + ' tipped Ð' + soakTotal + ' and is soaking ' + users +
-                                        ' people with Ð' + soakAmount + ' each! : ';
-
-                                dcMasterList[ to ]  = dcMasterList[ to ] - soakTotal;
-
-                                for ( i = 0, lenI = list.length; i < lenI; i++)
-                                {
-                                    if ( list[ i ] !== _to )
-                                    {
-                                        if ( dcMasterList[ list[ i ] ] )
-                                        {
-                                            dcMasterList[ list[ i ] ] = dcMasterList[ list[ i ] ] + soakAmount;
-                                        }
-                                        else
-                                        {
-                                            dcMasterList[ list[ i ] ] = soakAmount;
-                                        }
-                                        botText += list[ i ] + ', ';
-                                    }
-                                }
-                                botText = botText.slice( 0, botText.length - 2 );
-
-                                if ( soakRemainder !== 0 )
-                                {
-                                    dcMasterList[ userConfig.botName ] = dcMasterList[ userConfig.botName ] + soakRemainder;
-                                    botText += ' (Ð' + soakRemainder + ' in scraps eaten by ' + userConfig.botName + ')';
-                                }
-                            }
-                            else
-                            {
-                                dcMasterList[ to ]  = dcMasterList[ to ] - soakTotal;
-                                for ( i = 0; i < list.length; i++ )
-                                {
-                                    if ( list[ i ] !== to )
-                                    {
-                                        dcMasterList[ list[ i ] ] = dcMasterList[ list[ i ] ] + soakAmount;
-                                        botText = to + ' tipped Ð' + soakAmount + ' to ' + list[ i ];
-                                    }
-                                }
-
-                                botText += '. It\'s not soaking if there\'s just one person!';
-                            }
-                            self.writeMasterList();
+                            botText  = 'you must give an amount ( ' + ( userConfig.trigger ) + 'soak <amount> )';
+                        }
+                        else if ( users === 0 )
+                        {
+                            botText  = 'so, you just want to soak yourself then?';
                         }
                         else
                         {
-                            _botText = 'you must be identified to access your Doge';
-
-                            if ( userConfig.enablePM )
+                            if ( success === 'true' )
                             {
-                                _botText += ' (/msg ' + ( userConfig.nickservBot ) + ' help)';
+                                if ( users !== 1 )
+                                {
+                                    botText = 'Searching for active users....  ';
+
+                                    botText += to + ' tipped Ð' + soakTotal + ' and is soaking ' + users +
+                                            ' people with Ð' + soakAmount + ' each! : ';
+
+                                    dcMasterList[ to ]  = dcMasterList[ to ] - soakTotal;
+
+                                    for ( i = 0, lenI = list.length; i < lenI; i++)
+                                    {
+                                        if ( list[ i ] !== _to )
+                                        {
+                                            if ( dcMasterList[ list[ i ] ] )
+                                            {
+                                                dcMasterList[ list[ i ] ] = dcMasterList[ list[ i ] ] + soakAmount;
+                                            }
+                                            else
+                                            {
+                                                dcMasterList[ list[ i ] ] = soakAmount;
+                                            }
+                                            botText += list[ i ] + ', ';
+                                        }
+                                    }
+                                    botText = botText.slice( 0, botText.length - 2 );
+
+                                    if ( soakRemainder !== 0 )
+                                    {
+                                        dcMasterList[ userConfig.botName ] = dcMasterList[ userConfig.botName ] + soakRemainder;
+                                        botText += ' (Ð' + soakRemainder + ' in scraps eaten by ' + userConfig.botName + ')';
+                                    }
+                                }
+                                else
+                                {
+                                    dcMasterList[ to ]  = dcMasterList[ to ] - soakTotal;
+                                    for ( i = 0; i < list.length; i++ )
+                                    {
+                                        if ( list[ i ] !== to )
+                                        {
+                                            dcMasterList[ list[ i ] ] = dcMasterList[ list[ i ] ] + soakAmount;
+                                            botText = to + ' tipped Ð' + soakAmount + ' to ' + list[ i ];
+                                        }
+                                    }
+
+                                    botText += '. It\'s not soaking if there\'s just one person!';
+                                }
+                                self.writeMasterList();
+                            }
+                            else
+                            {
+                                _botText = 'you must be identified to access your Doge';
+
+                                if ( userConfig.enablePM )
+                                {
+                                    _botText += ' (/msg ' + ( userConfig.nickservBot ) + ' help)';
+                                }
                             }
                         }
                     }
-                }
 
-                _bot.say( from, botText );
-            };
+                    resolve( botText );
+                };
 
-            _modules.core.userData( to, from, _soakCB, text );
+                _modules.core.userData( to, from, _soakCB, text );
+            } );
         },
 
 
@@ -377,140 +388,136 @@ module.exports = function Doge( _bot, _modules, userConfig )
          *
          * moves a specified amount from one user to another after nickserv authentication
          *
-         * @param  {str}            from                originating channel
-         * @param  {str}            to                  originating user
-         * @param  {str}            text                full message text
+         * @param {String} from originating channel
+         * @param {String} to originating user
+         * @param {String} text full message text
          *
-         * @return {void}
+         * @return _Void_
          */
         tip : function( from, to, text )
         {
-            var self = this;
-
-            var _tipCB = function( _to, success, textSplit, origText )
+            return new Promise( ( resolve, reject ) =>
             {
-                _to = _to.toLowerCase();
+                var self = this;
 
-                var origTextSplit = origText.split( ' ' );
+                var _tipCB = function( _to, success, textSplit, origText )
+                {
+                    _to = _to.toLowerCase();
 
-                var reciever        = origTextSplit[ 1 ],
-                    amount          = origTextSplit[ 2 ],
-                    balance         = Math.floor( dcMasterList[ to ] );
+                    var origTextSplit = origText.split( ' ' );
 
-                if ( ! reciever || ! amount || parseInt( amount ) != amount || isNaN( amount ) )
-                {
-                    _bot.say( from, 'invalid tip syntax ( ' + ( userConfig.trigger ) + 'tip <user> <amount> )' );
-                }
-                else if ( balance < amount )
-                {
-                    _bot.say( from, 'sorry ' + to + ', you need more Doge' );
-                }
-                else if ( amount < 1 )
-                {
-                    _bot.say( from, 'stay positive, ' + to );
-                }
-                else if ( to === reciever )
-                {
-                    _bot.say( from, 'don\'t tip yourself in public' );
-                }
-                else if ( amount < 1 )
-                {
-                    _bot.say( from, 'sorry ' + to + ', you must send at least Ð1' );
-                }
-                else
-                {
-                    var _botText;
+                    var reciever        = origTextSplit[ 1 ],
+                        amount          = origTextSplit[ 2 ],
+                        balance         = Math.floor( dcMasterList[ to ] );
 
-                    if ( success === 'true' )
+                    if ( ! reciever || ! amount || parseInt( amount ) != amount || isNaN( amount ) )
                     {
-                        amount = parseInt( amount );
+                        resolve( `invalid tip syntax ( ${userConfig.trigger} tip <user> <amount> )` );
+                    }
+                    else if ( balance < amount )
+                    {
+                        resolve( `sorry ${to}, you need more Doge` );
+                    }
+                    else if ( amount < 1 )
+                    {
+                        resolve( `stay positive, ${to}` );
+                    }
+                    else if ( to === reciever )
+                    {
+                        resolve( `don't tip yourself in public` );
+                    }
+                    else if ( amount < 1 )
+                    {
+                        resolve( `sorry ${to}, you must send at least Ð1` );
+                    }
+                    else
+                    {
+                        var _botText;
 
-                        dcMasterList[ _to ]  = dcMasterList[ _to ]  - amount;
-
-                        if ( reciever !== userConfig.botName )
+                        if ( success === 'true' )
                         {
-                            dcMasterList[ reciever.toLowerCase() ] = ( dcMasterList[ reciever.toLowerCase() ] ) ?
-                                                                            dcMasterList[ reciever.toLowerCase() ] + amount : amount;
-                            if ( userConfig.enablePM )
+                            amount = parseInt( amount );
+
+                            dcMasterList[ _to ]  = dcMasterList[ _to ]  - amount;
+
+                            if ( reciever !== userConfig.botName )
                             {
-                                _bot.say( reciever,   'Such ' + to + ' tipped you Ð' + amount + ' (to claim /msg ' + ( userConfig.botName ) + ' help)' );
+                                dcMasterList[ reciever.toLowerCase() ] = ( dcMasterList[ reciever.toLowerCase() ] ) ?
+                                                                                dcMasterList[ reciever.toLowerCase() ] + amount : amount;
+                                // if ( userConfig.enablePM )
+                                // {
+                                    // _bot.say( reciever,   `Such ${to} tipped you Ð${amount} (to claim /msg ${userConfig.botName})` );
+                                // }
+                            }
+                            else
+                            {
+                                dcMasterList.___bank___ = dcMasterList.___bank___ + amount;
+                            }
+
+                            self.writeMasterList();
+
+                            _botText = `WOW! ${to} tipped ${reciever} such Ð${amount}`;
+
+                            if ( reciever === userConfig.botName )
+                            {
+                                setTimeout( function(){ resolve( 'Thanks!' ); }, 5000 );
                             }
                         }
                         else
                         {
-                            dcMasterList.___bank___ = dcMasterList.___bank___ + amount;
+                            _botText = 'you must be identified to access your Doge';
                         }
 
-                        self.writeMasterList();
-
-                        _botText = 'WOW! ' + to + ' tipped ' + reciever + ' such Ð' + amount;
-
-                        if ( userConfig.enablePM )
-                        {
-                            _botText += ' (to claim /msg ' + ( userConfig.botName ) + ' help)';
-                        }
-
-                        if ( reciever === userConfig.botName )
-                        {
-                            setTimeout( function(){ _bot.say( from, 'Thanks!' ); }, 5000 );
-                        }
+                        resolve( _botText );
                     }
-                    else
-                    {
-                        _botText = 'you must be identified to access your Doge';
+                };
 
-                        if ( userConfig.enablePM )
-                        {
-                            _botText += ' (/msg ' + ( userConfig.nickservBot ) + ' help)';
-                        }
-                    }
-
-                    _bot.say( from, _botText );
-                }
-            };
-
-            _modules.core.userData( to, from, _tipCB, text );
+                _modules.core.userData( to, from, _tipCB, text );
+            } );
         },
 
 
         withdraw : function( from, to, text )
         {
-            // var _withdrawCB = function( from, _to, _info, _whois )
+            // return new Promise( ( resolve, reject ) =>
             // {
-            //     var textSplit           = text.split( ' ' ).slice( 1 );
-            //     var _outgoingAddress    = textSplit[ 0 ];
-            //     var balance             = Math.floor( _info.data.available_balance );
-            //     var _sendAmount         = textSplit[ 1 ] || balance;
+            //     var _withdrawCB = function( from, _to, _info, _whois )
+            //     {
+            //         var textSplit           = text.split( ' ' ).slice( 1 );
+            //         var _outgoingAddress    = textSplit[ 0 ];
+            //         var balance             = Math.floor( _info.data.available_balance );
+            //         var _sendAmount         = textSplit[ 1 ] || balance;
 
-            //     if ( !_outgoingAddress ||
-            //         _outgoingAddress.slice( 0, 1 ) !== 'D' ||
-            //         _outgoingAddress.length !== 34 ||
-            //         ( _sendAmount && parseInt( _sendAmount ) != _sendAmount ) )
-            //     {
-            //         _bot.say( from, 'invalid syntax. ' + ( userConfig.trigger ) + 'withdraw <address> [ <amount> ]' );
-            //     }
-            //     else if ( balance < _sendAmount )
-            //     {
-            //         _bot.say( from, 'sorry ' + ( to ) + ', you need more Doge' );
-            //     }
-            //     else if ( _sendAmount < 2 )
-            //     {
-            //         _bot.say( from, 'sorry ' + ( to ) + ', you must send at least Ð2' );
-            //     }
-            //     else
-            //     {
-            //         url = 'https://block.io/api/v1/withdraw_from_labels/?api_key=' + dcMasterList[ 'api-key' ] + '&from_labels=' + ( _whois.host ) + '&payment_address=' + _outgoingAddress + '&amount=' + _sendAmount + '&pin=' + ( userConfig.api );
-            //         _modules.core.apiGet( url, function( info )
+            //         if ( !_outgoingAddress ||
+            //             _outgoingAddress.slice( 0, 1 ) !== 'D' ||
+            //             _outgoingAddress.length !== 34 ||
+            //             ( _sendAmount && parseInt( _sendAmount ) != _sendAmount ) )
             //         {
-            //             console.log( info, info.data, info.data.txid );
-            //             _bot.say( from, 'Doge sent. https://dogechain.info/tx/' + info.data.txid );
-            //         }, from, to );
-            //     }
-            // };
+            //             resolve( 'invalid syntax. ' + ( userConfig.trigger ) + 'withdraw <address> [ <amount> ]' );
+            //         }
+            //         else if ( balance < _sendAmount )
+            //         {
+            //             resolve( 'sorry ' + ( to ) + ', you need more Doge' );
+            //         }
+            //         else if ( _sendAmount < 2 )
+            //         {
+            //             resolve( 'sorry ' + ( to ) + ', you must send at least Ð2' );
+            //         }
+            //         else
+            //         {
+            //             url = 'https://block.io/api/v1/withdraw_from_labels/?api_key=' + dcMasterList[ 'api-key' ] + '&from_labels=' + ( _whois.host ) + '&payment_address=' + _outgoingAddress + '&amount=' + _sendAmount + '&pin=' + ( userConfig.api );
+            //             _modules.core.apiGet( url, function( info )
+            //             {
+            //                 console.log( info, info.data, info.data.txid );
+            //                 resolve( 'Doge sent. https://dogechain.info/tx/' + info.data.txid );
+            //             }, from, to );
+            //         }
+            //     };
 
-            // _modules.core.userData( fro from,m, to, _withdrawCB );
+            //     _modules.core.userData( fro from,m, to, _withdrawCB );
+            // } );
 
-            _bot.say( to, 'deposit and withdraw are in between APIs at the moment.  Ask mouse for more info' );
+            resolve( 'deposit and withdraw are in between APIs at the moment.  Ask mouse for more info' );
         },
 
 
@@ -519,7 +526,7 @@ module.exports = function Doge( _bot, _modules, userConfig )
          *
          * saves the json to the master bank list
          *
-         * @return {void}
+         * @return _Void_
          */
         writeMasterList : function()
         {

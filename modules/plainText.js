@@ -168,10 +168,11 @@ module.exports = function PlainText( _bot, _modules, userConfig )
          * @param {String} text full input string
          * @param {String} botText text to say
          * @param {String} command bot command (first word)
+         * @param {Object} confObj extra config object that some command modules need
          *
          * @return _String_ changed botText
          */
-        responses : function( from, to, text, botText, command )
+        responses : function( from, to, text, botText, command, confObj )
         {
             var moon    = moonRegex.exec( command );
             var space   = spaceRegex.exec( command );
@@ -254,14 +255,14 @@ module.exports = function PlainText( _bot, _modules, userConfig )
                             }
 
                         case 'disappearinacloudofsmoke':
-                            // setTimeout( function()
-                            // {
-                            //     _bot.say( from, 'I mean...  why would you just assume you can have any new ability you want....' );
-                            // }, 7500 );
-                            // setTimeout( function()
-                            // {
-                            //     _bot.say( from, 'Stupid.' );
-                            // }, 1500 );
+                            setTimeout( () =>
+                            {
+                                _bot.say( from, 'I mean...  why would you just assume you can have any new ability you want....', confObj );
+                            }, 7500 );
+                            setTimeout( () =>
+                            {
+                                _bot.say( from, 'ಠ_ಠ', confObj );
+                            }, 1500 );
                             return 'no...  you don\'t have that ability.';
 
                         case 'google':

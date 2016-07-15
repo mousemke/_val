@@ -1,6 +1,6 @@
 
 // https://github.com/ttezel/twit
-var Twit = require('twit');
+const Twit = require('twit');
 
 module.exports  = function Twitter( _bot, _modules, userConfig )
 {
@@ -17,10 +17,10 @@ module.exports  = function Twitter( _bot, _modules, userConfig )
          */
         authenticate : function( from )
         {
-            var twitterRooms    = userConfig.twitterRooms;
-            var _t              = twitterRooms[ from ] || twitterRooms[ '*' ];
+            let twitterRooms    = userConfig.twitterRooms;
+            let _t              = twitterRooms[ from ] || twitterRooms[ '*' ];
 
-            var auth    = new Twit( {
+            let auth    = new Twit( {
                 consumer_key        : _t.consumerKey,
                 consumer_secret     : _t.consumerSecret,
                 access_token        : _t.accessToken,
@@ -47,7 +47,7 @@ module.exports  = function Twitter( _bot, _modules, userConfig )
          */
         getFollowers : function( from, to, _text )
         {
-            var _t = this.authenticate( from );
+            let _t = this.authenticate( from );
 
             return new Promise( function( resolve, reject )
             {
@@ -60,10 +60,10 @@ module.exports  = function Twitter( _bot, _modules, userConfig )
                     }
                     else
                     {
-                        var _u = '';
+                        let _u = '';
                         data.users.forEach( function( user )
                         {
-                            _u += user.name + ' (@' + user.screen_name + ') - ' + user.url + '\n';
+                            _u += `${user.name} (@${user.screen_name}) - ${user.url}\n`;
                         } );
 
                         resolve( _u );
@@ -86,7 +86,7 @@ module.exports  = function Twitter( _bot, _modules, userConfig )
          */
         getFollowing : function( from, to, _text )
         {
-            var _t = this.authenticate( from );
+            let _t = this.authenticate( from );
 
             return new Promise( function( resolve, reject )
             {
@@ -99,7 +99,7 @@ module.exports  = function Twitter( _bot, _modules, userConfig )
                     }
                     else
                     {
-                        var _u = '';
+                        let _u = '';
                         data.users.forEach( function( user )
                         {
                             _u += user.name + ' (@' + user.screen_name + ') - ' + user.url + '\n';
@@ -112,9 +112,9 @@ module.exports  = function Twitter( _bot, _modules, userConfig )
         },
 
 
-        getSlug : function( from, to, _text )
+        getSlug : function( from, to, _text, confObj )
         {
-            var _t  = this.authenticate( from );
+            let _t  = this.authenticate( from );
 
             _t.get( 'users/suggestions/:slug', { slug : _text }, function ( err, data, response )
             {
@@ -135,7 +135,7 @@ module.exports  = function Twitter( _bot, _modules, userConfig )
          */
         getStreamEvent : function( _text )
         {
-            var _event;
+            let _event;
 
             switch ( _text[ 0 ] )
             {
@@ -191,7 +191,7 @@ module.exports  = function Twitter( _bot, _modules, userConfig )
          */
         getStreamTarget : function( _text )
         {
-            var target;
+            let target;
 
             switch ( _text[ 0 ] )
             {
@@ -237,15 +237,16 @@ module.exports  = function Twitter( _bot, _modules, userConfig )
          * @param {String} text full input string
          * @param {String} botText text to say
          * @param {String} command bot command (first word)
+         * @param {Object} confObj extra config object that some command modules need
          *
          * @return _String_ changed botText
          */
-        responses : function( from, to, text, botText, command )
+        responses : function( from, to, text, botText, command, confObj )
         {
-            var twitterRooms    = userConfig.twitterRooms;
-            var _t              = twitterRooms[ from ] || twitterRooms[ '*' ];
+            let twitterRooms    = userConfig.twitterRooms;
+            let _t              = twitterRooms[ from ] || twitterRooms[ '*' ];
 
-            var lowercaseTo = to.toLowerCase();
+            let lowercaseTo = to.toLowerCase();
 
             if ( _t )
             {
@@ -253,9 +254,9 @@ module.exports  = function Twitter( _bot, _modules, userConfig )
                 {
                     if ( userConfig.twitterUsersBlackList.indexOf( lowercaseTo ) === -1 )
                     {
-                        var textSplit = text.split( ' ' );
+                        let textSplit = text.split( ' ' );
 
-                        var realText = textSplit.slice( 1 ).join( ' ' );
+                        let realText = textSplit.slice( 1 ).join( ' ' );
 
                         switch ( command )
                         {
@@ -265,13 +266,13 @@ module.exports  = function Twitter( _bot, _modules, userConfig )
 
                             case 't-stream':
                             case 't-stream-filter':
-                                return this.streamFilter( from, to, realText );
+                                return this.streamFilter( from, to, realText, confObj );
 
                             case 't-stream-stop':
-                                return this.streamStop( from, to, realText );
+                                return this.streamStop( from, to, realText, confObj );
 
                             case 't-stream-raw':
-                                return this.streamRaw( from, to, realText );
+                                return this.streamRaw( from, to, realText, confObj );
 
                             case 't-following':
                                 return this.getFollowing( from, to, realText );
@@ -280,7 +281,7 @@ module.exports  = function Twitter( _bot, _modules, userConfig )
                                 return this.getFollowers( from, to, realText );
 
                             case 't-slug':
-                                return this.getSlug( from, to, realText );
+                                return this.getSlug( from, to, realText, confObj );
                         }
                     }
                 }
@@ -292,7 +293,7 @@ module.exports  = function Twitter( _bot, _modules, userConfig )
 
         // searchTwitter : function( from, to, _text )
         // {
-        //     var _t          = this.authenticate( from );
+        //     let _t          = this.authenticate( from );
         //     _t.get( 'search/tweets', { q: _text, count: 100 }, function( err, data, response )
         //     {
         //         console.log( data )
@@ -308,16 +309,17 @@ module.exports  = function Twitter( _bot, _modules, userConfig )
          * @param {String} from originating channel
          * @param {String} target twitter api target
          * @param {String} _event event to watch
-         * @param {String} filter text
+         * @param {String} searchText text
+         * @param {Object} confObj extra config object that some command modules need
          *
          * @return _String_ success message
          */
-        stream : function( from, target, _event, searchText )
+        stream : function( from, target, _event, searchText, confObj )
         {
-            var _t          = this.authenticate( from );
-            var streams     = this._tStreams[ from ] = this._tStreams[ from ] || [];
+            let _t          = this.authenticate( from );
+            let streams     = this._tStreams[ from ] = this._tStreams[ from ] || [];
 
-            var stream;
+            let stream;
             if ( searchText )
             {
                 stream      = _t.stream( target, { track : searchText } );
@@ -331,12 +333,12 @@ module.exports  = function Twitter( _bot, _modules, userConfig )
 
             stream.on( _event, function ( tweet )
             {
-                var text = tweet.text;
+                let text = tweet.text;
 
                 if ( text.slice( 0, 2 ) !== 'RT' )
                 {
-                    var user = tweet.user;
-                    _bot.say( from, user.name + ' (@' + user.screen_name + ')\n' + text );
+                    let user = tweet.user;
+                    _bot.say( from, `${user.name} (@${user.screen_name})\n${text}`, confObj );
                 }
             } );
 
@@ -352,16 +354,17 @@ module.exports  = function Twitter( _bot, _modules, userConfig )
          * @param {String} from originating channel
          * @param {String} to originating user
          * @param {String} text full message text
+         * @param {Object} confObj extra config object that some command modules need
          *
          * @return _String_ success message
          */
-        streamFilter : function( from, to, text )
+        streamFilter : function( from, to, text, confObj )
         {
-            var searchText  = text.split( ' ' ).join( ',' );
+            let searchText  = text.split( ' ' ).join( ',' );
 
-            this.stream( from, 'statuses/filter', 'tweet', searchText );
+            this.stream( from, 'statuses/filter', 'tweet', searchText, confObj );
 
-            return 'Filtered tweet stream for ' + searchText + ' started';
+            return `Filtered tweet stream for ${searchText} started`;
         },
 
 
@@ -373,21 +376,22 @@ module.exports  = function Twitter( _bot, _modules, userConfig )
          * @param {String} from originating channel
          * @param {String} to originating user
          * @param {String} text full message text
+         * @param {Object} confObj extra config object that some command modules need
          *
          * @return _String_ success message
          */
-        streamRaw : function( from, to, text )
+        streamRaw : function( from, to, text, confObj )
         {
-            var searchText  = text.split( ' ' );
+            let searchText  = text.split( ' ' );
 
-            var target = this.getStreamTarget( searchText );
-            var _event = this.getStreamEvent( searchText );
+            let target      = this.getStreamTarget( searchText );
+            let _event      = this.getStreamEvent( searchText );
 
-            var searchText  = searchText.join( ',' );
+            searchText  = searchText.join( ',' );
 
-            this.stream( from, target, _event, searchText );
+            this.stream( from, target, _event, searchText, confObj );
 
-            return target + ' ' + _event + ' stream for ' + searchText + ' started';
+            return `${target} ${_event} stream for ${searchText} started`;
         },
 
 
@@ -404,14 +408,14 @@ module.exports  = function Twitter( _bot, _modules, userConfig )
          */
         streamStop : function( from, to, text )
         {
-            var streams = this._tStreams[ from ] = this._tStreams[ from ] || [];
+            let streams = this._tStreams[ from ] = this._tStreams[ from ] || [];
 
-            for ( var i = 0, lenI = streams.length; i < lenI; i++ )
+            for ( let i = 0, lenI = streams.length; i < lenI; i++ )
             {
                 streams[ i ].stop();
             }
 
-            return 'Streams in ' + from + ' stopped';
+            return `Streams in ${from} stopped`;
         },
 
 
@@ -423,16 +427,17 @@ module.exports  = function Twitter( _bot, _modules, userConfig )
          * @param {String} from originating channel
          * @param {String} to originating user
          * @param {String} text full message text
+         * @param {Object} confObj extra config object that some command modules need
          *
          * @return _String_ success message
          */
-        streamUser : function( from, to, text )
+        streamUser : function( from, to, text, confObj )
         {
-            var searchText  = text.split( ' ' ).join( ',' );
+            let searchText  = text.split( ' ' ).join( ',' );
 
-            this.stream( from, 'user', 'tweet', searchText );
+            this.stream( from, 'user', 'tweet', searchText, confObj );
 
-            return 'User tweet stream for ' + searchText + ' started';
+            return `User tweet stream for ${searchText} started`;
         },
 
 
@@ -449,25 +454,25 @@ module.exports  = function Twitter( _bot, _modules, userConfig )
          */
         tweet : function( from, to, text )
         {
-            return new Promise( function( resolve, reject )
+            return new Promise( ( resolve, reject ) =>
             {
                 if ( text.length > 140 )
                 {
-                    resolve( 'psst... ' + to + ', twitter only supports 140 characters' );
+                    resolve( `psst... ${to}, twitter only supports 140 characters` );
                 }
                 else
                 {
-                    var _t = this.authenticate( from );
+                    let _t = this.authenticate( from );
 
-                    _t.post( 'statuses/update', { status : text }, function( err, data, response )
+                    _t.post( 'statuses/update', { status : text }, ( err, data, response ) =>
                     {
                         if ( err )
                         {
-                            resolve( 'Sorry ' + to + ', ' + err.code + ' : ' + err.message );
+                            resolve( `Sorry ${to}, ${err.code} : ${err.message}` );
                         }
                         else
                         {
-                            resolve( 'Tweet Posted to ' + _t.account + ': ' + text );
+                            resolve( `Tweet Posted to ${_t.account}: ${text}` );
                         }
                     } );
                 }

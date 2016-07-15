@@ -32,7 +32,7 @@ module.exports  = function Template( _bot, _modules, userConfig )
          *
          * @return _String_ changed botText
          */
-        responses : function( from, to, text, botText, command )
+        responses : function( from, to, text, botText, command, confObj )
         {
 
             var textSplit = text.split( ' ' );

@@ -1,4 +1,9 @@
 
+const Telegram  = require( 'telegram-api' );
+const Message   = require( 'telegram-api/types/Message' );
+const File      = require( 'telegram-api/types/File' );
+
+
 /**
  * ## val telegram loader
  *
@@ -6,11 +11,7 @@
  */
 module.exports = function telegramBot( userConfig, _bot, channels, listenToMessages, displayDebugInfo, context )
 {
-    var Telegram    = require( 'telegram-api' );
-    var Message     = require( 'telegram-api/types/Message' );
-    var File        = require( 'telegram-api/types/File' );
-
-    var telegramConfig = userConfig.command.telegram;
+    let telegramConfig = userConfig.command.telegram;
 
     _bot = new Telegram( {
         token   : telegramConfig.apiKey
@@ -20,31 +21,29 @@ module.exports = function telegramBot( userConfig, _bot, channels, listenToMessa
 
     _bot.start();
 
-    var boundListenToMessages = listenToMessages.bind( context );
+    let boundListenToMessages = listenToMessages.bind( context );
 
-    _bot.say = function( to, text )
+    _bot.say = ( to, text ) =>
     {
-        var answer = new Message()
+        let answer = new Message()
                         .text( text )
                         .to( to );
         _bot.send( answer );
     };
 
 
-    _bot.sayNow = _bot.say;
-
-
-    _bot.get( /./, function( message )
+    _bot.get( /./, message =>
     {
         try
         {
-            var text    = message.text
-            var chat    = message.chat
-            var from    = chat.id;
-            var to      = chat[ 'first_name' ] || message.from[ 'first_name' ];
-            text        = text[0] === '/' ? userConfig.trigger + text.slice( 1 ) : text;
+            let { text, chat } = message;
 
-            var botText = boundListenToMessages( to, from, text );
+            let from    = chat.id;
+            let to      = chat[ 'first_name' ] || message.from[ 'first_name' ];
+            let botText = text[0] === '/' ? userConfig.trigger + text.slice( 1 ) : text;
+
+            botText     = boundListenToMessages( to, from, botText );
+
 
             if ( botText !== '' && botText !== false )
             {
@@ -52,18 +51,22 @@ module.exports = function telegramBot( userConfig, _bot, channels, listenToMessa
                 {
                     botText.then( function( text )
                     {
+                        let regex   = new RegExp( chat.id, 'g' );
+                        text        = text.replace( regex, chat.title );
                         _bot.say( from, text )
                     } );
                 }
                 else
                 {
+                    let regex   = new RegExp( chat.id, 'g' );
+                    botText     = botText.replace( regex, chat.title );
                     _bot.say( from, botText );
                 }
             }
         }
         catch( e )
         {
-            console.log( e );
+            console.error( 'something went wrong ', e );
         }
     } );
 

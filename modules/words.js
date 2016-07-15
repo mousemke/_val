@@ -113,18 +113,14 @@ module.exports  = function Words( _bot, _modules, userConfig, activeWord )
          */
         define : function( from, word, current, to )
         {
-            var definition;
-
-            word    = word.toLowerCase();
-            var url = ( userConfig.wordnikBaseUrl ) + 'word.json/' + word + '/definitions?includeRelated=true&useCanonical=true&includeTags=false&api_key=' + userConfig.wordnikAPIKey;
-
-            if ( word === 'thoodle' )
+            return new Promise( ( resolve, reject ) =>
             {
-                _bot.say( from, 'thoodle-oo!!' );
-            }
-            else
-            {
-                _modules.core.apiGet( url, function( result )
+                var definition;
+
+                word    = word.toLowerCase();
+                var url = ( userConfig.wordnikBaseUrl ) + 'word.json/' + word + '/definitions?includeRelated=true&useCanonical=true&includeTags=false&api_key=' + userConfig.wordnikAPIKey;
+
+                _modules.core.apiGet( url, result =>
                 {
                     if ( current === true )
                     {
@@ -152,11 +148,11 @@ module.exports  = function Words( _bot, _modules, userConfig, activeWord )
                             }
                         }
 
-                        _bot.say( from, _def );
+                        resolve( _def );
                     }
 
                 }, false, from, to );
-            }
+            } );
         },
 
 
@@ -169,7 +165,6 @@ module.exports  = function Words( _bot, _modules, userConfig, activeWord )
          */
         ini : function()
         {
-            this.readScores();
             this.word();
         },
 
@@ -183,10 +178,11 @@ module.exports  = function Words( _bot, _modules, userConfig, activeWord )
          * @param {String} word user input
          * @param {String} to originating user
          * @param {String} text full input string
+         * @param {Object} confObj extra config object that some command modules need
          *
          * @return _Void_
          */
-        listenToWord : function( word, to, text )
+        listenToWord : function( word, to, text, confObj )
         {
             if ( activeWord.verboseDef !== false && activeWord.verboseDef[0] === to && text === '-def' )
             {
@@ -253,8 +249,7 @@ module.exports  = function Words( _bot, _modules, userConfig, activeWord )
                     activeWord.verboseDef      = false;
                 }
 
-                this.writeScores();
-                _bot.say( wordsChannel, botText );
+                _bot.say( wordsChannel, botText, confObj );
 
                 activeWord.currentWord     = '';
                 activeWord.currentWordDef  = '';
@@ -262,6 +257,7 @@ module.exports  = function Words( _bot, _modules, userConfig, activeWord )
                 activeWord.newWordVote     = [];
 
                 _bot.removeListener( 'message' + wordsChannel, activeWord.wordListener );
+
                 this.word();
             }
         },
@@ -274,10 +270,11 @@ module.exports  = function Words( _bot, _modules, userConfig, activeWord )
          *
          * @param {String} from originating channel
          * @param {String} to originating user
+         * @param {Object} confObj extra config object that some command modules need
          *
          * @return _Void_
          */
-        newWord : function( from, to )
+        newWord : function( from, to, confObj )
         {
             var active = _modules.core.checkActive( from, to, '', false );
 
@@ -290,7 +287,7 @@ module.exports  = function Words( _bot, _modules, userConfig, activeWord )
 
             if ( activeWord.newWordVote.length < votesNeeded )
             {
-                _bot.say( wordsChannel, to + copy.voteCounted[ lang ]( activeWord.newWordVote ) + votesNeeded );
+                return to + copy.voteCounted[ lang ]( activeWord.newWordVote ) + votesNeeded;
             }
             else
             {
@@ -307,11 +304,13 @@ module.exports  = function Words( _bot, _modules, userConfig, activeWord )
                 activeWord.currentWordTime = 0;
                 activeWord.scrambledWord   = '';
                 activeWord.newWordVote     = [];
+
                 if ( activeWord.wordListener )
                 {
                     _bot.removeListener( 'message' + wordsChannel, activeWord.wordListener );
                 }
-                this.word();
+
+                return this.word();
             }
         },
 
@@ -322,12 +321,13 @@ module.exports  = function Words( _bot, _modules, userConfig, activeWord )
          * processes a new word grabbed from the api and does anything needed
          * to make it ready
          *
-         * @param  {Object} result word with all related properties
-         * @param  {String} to originating user
+         * @param {Object} result word with all related properties
+         * @param {String} to originating user
+         * @param {Object} confObj extra config object that some command modules need
          *
          * @return _Void_
          */
-        processNewWord : function( result, to )
+        processNewWord : function( result, to, confObj )
         {
             activeWord.currentWord         = result.word;
             var currentWordLength = activeWord.currentWord.length;
@@ -338,26 +338,14 @@ module.exports  = function Words( _bot, _modules, userConfig, activeWord )
             }
 
             activeWord.currentWordTime = Date.now();
+
             this.define( wordsChannel, activeWord.currentWord, true, to );
             activeWord.scrambledWord   = this.scramble( activeWord.currentWord );
-            _bot.say( wordsChannel, copy.newWord[ lang ] + activeWord.scrambledWord + ' (' + ( activeWord.currentWord[0] ) + ')' );
+
             activeWord.wordListener    = this.listenToWord.bind( this, activeWord.currentWord );
             _bot.addListener( 'message' + wordsChannel, activeWord.wordListener );
-        },
 
-
-        /**
-         * ## readScores
-         *
-         * reads the scores from the json file
-         *
-         * @return _Void_
-         */
-        readScores : function()
-        {
-            var url = 'json/unscrambleScores.json';
-
-            activeWord.wordScores = JSON.parse( fs.readFileSync( url ) );
+            return `${copy.newWord[ lang ]}${activeWord.scrambledWord} (${activeWord.currentWord[0]})`;
         },
 
 
@@ -369,21 +357,22 @@ module.exports  = function Words( _bot, _modules, userConfig, activeWord )
          * @param {String} text full input string
          * @param {String} botText text to say
          * @param {String} command bot command (first word)
+         * @param {Object} confObj extra config object that some command modules need
          *
          * @return _String_ changed botText
          */
-        responses : function( from, to, text, botText, command )
+        responses : function( from, to, text, botText, command, confObj )
         {
             if ( from === wordsChannel )
             {
                 switch ( command )
                 {
                     case copy.wordRes[ lang ]:
-                        this.word( from, to );
-                        break;
+                        return this.word( from, to, confObj );
+
                     case copy.newWordRes[ lang ]:
-                        this.newWord( from, to );
-                        break;
+                        return this.newWord( from, to );
+
                 }
             }
 
@@ -392,7 +381,7 @@ module.exports  = function Words( _bot, _modules, userConfig, activeWord )
             {
                 text = text.replace( command, '' ).trim();
                 command = command.split( '|' );
-                this.translate( command[0], command[1], from, to, text );
+                return this.translate( command[0], command[1], from, to, text );
             }
             else
             {
@@ -468,19 +457,17 @@ module.exports  = function Words( _bot, _modules, userConfig, activeWord )
                     case 'zu':
                         if ( activeWord.define )
                         {
-                            this.translate( 'en', command, from, to, text );
+                            return this.translate( 'en', command, from, to, text );
                         }
-                        break;
+                        return '';
+
                     case 'def':
                     case 'define':
                         if ( activeWord.define )
                         {
-                            this.define( from, text.split( ' ' ).slice( 1 ).join( '%20' ), to );
+                            return this.define( from, text.split( ' ' ).slice( 1 ).join( '%20' ), to );
                         }
-                        break;
-                    case 'unscramble':
-                        this.unscramble( from, to, text );
-                        break;
+                        return '';
                 }
             }
 
@@ -558,126 +545,58 @@ module.exports  = function Words( _bot, _modules, userConfig, activeWord )
          */
         translate : function( langFrom, langTo, from, to, text, func )
         {
-            if ( text[0] === userConfig.trigger )
+            return new Promise( ( resolve, reject ) =>
             {
-                text = text.replace( ( userConfig.trigger ) + langTo, '' ).trim();
-            }
-            else
-            {
-                text = text.replace( langTo, '' ).trim();
-            }
-
-            text = encodeURIComponent( text );
-
-            var url = ( userConfig.translationBaseUrl ) + 'get?q=' + text + '&langpair=' + langFrom + '|' + langTo;
-
-            _modules.core.apiGet( url, function( response )
-            {
-                var botText;
-                response = response.matches;
-
-                for ( var i = 0, lenI = response.length; i < lenI; i++ )
+                if ( text[0] === userConfig.trigger )
                 {
-                    if ( response[ i ].quality !== '0' )
-                    {
-                        botText = response[ i ].translation;
-                        break;
-                    }
-                }
-
-                if ( botText )
-                {
-                    if ( botText.indexOf( '|' ) !== -1 )
-                    {
-                        botText = botText.split( '|' )[1].slice( 1 );
-                    }
-
-                    if ( from !== 'internal' )
-                    {
-                        _bot.say( from, to + ': ' + langFrom + ' > ' + langTo + ' - ' + botText );
-                    }
-
-                    if ( func )
-                    {
-                        func( botText );
-                    }
+                    text = text.replace( ( userConfig.trigger ) + langTo, '' ).trim();
                 }
                 else
                 {
-                    _bot.say( from, 'Sorry ' + to + ', that didnt work.  Check your country codes maybe.' );
+                    text = text.replace( langTo, '' ).trim();
                 }
-            }, false, from, to );
-        },
 
+                text = encodeURIComponent( text );
 
-        /**
-         * ## unscramble
-         *
-         * preps the scores and decides how best to display them
-         *
-         * @param  {[type]} from [description]
-         * @param  {[type]} to   [description]
-         * @param  {[type]} text [description]
-         *
-         * @return {[type]}      [description]
-         */
-        unscramble : function( from, to, text )
-        {
-            this.readScores();
+                var url = ( userConfig.translationBaseUrl ) + 'get?q=' + text + '&langpair=' + langFrom + '|' + langTo;
 
-            var points = [];
-            var playerPoints;
-            var botText;
-            var playerRequest = text.split( ' ' )[1];
-
-            for ( var player in activeWord.wordScores )
-            {
-                if ( player === playerRequest )
+                _modules.core.apiGet( url, function( response )
                 {
-                    playerPoints = activeWord.wordScores[ player ].length;
-                }
+                    var botText;
+                    response = response.matches;
 
-                var _obj = {
-                    name    : player,
-                    points  : activeWord.wordScores[ player ].length
-                };
+                    for ( var i = 0, lenI = response.length; i < lenI; i++ )
+                    {
+                        if ( response[ i ].quality !== '0' )
+                        {
+                            botText = response[ i ].translation;
+                            break;
+                        }
+                    }
 
-                points.push( _obj );
-            }
+                    if ( botText )
+                    {
+                        if ( botText.indexOf( '|' ) !== -1 )
+                        {
+                            botText = botText.split( '|' )[1].slice( 1 );
+                        }
 
-            points.sort( function( a, b )
-            {
-                return b.points - a.points;
+                        if ( from !== 'internal' )
+                        {
+                            resolve( to + ': ' + langFrom + ' > ' + langTo + ' - ' + botText );
+                        }
+
+                        if ( func )
+                        {
+                            func( botText );
+                        }
+                    }
+                    else
+                    {
+                        resolve( 'Sorry ' + to + ', that didnt work.  Check your country codes maybe.' );
+                    }
+                }, false, from, to );
             } );
-
-            if ( playerRequest )
-            {
-                botText = this.buildPlayerPointsRequest( playerRequest, playerPoints )
-            }
-            else
-            {
-                botText = this.buildPointsList( points );
-            }
-
-            _bot.say( from, botText );
-        },
-
-
-        /**
-         * ## writeScores
-         *
-         * writes the json score object to the file system
-         *
-         * @return _Void_
-         */
-        writeScores : function()
-        {
-            var wordScoresJson = JSON.stringify( activeWord.wordScores );
-
-            fs.writeFile( './json/unscrambleScores.json', wordScoresJson, function ( err )
-            {
-                return console.log( err );
-            });
         },
 
 
@@ -688,44 +607,48 @@ module.exports  = function Words( _bot, _modules, userConfig, activeWord )
          *
          * @param {String} from originating channel
          * @param {String} to originating user
+         * @param {Object} confObj extra config object that some command modules need
          *
          * @return _Void_
          */
-        word : function( from, to )
+        word : function( from, to, confObj )
         {
-            if ( activeWord.currentWord === '' )
+            return new Promise( ( resolve, reject ) =>
             {
-                var self = this;
-                var excludeList = 'excludePartOfSpeech=affix&' +
-                                    'excludePartOfSpeech=noun-plural&' +
-                                    'excludePartOfSpeech=noun-possesive&' +
-                                    'excludePartOfSpeech=given-name&' +
-                                    'excludePartOfSpeech=family-name&' +
-                                    'excludePartOfSpeech=suffix&' +
-                                    'excludePartOfSpeech=proper-noun&' +
-                                    'excludePartOfSpeech=idiom&' +
-                                    'excludePartOfSpeech=phrasal-prefix&';
-
-                var url =  ( userConfig.wordnikBaseUrl ) + 'words.json/randomWord?hasDictionaryDef=true&' + excludeList + 'minCorpusCount=0&maxCorpusCount=-1&minDictionaryCount=3&maxDictionaryCount=-1&minLength=' + activeWord.minLength + '&maxLength=' + activeWord.maxLength + '&api_key=' + userConfig.wordnikAPIKey;
-
-                _modules.core.apiGet( url, function( result )
+                if ( activeWord.currentWord === '' )
                 {
-                    if ( result.word[0] !== result.word[0].toLowerCase() ||
-                            result.word.indexOf( '-' ) !== -1 ||
-                            result.word.match( /^[a-zA-Z]+$/ ) === null )
+                    var self = this;
+                    var excludeList = 'excludePartOfSpeech=affix&' +
+                                        'excludePartOfSpeech=noun-plural&' +
+                                        'excludePartOfSpeech=noun-possesive&' +
+                                        'excludePartOfSpeech=given-name&' +
+                                        'excludePartOfSpeech=family-name&' +
+                                        'excludePartOfSpeech=suffix&' +
+                                        'excludePartOfSpeech=proper-noun&' +
+                                        'excludePartOfSpeech=idiom&' +
+                                        'excludePartOfSpeech=phrasal-prefix&';
+
+                    var url =  ( userConfig.wordnikBaseUrl ) + 'words.json/randomWord?hasDictionaryDef=true&' + excludeList + 'minCorpusCount=0&maxCorpusCount=-1&minDictionaryCount=3&maxDictionaryCount=-1&minLength=' + activeWord.minLength + '&maxLength=' + activeWord.maxLength + '&api_key=' + userConfig.wordnikAPIKey;
+
+                    _modules.core.apiGet( url, function( result )
                     {
-                        self.word();
-                    }
-                    else
-                    {
-                        self.processNewWord.call( self, result, to, activeWord );
-                    }
-                }, false, from, to );
-            }
-            else
-            {
-                _bot.say( wordsChannel, copy.currentWord[ lang ] + activeWord.scrambledWord.toLowerCase() + ' (' + ( activeWord.currentWord[0].toLowerCase() ) + ')\n' );
-            }
+                        if ( result.word[0] !== result.word[0].toLowerCase() ||
+                                result.word.indexOf( '-' ) !== -1 ||
+                                result.word.match( /^[a-zA-Z]+$/ ) === null )
+                        {
+                            resolve( self.word() );
+                        }
+                        else
+                        {
+                            resolve( self.processNewWord.call( self, result, to, activeWord, confObj ) );
+                        }
+                    }, false, from, to );
+                }
+                else
+                {
+                    resolve( copy.currentWord[ lang ] + activeWord.scrambledWord.toLowerCase() + ' (' + ( activeWord.currentWord[0].toLowerCase() ) + ')\n' );
+                }
+            } );
         }
     };
 };
