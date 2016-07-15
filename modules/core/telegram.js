@@ -28,6 +28,7 @@ module.exports = function telegramBot( userConfig, _bot, channels, listenToMessa
         let answer = new Message()
                         .text( text )
                         .to( to );
+
         _bot.send( answer );
     };
 
@@ -51,6 +52,9 @@ module.exports = function telegramBot( userConfig, _bot, channels, listenToMessa
                 {
                     botText.then( function( text )
                     {
+                        /*
+                         * replaces useless telegram identifiers with names
+                         */
                         let regex   = new RegExp( chat.id, 'g' );
                         text        = text.replace( regex, chat.title );
                         _bot.say( from, text )
@@ -58,6 +62,9 @@ module.exports = function telegramBot( userConfig, _bot, channels, listenToMessa
                 }
                 else
                 {
+                    /*
+                     * replaces useless telegram identifiers with names
+                     */
                     let regex   = new RegExp( chat.id, 'g' );
                     botText     = botText.replace( regex, chat.title );
                     _bot.say( from, botText );

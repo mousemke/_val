@@ -36,6 +36,9 @@ module.exports =  function slackBot( userConfig, _bot, channels, listenToMessage
 
             let botText     = message.text;
 
+            /*
+             * replaces useless slack identifiers with names
+             */
             botText = botText.replace( /<@([Uu][A-Za-z0-9]{4,})>/g, ( match, user ) =>
             {
                 let userName = _bot.dataStore.getUserById( user );
