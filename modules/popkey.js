@@ -33,7 +33,7 @@ module.exports  = function PopKey( _bot, _modules, userConfig )
                             var _file   =  info[ _r ];
 
                             var rating = _file.rating;
-                            console.log( 'GIF Called.  Rating: ' + rating );
+                            console.log( `GIF Called.  Rating: ${rating}` );
 
                             if ( rating === 'E' )
                             {

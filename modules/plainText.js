@@ -267,16 +267,16 @@ module.exports = function PlainText( _bot, _modules, userConfig )
 
                         case 'google':
                             text = text.split( ' ' ).slice( 1 ).join( '%20' );
-                            return 'http://www.lmgtfy.com/?q=' + text;
+                            return `http://www.lmgtfy.com/?q=${text}`;
 
                         case 'w':
                         case 'wiki':
                             text = text.split( ' ' ).slice( 1 ).join( '%20' );
-                            return 'http://en.wikipedia.org/wiki/' + text;
+                            return `http://en.wikipedia.org/wiki/${text}`;
 
                         case 'g':
                             text = text.split( ' ' ).slice( 1 ).join( '%20' );
-                            return 'https://www.google.de/search?hl=en&q=' + text;
+                            return `https://www.google.de/search?hl=en&q=${text}`;
 
                         case 'badyoutube':
                         case 'germanysgottalent':

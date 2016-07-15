@@ -102,7 +102,7 @@ module.exports  = function Twitter( _bot, _modules, userConfig )
                         let _u = '';
                         data.users.forEach( function( user )
                         {
-                            _u += user.name + ' (@' + user.screen_name + ') - ' + user.url + '\n';
+                            _u += `${user.name} (@${user.screen_name}) - ${user.url}\n`;
                         } );
 
                         resolve( _u );
@@ -198,7 +198,7 @@ module.exports  = function Twitter( _bot, _modules, userConfig )
                 case 'filter':
                 case 'sample':
                 case 'firehose':
-                    target  = 'statuses/' + _text[ 0 ];
+                    target  = `statuses/${_text[ 0 ]}`;
                     _text   = _text.slice( 1 );
                     break;
                 case 'user':

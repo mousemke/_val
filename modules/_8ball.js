@@ -26,7 +26,7 @@ module.exports  = function PopKey( _bot, _modules, userConfig )
             var none        = 0 - questionWords.length;
             var textSplit   = text.split( ' ' );
 
-            questionWords.forEach( function( word )
+            questionWords.forEach( word =>
             {
                 count += textSplit.indexOf( word );
             } );
@@ -51,7 +51,7 @@ module.exports  = function PopKey( _bot, _modules, userConfig )
         {
             if ( !this.checkQuestions( text ) || text === '' || text.indexOf( '?' ) === -1 )
             {
-                return 'sorry, ' + to + ' that didn\'t look like a question.';
+                return `sorry, ${to} that didn't look like a question.`;
             }
             var emojiCount  = Math.floor( Math.random() * 100 );
 

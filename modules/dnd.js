@@ -73,18 +73,18 @@ module.exports  = function CAH( _bot, _modules, userConfig )
 
             if ( rolls > maxDice )
             {
-                return 'Come on ' + to + '...   do you *really* need that many dice?';
+                return `Come on ${to}...   do you *really* need that many dice?`;
             }
             else if ( rolls === 0 )
             {
-                return 'Really? Fine ' + to + '...   you roll 0d' + max;
+                return `Really? Fine ${to}...   you roll 0d${max}`;
             }
 
             rolls           = rolls || 1;
             var multiple    = rolls > 1;
             var total       = 0;
 
-            botText = to + ', your ' + rolls + 'd' + max + bonusText + ' rolls: ';
+            botText = `${to}, your ${rolls}d${max}${bonusText} rolls: `;
 
             for ( var i = 0; i < rolls; i++ )
             {
@@ -95,14 +95,14 @@ module.exports  = function CAH( _bot, _modules, userConfig )
 
                 var result  = _getDie( max + bonus );
                 total       += result;
-                botText     += ' ' + result + ', ';
+                botText     += ` ${result}, `;
             }
 
             botText = botText.slice( 0, botText.length - 2 );
 
             if ( multiple )
             {
-                botText += ' (total: ' + total + ')';
+                botText += ` (total: ${total})`;
             }
 
             return botText;

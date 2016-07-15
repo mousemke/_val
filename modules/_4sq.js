@@ -72,33 +72,34 @@ module.exports  = function _4sq( _bot, _modules, userConfig )
                         var tips    = tip.length;
 
                         tip         = tip[ Math.floor( Math.random() * tips ) ];
+
                         var tipUser = tip.user.firstName;
+
                         if ( tip.user.lastName )
                         {
-                            tipUser += ' ' + tip.user.lastName;
+                            tipUser += ` ${tip.user.lastName}`;
                         }
 
-                        tip         = tipUser + ' says, "' + tip.text + '"';
+                        tip         = `${tipUser} says, "${tip.text}"`;
 
-                        _botText = 'Try ' + name + '\n' + address;
+                        _botText = `Try ${name}\n${address}`;
 
                         if ( phone )
                         {
-                            _botText += ' - ' + phone;
+                            _botText += ` - ${phone}`;
                         }
                         if ( url )
                         {
-                            _botText += '\n' + url;
+                            _botText += `\n${url}`;
                         }
                         if ( tip )
                         {
-                             _botText += '\n' + tip;
+                             _botText += `\n${tip}`;
                         }
 
-                        var venueUrl = name.replace( noSpaces, '-' ) +
-                                    '/' + venue.id;
+                        var venueUrl = `${name.replace( noSpaces, '-' )}/${venue.id}`;
 
-                        resolve( _botText + '\nhttps://foursquare.com/v/' + venueUrl );
+                        resolve( `${_botText}\nhttps://foursquare.com/v/${venueUrl}` );
                     }
 
                 }, true, from, to );
@@ -127,7 +128,7 @@ module.exports  = function _4sq( _bot, _modules, userConfig )
                 case 'food':
                     return this.lunch( from, to, text );
                 case '4sq-range':
-                    return 'Range is set to ' + ( userConfig.foursquareRadius ) + ' meters';
+                    return `Range is set to ${userConfig.foursquareRadius} meters from ${userConfig.latLong}`;
             }
 
             return botText;

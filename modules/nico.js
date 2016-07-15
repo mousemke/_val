@@ -22,9 +22,9 @@ module.exports = function Nico( _bot, _modules, userConfig )
          */
         responses : function( from, to, text, botText, command, confObj )
         {
-            if ( nicoFlipped === true && to === userConfig.nico && command !== 'is' + ( userConfig.nico ) + 'flipped' )
+            if ( nicoFlipped === true && to === userConfig.nico && command !== `is${userConfig.nico}flipped` )
             {
-                return 'I\'m sorry, ' + ( userConfig.nico ) + '... I can\'t hear you while you\'re flipped';
+                return `I'm sorry, ${userConfig.nico}... I can't hear you while you're flipped`;
             }
             else
             {
@@ -39,16 +39,16 @@ module.exports = function Nico( _bot, _modules, userConfig )
 
                             if ( userConfig.admins.indexOf( newNico ) !== -1 )
                             {
-                                botText = 'Ha! You can\'t tag an admin! They\'re my buddies!';
+                                botText = `Ha! You can't tag an admin! They're my buddies!`;
                             }
                             else if ( userConfig.botName === newNico )
                             {
-                                botText = 'You can\'t tag me! I\'m out of your league!';
+                                botText = `You can't tag me! I'm out of your league!`;
                             }
                             else
                             {
                                 userConfig.nico = newNico;
-                                botText = newNico + ' is it!';
+                                botText = `${newNico} is it!`;
                             }
                         }
                         break;
@@ -58,11 +58,11 @@ module.exports = function Nico( _bot, _modules, userConfig )
                         nicoFlipped = true;
                         return '(╯°Д°）╯︵/(.□ . ) ᶰᵒᵒᵒᵒᵒᵒᵒᵒᵒ﹗';
 
-                    case 'putthe' +( userConfig.nico ) + 'back':
+                    case `putthe${userConfig.nico}back`:
                         nicoFlipped = false;
                         return '(._. ) ノ( ゜-゜ノ)';
 
-                    case 'is' + ( userConfig.nico ) + 'flipped':
+                    case `is${userConfig.nico}flipped`:
                         if ( nicoFlipped === true )
                         {
                             botText = 'yes';
@@ -73,12 +73,12 @@ module.exports = function Nico( _bot, _modules, userConfig )
                         }
                         break;
 
-                    case 'is' + ( userConfig.nico ) + 'abadperson?':
+                    case `is${userConfig.nico}abadperson?`:
                         return 'yes.  most definitely';
 
                     case 'whoisit?':
                     case 'whosit?':
-                        return ( userConfig.nico ) + ' is it!';
+                        return `${userConfig.nico} is it!`;
                 }
             }
 

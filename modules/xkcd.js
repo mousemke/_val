@@ -9,7 +9,7 @@ module.exports  = function XKCD( _bot, _modules, userConfig )
             {
                 _modules.core.apiGet( userConfig.xkcdAppUrl, function( response )
                 {
-                    resolve( response.url + '\n' + response.title );
+                    resolve( `${response.url}\n${response.title}` );
                 }, false, from, to );
             } );
         },

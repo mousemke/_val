@@ -81,7 +81,7 @@ module.exports  = function Words( _bot, _modules, userConfig, activeWord )
 
             for ( var i = 0, lenI = points.length; i < lenI; i++ )
             {
-                botText += ( i + 1 ) + ': ' + points[ i ].name + ' - ' + points[ i ].points + copy.points[ lang ];
+                botText += `${i + 1}: ${points[ i ].name} - ${points[ i ].points}${copy.points[ lang ]}`;
 
                 if ( points[ i ].points !== 1 )
                 {
@@ -118,7 +118,7 @@ module.exports  = function Words( _bot, _modules, userConfig, activeWord )
                 var definition;
 
                 word    = word.toLowerCase();
-                var url = ( userConfig.wordnikBaseUrl ) + 'word.json/' + word + '/definitions?includeRelated=true&useCanonical=true&includeTags=false&api_key=' + userConfig.wordnikAPIKey;
+                var url = `${userConfig.wordnikBaseUrl}word.json/${word}/definitions?includeRelated=true&useCanonical=true&includeTags=false&api_key=${userConfig.wordnikAPIKey}`;
 
                 _modules.core.apiGet( url, result =>
                 {
@@ -144,7 +144,7 @@ module.exports  = function Words( _bot, _modules, userConfig, activeWord )
                             _def += ' -\n';
                             for ( var i = 0, lenI = result.length; i < lenI; i++ )
                             {
-                                _def += ( i + 1 ) + ': ' + result[ i ].text + '\n';
+                                _def += `${i + 1 )}: ${result[ i ].text}\n`;
                             }
                         }
 
@@ -212,19 +212,19 @@ module.exports  = function Words( _bot, _modules, userConfig, activeWord )
                 points = activeWord.wordScores[ to ].length;
 
                 var solveTime   = Math.floor( ( now - activeWord.currentWordTime ) / 10 ) / 100;
-                var botText     = 'WOW ' + to + '! Such ' + points + copy.point[ lang ];
+                var botText     = `WOW ${to}! Such ${points}${copy.point[ lang ]}`;
                 if ( points !== 1 )
                 {
                     botText += copy.plural[ lang ];
                 }
-                botText += '! Many ' + solveTime + copy.seconds[ lang ];
+                botText += `! Many ${solveTime}${copy.seconds[ lang ]}`;
 
                 if ( _modules.Doge && dogePayout )
                 {
                     var dogetip = activeWord.currentWord.length * dogeModifier;
 
                     _modules.Doge.giveFromBank( to, dogetip, true );
-                    botText += copy.youveEarned[ lang ] + dogetip + '!';
+                    botText += `${copy.youveEarned[ lang ]}${dogetip}!`;
                 }
 
                 var additionalDefs = activeWord.currentWordDef.length - 1;
@@ -516,11 +516,11 @@ module.exports  = function Words( _bot, _modules, userConfig, activeWord )
          */
         showVerboseDef : function()
         {
-            var _def = activeWord.verboseDef[1] + ' -\n';
+            var _def = `${activeWord.verboseDef[1]} -\n`;
 
             for ( var ii = 0, lenII = activeWord.verboseDef[2].length; ii < lenII; ii++ )
             {
-                _def += ( ii + 1 ) + ': ' + activeWord.verboseDef[2][ ii ].text + '\n';
+                _def += `${ii + 1}: ${activeWord.verboseDef[2][ ii ].text}\n`;
             }
 
             _bot.say( wordsChannel, _def );
@@ -558,7 +558,7 @@ module.exports  = function Words( _bot, _modules, userConfig, activeWord )
 
                 text = encodeURIComponent( text );
 
-                var url = ( userConfig.translationBaseUrl ) + 'get?q=' + text + '&langpair=' + langFrom + '|' + langTo;
+                var url = `${userConfig.translationBaseUrl}get?q=${text}&langpair=${langFrom}|${langTo}`;
 
                 _modules.core.apiGet( url, function( response )
                 {
@@ -583,7 +583,7 @@ module.exports  = function Words( _bot, _modules, userConfig, activeWord )
 
                         if ( from !== 'internal' )
                         {
-                            resolve( to + ': ' + langFrom + ' > ' + langTo + ' - ' + botText );
+                            resolve( `${to}: ${langFrom} > ${langTo} - ${botText}`;
                         }
 
                         if ( func )
@@ -593,7 +593,7 @@ module.exports  = function Words( _bot, _modules, userConfig, activeWord )
                     }
                     else
                     {
-                        resolve( 'Sorry ' + to + ', that didnt work.  Check your country codes maybe.' );
+                        resolve( `Sorry ${to}, that didnt work.  Check your country codes maybe.` );
                     }
                 }, false, from, to );
             } );
@@ -628,7 +628,7 @@ module.exports  = function Words( _bot, _modules, userConfig, activeWord )
                                         'excludePartOfSpeech=idiom&' +
                                         'excludePartOfSpeech=phrasal-prefix&';
 
-                    var url =  ( userConfig.wordnikBaseUrl ) + 'words.json/randomWord?hasDictionaryDef=true&' + excludeList + 'minCorpusCount=0&maxCorpusCount=-1&minDictionaryCount=3&maxDictionaryCount=-1&minLength=' + activeWord.minLength + '&maxLength=' + activeWord.maxLength + '&api_key=' + userConfig.wordnikAPIKey;
+                    var url =  `${userConfig.wordnikBaseUrl}words.json/randomWord?hasDictionaryDef=true&${excludeList}minCorpusCount=0&maxCorpusCount=-1&minDictionaryCount=3&maxDictionaryCount=-1&minLength=${activeWord.minLength}&maxLength=${activeWord.maxLength}&api_key=${userConfig.wordnikAPIKey}`;
 
                     _modules.core.apiGet( url, function( result )
                     {
@@ -646,7 +646,7 @@ module.exports  = function Words( _bot, _modules, userConfig, activeWord )
                 }
                 else
                 {
-                    resolve( copy.currentWord[ lang ] + activeWord.scrambledWord.toLowerCase() + ' (' + ( activeWord.currentWord[0].toLowerCase() ) + ')\n' );
+                    resolve( `${copy.currentWord[ lang ]}${activeWord.scrambledWord.toLowerCase()} (${activeWord.currentWord[0].toLowerCase()})\n` );
                 }
             } );
         }

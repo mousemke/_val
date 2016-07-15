@@ -34,7 +34,7 @@ module.exports  = function Admin( _bot, _modules, userConfig )
                 switch ( adminCommand )
                 {
                     case 'v':
-                        return 'Well, ' + to + ', thanks for asking!  I\'m currently running version ' + userConfig.version;
+                        return `Well, ${to}, thanks for asking!  I'm currently running version ${userConfig.version}`;
                 }
             }
 

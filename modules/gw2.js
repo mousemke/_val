@@ -40,7 +40,7 @@ module.exports  = function GuildWars2( _bot, _modules, userConfig, confObj )
 
             while ( price.length < 6 )
             {
-                price = '0' + price;
+                price = `0${price}`;
             }
 
             c = price.slice( price.length - 2 );
@@ -48,16 +48,15 @@ module.exports  = function GuildWars2( _bot, _modules, userConfig, confObj )
             g = parseInt( price.slice( 0, price.length - 4 ) );
 
 
-            var text = c + 'c';
+            var text = `${c}c`;
 
             if ( s !== '00' || g !== 0 )
             {
-                text = s + 's ' + text;
+                text = `${s}s ${text}`;
             }
             if ( g !== 0 )
             {
-
-                text = g + 'g ' + text;
+                text = `${g}g ${text}`;
             }
 
             while ( text[ 0 ] === '0' )
@@ -87,7 +86,7 @@ module.exports  = function GuildWars2( _bot, _modules, userConfig, confObj )
 
         test : function( from, to )
         {
-            var url = apiBaseUrl + '/items';
+            var url = `${apiBaseUrl}/items`;
 
             _modules.core.apiGet( url, function( result )
             {

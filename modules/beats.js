@@ -31,11 +31,11 @@ module.exports = function Beats( _bot, _modules, userConfig )
                 {
                     while ( beatTime.length !== 3 )
                     {
-                        beatTime = '0' + beatTime;
+                        beatTime = `0${beatTime}`;
                     }
                 }
 
-                botText = '@' + beatTime;
+                botText = `@${beatTime}`;
             }
 
             return botText;

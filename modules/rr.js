@@ -84,7 +84,7 @@ module.exports  = function RR( _bot, _modules, userConfig )
                 if ( bullet === 'bang!' )
                 {
                     var chairType = chairs[ Math.floor( Math.random() * chairs.length ) ];
-                    botText += 'BANG!  A lifeless body slumps forward in ' + to + '\'s ' + chairType;
+                    botText += `BANG!  A lifeless body slumps forward in ${to}'s ${chairType}`;
                     clip    = [];
                     return this.reload( botText );
                 }

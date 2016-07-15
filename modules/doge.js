@@ -37,19 +37,19 @@ module.exports = function Doge( _bot, _modules, userConfig )
 
                         if ( _to === 'masterTotal' )
                         {
-                            botText += 'There are currently Ð' + amount + ' in circulation';
+                            botText += `There are currently Ð${amount} in circulation`;
                         }
                         else if ( _to === '___bank___' )
                         {
-                            botText += 'There are currently Ð' + amount + ' in the bank';
+                            botText += `There are currently Ð${amount} in the bank`;
                         }
                         else
                         {
                             if ( from !== _to )
                             {
-                              botText += to + ', ';
+                              botText += `${to}, `;
                             }
-                            botText += 'you currently have Ð' + amount;
+                            botText += `you currently have Ð${amount}`;
                         }
 
                         resolve( botText );
@@ -131,7 +131,7 @@ module.exports = function Doge( _bot, _modules, userConfig )
                     var res         = info.result[0];
                     var dogeBase    = res.Last;
                     var lastPrice   = amount * toSatoshi( res.Last );
-                    var doge        = '狗狗币!  Ð' + amount + ' = ' + lastPrice + ' Satoshi';
+                    var doge        = `狗狗币!  Ð${amount} = ${lastPrice} Satoshi`;
 
                     if ( full )
                     {
@@ -149,7 +149,7 @@ module.exports = function Doge( _bot, _modules, userConfig )
                             var eur = formatPrice( info.btc_eur.last );
                             var ltc = formatPrice( 1 / info.ltc_btc.last );
 
-                            doge += ', $' + usd + ', ' + eur + '€, ' + ltc + ' LTC.';
+                            doge += `, $${usd}, ${eur}€, ${ltc} LTC.`;
 
                             resolve( doge );
                         }, true, from, to )
@@ -158,7 +158,7 @@ module.exports = function Doge( _bot, _modules, userConfig )
                     {
                         var highPrice   = amount * toSatoshi( res.High );
                         var lowPrice    = amount * toSatoshi( res.Low );
-                        doge += '. TO THE MOON!!!! ( H: ' + highPrice + ', L: ' + lowPrice + ' )';
+                        doge += `. TO THE MOON!!!! ( H: ${highPrice}, L: ${lowPrice} )`;
 
                         resolve( doge );
                     }
@@ -190,7 +190,7 @@ module.exports = function Doge( _bot, _modules, userConfig )
                 return '';
             }
 
-            return to + ' earns such Ð' + amount;
+            return `${to} earns such Ð${amount}`;
         },
 
 
@@ -295,17 +295,17 @@ module.exports = function Doge( _bot, _modules, userConfig )
 
                     if ( !dcMasterList[ _to ] || dcMasterList[ _to ] < soakTotal )
                     {
-                        botText = 'Sorry, ' + to + ', you need more doge';
+                        botText = `Sorry, ${to}, you need more doge`;
                     }
                     else if ( soakTotal < 1 )
                     {
-                        botText = 'Don\'t be so down, ' + to + '...  Stay positive!';
+                        botText = `Don't be so down, ${to}...  Stay positive!`;
                     }
                     else
                     {
                         if ( ! text[1] || typeof soakTotal !== 'number' || isNaN( soakTotal ) )
                         {
-                            botText  = 'you must give an amount ( ' + ( userConfig.trigger ) + 'soak <amount> )';
+                            botText  = `you must give an amount ( ${userConfig.trigger}soak <amount> )`;
                         }
                         else if ( users === 0 )
                         {
@@ -319,8 +319,7 @@ module.exports = function Doge( _bot, _modules, userConfig )
                                 {
                                     botText = 'Searching for active users....  ';
 
-                                    botText += to + ' tipped Ð' + soakTotal + ' and is soaking ' + users +
-                                            ' people with Ð' + soakAmount + ' each! : ';
+                                    botText += `${to} tipped Ð${soakTotal} and is soaking ${users} people with Ð${soakAmount} each! : `;
 
                                     dcMasterList[ to ]  = dcMasterList[ to ] - soakTotal;
 
@@ -336,7 +335,7 @@ module.exports = function Doge( _bot, _modules, userConfig )
                                             {
                                                 dcMasterList[ list[ i ] ] = soakAmount;
                                             }
-                                            botText += list[ i ] + ', ';
+                                            botText += `${list[ i ]}, `;
                                         }
                                     }
                                     botText = botText.slice( 0, botText.length - 2 );
@@ -344,7 +343,7 @@ module.exports = function Doge( _bot, _modules, userConfig )
                                     if ( soakRemainder !== 0 )
                                     {
                                         dcMasterList[ userConfig.botName ] = dcMasterList[ userConfig.botName ] + soakRemainder;
-                                        botText += ' (Ð' + soakRemainder + ' in scraps eaten by ' + userConfig.botName + ')';
+                                        botText += ` (Ð${soakRemainder} in scraps eaten by ${userConfig.botName})`;
                                     }
                                 }
                                 else
@@ -355,7 +354,7 @@ module.exports = function Doge( _bot, _modules, userConfig )
                                         if ( list[ i ] !== to )
                                         {
                                             dcMasterList[ list[ i ] ] = dcMasterList[ list[ i ] ] + soakAmount;
-                                            botText = to + ' tipped Ð' + soakAmount + ' to ' + list[ i ];
+                                            botText = `${to} tipped Ð${soakAmount} to ${list[ i ]}`;
                                         }
                                     }
 
@@ -369,7 +368,7 @@ module.exports = function Doge( _bot, _modules, userConfig )
 
                                 if ( userConfig.enablePM )
                                 {
-                                    _botText += ' (/msg ' + ( userConfig.nickservBot ) + ' help)';
+                                    _botText += ` (/msg ${userConfig.nickservBot} help)`;
                                 }
                             }
                         }

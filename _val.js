@@ -80,11 +80,11 @@ var _Val = function( commandModule, userConfig )
             console.log( say );
             if ( say )
             {
-                _bot.say( from, 'sorry, ' + to + ' bad query or url. (depends on what you were trying to do)' );
+                _bot.say( from, `sorry, ${to} bad query or url. (depends on what you were trying to do)` );
             }
             else
             {
-                console.log( options + ' appears to be down' );
+                console.log( `${options} appears to be down` );
             }
         };
 
@@ -237,14 +237,14 @@ var _Val = function( commandModule, userConfig )
 
         if ( talk !== false )
         {
-            botText = 'I see ' + i + ' active user';
+            botText = `I see ${i} active user`;
 
             if ( i > 1 || i === 0 )
             {
                 botText += 's';
             }
 
-            botText += ' in ' + from;
+            botText += ` in ${from}`;
 
             return botText;
         }
@@ -267,9 +267,9 @@ var _Val = function( commandModule, userConfig )
         if ( command !== 'PRIVMSG' )
         {
             var _color  = debugChalkBox[ command ];
-            var text    = '     * ' + command + ' : ';
+            var text    = `     * ${command} : `;
 
-            e.args.forEach( function( arg ){ text += arg + ' '; } );
+            e.args.forEach( function( arg ){ text += `${arg} `; } );
 
             if ( _color )
             {
@@ -287,7 +287,7 @@ var _Val = function( commandModule, userConfig )
                         minUp += '0';
                     }
 
-                    console.log( chalk[ _color ]( text ), ( now - lastPing ) + 'ms', chalk.grey( '(' + minUp + 'min up)' ), new Date().toLocaleString() );
+                    console.log( chalk[ _color ]( text ), `${now - lastPing}ms`, chalk.grey( `(${minUp}min up)`, new Date().toLocaleString() );
                     lastPing = now;
 
                     if ( connectionTimer )
@@ -390,7 +390,7 @@ var _Val = function( commandModule, userConfig )
 
         if ( commandModule.slackTeam && commandModule.autojoin )
         {
-            var _url    = 'https://' + commandModule.slackTeam + '.slack.com/api/channels.list?token=' + userConfig.slackAPIKey;
+            var _url    = `https://${commandModule.slackTeam}.slack.com/api/channels.list?token=${userConfig.slackAPIKey}`;
 
             apiGet( _url, function( res )
             {
@@ -442,7 +442,7 @@ var _Val = function( commandModule, userConfig )
             }
         }
 
-        console.log( commandType + ' built' );
+        console.log( `${commandType} built` );
     }
 
 
@@ -659,7 +659,7 @@ var _Val = function( commandModule, userConfig )
                     // }
                     // else
                     // {
-                        return to + ': ' + userConfig.helpText();
+                        return `${to}: ${userConfig.helpText()}`;
                     // }
                 }
                 break;
