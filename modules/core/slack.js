@@ -15,7 +15,8 @@ module.exports =  function slackBot( userConfig, _bot, channels, listenToMessage
 {
     let slackConfig = userConfig.command.slack;
     let token       = slackConfig.apiKey;
-    _bot            = new RtmClient( token, { dataStore: new MemoryDataStore() } );
+    let dataStore   = new MemoryDataStore();
+    _bot            = new RtmClient( token, { dataStore } );
 
     userConfig.command.slack.botName = _bot.dataStore.getUserById( _bot.activeUserId );
 
@@ -23,7 +24,6 @@ module.exports =  function slackBot( userConfig, _bot, channels, listenToMessage
 
     userConfig.commandModules.push( _bot );
 
-    _bot.start();
 
     _bot.on( RTM_EVENTS.MESSAGE, message =>
     {
@@ -82,6 +82,22 @@ module.exports =  function slackBot( userConfig, _bot, channels, listenToMessage
 
     _bot.on( RTM_CLIENT_EVENTS.RTM_CONNECTION_OPENED, () =>
     {
+        _bot.pm = ( to, botText, confObj ) =>
+        {
+            if ( confObj )
+            {
+                to = confObj.to;
+            }
+
+            _bot._modules.core.apiGet( `https://slack.com/api/im.open?token=${token}&user=${to}`, res =>
+            {
+                let id = res.channel.id;
+
+                _bot.sendMessage( botText, id );
+            } );
+        };
+
+
         _bot.say = ( from, botText, confObj ) =>
         {
             if ( confObj )
@@ -93,8 +109,10 @@ module.exports =  function slackBot( userConfig, _bot, channels, listenToMessage
         };
     } );
 
-
+    _bot.pm     = () => {};
     _bot.say    = () => {};
+
+    _bot.start();
 
     return _bot;
 };

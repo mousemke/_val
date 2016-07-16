@@ -23,7 +23,7 @@ module.exports = function telegramBot( userConfig, _bot, channels, listenToMessa
 
     let boundListenToMessages = listenToMessages.bind( context );
 
-    _bot.say = ( to, text ) =>
+    _bot.say = ( to, text, confObj ) =>
     {
         let answer = new Message()
                         .text( text )
@@ -32,6 +32,7 @@ module.exports = function telegramBot( userConfig, _bot, channels, listenToMessa
         _bot.send( answer );
     };
 
+    _bot.pm = () => {};
 
     _bot.get( /./, message =>
     {

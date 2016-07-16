@@ -39,22 +39,22 @@ module.exports = function PlainText( _bot, _modules, userConfig )
                 to = textSplit[1];
             }
 
-            var botText = ' hits ' + to + ' with a ';
+            var botText = ` hits ${to} with a `;
             var car = cars[ Math.floor( Math.random() * cars.length ) ];
 
             if ( !car[ 1 ] )
             {
-                botText += 'Dodge ' + car[ 0 ];
+                botText += `Dodge ${car[ 0 ]}`;
             }
             else if ( !car[ 2 ] )
             {
-                botText += car[ 1 ] + ' Dodge ' + car[ 0 ];
+                botText += `${car[ 1 ]} Dodge ${car[ 0 ]}`;
             }
             else
             {
                 var spread = car[ 2 ] - car[ 1 ];
                 var year = Math.floor( Math.random() * spread ) + car[ 1 ];
-                botText += year + ' Dodge ' + car[ 0 ];
+                botText += `${year} Dodge ${car[ 0 ]}`;
             }
 
             return botText;
@@ -198,11 +198,11 @@ module.exports = function PlainText( _bot, _modules, userConfig )
 
                 if ( moonLength < 4 )
                 {
-                  return 'To the ' + botText + '!';
+                  return `To the ${botText}!`;
                 }
                 if ( moonLength > 6 )
                 {
-                  return botText.toUpperCase() + '!!!!!!!!';
+                  return `${botText.toUpperCase()}!!!!!!!!`;
                 }
             }
             else if ( space && space[1] )
@@ -214,7 +214,8 @@ module.exports = function PlainText( _bot, _modules, userConfig )
                   botText += 'aa';
                 }
                 botText += 'ce';
-                return botText.toUpperCase() + '!!!!';
+
+                return `${botText.toUpperCase()}!!!!!!`;
             }
             else if ( khan && khan[1] )
             {
@@ -225,7 +226,8 @@ module.exports = function PlainText( _bot, _modules, userConfig )
                   botText += 'aa';
                 }
                 botText += 'n';
-                return botText.toUpperCase() + '!!!!';
+
+                return `${botText.toUpperCase()}!!!!!!`;
             }
             else
             {
@@ -245,6 +247,7 @@ module.exports = function PlainText( _bot, _modules, userConfig )
 
                         case 'dance':
                             var dancer = Math.floor( Math.random() * 80 );
+                            _bot.pm( to, 'moon', confObj );
                             if ( dancer === 3 )
                             {
                                 return '└[∵┌]└[ ∵ ]┘[┐∵]┘';
@@ -263,6 +266,7 @@ module.exports = function PlainText( _bot, _modules, userConfig )
                             {
                                 _bot.say( from, 'ಠ_ಠ', confObj );
                             }, 1500 );
+
                             return 'no...  you don\'t have that ability.';
 
                         case 'google':

@@ -442,6 +442,8 @@ var _Val = function( commandModule, userConfig )
             }
         }
 
+        _bot._modules = _modules;
+
         console.log( `${commandType} built` );
     }
 

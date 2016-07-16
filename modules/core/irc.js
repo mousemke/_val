@@ -56,6 +56,8 @@ module.exports = function ircBot( userConfig, _bot, channels, listenToMessages, 
     } );
 
 
+    _bot.pm = _bot.say;
+
     if ( userConfig.verbose === true )
     {
         _bot.addListener( 'raw', displayDebugInfo );

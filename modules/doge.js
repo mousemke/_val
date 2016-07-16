@@ -443,10 +443,10 @@ module.exports = function Doge( _bot, _modules, userConfig )
                             {
                                 dcMasterList[ reciever.toLowerCase() ] = ( dcMasterList[ reciever.toLowerCase() ] ) ?
                                                                                 dcMasterList[ reciever.toLowerCase() ] + amount : amount;
-                                // if ( userConfig.enablePM )
-                                // {
-                                    // _bot.say( reciever,   `Such ${to} tipped you Ð${amount} (to claim /msg ${userConfig.botName})` );
-                                // }
+                                if ( userConfig.enablePM )
+                                {
+                                    _bot.pm( reciever,   `Such ${to} tipped you Ð${amount} (to claim /msg ${userConfig.botName})` );
+                                }
                             }
                             else
                             {
