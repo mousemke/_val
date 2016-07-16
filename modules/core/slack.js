@@ -46,7 +46,7 @@ module.exports =  function slackBot( userConfig, _bot, channels, listenToMessage
                 return userName ? userName.name : user;
             } );
 
-            let channel     = _bot.dataStore.getChannelGroupOrDMById( message.channel ).name;
+            let channel     = `#${_bot.dataStore.getChannelGroupOrDMById( message.channel ).name}`;
             let user        = _bot.dataStore.getUserById( to ).name;
 
             let confObj = { to, from, user, channel };

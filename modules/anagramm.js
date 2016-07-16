@@ -23,9 +23,9 @@ module.exports = function Anagramm( _bot, _modules, userConfig )
         pointTimeout    : userConfig.anagrammPointTimeout
     };
 
-    let lang = userConfig.anagrammLang;
+    let lang    = userConfig.anagrammLang;
 
-    words = new Words( _bot, _modules, userConfig, activeAnagramm );
+    let words   = new Words( _bot, _modules, userConfig, activeAnagramm );
 
 
     /**
@@ -45,8 +45,9 @@ module.exports = function Anagramm( _bot, _modules, userConfig )
     {
         return new Promise( ( resolve, reject ) =>
         {
+            let englishWord             = result.word;
+
             activeWord.currentWord      = result.word.slice();
-            activeWord.englishWord      = result.word;
             activeWord.currentWordTime  = Date.now();
 
             this.define( userConfig.anagramm, activeWord.currentWord, true, to );
@@ -57,23 +58,19 @@ module.exports = function Anagramm( _bot, _modules, userConfig )
 
                 function( translatedWord )
                 {
-                    activeWord.currentWord  = translatedWord;
+                    let currentWord         = activeWord.currentWord  = translatedWord;
 
-                    let currentWordLength   = activeWord.currentWord.length;
-
-                    if ( activeWord.currentWord[ currentWordLength - 1 ] === '.' )
-                    {
-                        activeWord.currentWord.slice( currentWordLength - 1 );
-                    }
+                    let currentWordLength   = currentWord.length;
 
                     activeWord.scrambledWord   = self.scramble( activeWord.currentWord );
 
-                    if ( activeWord.currentWord.indexOf( '-' ) !== -1 ||
-                        activeWord.currentWord.indexOf( ' ' ) !== -1 ||
-                        activeWord.currentWord.toLowerCase() === activeWord.englishWord )
+                    if ( currentWord.indexOf( '-' ) !== -1 ||
+                        currentWord.indexOf( ' ' ) !== -1 ||
+                        currentWord.indexOf( '.' ) !== -1 ||
+                        currentWord.toLowerCase() === englishWord )
                     {
                         activeWord.currentWord = '';
-                        self.word();
+                        resolve( self.word() );
                     }
                     else
                     {

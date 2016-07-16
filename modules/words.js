@@ -186,7 +186,7 @@ module.exports  = function Words( _bot, _modules, userConfig, activeWord )
         {
             if ( activeWord.verboseDef !== false && activeWord.verboseDef[0] === to && text === '-def' )
             {
-                this.showVerboseDef();
+                this.showVerboseDef( confObj );
             }
             else if ( text.toLowerCase() === word.toLowerCase() )
             {
@@ -297,7 +297,8 @@ module.exports  = function Words( _bot, _modules, userConfig, activeWord )
                     _whatTheBotSay += activeWord.englishWord && activeWord.currentWord !== activeWord.englishWord ?  activeWord.englishWord + ': ' : '';
                     _whatTheBotSay += activeWord.currentWordDef[0].text;
 
-                    _bot.say( wordsChannel, _whatTheBotSay );
+                    _bot.say( wordsChannel, _whatTheBotSay, confObj );
+
                     activeWord.currentWord     = '';
                 }
 
@@ -371,8 +372,7 @@ module.exports  = function Words( _bot, _modules, userConfig, activeWord )
                         return this.word( from, to, confObj );
 
                     case copy.newWordRes[ lang ]:
-                        return this.newWord( from, to );
-
+                        return this.newWord( from, to, confObj );
                 }
             }
 
@@ -512,9 +512,11 @@ module.exports  = function Words( _bot, _modules, userConfig, activeWord )
          *
          * shows the verbose definition to the last winner, then clears the listener
          *
+         * @param {Object} confObj extra config object that some command modules need
+         *
          * @return _Void_
          */
-        showVerboseDef : function()
+        showVerboseDef : function( confObj )
         {
             var _def = `${activeWord.verboseDef[1]} -\n`;
 
@@ -523,7 +525,7 @@ module.exports  = function Words( _bot, _modules, userConfig, activeWord )
                 _def += `${ii + 1}: ${activeWord.verboseDef[2][ ii ].text}\n`;
             }
 
-            _bot.say( wordsChannel, _def );
+            _bot.say( wordsChannel, _def, confObj );
 
             activeWord.verboseDef = false;
         },
