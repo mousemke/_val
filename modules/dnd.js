@@ -12,6 +12,8 @@ module.exports  = function CAH( _bot, _modules, userConfig )
 
 
         /**
+         * ## responses
+         *
          * possible responses to commands
          *
          * @param {String} from originating channel
@@ -50,7 +52,7 @@ module.exports  = function CAH( _bot, _modules, userConfig )
 
 
         /**
-         * roll
+         * ## roll
          *
          * rolls a die with the given sides
          *

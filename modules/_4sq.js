@@ -7,6 +7,18 @@ module.exports  = function _4sq( _bot, _modules, userConfig )
 {
     return {
 
+        /**
+         * ## lunch
+         *
+         * searches for matching places and returns a random one
+         * of the results
+         *
+         * @param {String} from originating channel
+         * @param {String} to originating user
+         * @param {String} query search parameter
+         *
+         * @return _Promise_ search results
+         */
         lunch : function( from, to, query )
         {
             var _botText;
@@ -108,7 +120,7 @@ module.exports  = function _4sq( _bot, _modules, userConfig )
 
 
         /**
-         * 4sq responses
+         * ## responses
          *
          * @param {String} from originating channel
          * @param {String} to originating user

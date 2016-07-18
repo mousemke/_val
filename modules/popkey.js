@@ -58,6 +58,8 @@ module.exports  = function PopKey( _bot, _modules, userConfig )
 
 
         /**
+         * ## responses
+         *
          * @param {String} from originating channel
          * @param {String} to originating user
          * @param {String} text full input string

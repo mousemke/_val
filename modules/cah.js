@@ -24,11 +24,13 @@ module.exports  = function CAH( _bot, _modules, userConfig )
 
 
         /**
+         * ## addPlayer
+         *
          * adds a player to the players object and gives them 10 cards
          *
-         * @param {str}             playerName          player name
+         * @param {String} playerName          player name
          *
-         * @return {str}                                welcome or error message
+         * @return _Void_ welcome or error message
          */
         addPlayer : function( playerName )
         {
@@ -65,11 +67,13 @@ module.exports  = function CAH( _bot, _modules, userConfig )
 
 
         /**
+         * ## cancelQuestion
+         *
          * cancels a question after a timeout
          *
-         * @param  {Boolean}        silent              silent doesn't say anything
+         * @param {Boolean} silent doesn't say anything
          *
-         * @return {Void}
+         * @return _Void_
          */
         cancelQuestion : function( silent )
         {
@@ -84,11 +88,13 @@ module.exports  = function CAH( _bot, _modules, userConfig )
 
 
         /**
+         * ## checkMostCommon
+         *
          * returns the most common result
          *
-         * @param  {arr}                    _arr                array to test
+         * @param {Array} _arr array to test
          *
-         * @return {int}                                        most common number
+         * @return _Number_ most common number
          */
         checkMostCommon : function( _arr )
         {
@@ -109,11 +115,13 @@ module.exports  = function CAH( _bot, _modules, userConfig )
 
 
         /**
+         * ## drawCard
+         *
          * adds a card to a players hand and marks it as not in the deck
          *
-         * @param  {obj}            player              player obj
+         * @param {Object} player player obj
          *
-         * @return {obj}                                drawn card
+         * @return _Object_ drawn card
          */
         drawCard : function( player, cardNum )
         {
@@ -134,11 +142,13 @@ module.exports  = function CAH( _bot, _modules, userConfig )
 
 
         /**
+         * ## dealCurrentHand
+         *
          * sends a player their current cards in a whisper
          *
-         * @param  {String}         playerName          player name
+         * @param {String} playerName  player name
          *
-         * @return {Void}
+         * @return _Void_
          */
         dealCurrentHand : function( playerName )
         {
@@ -170,9 +180,11 @@ module.exports  = function CAH( _bot, _modules, userConfig )
 
 
         /**
+         * ## dealCurrentHands
+         *
          * reports their current hand to each player
          *
-         * @return {void}
+         * @return _void_
          */
         dealCurrentHands : function()
         {
@@ -185,12 +197,14 @@ module.exports  = function CAH( _bot, _modules, userConfig )
 
 
         /**
+         * ## getCard
+         *
          * returns a card from the deck
          *
-         * @param  {String}         type                type of card desired
-         * @param  {Number}         tries               attempts so far
+         * @param {String} type type of card desired
+         * @param {Number} tries attempts so far
          *
-         * @return {Object}                             card
+         * @return _Object_ card
          */
         getCard : function( type, tries )
         {
@@ -222,9 +236,11 @@ module.exports  = function CAH( _bot, _modules, userConfig )
 
 
         /**
-         * ini. double checks PMs are enabled
+         * ## ini
          *
-         * @return {void}
+         * double checks PMs are enabled
+         *
+         * @return _Void_
          */
         ini : function()
         {
@@ -241,12 +257,14 @@ module.exports  = function CAH( _bot, _modules, userConfig )
 
 
         /**
+         * ## listPlayers
+         *
          * wrapper for listplayers to check whether or not is being called as an
          * admin
          *
-         * @param  {str}            _admin              should equal 'admin'
+         * @param {String} _admin should equal 'admin'
          *
-         * @return {str}                                botText
+         * @return _String_ botText
          */
         listPlayers : function( _admin )
         {
@@ -264,9 +282,11 @@ module.exports  = function CAH( _bot, _modules, userConfig )
 
 
         /**
+         * ## listPlayersPlayer
+         *
          * lists players
          *
-         * @return {String}                             botText
+         * @return _String_ botText
          */
         listPlayersPlayer : function()
         {
@@ -301,9 +321,11 @@ module.exports  = function CAH( _bot, _modules, userConfig )
 
 
         /**
+         * ## listPlayersAdmin
+         *
          * sudo lists players
          *
-         * @return {String}                             botText
+         * @return _String_ botText
          */
         listPlayersAdmin : function()
         {
@@ -331,9 +353,11 @@ module.exports  = function CAH( _bot, _modules, userConfig )
 
 
         /**
+         * ## loadCards
+         *
          * loads the cards json
          *
-         * @return {void}
+         * @return _Void_
          */
         loadCards : function()
         {
@@ -346,9 +370,11 @@ module.exports  = function CAH( _bot, _modules, userConfig )
 
 
         /**
+         * ## newQuestion
+         *
          * generates a new question and sets the timeout
          *
-         * @return {String}                             botText
+         * @return _String_                             botText
          */
         newQuestion : function()
         {
@@ -380,12 +406,14 @@ module.exports  = function CAH( _bot, _modules, userConfig )
 
 
         /**
+         * ## playCard
+         *
          * checks that a card is a valid play, then plays the card
          *
-         * @param  {String}         playerName          player name
-         * @param  {Number}         cardNum             card to play
+         * @param {String} playerName player name
+         * @param {Number} cardNum card to play
          *
-         * @return {Void}
+         * @return _Void_
          */
         playCard : function( playerName, cardNum )
         {
@@ -447,10 +475,12 @@ module.exports  = function CAH( _bot, _modules, userConfig )
 
 
         /**
+         * ## question
+         *
          * checks if there is a question active and if it's a voting round, then
          * runs the necessary method
          *
-         * @return {Void}
+         * @return _Void_
          */
         question : function()
         {
@@ -477,11 +507,13 @@ module.exports  = function CAH( _bot, _modules, userConfig )
 
 
         /**
+         * ## removePlayer
+         *
          * removes a player from the game
          *
-         * @param  {str}            playerName          player to remove
+         * @param {String} playerName player to remove
          *
-         * @return {str}                                confirmation or error text
+         * @return _String_ confirmation or error text
          */
         removePlayer : function( playerName )
         {
@@ -539,6 +571,8 @@ module.exports  = function CAH( _bot, _modules, userConfig )
 
 
         /**
+         * ## responses
+         *
          * possible responses to commands
          *
          * @param {String} from originating channel
@@ -606,9 +640,11 @@ module.exports  = function CAH( _bot, _modules, userConfig )
 
 
         /**
+         * ## showQuestion
+         *
          * displays the current question
          *
-         * @return {String}                             botText
+         * @return _String_ botText
          */
         showQuestion : function()
         {
@@ -635,9 +671,11 @@ module.exports  = function CAH( _bot, _modules, userConfig )
 
 
         /**
+         * ## shuffleCards
+         *
          * shuffles the cards
          *
-         * @return {Object}                             shuffled deck
+         * @return _Object_ shuffled deck
          */
         shuffleCards : function()
         {
@@ -657,9 +695,11 @@ module.exports  = function CAH( _bot, _modules, userConfig )
 
 
         /**
+         * ## startVotingRound
+         *
          * sets up the voting round
          *
-         * @return {Void}
+         * @return _Void_
          */
         startVotingRound : function()
         {
@@ -696,9 +736,11 @@ module.exports  = function CAH( _bot, _modules, userConfig )
 
 
         /**
+         * ## switchToVoting
+         *
          * switches the game mode, variables, and broadcast text to voting
          *
-         * @return {void}
+         * @return _Void_
          */
         switchToVoting : function()
         {
@@ -717,12 +759,14 @@ module.exports  = function CAH( _bot, _modules, userConfig )
 
 
         /**
+         * ## useCard
+         *
          * uses a card and removes it from a players hand
          *
-         * @param  {String}         player              player name
-         * @param  {Number}         cardNum             card to play
+         * @param {String} player player name
+         * @param {Number} cardNum card to play
          *
-         * @return {Object}                             used card
+         * @return _Object_ used card
          */
         useCard : function( player, cardNum )
         {
@@ -848,9 +892,11 @@ module.exports  = function CAH( _bot, _modules, userConfig )
 
 
         /**
+         * ## votingResult
+         *
          * after all votes are in, this displays the results and gets a new question
          *
-         * @return {Void}
+         * @return _Void_
          */
         votingResult : function()
         {

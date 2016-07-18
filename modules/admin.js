@@ -11,8 +11,11 @@ module.exports  = function Admin( _bot, _modules, userConfig )
 
 
         /**
-         * admin responses
+         * ## responses
          *
+         * admin responses.  they are generally called with
+        * a double trigger ( '++', '!!', etc)
+        *
          * @param {String} from originating channel
          * @param {String} to originating user
          * @param {String} text full input string

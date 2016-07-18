@@ -44,8 +44,6 @@ module.exports = function U( _bot, _modules, userConfig )
         /**
          * ## responses
          *
-         * main i/o for the twitter module
-         *
          * @param {String} from originating channel
          * @param {String} to originating user
          * @param {String} text full input string

@@ -9,7 +9,7 @@ module.exports = function Nico( _bot, _modules, userConfig )
     return {
 
         /**
-         * ## dont be the nico
+         * ## responses
          *
          * @param {String} from originating channel
          * @param {String} to originating user

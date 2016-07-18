@@ -5,7 +5,7 @@ module.exports = function Beats( _bot, _modules, userConfig )
     return {
 
         /**
-         * beats responses
+         * ## beats
          *
          * if called, this returns the current time converted to beats
          *

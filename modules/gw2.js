@@ -101,6 +101,8 @@ module.exports  = function GuildWars2( _bot, _modules, userConfig, confObj )
 
 
         /**
+         * ## responses
+         *
          * @param {String} from originating channel
          * @param {String} to originating user
          * @param {String} text full input string

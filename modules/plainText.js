@@ -20,7 +20,7 @@ module.exports = function PlainText( _bot, _modules, userConfig )
     return {
 
         /**
-         * Dodge
+         * ## dodge
          *
          * by stefan's request
          *
@@ -161,7 +161,7 @@ module.exports = function PlainText( _bot, _modules, userConfig )
 
 
         /**
-         * Responses
+         * ## responses
          *
          * @param {String} from originating channel
          * @param {String} to originating user
@@ -314,7 +314,7 @@ module.exports = function PlainText( _bot, _modules, userConfig )
 
 
         /**
-         * Travolta
+         * ## travolta
          *
          * because
          *

@@ -10,7 +10,7 @@ module.exports = function Doge( _bot, _modules, userConfig )
     return {
 
         /**
-         * Balance
+         * ## balance
          *
          * returns a users balance
          *
@@ -99,7 +99,7 @@ module.exports = function Doge( _bot, _modules, userConfig )
 
 
         /**
-         * Doge
+         * ## doge
          *
          * returns satoshi value of 1 doge
          *
@@ -168,6 +168,8 @@ module.exports = function Doge( _bot, _modules, userConfig )
 
 
         /**
+         * ## giveFromBank
+         *
          * sends prize money from the bank
          *
          * @param  {String} to who to transfer doge to
@@ -195,7 +197,7 @@ module.exports = function Doge( _bot, _modules, userConfig )
 
 
         /**
-         * Doge init
+         * ## ini
          *
          * sets the active listener and loads the dogecoin bank
          *
@@ -208,7 +210,7 @@ module.exports = function Doge( _bot, _modules, userConfig )
 
 
         /**
-         * Load Master List
+         * ## loadMasterList
          *
          * loads the json for the master bank list
          *
@@ -223,6 +225,8 @@ module.exports = function Doge( _bot, _modules, userConfig )
 
 
         /**
+         * ## responses
+         *
          * dogecoin module responses
          *
          * @param {String} from originating channel
@@ -267,7 +271,7 @@ module.exports = function Doge( _bot, _modules, userConfig )
 
 
         /**
-         * SOAK!
+         * ## soak
          *
          * takes a tip and splits it up between all active users after nickserv authentication
          *
@@ -383,7 +387,7 @@ module.exports = function Doge( _bot, _modules, userConfig )
 
 
         /**
-         * tip
+         * ## tip
          *
          * moves a specified amount from one user to another after nickserv authentication
          *
@@ -521,7 +525,7 @@ module.exports = function Doge( _bot, _modules, userConfig )
 
 
         /**
-         * write Master List
+         * ## writeMasterList
          *
          * saves the json to the master bank list
          *
