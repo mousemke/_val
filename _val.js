@@ -14,7 +14,7 @@ var _Val = function( commandModule, userConfig )
     // Loads the configuration and sets variables
     var channel, _bot, _modules = {};
     var modules             = require( './config/_val.modules.js' ),
-        guys                = require( './lists/guys.js' );
+        guysObj             = require( './lists/guys.js' );
         trollBlacklist      = require( './lists/trollBlacklist.js' );
 
     var channels            = [];
@@ -254,6 +254,35 @@ var _Val = function( commandModule, userConfig )
 
 
     /**
+     * ## checkGuys
+     *
+     * checks for "guys" and/or other words set in the guys.json
+     *
+     * @param {String} text user text
+     *
+     * @return _Promise_
+     */
+    function checkGuys( to, text )
+    {
+        let textToLowerCase = text.toLowerCase();
+
+        return new Promise( ( resolve, reject ) =>
+        {
+            guysObj.forEach( obj =>
+            {
+                obj.triggers.forEach( word =>
+                {
+                    if ( textToLowerCase.indexOf( word ) !== -1 )
+                    {
+                        resolve( replaceGuys( to, obj ) );
+                    }
+                } );
+            } );
+        } );
+    }
+
+
+    /**
      * ## displayDebugInfo
      *
      * formats and displays debug information
@@ -487,16 +516,7 @@ var _Val = function( commandModule, userConfig )
                     botText = 'what!?';
                 }
 
-                var triggers = guys.triggers;
-
-                for ( var i = 0, lenI = triggers.length; i < lenI; i++ )
-                {
-                    if ( text.toLowerCase().indexOf( guys.triggers[ i ] ) !== -1 )
-                    {
-                        botText = replaceGuys( to, text );
-                        break;
-                    }
-                }
+                botText = checkGuys( to, text );
 
                 if ( text[ 0 ] === userConfig.trigger && text !== userConfig.trigger && botText === '' )
                 {
@@ -617,16 +637,18 @@ var _Val = function( commandModule, userConfig )
      * responds to 'guys' (and other trigger words) with alternative suggestions
      *
      * @param {String} to user
-     * @param {String} text original text
+     * @param {Object} obj triggered word object
      *
      * @return _String_ suggestion
      */
-    function replaceGuys( to, text )
+    function replaceGuys( to, obj )
     {
-        var _alternative    = guys.alternatives[ Math.floor( Math.random() * guys.alternatives.length ) ];
-        var _speech         = guys.speech[ Math.floor( Math.random() * guys.speech.length ) ];
+        console.log( 1 );
+        var _alternative    = obj.alternatives[ Math.floor( Math.random() * obj.alternatives.length ) ];
+        var _speech         = obj.speech[ Math.floor( Math.random() * obj.speech.length ) ];
 
-        return to + ', ' + _speech + _alternative + '...';
+        console.log( _speech );
+        return `${to}, ${_speech[ 0 ]}${_alternative}${_speech[ 1 ]}`;
     }
 
 
@@ -655,14 +677,14 @@ var _Val = function( commandModule, userConfig )
             case 'help':
                 if ( userConfig.enableHelp )
                 {
-                    // if ( userConfig.enablePM )
-                    // {
-                    //     _bot.say ( to, userConfig.helpText() );
-                    // }
-                    // else
-                    // {
+                    if ( userConfig.enablePM )
+                    {
+                        _bot.pm( to, userConfig.helpText() );
+                    }
+                    else
+                    {
                         return `${to}: ${userConfig.helpText()}`;
-                    // }
+                    }
                 }
                 break;
             default:

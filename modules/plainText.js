@@ -247,7 +247,7 @@ module.exports = function PlainText( _bot, _modules, userConfig )
 
                         case 'dance':
                             var dancer = Math.floor( Math.random() * 80 );
-                            _bot.pm( to, 'moon', confObj );
+
                             if ( dancer === 3 )
                             {
                                 return '└[∵┌]└[ ∵ ]┘[┐∵]┘';

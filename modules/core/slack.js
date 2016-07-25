@@ -9,6 +9,9 @@ const MemoryDataStore     = slack.MemoryDataStore;
 /**
  * ## val slack loader
  *
+ * https://api.slack.com/methods/im.open
+ * https://github.com/slackhq/node-slack-sdk
+ *
  * @return _Object_ slack chatbot
  */
 module.exports =  function slackBot( userConfig, _bot, channels, listenToMessages, displayDebugInfo, context )

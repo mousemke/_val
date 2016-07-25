@@ -34,7 +34,8 @@ Change log
 
 #### 0.3.1
 
-+
++ expanded guys module
+
 
 #### 0.3.0
 
