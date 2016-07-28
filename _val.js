@@ -266,19 +266,26 @@ var _Val = function( commandModule, userConfig )
     {
         let textToLowerCase = text.toLowerCase();
 
-        return new Promise( ( resolve, reject ) =>
-        {
+        let botText = '';
+        // return new Promise( ( resolve, reject ) =>
+        // {
             guysObj.forEach( obj =>
             {
                 obj.triggers.forEach( word =>
                 {
-                    if ( textToLowerCase.indexOf( word ) !== -1 )
+                    let regex = new RegExp( `[ ]${word}(!|.| |[?]|"|')|^${word}[ ]|${word}$` );
+
+                    if ( textToLowerCase.match( regex ) )
                     {
-                        resolve( replaceGuys( to, obj ) );
+                        botText = replaceGuys( to, obj );
                     }
                 } );
             } );
-        } );
+
+        //     resolve( '' );
+        // } );
+
+        return botText;
     }
 
 
