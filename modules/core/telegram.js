@@ -46,7 +46,6 @@ module.exports = function telegramBot( userConfig, _bot, channels, listenToMessa
 
             botText     = boundListenToMessages( to, from, botText );
 
-
             if ( botText !== '' && botText !== false )
             {
                 if ( typeof botText.then === 'function' )
