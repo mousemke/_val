@@ -269,6 +269,10 @@ module.exports = function PlainText( _bot, _modules, userConfig )
 
                             return 'no...  you don\'t have that ability.';
 
+                        case 'bgg':
+                            text = text.split( ' ' ).slice( 1 ).join( '+' );
+                            return `http://www.boardgamegeek.com/geeksearch.php?action=search&objecttype=boardgame&q=${text}&B1=Go`;
+
                         case 'google':
                             text = text.split( ' ' ).slice( 1 ).join( '%20' );
                             return `http://www.lmgtfy.com/?q=${text}`;

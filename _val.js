@@ -186,8 +186,9 @@ var _Val = function( commandModule, userConfig )
      */
     function buildCore()
     {
-        var commander = require( commandModule.url );
-        _bot = commander( userConfig, _bot, channels, listenToMessages, displayDebugInfo , this );
+        var Commander = require( commandModule.url );
+        _bot        = new Commander( userConfig, _bot, channels, listenToMessages, displayDebugInfo , this );
+        _bot.name   = commandModule.botName;
     }
 
 
@@ -215,7 +216,7 @@ var _Val = function( commandModule, userConfig )
 
         var activeChannel = _bot.active[ from ];
 
-        if ( ! activeChannel[ to ] && to !== userConfig.botName &&
+        if ( ! activeChannel[ to ] && to !== _bot.name &&
                 userConfig.bots.indexOf( to ) === -1 )
         {
             activeChannel[ to ] = now;
@@ -264,21 +265,26 @@ var _Val = function( commandModule, userConfig )
      */
     function checkGuys( to, text )
     {
-        let textToLowerCase = text.toLowerCase();
+        let botText         = '';
 
-        return new Promise( ( resolve, reject ) =>
+        guysObj.forEach( obj =>
         {
-            guysObj.forEach( obj =>
+            obj.triggers.forEach( word =>
             {
-                obj.triggers.forEach( word =>
+                if ( botText === '' )
                 {
-                    if ( textToLowerCase.indexOf( word ) !== -1 )
+                    let guysRegex   = `(^|\\s)+${word}([\\.!?,\\s]+|$)`;
+                    guysRegex       = new RegExp( guysRegex, 'i' );
+
+                    if ( guysRegex.test( text ) )
                     {
-                        resolve( replaceGuys( to, obj ) );
+                        botText = replaceGuys( to, obj );
                     }
-                } );
+                }
             } );
         } );
+
+        return botText;
     }
 
 
@@ -643,11 +649,9 @@ var _Val = function( commandModule, userConfig )
      */
     function replaceGuys( to, obj )
     {
-        console.log( 1 );
         var _alternative    = obj.alternatives[ Math.floor( Math.random() * obj.alternatives.length ) ];
         var _speech         = obj.speech[ Math.floor( Math.random() * obj.speech.length ) ];
 
-        console.log( _speech );
         return `${to}, ${_speech[ 0 ]}${_alternative}${_speech[ 1 ]}`;
     }
 

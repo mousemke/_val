@@ -1,5 +1,5 @@
 
-module.exports = function Doge( _bot, _modules, userConfig )
+module.exports = function Doge( _bot, _modules, userConfig, commandModule )
 {
     var http            = userConfig.req.http;
     var https           = userConfig.req.https;
@@ -346,8 +346,8 @@ module.exports = function Doge( _bot, _modules, userConfig )
 
                                     if ( soakRemainder !== 0 )
                                     {
-                                        dcMasterList[ userConfig.botName ] = dcMasterList[ userConfig.botName ] + soakRemainder;
-                                        botText += ` (Ð${soakRemainder} in scraps eaten by ${userConfig.botName})`;
+                                        dcMasterList[ _bot.name ] = dcMasterList[ _bot.name ] + soakRemainder;
+                                        botText += ` (Ð${soakRemainder} in scraps eaten by ${_bot.name})`;
                                     }
                                 }
                                 else
@@ -443,13 +443,13 @@ module.exports = function Doge( _bot, _modules, userConfig )
 
                             dcMasterList[ _to ]  = dcMasterList[ _to ]  - amount;
 
-                            if ( reciever !== userConfig.botName )
+                            if ( reciever !== _bot.name )
                             {
                                 dcMasterList[ reciever.toLowerCase() ] = ( dcMasterList[ reciever.toLowerCase() ] ) ?
                                                                                 dcMasterList[ reciever.toLowerCase() ] + amount : amount;
                                 if ( userConfig.enablePM )
                                 {
-                                    _bot.pm( reciever,   `Such ${to} tipped you Ð${amount} (to claim /msg ${userConfig.botName})` );
+                                    _bot.pm( reciever,   `Such ${to} tipped you Ð${amount} (to claim /msg ${_bot.name})` );
                                 }
                             }
                             else
@@ -461,7 +461,7 @@ module.exports = function Doge( _bot, _modules, userConfig )
 
                             _botText = `WOW! ${to} tipped ${reciever} such Ð${amount}`;
 
-                            if ( reciever === userConfig.botName )
+                            if ( reciever === _bot.name )
                             {
                                 setTimeout( function(){ resolve( 'Thanks!' ); }, 5000 );
                             }

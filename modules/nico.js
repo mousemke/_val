@@ -41,20 +41,26 @@ module.exports = function Nico( _bot, _modules, userConfig )
                             {
                                 botText = `Ha! You can't tag an admin! They're my buddies!`;
                             }
-                            else if ( userConfig.botName === newNico )
+                            else if ( _bot.name === newNico )
                             {
                                 botText = `You can't tag me! I'm out of your league!`;
                             }
                             else
                             {
+                                if ( nicoFlipped )
+                                {
+                                    _bot.say( from, `Lemme help you up, ${userConfig.nico}` );
+                                    nicoFlipped     = false;
+                                }
+
                                 userConfig.nico = newNico;
-                                botText = `${newNico} is it!`;
+                                botText         = `${newNico} is it!`;
                             }
                         }
                         break;
 
-                    case 'flip' + ( userConfig.nico ):
-                    case 'flipthe' + ( userConfig.nico ):
+                    case 'flip'     + ( userConfig.nico ):
+                    case 'flipthe'  + ( userConfig.nico ):
                         nicoFlipped = true;
                         return '(╯°Д°）╯︵/(.□ . ) ᶰᵒᵒᵒᵒᵒᵒᵒᵒᵒ﹗';
 
@@ -63,15 +69,7 @@ module.exports = function Nico( _bot, _modules, userConfig )
                         return '(._. ) ノ( ゜-゜ノ)';
 
                     case `is${userConfig.nico}flipped`:
-                        if ( nicoFlipped === true )
-                        {
-                            botText = 'yes';
-                        }
-                        else
-                        {
-                            botText = 'no';
-                        }
-                        break;
+                        return nicoFlipped ? 'yes' : 'no';
 
                     case `is${userConfig.nico}abadperson?`:
                         return 'yes.  most definitely';

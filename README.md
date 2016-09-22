@@ -2,7 +2,7 @@
 
 erm.... bot.
 
-v. 0.3.1
+v. 0.4.0
 
 `requires node 6.2.2+`
 
@@ -32,9 +32,14 @@ Need to report something? [val@knoblau.ch](mailto:val@knoblau.ch)
 Change log
 ==========
 
-#### 0.3.1
+#### 0.4.0
 
 + expanded guys module
++ botNames are now different across different bots
++ guys module switched to regex
++ added some plain text options
++ added board game geek search
++ nico now rights whoever was flipped before someone else can be tagged
 
 
 #### 0.3.0

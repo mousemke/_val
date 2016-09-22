@@ -19,6 +19,7 @@ module.exports = {
     'tacos'                 : 'https://www.youtube.com/watch?v=W0-esOKooEE&index=28&list=RDHsKXvAymwUg',
     'shrug'                 : '¯\\_(ツ)_/¯',
     'yes!'                  : '( ･ㅂ･)و ̑̑',
+    'yas!'                  : '(ˆڡˆ)v',
     'no!'                   : '｡゜(｀Д´)゜｡',
     'why?!'                 : 'ლ(ಠ_ಠლ)',
     'why!?'                 : 'щ(ಥДಥщ)',
@@ -36,5 +37,6 @@ module.exports = {
     'pacman'                : '( *<)  • • • • • • •',
     'dontcopythatfloppy'    : 'https://www.youtube.com/watch?v=up863eQKGUI',
     'jackdawed'             : 'http://media.giphy.com/media/rhaLXOOimBGN2/giphy.gif',
-    'thoodle'               : 'thoodle-oo!!'
+    'thoodle'               : 'thoodle-oo!!',
+    'doom'                  : 'https://popkey-assets.s3.amazonaws.com/original-7850ad06-df4d-4d4c-af8e-9bb1698496c2.gif'
 };
