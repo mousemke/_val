@@ -14,7 +14,7 @@
  */
 var words       = require( '../json/u.json' );
 
-module.exports = function U( _bot, _modules, userConfig )
+module.exports = function U( _bot, _modules, userConfig, commandModule )
 {
     return {
 

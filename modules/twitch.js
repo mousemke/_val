@@ -1,5 +1,5 @@
 
-module.exports  = function Twitch( _bot, _modules, userConfig )
+module.exports  = function Twitch( _bot, _modules, userConfig, commandModule )
 {
     return {
 

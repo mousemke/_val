@@ -3,7 +3,7 @@
  * this modules contains admin only functions.  they are generally called with
  * a double trigger ( '++', '!!', etc)
  */
-module.exports  = function Admin( _bot, _modules, userConfig )
+module.exports  = function Admin( _bot, _modules, userConfig, commandModule )
 {
     var _channels = userConfig.channels;
 

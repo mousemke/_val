@@ -1,6 +1,6 @@
 //86.4 seconds
 
-module.exports = function Beats( _bot, _modules, userConfig )
+module.exports = function Beats( _bot, _modules, userConfig, commandModule )
 {
     return {
 

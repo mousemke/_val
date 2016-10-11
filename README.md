@@ -34,12 +34,14 @@ Change log
 
 #### 0.4.0
 
++ added music module
 + expanded guys module
 + botNames are now different across different bots
 + guys module switched to regex
 + added some plain text options
 + added board game geek search
 + nico now rights whoever was flipped before someone else can be tagged
++ 8ball no longer checks case
 
 
 #### 0.3.0

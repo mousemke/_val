@@ -2,7 +2,7 @@
 /**
  * this is entirely filled with nonsense.  thats all the docs this needs.
  */
-module.exports = function PlainText( _bot, _modules, userConfig )
+module.exports = function PlainText( _bot, _modules, userConfig, commandModule)
 {
     var moonRegex       = /(?:m([o]+)n)/,
         spaceRegex      = /(?:sp([a]+)ce)/,

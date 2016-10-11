@@ -8,7 +8,7 @@
 var emojica         = require('../lists/emojica');
 var questionWords   = require('../lists/questionWords');
 
-module.exports  = function PopKey( _bot, _modules, userConfig )
+module.exports  = function PopKey( _bot, _modules, userConfig, commandModule )
 {
     return {
         /**
@@ -49,7 +49,8 @@ module.exports  = function PopKey( _bot, _modules, userConfig )
          */
         getPrediction : function( from, to, text )
         {
-            if ( !this.checkQuestions( text ) || text === '' || text.indexOf( '?' ) === -1 )
+            if ( !this.checkQuestions( text.toLowerCase() ) || text === ''
+                    || text.indexOf( '?' ) === -1 )
             {
                 return `sorry, ${to} that didn't look like a question.`;
             }

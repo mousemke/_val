@@ -2,7 +2,7 @@
 // https://github.com/ttezel/twit
 const Twit = require('twit');
 
-module.exports  = function Twitter( _bot, _modules, userConfig )
+module.exports  = function Twitter( _bot, _modules, userConfig, commandModule )
 {
     return {
 

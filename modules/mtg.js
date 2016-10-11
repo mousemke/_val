@@ -2,9 +2,7 @@
 /**
  * a magicthegathering.io search module
  */
-// var emojica         = require('../lists/emojica');
-
-module.exports  = function PopKey( _bot, _modules, userConfig )
+module.exports  = function PopKey( _bot, _modules, userConfig, commandModule )
 {
     var apiGet = _modules.core.apiGet;
 

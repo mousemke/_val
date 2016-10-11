@@ -1,5 +1,5 @@
 
-module.exports  = function PopKey( _bot, _modules, userConfig )
+module.exports  = function PopKey( _bot, _modules, userConfig, commandModule )
 {
     var apikey      = userConfig.popKeyAPIKey;
 

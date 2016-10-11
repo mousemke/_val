@@ -1,5 +1,5 @@
 
-module.exports  = function Music( _bot, _modules, userConfig )
+module.exports  = function Music( _bot, _modules, userConfig, commandModule )
 {
     var fs          = userConfig.req.fs;
     var musicRooms  = userConfig.musicRooms;
@@ -33,13 +33,43 @@ module.exports  = function Music( _bot, _modules, userConfig )
          */
         responses : function( from, to, text, botText, command, confObj )
         {
+            console.log( musicRooms, from, musicRooms.indexOf( from ) );
             if ( musicRooms.indexOf( from ) !== -1 || musicRooms === '*' || 
                     musicRooms[ 0 ] === '*' )
             {
+                let spotify = text.indexOf( 'https://open.spotify.com/' ) !== -1;
+                let youtube = text.indexOf( 'https://www.youtube.com/' ) !== -1;
+                let apple   = text.indexOf( ' https://itun.es/' ) !== -1;
 
-                if ( /* check for music links */ )
+                if ( spotify )
                 {
-                    // return this.roll( from, to, text, roll )
+                    let r   = /https:\/\/open\.spotify\.com\/album\/([A-Za-z-]+)/g;
+                    let id  = r.exec( text );
+
+                    if ( id )
+                    {
+                        return `spotify id - ${id[ 1 ]}`;
+                    }
+                }
+                else if ( apple )
+                {
+                    let r   = /https:\/\/itun\.es\/[a-z]{2}\/([A-Za-z-]+)/g;
+                    let id  = r.exec( text );
+
+                    if ( id )
+                    {
+                        return `apple music id - ${id[ 1 ]}`;
+                    }
+                }
+                else if ( youtube )
+                {
+                    let r   = /https:\/\/www\.youtube\.com\/watch\?v=([A-Za-z-]+)/g;
+                    let id  = r.exec( text );
+
+                    if ( id )
+                    {
+                        return `youtube video id - ${id[ 1 ]}`;
+                    }
                 }
                 else
                 {

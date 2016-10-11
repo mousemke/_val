@@ -1,7 +1,7 @@
 var chairs = require( '../lists/chairs.js' );
 
 /* russian roulette */
-module.exports  = function RR( _bot, _modules, userConfig )
+module.exports  = function RR( _bot, _modules, userConfig, commandModule )
 {
     var clip        = [];
     var clipSize    = 6;

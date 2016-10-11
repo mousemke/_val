@@ -5,6 +5,7 @@ module.exports = [
                     'could',
                     'did',
                     'do',
+                    'does',
                     'how',
                     'hows',
                     'howd',

@@ -1,5 +1,5 @@
 
-module.exports  = function CAH( _bot, _modules, userConfig )
+module.exports  = function CAH( _bot, _modules, userConfig, commandModule )
 {
     var fs              = userConfig.req.fs;
 

@@ -2,7 +2,7 @@
 const Words   = require( './words.js' );
 const copy    = require( './i18n/words.i18n.js' );
 
-module.exports = function Anagramm( _bot, _modules, userConfig )
+module.exports = function Anagramm( _bot, _modules, userConfig, commandModule )
 {
     let activeAnagramm = {
         currentWord     : '',

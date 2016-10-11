@@ -2,7 +2,7 @@
 /**
  * this is entirely filled with nonsense.  thats all the docs this needs.
  */
-module.exports = function Nico( _bot, _modules, userConfig )
+module.exports = function Nico( _bot, _modules, userConfig, commandModule )
 {
     var nicoFlipped     = false;
 

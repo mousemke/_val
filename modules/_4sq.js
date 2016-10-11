@@ -3,7 +3,7 @@
  * this modules uses the Foursquare API (https://developer.foursquare.com/docs/venues/explore)
  * to find places to eat nearby
  */
-module.exports  = function _4sq( _bot, _modules, userConfig )
+module.exports  = function _4sq( _bot, _modules, userConfig, commandModule )
 {
     return {
 

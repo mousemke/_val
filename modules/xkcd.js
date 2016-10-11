@@ -1,5 +1,5 @@
 
-module.exports  = function XKCD( _bot, _modules, userConfig )
+module.exports  = function XKCD( _bot, _modules, userConfig, commandModule )
 {
     return {
 

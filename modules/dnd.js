@@ -1,5 +1,5 @@
 
-module.exports  = function CAH( _bot, _modules, userConfig )
+module.exports  = function DND( _bot, _modules, userConfig, commandModule )
 {
     var fs              = userConfig.req.fs;
 
@@ -86,7 +86,7 @@ module.exports  = function CAH( _bot, _modules, userConfig )
             var multiple    = rolls > 1;
             var total       = 0;
 
-            botText = `${to}, your ${rolls}d${max}${bonusText} rolls: `;
+            botText = `${to}, your ${rolls}d${max}${bonus} rolls: `;
 
             for ( var i = 0; i < rolls; i++ )
             {
