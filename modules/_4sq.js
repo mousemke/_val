@@ -1,11 +1,25 @@
 
+
 /**
  * this modules uses the Foursquare API (https://developer.foursquare.com/docs/venues/explore)
  * to find places to eat nearby
  */
-module.exports  = function _4sq( _bot, _modules, userConfig, commandModule )
+function _4sq( _bot, _modules, userConfig, commandModule )
 {
-    return {
+    const commands = {
+
+        /**
+         * ## getRange
+         *
+         * returns the current set foursquare radius
+         *
+         * @return {String} range description
+         */
+        getRange : function()
+        {
+            return `Range is set to ${userConfig.foursquareRadius} meters from ${userConfig.latLong}`;
+        },
+
 
         /**
          * ## lunch
@@ -116,35 +130,52 @@ module.exports  = function _4sq( _bot, _modules, userConfig, commandModule )
 
                 }, true, from, to );
             } );
+        }
+    };
+
+    /**
+     * ## responses
+     *
+     * @param {String} from originating channel
+     * @param {String} to originating user
+     * @param {String} text full input string
+     * @param {String} botText text to say
+     * @param {String} command bot command (first word)
+     * @param {Object} confObj extra config object that some command modules need
+     *
+     * @return _String_ changed botText
+     */
+    commands.responses = {
+        '4sq-range' : {
+            module      : '_4sq',
+            f           : commands.getRange.bind( commands ),
+            desc        : 'test description here'
         },
 
 
-        /**
-         * ## responses
-         *
-         * @param {String} from originating channel
-         * @param {String} to originating user
-         * @param {String} text full input string
-         * @param {String} botText text to say
-         * @param {String} command bot command (first word)
-         * @param {Object} confObj extra config object that some command modules need
-         *
-         * @return _String_ changed botText
-         */
-        responses : function( from, to, text, botText, command, confObj )
-        {
-            switch ( command )
-            {
-                case 'lunch':
-                case 'feedme':
-                case 'food':
-                    return this.lunch( from, to, text );
-                case '4sq-range':
-                    return `Range is set to ${userConfig.foursquareRadius} meters from ${userConfig.latLong}`;
-            }
+        feedme      : {
+            module      : '_4sq',
+            f           : commands.lunch.bind( commands ),
+            desc        : 'test description here'
+        },
 
-            return botText;
+
+        food        : {
+            module      : '_4sq',
+            f           : commands.lunch.bind( commands ),
+            desc        : 'test description here'
+        },
+
+
+        lunch       : {
+            module      : '_4sq',
+            f           : commands.lunch.bind( commands ),
+            desc        : 'test description here'
         }
+    }
 
-    };
+    return commands;
 };
+
+
+module.exports  = _4sq;

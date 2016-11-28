@@ -2,7 +2,7 @@
 
 erm.... bot.
 
-v. 0.4.0
+v. 1.0.0
 
 `requires node 6.2.2+`
 
@@ -31,6 +31,11 @@ Need to report something? [val@knoblau.ch](mailto:val@knoblau.ch)
 
 Change log
 ==========
+
+#### 1.0.0
+
++ complete rebuild of how commands and responses are handles
+
 
 #### 0.4.0
 

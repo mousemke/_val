@@ -130,6 +130,45 @@ var _Val = function( commandModule, userConfig )
 
 
     /**
+     * ## baseResponses
+     *
+     * val's base responses that both require no modules and are non-optional
+     * @type {Object}
+     */
+    baseResponses = {
+        active : {
+            module  : 'base',
+            f       : checkActive,
+            desc    : 'test'
+        },
+
+        help     : {
+            module  : 'base',
+            f       : () => userConfig.helpText(),
+            desc    : 'test'
+        },
+
+        'isup' : {
+            module  : 'base',
+            f       : () => 'Yes, but c\'mon!  At least use a full sentence!',
+            desc    : 'test'
+        },
+
+        'moon?' : {
+            module  : 'base',
+            f       : () => 'In 500 million years, the moon will be 14,600 miles farther away than it is right now. When it is that far, total eclipses will not take place',
+            desc    : 'test'
+        },
+
+        test    : {
+            module  : 'base',
+            f       : testFunction,
+            desc    : 'test'
+        }
+    };
+
+
+    /**
      * ## buildClient
      *
      * assembles the _val modules.  like Voltron but node
@@ -147,9 +186,7 @@ var _Val = function( commandModule, userConfig )
 
              userData       : userData,
 
-             apiGet         : apiGet,
-
-             responses      : responses
+             apiGet         : apiGet
         };
 
         _modules.constructors = {};
@@ -285,6 +322,23 @@ var _Val = function( commandModule, userConfig )
         } );
 
         return botText;
+    }
+
+
+    /**
+     * ## combineResponses
+     *
+     * combines two response structures while checking for duplicate keys
+     *
+     * @param {Object} res responses
+     * @param {Object} newRes responses to add
+     *
+     * @return {Object} combined object
+    */
+    combineResponses( res, newRes )
+    {
+        console.log( 'something to check duplicates' )
+        return Object.assign( res, newRes );
     }
 
 
@@ -465,11 +519,14 @@ var _Val = function( commandModule, userConfig )
     {
         buildCore();
 
-        _bot.active = {};
+        _bot.active     = {};
+        _bot.responses  = baseResponses;
 
         for ( var module in _modules.constructors )
         {
             _modules[ module ]   = new _modules.constructors[ module ]( _bot, _modules, userConfig );
+
+            _bot.responses = combineResponses( _bot.responses, _modules[ module ].responses );
 
             if ( modules[ module ].ini )
             {
@@ -515,26 +572,17 @@ var _Val = function( commandModule, userConfig )
 
                 if ( text === '_val' || text === '_val?' )
                 {
-                    botText = 'yes?';
+                    return 'yes?';
                 }
                 else if ( text === '_val!' )
                 {
-                    botText = 'what!?';
+                    return 'what!?';
                 }
 
                 botText = checkGuys( to, text );
 
                 if ( text[ 0 ] === userConfig.trigger && text !== userConfig.trigger && botText === '' )
                 {
-                    if ( text === userConfig.trigger + 'moon?' )
-                    {
-                        botText = 'In 500 million years, the moon will be 14,600 miles farther away than it is right now. When it is that far, total eclipses will not take place';
-                    }
-                    else if ( text === userConfig.trigger + 'isup' )
-                    {
-                        botText = 'Yes, but c\'mon!  At least use a full sentence!';
-                    }
-
                     if ( text[0] === userConfig.trigger )
                     {
                         text = text.slice( 1 );
@@ -542,17 +590,9 @@ var _Val = function( commandModule, userConfig )
 
                     var command = text.split( ' ' )[ 0 ];
 
-                    for ( var module in _modules )
+                    if ( _bot.responses[ command ] )
                     {
-                        if ( botText !== '' )
-                        {
-                            break;
-                        }
-
-                        if ( module !== 'constructors' )
-                        {
-                            botText = _modules[ module ].responses( from, to, text, botText, command, confObj );
-                        }
+                        return _bot.responses[ command ].f( from, to, text, botText, command, confObj );
                     }
                 }
 
@@ -653,49 +693,6 @@ var _Val = function( commandModule, userConfig )
         var _speech         = obj.speech[ Math.floor( Math.random() * obj.speech.length ) ];
 
         return `${to}, ${_speech[ 0 ]}${_alternative}${_speech[ 1 ]}`;
-    }
-
-
-    /**
-     * ## responses
-     *
-     * base reponse functions of val
-     *
-     * @param {String} from channel of origin
-     * @param {String} to player of origin
-     * @param {String} text full text
-     * @param {String} botText response text
-     *
-     * @return _String_ response text
-     */
-    function responses( from, to, text, botText, command )
-    {
-        switch ( command )
-        {
-            case 'active':
-                return checkActive( from, to, text );
-
-            case 'test':
-                return testFunction( from, to, text );
-
-            case 'help':
-                if ( userConfig.enableHelp )
-                {
-                    if ( userConfig.enablePM )
-                    {
-                        _bot.pm( to, userConfig.helpText() );
-                    }
-                    else
-                    {
-                        return `${to}: ${userConfig.helpText()}`;
-                    }
-                }
-                break;
-            default:
-                botText = '';
-        }
-
-        return botText;
     }
 
 
