@@ -335,10 +335,21 @@ var _Val = function( commandModule, userConfig )
      *
      * @return {Object} combined object
     */
-    combineResponses( res, newRes )
+    function combineResponses( res, newRes )
     {
-        console.log( 'something to check duplicates' )
-        return Object.assign( res, newRes );
+        Object.keys( newRes ).forEach( command =>
+        {
+            if ( res[ command ] )
+            {
+                console.warn( `duplicate property ${command}` );
+            }
+            else
+            {
+                res[ command ] = newRes[ command ];
+            }
+        } );
+
+        return res;
     }
 
 
@@ -522,15 +533,32 @@ var _Val = function( commandModule, userConfig )
         _bot.active     = {};
         _bot.responses  = baseResponses;
 
-        for ( var module in _modules.constructors )
+        for ( const moduleName in _modules.constructors )
         {
-            _modules[ module ]   = new _modules.constructors[ module ]( _bot, _modules, userConfig );
+            const modulesConstructor = _modules.constructors[ moduleName ];
+            const module = _modules[ moduleName ] = new modulesConstructor( _bot, _modules, userConfig, commandModule );
 
-            _bot.responses = combineResponses( _bot.responses, _modules[ module ].responses );
-
-            if ( modules[ module ].ini )
+            function formatResponses( module, name )
             {
-                _modules[ module ].ini();
+                module.responses();
+
+                Object.keys( module.responses ).forEach( r =>
+                {
+                    const res = module.responses[ r ];
+
+                    res.f           = res.f.bind( module );
+                    res.moduleName  = name;
+                    res.module      = module;
+                } );
+            };
+
+            formatResponses( module, moduleName );
+
+            _bot.responses = combineResponses( _bot.responses, module.responses );
+
+            if ( module.init )
+            {
+                module.init();
             }
         }
 
@@ -588,11 +616,15 @@ var _Val = function( commandModule, userConfig )
                         text = text.slice( 1 );
                     }
 
-                    var command = text.split( ' ' )[ 0 ];
+                    let textArr     = text.split( ' ' );
+                    const command   = textArr[ 0 ];
+                    textArr         = textArr.slice( 1 );
+                    text            = textArr.join( ' ' );
+
 
                     if ( _bot.responses[ command ] )
                     {
-                        return _bot.responses[ command ].f( from, to, text, botText, command, confObj );
+                        return _bot.responses[ command ].f( from, to, text, textArr, command, confObj );
                     }
                 }
 
