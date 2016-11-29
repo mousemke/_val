@@ -78,6 +78,8 @@ class Doge
         this._modules       = _modules;
         this.userConfig     = userConfig;
         this.commandModule  = commandModule;
+
+        this.loadMasterList();
     }
 
 
@@ -210,19 +212,6 @@ class Doge
         }
 
         return `${to} earns such Ð${amount}`;
-    }
-
-
-    /**
-     * ## ini
-     *
-     * sets the active listener and loads the dogecoin bank
-     *
-     * @return _Void_
-     */
-    init()
-    {
-        this.loadMasterList();
     }
 
 

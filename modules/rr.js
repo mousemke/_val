@@ -1,102 +1,103 @@
 var chairs = require( '../lists/chairs.js' );
 
-/* russian roulette */
-module.exports  = function RR( _bot, _modules, userConfig, commandModule )
+class RR
 {
-    var clip        = [];
-    var clipSize    = 6;
+    constructor( _bot, _modules, userConfig, commandModule )
+    {
+        this._bot           = _bot;
+        this._modules       = _modules;
+        this.userConfig     = userConfig;
+        this.commandModule  = commandModule;
 
-    return {
+        this.clip           = [];
+        this.clipSize       = 6;
 
-        ini : function()
+        this.reload();
+    }
+
+
+    reload( botText )
+    {
+        const clipSize  = this.clipSize;
+        const clip      = this.clip;
+
+        for ( var i = 0, lenI = clipSize; i < lenI; i++ )
         {
-            this.reload();
-        },
+            clip[ i ] = false;
+        }
+
+        clip[ Math.floor( Math.random() * clipSize ) ] = 'bang!';
+
+        return botText + '\nReloading...';
+    }
 
 
-        reload : function( botText )
+    /**
+     * responses
+     */
+    responses()
+    {
+        return {
+            rr : {
+                f       : this.rr,
+                desc    : 'try your luck'
+            }
+        };
+    }
+
+
+    /**
+     * ## rr
+     *
+     * take the shot
+     *
+     * @param {String} from originating channel
+     * @param {String} to originating user
+     * @param {String} text original text
+     * @param {String} botText text to write
+     *
+     * @return _String_ botText
+     */
+    rr( from, to, text, botText )
+    {
+        const clipSize  = this.clipSize;
+        let clip        = this.clip;
+
+        var shot    = Math.floor( Math.random() * clipSize );
+        var bullet  = clip[ shot ];
+        botText     = '';
+
+        if ( bullet === true )
         {
-            for ( var i = 0, lenI = clipSize; i < lenI; i++ )
+            return this.rr( from, to, text, botText );
+        }
+        else
+        {
+            text = text.split( ' ' );
+
+            if ( text[ 1 ] )
             {
-                clip[ i ] = false;
+                to = text[ 1 ];
             }
 
-            clip[ Math.floor( Math.random() * clipSize ) ] = 'bang!';
-
-            return botText + '\nReloading...';
-        },
-
-
-        /**
-         * @param {String} from originating channel
-         * @param {String} to originating user
-         * @param {String} text full input string
-         * @param {String} botText text to say
-         * @param {String} command bot command (first word)
-         * @param {Object} confObj extra config object that some command modules need
-         *
-         * @return _String_ changed botText
-         */
-        responses : function( from, to, text, botText, command, confObj )
-        {
-            switch ( command )
+            if ( bullet === 'bang!' )
             {
-                case 'rr':
-                    return this.rr( from, to, text );
+                var chairType = chairs[ Math.floor( Math.random() * chairs.length ) ];
+                botText += `BANG!  A lifeless body slumps forward in ${to}'s ${chairType}`;
+                clip    = [];
 
-            }
-
-            return botText;
-        },
-
-
-        /**
-         * ## rr
-         *
-         * take the shot
-         *
-         * @param {String} from originating channel
-         * @param {String} to originating user
-         * @param {String} text original text
-         * @param {String} botText text to write
-         *
-         * @return _String_ botText
-         */
-        rr : function( from, to, text, botText )
-        {
-            var shot    = Math.floor( Math.random() * clipSize );
-            var bullet  = clip[ shot ];
-            botText     = '';
-
-            if ( bullet === true )
-            {
-                return this.rr( from, to, text, botText );
+                return this.reload( botText );
             }
             else
             {
-                text = text.split( ' ' );
-
-                if ( text[ 1 ] )
-                {
-                    to = text[ 1 ];
-                }
-
-                if ( bullet === 'bang!' )
-                {
-                    var chairType = chairs[ Math.floor( Math.random() * chairs.length ) ];
-                    botText += `BANG!  A lifeless body slumps forward in ${to}'s ${chairType}`;
-                    clip    = [];
-                    return this.reload( botText );
-                }
-                else
-                {
-                    botText += 'click.';
-                }
-
-                clip[ shot ] = true;
+                botText += 'click.';
             }
 
-            return botText;
+            clip[ shot ] = true;
         }
-    };
+
+        return botText;
+    }
 };
+
+module.exports  = RR;
