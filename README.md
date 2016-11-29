@@ -34,9 +34,10 @@ Change log
 
 #### 1.0.0
 
-+ complete rebuild of how commands and responses are handles
++ complete rebuild of how commands and responses are handled
 + module ini renamed to init
-+
++ added help mode
++ modules are now classes
 
 
 #### 0.4.0

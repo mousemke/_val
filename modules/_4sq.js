@@ -12,7 +12,7 @@ class _4sq
         this._modules       = _modules;
         this.userConfig     = userConfig;
         this.commandModule  = commandModule;
-    };
+    }
 
 
     /**

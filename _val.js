@@ -850,7 +850,7 @@ var _Val = function( commandModule, userConfig )
     {
         if ( userConfig.autoAuth )
         {
-            var textSplit = origText.slice( 1 ).split( ' ' );
+            var textSplit = origText.split( ' ' );
 
             _cb( to, 'true', textSplit, origText );
         }
