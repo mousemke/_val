@@ -3,45 +3,61 @@
  * this modules contains admin only functions.  they are generally called with
  * a double trigger ( '++', '!!', etc)
  */
-module.exports  = function Admin( _bot, _modules, userConfig, commandModule )
+class Admin
 {
-    var _channels = userConfig.channels;
+    constructor( _bot, _modules, userConfig, commandModule )
+    {
+        this._bot           = _bot;
+        this._modules       = _modules;
+        this.userConfig     = userConfig;
+        this.commandModule  = commandModule;
 
-    return {
+        this.version        = this.version.bind( this );
+    }
 
 
-        /**
-         * ## responses
-         *
-         * admin responses.  they are generally called with
-        * a double trigger ( '++', '!!', etc)
-        *
-         * @param {String} from originating channel
-         * @param {String} to originating user
-         * @param {String} text full input string
-         * @param {String} botText text to say
-         * @param {String} command bot command (first word)
-         * @param {Object} confObj extra config object that some command modules need
-         *
-         * @return _String_ changed botText
-         */
-        responses : function( from, to, text, botText, command, confObj )
+    /**
+     * ## responses
+     *
+     * admin responses.  they are generally called with
+    * a double trigger ( '++', '!!', etc)
+     *
+     * @return _String_ changed botText
+     */
+    responses()
+    {
+        const { userConfig } = this;
+
+        const res = {};
+
+        res[ `${userConfig.trigger}v` ] = {
+            f       : this.version,
+            desc    : 'returns the current running version number'
+        };
+
+        return res;
+    }
+
+
+    /**
+     * ## version
+     *
+     * returns the version number of val currently running
+     *
+     * @param {String} from channel message originated from
+     * @param {String} to person who sent the message
+     *
+     * @return {String} version text
+     */
+    version( from, to )
+    {
+        const { userConfig } = this;
+
+        if ( userConfig.admins.indexOf( to.toLowerCase() ) !== -1 )
         {
-            if ( userConfig.admins.indexOf( to.toLowerCase() ) !== -1  &&
-                command[ 0 ] === userConfig.trigger )
-            {
-                var adminCommand = command.slice( 1 );
-
-                var textSplit   = text.split( ' ' ).slice( 1 );
-
-                switch ( adminCommand )
-                {
-                    case 'v':
-                        return `Well, ${to}, thanks for asking!  I'm currently running version ${userConfig.version}`;
-                }
-            }
-
-            return botText;
+            return `Well, ${to}, thanks for asking!  I'm currently running version ${userConfig.version}`;
         }
-    };
+    }
 };
+
+module.exports  = Admin;

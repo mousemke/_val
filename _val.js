@@ -144,7 +144,7 @@ var _Val = function( commandModule, userConfig )
 
         help     : {
             module  : 'base',
-            f       : () => userConfig.helpText(),
+            f       : helpText,
             desc    : 'test'
         },
 
@@ -520,6 +520,37 @@ var _Val = function( commandModule, userConfig )
 
 
     /**
+     * ## helpText
+     *
+     * displays help text to the channel
+     *
+     * @param {String} from originating channel
+     * @param {String} to originating user
+     * @param {String} query search parameter
+     *
+     * @return {String} help text
+     */
+    function helpText( from, to, text )
+    {
+        if ( text.length === 0 || !_bot.responses[ text ] )
+        {
+            let str = 'available commands: ';
+
+            Object.keys( _bot.responses ).forEach( key =>
+            {
+                str += ` ${key}, `;
+            } );
+
+            return str.slice( 0, str.length - 2 );
+        }
+        else
+        {
+            return _bot.responses[ text ].desc;
+        }
+    }
+
+
+    /**
      * ## ini
      *
      * sets listeners and module list up
@@ -540,7 +571,7 @@ var _Val = function( commandModule, userConfig )
 
             function formatResponses( module, name )
             {
-                module.responses();
+                module.responses = module.responses();
 
                 Object.keys( module.responses ).forEach( r =>
                 {
@@ -611,10 +642,7 @@ var _Val = function( commandModule, userConfig )
 
                 if ( text[ 0 ] === userConfig.trigger && text !== userConfig.trigger && botText === '' )
                 {
-                    if ( text[0] === userConfig.trigger )
-                    {
-                        text = text.slice( 1 );
-                    }
+                    text = text.slice( 1 );
 
                     let textArr     = text.split( ' ' );
                     const command   = textArr[ 0 ];

@@ -4,177 +4,175 @@
  * this modules uses the Foursquare API (https://developer.foursquare.com/docs/venues/explore)
  * to find places to eat nearby
  */
-function _4sq( _bot, _modules, userConfig, commandModule )
+class _4sq
 {
-    const commands = {
-
-        /**
-         * ## getRange
-         *
-         * returns the current set foursquare radius
-         *
-         * @return {String} range description
-         */
-        getRange : function()
-        {
-            return `Range is set to ${userConfig.foursquareRadius} meters from ${userConfig.latLong}`;
-        },
-
-
-        /**
-         * ## lunch
-         *
-         * searches for matching places and returns a random one
-         * of the results
-         *
-         * @param {String} from originating channel
-         * @param {String} to originating user
-         * @param {String} query search parameter
-         *
-         * @return _Promise_ search results
-         */
-        lunch : function( from, to, query )
-        {
-            var _botText;
-
-            var section     = userConfig.foursquareSection;
-            var radius      = userConfig.foursquareRadius;
-            var intent      = 'browse'; // checkin
-            // var intent      = 'checkin';             // DEBUG
-            var searchType  = 'explore'; // search
-            // var searchType  = 'search';              // DEBUG
-
-            var noSpaces = new RegExp( ' ', 'g' );
-
-            query = query.split( ' ' ).slice( 1 ).join( '%20' );
-
-            var url = 'https://api.foursquare.com/v2/venues/' + searchType +
-                                '?client_id=' + userConfig.foursquareID +
-                                '&client_secret=' + userConfig.foursquareSecret +
-                                '&v=20130815%20&ll=' + userConfig.latLong +
-                                '&llAcc=1000&openNow=1&radius=' + radius;
-
-            if ( query !== '' )
-            {
-                 url += '&query=' + query;
-            }
-            else
-            {
-                url += '&section=' + section;
-            }
-
-            if ( searchType === 'search' )
-            {
-                url += '&intent=' + intent;
-            }
-
-            // url += '&novelty=new&friendVisits=notvisited';
-            // url = 'https://api.foursquare.com/v2/venues/suggestCompletion?ll=' + userConfig.latLong + '&query=' + query;
-            //
-            return new Promise( function( resolve, reject )
-            {
-                _modules.core.apiGet( url, function( result )
-                {
-                    var _valsChoice;
-                    var venues      = result.response.groups[0].items;
-                    var venueCount  = venues.length;
-
-                    if ( venues.length === 0 )
-                    {
-                        resolve( 'No results...  We shall all starve!' );
-                    }
-                    else
-                    {
-                        _valsChoice = Math.floor( Math.random() * venueCount );
-
-                        _valsChoice = venues[ _valsChoice ];
-                        var venue   = _valsChoice.venue;
-                        var name    = venue.name;
-                        var phone   = venue.contact.formattedPhone;
-                        var address = venue.location.address;
-                        var url     = venue.url;
-
-                        var tip     = _valsChoice.tips;
-                        var tips    = tip.length;
-
-                        tip         = tip[ Math.floor( Math.random() * tips ) ];
-
-                        var tipUser = tip.user.firstName;
-
-                        if ( tip.user.lastName )
-                        {
-                            tipUser += ` ${tip.user.lastName}`;
-                        }
-
-                        tip         = `${tipUser} says, "${tip.text}"`;
-
-                        _botText = `Try ${name}\n${address}`;
-
-                        if ( phone )
-                        {
-                            _botText += ` - ${phone}`;
-                        }
-                        if ( url )
-                        {
-                            _botText += `\n${url}`;
-                        }
-                        if ( tip )
-                        {
-                             _botText += `\n${tip}`;
-                        }
-
-                        var venueUrl = `${name.replace( noSpaces, '-' )}/${venue.id}`;
-
-                        resolve( `${_botText}\nhttps://foursquare.com/v/${venueUrl}` );
-                    }
-
-                }, true, from, to );
-            } );
-        }
+    constructor( _bot, _modules, userConfig, commandModule )
+    {
+        this._bot           = _bot;
+        this._modules       = _modules;
+        this.userConfig     = userConfig;
+        this.commandModule  = commandModule;
     };
 
+
     /**
-     * ## responses
+     * ## getRange
+     *
+     * returns the current set foursquare radius
+     *
+     * @return {String} range description
+     */
+    getRange()
+    {
+        const userConfig = this.userConfig;
+
+        return `Range is set to ${userConfig.foursquareRadius} meters from ${userConfig.latLong}`;
+    }
+
+
+    /**
+     * ## lunch
+     *
+     * searches for matching places and returns a random one
+     * of the results
      *
      * @param {String} from originating channel
      * @param {String} to originating user
-     * @param {String} text full input string
-     * @param {String} botText text to say
-     * @param {String} command bot command (first word)
-     * @param {Object} confObj extra config object that some command modules need
+     * @param {String} query search parameter
      *
-     * @return _String_ changed botText
+     * @return _Promise_ search results
      */
-    commands.responses = {
-        '4sq-range' : {
-            module      : '_4sq',
-            f           : commands.getRange.bind( commands ),
-            desc        : 'test description here'
-        },
+    lunch( from, to, query )
+    {
+        var _botText;
+        const userConfig = this.userConfig;
 
+        var section     = userConfig.foursquareSection;
+        var radius      = userConfig.foursquareRadius;
+        var intent      = 'browse'; // checkin
+        // var intent      = 'checkin';             // DEBUG
+        var searchType  = 'explore'; // search
+        // var searchType  = 'search';              // DEBUG
 
-        feedme      : {
-            module      : '_4sq',
-            f           : commands.lunch.bind( commands ),
-            desc        : 'test description here'
-        },
+        var noSpaces = new RegExp( ' ', 'g' );
 
+        query = query.split( ' ' ).slice( 1 ).join( '%20' );
 
-        food        : {
-            module      : '_4sq',
-            f           : commands.lunch.bind( commands ),
-            desc        : 'test description here'
-        },
+        var url = 'https://api.foursquare.com/v2/venues/' + searchType +
+                            '?client_id=' + userConfig.foursquareID +
+                            '&client_secret=' + userConfig.foursquareSecret +
+                            '&v=20130815%20&ll=' + userConfig.latLong +
+                            '&llAcc=1000&openNow=1&radius=' + radius;
 
-
-        lunch       : {
-            module      : '_4sq',
-            f           : commands.lunch.bind( commands ),
-            desc        : 'test description here'
+        if ( query !== '' )
+        {
+             url += '&query=' + query;
         }
+        else
+        {
+            url += '&section=' + section;
+        }
+
+        if ( searchType === 'search' )
+        {
+            url += '&intent=' + intent;
+        }
+
+        // url += '&novelty=new&friendVisits=notvisited';
+        // url = 'https://api.foursquare.com/v2/venues/suggestCompletion?ll=' + userConfig.latLong + '&query=' + query;
+        //
+        return new Promise( ( resolve, reject ) =>
+        {
+            this._modules.core.apiGet( url, function( result )
+            {
+                var _valsChoice;
+                var venues      = result.response.groups[0].items;
+                var venueCount  = venues.length;
+
+                if ( venues.length === 0 )
+                {
+                    resolve( 'No results...  We shall all starve!' );
+                }
+                else
+                {
+                    _valsChoice = Math.floor( Math.random() * venueCount );
+
+                    _valsChoice = venues[ _valsChoice ];
+                    var venue   = _valsChoice.venue;
+                    var name    = venue.name;
+                    var phone   = venue.contact.formattedPhone;
+                    var address = venue.location.address;
+                    var url     = venue.url;
+
+                    var tip     = _valsChoice.tips;
+                    var tips    = tip.length;
+
+                    tip         = tip[ Math.floor( Math.random() * tips ) ];
+
+                    var tipUser = tip.user.firstName;
+
+                    if ( tip.user.lastName )
+                    {
+                        tipUser += ` ${tip.user.lastName}`;
+                    }
+
+                    tip         = `${tipUser} says, "${tip.text}"`;
+
+                    _botText = `Try ${name}\n${address}`;
+
+                    if ( phone )
+                    {
+                        _botText += ` - ${phone}`;
+                    }
+                    if ( url )
+                    {
+                        _botText += `\n${url}`;
+                    }
+                    if ( tip )
+                    {
+                         _botText += `\n${tip}`;
+                    }
+
+                    var venueUrl = `${name.replace( noSpaces, '-' )}/${venue.id}`;
+
+                    resolve( `${_botText}\nhttps://foursquare.com/v/${venueUrl}` );
+                }
+
+            }, true, from, to );
+        } );
     }
 
-    return commands;
+
+    /**
+     * ## responses
+     */
+    responses()
+    {
+        return {
+            '4sq-range' : {
+                f           : this.getRange,
+                desc        : 'test description here'
+            },
+
+
+            feedme      : {
+                f           : this.lunch,
+                desc        : 'test description here'
+            },
+
+
+            food        : {
+                f           : this.lunch,
+                desc        : 'test description here'
+            },
+
+
+            lunch       : {
+                f           : this.lunch,
+                desc        : 'test description here'
+            }
+        };
+    }
 };
 
 

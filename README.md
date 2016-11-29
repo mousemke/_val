@@ -35,6 +35,8 @@ Change log
 #### 1.0.0
 
 + complete rebuild of how commands and responses are handles
++ module ini renamed to init
++
 
 
 #### 0.4.0
