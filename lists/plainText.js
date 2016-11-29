@@ -1,6 +1,9 @@
 
 module.exports = {
 
+    'hug'                   : 'No.',
+    'sleep'                 : '(- o - ) zzZ ☽',
+    'zzz'                   : '(- o - ) zzZ ☽',
     'fight'                 : '(ง︡\'-\'︠)ง',
     'levelSelect'           : 'B A B A ↑ ↓ B A ← → B A (start)',
     'konami'                : '↑ ↑ ↓ ↓ ← → ← → B A (start)',
