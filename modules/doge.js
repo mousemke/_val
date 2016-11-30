@@ -35,7 +35,7 @@ class Doge
 
                     var botText     = '';
 
-                    if ( _to === 'masterTotal' )
+                    if ( _to === 'mastertotal' )
                     {
                         botText += `There are currently Ð${amount} in circulation`;
                     }
@@ -56,11 +56,11 @@ class Doge
                 }
             };
 
-            if ( text.split( ' ' )[ 1 ] === 'all' )
+            if ( text.split( ' ' )[ 0 ] === 'all' )
             {
                 _balanceCB( 'masterTotal', true );
             }
-            else if ( text.split( ' ' )[ 1 ] === 'bank' )
+            else if ( text.split( ' ' )[ 0 ] === 'bank' )
             {
                 _balanceCB( '___bank___', true );
             }
@@ -241,45 +241,75 @@ class Doge
      */
     responses()
     {
+        const { trigger } = this.userConfig;
+
         return {
             doge : {
                 f       : this.dogePrice,
-                desc    : 'return the price of doge in satoshi'
+                desc    : 'return the price of doge in satoshi',
+                syntax      : [
+                    `${trigger}doge`,
+                    `${trigger}doge <amount>`
+                ]
             },
 
             market : {
                 f       : this.marketPrice,
-                desc    : 'return the price of doge in multiple currencies'
+                desc    : 'return the price of doge in multiple currencies',
+                syntax      : [
+                    `${trigger}market`,
+                    `${trigger}market <amount>`
+                ]
             },
 
             tip : {
                 f       : this.tip,
-                desc    : 'tip someone'
+                desc    : 'tip someone',
+                syntax      : [
+                    `${trigger}tip <user> <amount>`
+                ]
             },
 
             withdraw : {
                 f       : this.withdraw,
-                desc    : 'withdraw some doge to an external wallet'
+                desc    : 'withdraw some doge to an external wallet',
+                syntax      : [
+                    `${trigger}withdraw <amount>`
+                ]
             },
 
             balance : {
                 f       : this.balance,
-                desc    : 'returns a users balance'
+                desc    : 'returns a users balance',
+                syntax      : [
+                    `${trigger}balance`,
+                    `${trigger}balance bank`,
+                    `${trigger}balance all`
+                ]
             },
 
             deposit : {
                 f       : this.deposit,
-                desc    : 'deposit money doge in from an external wallet'
+                desc    : 'deposit money doge in from an external wallet',
+                syntax      : [
+                    `${trigger}deposit <amount>`
+                ]
             },
 
             makeitrain : {
                 f       : this.soak,
-                desc    : 'tip all active users'
+                desc    : 'tip all active users',
+                syntax      : [
+                    `${trigger}makeitrain <amount>`
+                ]
             },
 
             soak : {
                 f       : this.soak,
-                desc    : 'tip all active users'
+                desc    : 'tip all active users',
+                syntax      : [
+                    `${trigger}soak <amount>`
+                ]
             }
         };
     }

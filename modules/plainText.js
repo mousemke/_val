@@ -256,6 +256,7 @@ class PlainText
 
         //     return `${botText.toUpperCase()}!!!!!!`;
         // }
+        const { trigger } = this.userConfig;
 
         const responses = {
             dance   : {
@@ -284,7 +285,10 @@ class PlainText
         {
             responses[ res ] = {
                 f       : function(){ return textResponses[ res ] },
-                desc    : 'plain test response'
+                desc    : 'plain test response: textResponses[ res ]',
+                syntax  : [
+                    `${trigger}${res}`
+                ]
             };
         } );
 

@@ -148,28 +148,45 @@ class _4sq
      */
     responses()
     {
+        const { trigger } = this.userConfig;
+
         return {
             '4sq-range' : {
                 f           : this.getRange,
-                desc        : 'test description here'
+                desc        : 'returns the current range and location of the search',
+                syntax      : [
+                    `${trigger}4sq-range`
+                ]
             },
 
 
             feedme      : {
                 f           : this.lunch,
-                desc        : 'test description here'
+                desc        : 'don\'t starve',
+                syntax      : [
+                    `${trigger}feedme`,
+                    `${trigger}feedme <query>`
+                ]
             },
 
 
             food        : {
                 f           : this.lunch,
-                desc        : 'test description here'
+                desc        : 'don\'t starve',
+                syntax      : [
+                    `${trigger}food`,
+                    `${trigger}food <query>`
+                ]
             },
 
 
             lunch       : {
                 f           : this.lunch,
-                desc        : 'test description here'
+                desc        : 'don\'t starve',
+                syntax      : [
+                    `${trigger}lunch`,
+                    `${trigger}lunch <query>`
+                ]
             }
         };
     }

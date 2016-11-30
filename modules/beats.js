@@ -48,15 +48,23 @@ class Beats
      */
     responses()
     {
+        const { trigger } = this.userConfig;
+
         return {
             beat      : {
                 f           : this.getBeat,
-                desc        : 'returns the current time in beats'
+                desc        : 'returns the current time in beats',
+                syntax      : [
+                    `${trigger}beat`
+                ]
             },
 
             time      : {
                 f           : this.getBeat,
-                desc        : 'returns the current time in beats'
+                desc        : 'returns the current time in beats',
+                syntax      : [
+                    `${trigger}time`
+                ]
             }
         };
     }

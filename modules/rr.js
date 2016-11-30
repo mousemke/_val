@@ -37,10 +37,16 @@ class RR
      */
     responses()
     {
+        const { trigger } = this.userConfig;
+
         return {
             rr : {
                 f       : this.rr,
-                desc    : 'try your luck'
+                desc    : 'try your luck',
+                syntax      : [
+                    `${trigger}rr`,
+                    `${trigger}rr <name>`
+                ]
             }
         };
     }

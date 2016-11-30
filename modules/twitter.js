@@ -252,10 +252,12 @@ class Twitter
      */
     responses()
     {
+        const { trigger } = this.userConfig;
+
         return {
             t : {
                 f       : this.tweet,
-                desc    : 'description needed'
+                desc    : 'compose a new tweet'
             },
 
             tweet : {

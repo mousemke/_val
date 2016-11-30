@@ -104,7 +104,10 @@ class _8ball
         return {
             '8ball': {
                 f       : this.getPrediction,
-                desc    : 'test'
+                desc    : `let ${this._bot.name} predict the future`,
+                syntax      : [
+                    `${this.userConfig.trigger}8ball <question>?`
+                ]
             }
         };
     };

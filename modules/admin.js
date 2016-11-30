@@ -26,13 +26,16 @@ class Admin
      */
     responses()
     {
-        const { userConfig } = this;
-
+        const { userConfig }     = this;
+        const { trigger }       = userConfig;
         const res = {};
 
-        res[ `${userConfig.trigger}v` ] = {
+        res[ `${trigger}v` ] = {
             f       : this.version,
-            desc    : 'returns the current running version number'
+            desc    : 'returns the current running version number',
+            syntax      : [
+                `${trigger}${trigger}v`
+            ]
         };
 
         return res;

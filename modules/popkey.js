@@ -68,10 +68,15 @@ class PopKey
      */
     responses()
     {
+        const { trigger } = this.userConfig;
+
         return {
             gif : {
                 f       : this.getGif,
-                desc    : 'finds a gif matching the passed query'
+                desc    : 'finds a gif matching the passed query',
+                syntax      : [
+                    `${trigger}gif <query>`
+                ]
             }
         }
     }

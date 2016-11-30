@@ -545,7 +545,15 @@ var _Val = function( commandModule, userConfig )
         }
         else
         {
-            return _bot.responses[ text ].desc;
+            let helpText    = _bot.responses[ text ].desc;
+            let syntax      = _bot.responses[ text ].syntax;
+
+            if ( syntax )
+            {
+                syntax.forEach( s => helpText += `\n${s}` )
+            }
+
+            return helpText;
         }
     }
 
