@@ -62,6 +62,8 @@ class U
      */
     responses()
     {
+        const { trigger } = this.userConfig;
+
         return {
             u : {
                 f       : this.talk,

@@ -128,7 +128,7 @@ var _Val = function( commandModule, userConfig )
         }
     }
 
-    const { trigger } = this.userConfig;
+    const { trigger } = userConfig;
 
     /**
      * ## baseResponses
