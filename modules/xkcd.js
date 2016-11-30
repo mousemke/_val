@@ -27,10 +27,15 @@ class XKCD
      */
     responses()
     {
+        const { trigger } = this.userConfig;
+
         return {
             xkcd : {
                 f       : this.getComic,
-                desc    : 'returns a random xkcd cominc'
+                desc    : 'returns a random xkcd comic',
+                syntax  : [
+                    `${trigger}xkcd`
+                ]
             }
         };
     }

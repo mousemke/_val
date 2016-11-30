@@ -65,7 +65,10 @@ class U
         return {
             u : {
                 f       : this.talk,
-                desc    : 'interesting political discussions with someone angry'
+                desc    : 'interesting political discussions with someone angry',
+                syntax  : [
+                    `${trigger}u <question>`
+                ]
             }
         };
     }

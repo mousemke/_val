@@ -128,6 +128,7 @@ var _Val = function( commandModule, userConfig )
         }
     }
 
+    const { trigger } = this.userConfig;
 
     /**
      * ## baseResponses
@@ -139,31 +140,47 @@ var _Val = function( commandModule, userConfig )
         active : {
             module  : 'base',
             f       : checkActive,
-            desc    : 'test'
+            desc    : 'checks how many people are actuve in the channel',
+            syntax  : [
+                `${trigger}active`
+            ]
         },
 
         help     : {
             module  : 'base',
             f       : helpText,
-            desc    : 'test'
+            desc    : 'returns help text',
+            syntax  : [
+                `${trigger}help`,
+                `${trigger}help <command>`,
+            ]
         },
 
         'isup' : {
             module  : 'base',
             f       : () => 'Yes, but c\'mon!  At least use a full sentence!',
-            desc    : 'test'
+            desc    : 'returns _val\'s current status',
+            syntax  : [
+                `${trigger}isup`
+            ]
         },
 
         'moon?' : {
             module  : 'base',
             f       : () => 'In 500 million years, the moon will be 14,600 miles farther away than it is right now. When it is that far, total eclipses will not take place',
-            desc    : 'test'
+            desc    : 'learn more about the moon',
+            syntax  : [
+                `${trigger}moon`
+            ]
         },
 
         test    : {
             module  : 'base',
             f       : testFunction,
-            desc    : 'test'
+            desc    : 'this could honestly be anything.  mostly features are incubated here for later expansion',
+            syntax  : [
+                `${trigger}test`
+            ]
         }
     };
 

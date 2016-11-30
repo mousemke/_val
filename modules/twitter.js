@@ -257,52 +257,82 @@ class Twitter
         return {
             t : {
                 f       : this.tweet,
-                desc    : 'compose a new tweet'
+                desc    : 'compose a new tweet',
+                syntax  : [
+                    `${trigger}t <tweet>`
+                ]
             },
 
             tweet : {
                 f       : this.tweet,
-                desc    : 'description needed'
+                desc    : 'compose a new tweet',
+                syntax  : [
+                    `${trigger}tweet <tweet>`
+                ]
             },
 
             't-stream' : {
                 f       : this.streamFilter,
-                desc    : 'description needed'
+                desc    : 'starts a new twitter stream based on a keyword',
+                syntax  : [
+                    `${trigger}t-stream <query>`
+                ]
             },
 
             't-stream-filter' : {
                 f       : this.streamFilter,
-                desc    : 'description needed'
+                desc    : 'starts a new twitter stream based on a keyword',
+                syntax  : [
+                    `${trigger}t-stream-filter <query>`
+                ]
             },
 
             't-stream-stop' : {
                 f       :  this.streamStop,
-                desc    : 'description needed'
+                desc    : 'stops all twitter streams',
+                syntax  : [
+                    `${trigger}t-stream-stop`
+                ]
             },
 
             't-stream-raw' : {
                 f       :  this.streamRaw,
-                desc    : 'description needed'
+                desc    : 'starts a new raw twitter stream based on a keyword',
+                syntax  : [
+                    `${trigger}t-stream-raw <query>`
+                ]
             },
 
             't-stream-user' : {
                 f       :  this.streamUser,
-                desc    : 'description needed'
+                desc    : 'starts a new twitter stream based on a user',
+                syntax  : [
+                    `${trigger}t-stream-user <user>`
+                ]
             },
 
             't-following' : {
                 f       : this.getFollowing,
-                desc    : 'description needed'
+                desc    : 'returns a list of the users following',
+                syntax  : [
+                    `${trigger}t-following <user>`
+                ]
             },
 
             't-followers' : {
                 f       : this.getFollowers,
-                desc    : 'description needed'
+                desc    : 'returns a list of the users followers',
+                syntax  : [
+                    `${trigger}t-followers <user>`
+                ]
             },
 
             't-slug' : {
                 f       : this.getSlug,
-                desc    : 'description needed'
+                desc    : 'starts a new slug-based twitter stream',
+                syntax  : [
+                    `${trigger}t-slug <slug>`
+                ]
             }
         };
     }
