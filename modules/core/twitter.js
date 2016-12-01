@@ -3,45 +3,54 @@
 /**
  * ## val twitter loader
  *
- * @return _Object_ twitter chatbot
+ * @return {Object} twitter chatbot
  */
 module.exports = function twitterBot( userConfig, _bot, channels, listenToMessages, displayDebugInfo, context )
 {
-    var Twit            = require( 'twit' );
-    var twitterConfig   = userConfig.command.twitter;
+    const Twit          = require( 'twit' );
+    const twitterConfig = userConfig.command.twitter;
 
-    var _bot            = new Twit( {
-        consumer_key        : twitterConfig.consumerKey,
-        consumer_secret     : twitterConfig.consumerSecret,
-        access_token        : twitterConfig.accessToken,
-        access_token_secret : twitterConfig.accessTokenSecret
+    const {
+        consumerKey,
+        consumerSecret,
+        accessToken,
+        accessTokenSecret,
+        account,
+        users
+    } = twitterConfig;
+
+    _bot = new Twit( {
+        consumer_key        : consumerKey,
+        consumer_secret     : consumerSecret,
+        access_token        : accessToken,
+        access_token_secret : accessTokenSecret
     } );
 
-    _bot.account        = twitterConfig.account;
-    _bot.users          = twitterConfig.users;
+    _bot.account        = account;
+    _bot.users          = users;
 
     userConfig.commandModules.push( _bot );
 
-    var boundListenToMessages = listenToMessages.bind( context );
+    const boundListenToMessages = listenToMessages.bind( context );
 
     _bot.say = function( to, text )
     {
         console.log( to, text );
-        // var answer = new Message()
+        // const answer = new Message()
         //                 .text( text )
         //                 .to( to );
         // _bot.send( answer );
     };
 
-    var stream = _bot.stream( 'statuses/filter', { track : '@_galaxypotato' } );
+    const stream = _bot.stream( 'statuses/filter', { track : '@_galaxypotato' } );
 
-    stream.on( 'tweet', function ( tweet )
+    stream.on( 'tweet', tweet =>
     {
-        var to      = tweet.text.slice( 0, 1 );
-        var from    = tweet.user;
-        var text    = tweet.text.slice( 1 );
+        const to        = tweet.text.slice( 0, 1 );
+        const from      = tweet.user;
+        const text      = tweet.text.slice( 1 );
 
-        var botText = boundListenToMessages( to, from, text );
+        const botText   = boundListenToMessages( to, from, text );
 
         if ( botText )
         {

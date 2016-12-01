@@ -11,7 +11,7 @@ class Twitter
      *
      * @param  {String} from room or person name
      *
-     * @return _Object_ Twit object
+     * @return {Object} Twit object
      */
     authenticate( from, to, write )
     {
@@ -56,6 +56,18 @@ class Twitter
     }
 
 
+    /**
+     * ## constructor
+     *
+     * sets the initial "global" variables
+     *
+     * @param {Object} _bot instance of _Val with a core attached
+     * @param {Object} _modules config and instance of all modules
+     * @param {Object} userConfig available options
+     * @param {Object} commandModule instance of the applied core
+     *
+     * @return {Void} void
+     */
     constructor( _bot, _modules, userConfig, commandModule )
     {
         this._bot           = _bot;
@@ -76,7 +88,7 @@ class Twitter
      * @param {String} to originating user
      * @param {String} text full input string
      *
-     * @return _Void_
+     * @return {Void}
      */
     getFollowers( from, to, text )
     {
@@ -115,7 +127,7 @@ class Twitter
      * @param {String} to originating user
      * @param {String} text full input string
      *
-     * @return _Void_
+     * @return {Void}
      */
     getFollowing( from, to, text )
     {
@@ -164,7 +176,7 @@ class Twitter
      *
      * @param {Array} _text split text object
      *
-     * @return _String_ chosen event
+     * @return {String} chosen event
      */
     getStreamEvent( _text )
     {
@@ -208,7 +220,7 @@ class Twitter
                 _event = 'tweet';
         }
 
-        return _event;
+        return {even};
     }
 
 
@@ -220,7 +232,7 @@ class Twitter
      *
      * @param {Array} _text split text object
      *
-     * @return _String_ chosen target
+     * @return {String} chosen target
      */
     getStreamTarget( _text )
     {
@@ -359,7 +371,7 @@ class Twitter
      * @param {String} searchText text
      * @param {Object} confObj extra config object that some command modules need
      *
-     * @return _String_ success message
+     * @return {String} success message
      */
     stream( from, target, _event, searchText, confObj )
     {
@@ -406,7 +418,7 @@ class Twitter
      * @param {String} text full message text
      * @param {Object} confObj extra config object that some command modules need
      *
-     * @return _String_ success message
+     * @return {String} success message
      */
     streamFilter( from, to, text, botText, command, confObj )
     {
@@ -428,7 +440,7 @@ class Twitter
      * @param {String} text full message text
      * @param {Object} confObj extra config object that some command modules need
      *
-     * @return _String_ success message
+     * @return {String} success message
      */
     streamRaw( from, to, text, botText, command, confObj )
     {
@@ -454,7 +466,7 @@ class Twitter
      * @param {String} to originating user
      * @param {String} text full message text
      *
-     * @return _String_ success message
+     * @return {String} success message
      */
     streamStop( from, to, text )
     {
@@ -479,7 +491,7 @@ class Twitter
      * @param {String} text full message text
      * @param {Object} confObj extra config object that some command modules need
      *
-     * @return _String_ success message
+     * @return {String} success message
      */
     streamUser( from, to, text, botText, command, confObj )
     {
@@ -500,7 +512,7 @@ class Twitter
      * @param {String} to originating user
      * @param {String} text full message text
      *
-     * @return _String_ success message
+     * @return {String} success message
      */
     tweet( from, to, text )
     {

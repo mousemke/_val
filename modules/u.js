@@ -6,16 +6,23 @@
  *
  * @author  Mouse Braun <mouse@knoblau.ch>
  *
- * @for _val <git@github.com:mousemke/_val.git>
- *
- * @param {Object} _bot node irc bot instance
- * @param {Object} _modules all the modules (including this one)
- * @param {Object} userConfig config options
  */
 var words       = require( '../json/u.json' );
 
 class U
 {
+    /**
+     * ## constructor
+     *
+     * sets the initial "global" variables
+     *
+     * @param {Object} _bot instance of _Val with a core attached
+     * @param {Object} _modules config and instance of all modules
+     * @param {Object} userConfig available options
+     * @param {Object} commandModule instance of the applied core
+     *
+     * @return {Void} void
+     */
     constructor( _bot, _modules, userConfig, commandModule )
     {
         this._bot           = _bot;
@@ -58,7 +65,7 @@ class U
      * @param {String} command bot command (first word)
      * @param {Object} confObj extra config object that some command modules need
      *
-     * @return _String_ changed botText
+     * @return {String} changed botText
      */
     responses()
     {

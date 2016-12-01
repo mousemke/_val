@@ -16,7 +16,7 @@ class Doge
      * @param {String} to user
      * @param {String} text full message text
      *
-     * @return _Void_
+     * @return {Void}
      */
     balance( from, to, text )
     {
@@ -72,6 +72,18 @@ class Doge
     }
 
 
+    /**
+     * ## constructor
+     *
+     * sets the initial "global" variables
+     *
+     * @param {Object} _bot instance of _Val with a core attached
+     * @param {Object} _modules config and instance of all modules
+     * @param {Object} userConfig available options
+     * @param {Object} commandModule instance of the applied core
+     *
+     * @return {Void} void
+     */
     constructor( _bot, _modules, userConfig, commandModule )
     {
         this._bot           = _bot;
@@ -116,7 +128,7 @@ class Doge
      *
      * @param {String} from originating channel
      *
-     * @return _Void_
+     * @return {Void}
      */
     doge( from, to, text, full )
     {
@@ -206,7 +218,7 @@ class Doge
      * @param  {Number} amount amount to transfer
      * @param  {String} silent silent or spoken
      *
-     * @return _String_
+     * @return {String}
      */
     giveFromBank( to, amount, silent )
     {
@@ -231,7 +243,7 @@ class Doge
      *
      * loads the json for the master bank list
      *
-     * @return _Void_
+     * @return {Void}
      */
     loadMasterList()
     {
@@ -346,7 +358,7 @@ class Doge
      * @param {String} to originating user
      * @param {String} text full message text
      *
-     * @return _Void_
+     * @return {Void}
      */
     soak( from, to, text )
     {
@@ -466,7 +478,7 @@ class Doge
      * @param {String} to originating user
      * @param {String} text full message text
      *
-     * @return _Void_
+     * @return {Void}
      */
     tip( from, to, text )
     {
@@ -606,7 +618,7 @@ class Doge
      *
      * saves the json to the master bank list
      *
-     * @return _Void_
+     * @return {Void}
      */
     writeMasterList()
     {

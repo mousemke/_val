@@ -17,7 +17,7 @@ class _8ball
      *
      * @param {String} text original text
      *
-     * @return _Boolean_ question or not
+     * @return {Boolean} question or not
      */
     checkQuestions( text )
     {
@@ -34,6 +34,18 @@ class _8ball
     }
 
 
+    /**
+     * ## constructor
+     *
+     * sets the initial "global" variables
+     *
+     * @param {Object} _bot instance of _Val with a core attached
+     * @param {Object} _modules config and instance of all modules
+     * @param {Object} userConfig available options
+     * @param {Object} commandModule instance of the applied core
+     *
+     * @return {Void} void
+     */
     constructor( _bot, _modules, userConfig, commandModule )
     {
         this._bot           = _bot;
@@ -53,7 +65,7 @@ class _8ball
      * @param {String} to originating user
      * @param {Sring} text original text minus command
      *
-     * @return _String_ visions of the future
+     * @return {String} visions of the future
      */
     getPrediction( from, to, text )
     {
@@ -97,7 +109,7 @@ class _8ball
      * @param {String} command bot command (first word)
      * @param {Object} confObj extra config object that some command modules need
      *
-     * @return _String_ changed botText
+     * @return {String} changed botText
      */
     responses()
     {

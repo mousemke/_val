@@ -7,7 +7,7 @@ const File      = require( 'telegram-api/types/File' );
 /**
  * ## val telegram loader
  *
- * @return _Object_ telegram chatbot
+ * @return {Object} telegram chatbot
  */
 module.exports = function telegramBot( userConfig, _bot, channels, listenToMessages, displayDebugInfo, context )
 {

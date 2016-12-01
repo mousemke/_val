@@ -6,6 +6,18 @@
  */
 class _4sq
 {
+    /**
+     * ## constructor
+     *
+     * sets the initial "global" variables
+     *
+     * @param {Object} _bot instance of _Val with a core attached
+     * @param {Object} _modules config and instance of all modules
+     * @param {Object} userConfig available options
+     * @param {Object} commandModule instance of the applied core
+     *
+     * @return {Void} void
+     */
     constructor( _bot, _modules, userConfig, commandModule )
     {
         this._bot           = _bot;
@@ -40,7 +52,7 @@ class _4sq
      * @param {String} to originating user
      * @param {String} query search parameter
      *
-     * @return _Promise_ search results
+     * @return {Promise} search results
      */
     lunch( from, to, query )
     {

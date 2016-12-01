@@ -2,20 +2,52 @@
 /**
  * Lists
  */
-const travolta          = require( '../lists/travolta.js' ),
-        nouns           = require( '../lists/nouns.js' ),
-        cars            = require( '../lists/cars.js' ),
-        textResponses   = require( '../lists/plainText.js' );
+const travolta      = require( '../lists/travolta.js' );
+const nouns         = require( '../lists/nouns.js' );
+const cars          = require( '../lists/cars.js' );
+const textResponses = require( '../lists/plainText.js' );
 
-var moonRegex       = /(?:m([o]+)n)/,
-    spaceRegex      = /(?:sp([a]+)ce)/,
-    khanRegex       = /(?:kh([a]+)n)/;
+const moonRegex     = /(?:m([o]+)n)/;
+const spaceRegex    = /(?:sp([a]+)ce)/;
+const khanRegex     = /(?:kh([a]+)n)/;
+
 
 /**
  * this is entirely filled with nonsense.  thats all the docs this needs.
  */
 class PlainText
 {
+    /**
+     * ## bgg
+     *
+     * searches board game geek for things
+     *
+     * @param {String} from originating channel
+     * @param {String} to originating user
+     * @param {String} text message text
+     *
+     * @return {String} bgg search url
+     */
+    bgg( from, to, text )
+    {
+        text = text.split( ' ' ).join( '+' );
+
+        return `http://www.boardgamegeek.com/geeksearch.php?action=search&objecttype=boardgame&q=${text}&B1=Go`;
+    }
+
+
+    /**
+     * ## constructor
+     *
+     * sets the initial "global" variables
+     *
+     * @param {Object} _bot instance of _Val with a core attached
+     * @param {Object} _modules config and instance of all modules
+     * @param {Object} userConfig available options
+     * @param {Object} commandModule instance of the applied core
+     *
+     * @return {Void} void
+     */
     constructor( _bot, _modules, userConfig, commandModule )
     {
         this._bot           = _bot;
@@ -25,9 +57,16 @@ class PlainText
     }
 
 
+    /**
+     * ## dance
+     *
+     * returns 2-3 dancers
+     *
+     * @return {String} dancers
+     */
     dance()
     {
-         var dancer = Math.floor( Math.random() * 80 );
+         const dancer = Math.floor( Math.random() * 80 );
 
         if ( dancer === 3 )
         {
@@ -40,15 +79,23 @@ class PlainText
     }
 
 
-    disappearinacloudofsmoke( from )
+    /**
+     * ## disappearinacloudofsmoke
+     *
+     * you cant have this ability!
+     *
+     * @return {String} scolding
+     */
+    disappearinacloudofsmoke( from, to, text, textArr, command, confObj )
     {
         setTimeout( () =>
         {
-            _bot.say( from, 'I mean...  why would you just assume you can have any new ability you want....', confObj );
+            this._bot.say( from, 'I mean...  why would you just assume you can have any new ability you want....', confObj );
         }, 7500 );
+
         setTimeout( () =>
         {
-            _bot.say( from, 'ಠ_ಠ', confObj );
+            this.say( from, 'ಠ_ಠ', confObj );
         }, 1500 );
 
         return 'no...  you don\'t have that ability.';
@@ -60,37 +107,63 @@ class PlainText
      *
      * by stefan's request
      *
-     * @param  {str}                    from                originating channel
-     * @param  {str}                    to                  originating user
-     * @param  {str}                    text                message text
+     * @param {String} from originating channel
+     * @param {String} to originating user
+     * @param {String} text message text
      *
-     * @return {void}
+     * @return {Void} void
      */
-    dodge( from, to, text )
+    dodge( from, to, text, textArr )
     {
-        var textSplit = text.split( ' ' );
-
-        if ( textSplit[1] )
+        if ( textArr[ 0 ] )
         {
-            to = textSplit[1];
+            to = textArr[ 0 ];
         }
 
-        var botText = ` hits ${to} with a `;
-        var car = cars[ Math.floor( Math.random() * cars.length ) ];
+        let botText = ` hits ${to} with a `;
+        const car     = cars[ Math.floor( Math.random() * cars.length ) ];
 
-        if ( !car[ 1 ] )
+        const carModel      = car[ 0 ];
+        const carYear       = car[ 1 ];
+        const carYearEnd    = car[ 2 ];
+
+        if ( !carYear )
         {
-            botText += `Dodge ${car[ 0 ]}`;
+            botText += `Dodge ${carModel}`;
         }
-        else if ( !car[ 2 ] )
+        else if ( !carYearEnd )
         {
-            botText += `${car[ 1 ]} Dodge ${car[ 0 ]}`;
+            botText += `${carYear} Dodge ${carModel}`;
         }
         else
         {
-            var spread = car[ 2 ] - car[ 1 ];
-            var year = Math.floor( Math.random() * spread ) + car[ 1 ];
-            botText += `${year} Dodge ${car[ 0 ]}`;
+            const spread    = carYearEnd - carYear;
+            const year      = Math.floor( Math.random() * spread ) + carYear;
+            botText += `${year} Dodge ${carModel}`;
+        }
+
+        return botText;
+    }
+
+
+    /**
+     *
+     **/
+    end( command, text )
+    {
+        const num     = Math.floor( Math.random() * ( nouns.length ) );
+        const noun    = nouns[ num ];
+
+        let botText   = `${command}s ${noun[ 0 ]}`;
+
+        const target  = text.split( ' ' );
+
+        if ( target && target[ 1 ] )
+        {
+          const connections = [ ' to ', ' at ' ];
+
+          num       = Math.floor( Math.random() * ( connections.length ) );
+          botText   += connections[ num ] + target[ 1 ];
         }
 
         return botText;
@@ -102,8 +175,8 @@ class PlainText
      **/
     fetti( command )
     {
-        var type = command.slice( 0, command.length - 5 );
-        var word = type;
+        const type  = command.slice( 0, command.length - 5 );
+        let word    = type;
 
         switch ( type )
         {
@@ -153,18 +226,16 @@ class PlainText
             word = [ word ];
         }
 
-        var i, lenI, option;
-
-        for ( i = 0, lenI = userConfig.fettiOptions.length; i < lenI; i++ )
+        for ( let i = 0, lenI = userConfig.fettiOptions.length; i < lenI; i++ )
         {
             word.push ( userConfig.fettiOptions[ i ] + ' ' );
         }
 
-        var botText = '';
+        let botText = '';
 
-        for ( i = 0; i < userConfig.fettiLength; i++ )
+        for ( let i = 0; i < userConfig.fettiLength; i++ )
         {
-            option   = Math.floor( Math.random() * word.length );
+            const option   = Math.floor( Math.random() * word.length );
             botText += word[ option ];
         }
 
@@ -173,26 +244,64 @@ class PlainText
 
 
     /**
+     * ## g
      *
-     **/
-    end( command, text )
+     * searches google for things
+     *
+     * @param {String} from originating channel
+     * @param {String} to originating user
+     * @param {String} text message text
+     *
+     * @return {String} google search url
+     */
+    g( from, to, text )
     {
-        var num     = Math.floor( Math.random() * ( nouns.length ) );
-        var noun    = nouns[ num ];
+        text = text.split( ' ' ).join( '%20' );
 
-        botText     = command + 's ' + noun[ 0 ];
+        return `https://www.google.de/search?hl=en&q=${text}`;
+    }
 
-        var target  = text.split( ' ' );
 
-        if ( target && target[ 1 ] )
-        {
-          var connections = [ ' to ', ' at ' ];
+    /**
+     * ## germanysGotTalent
+     *
+     * showcases germany's amazing talents
+     *
+     * @param {String} from originating channel
+     * @param {String} to originating user
+     * @param {String} text message text
+     *
+     * @return {String} youtube url
+     */
+    germanysGotTalent( from, to, text )
+    {
+        const choices   = [ 'https://www.youtube.com/watch?v=IeWAPVWXLtM',
+                        'https://www.youtube.com/watch?v=dNUUCHsgRu8',
+                        'https://www.youtube.com/watch?v=PJQVlVHsFF8',
+                        'https://www.youtube.com/watch?v=xRVvegLwK_o'
+                        ];
+        const choice    = Math.floor( Math.random() * choices.length );
 
-          num = Math.floor( Math.random() * ( connections.length ) );
-          botText += connections[ num ] + target[ 1 ];
-        }
+        return choices[ choice ];
+    }
 
-        return botText;
+
+    /**
+     * ## google
+     *
+     * searches google for things
+     *
+     * @param {String} from originating channel
+     * @param {String} to originating user
+     * @param {String} text message text
+     *
+     * @return {String} google search url
+     */
+    google( from, to, text )
+    {
+        text = text.split( ' ' ).join( '%20' );
+
+        return `http://www.lmgtfy.com/?q=${text}`;
     }
 
 
@@ -259,25 +368,102 @@ class PlainText
         const { trigger } = this.userConfig;
 
         const responses = {
+            bgg   : {
+                f       : this.bgg,
+                desc    : 'search bgg',
+                syntax  : [
+                    `${trigger}bgg <query>`
+                ]
+            },
+
             dance   : {
                 f       : this.dance,
-                desc    : 'dance dance!'
+                desc    : 'dance dance!',
+                syntax  : [
+                    `${trigger}dance`
+                ]
             },
 
             disappearinacloudofsmoke : {
                 f       : this.disappearinacloudofsmoke,
-                desc    : 'that\'s not at thing...'
+                desc    : 'that\'s not at thing...',
+                syntax  : [
+                    `${trigger}disappearinacloudofsmoke`
+                ]
             },
 
             dodge : {
                 f       : this.dodge,
-                desc    : 'look out!'
+                desc    : 'look out!',
+                syntax  : [
+                    `${trigger}dodge`,
+                    `${trigger}dodge <user>`
+                ]
+            },
+
+            g   : {
+                f       : this.g,
+                desc    : 'search google',
+                syntax  : [
+                    `${trigger}g <query>`
+                ]
+            },
+
+            germanysgottalent   : {
+                f       : this.germanysGotTalent,
+                desc    : 'see germany\'s finest',
+                syntax  : [
+                    `${trigger}germanysgottalent`
+                ]
+            },
+
+            google   : {
+                f       : this.google,
+                desc    : 'search google',
+                syntax  : [
+                    `${trigger}g <query>`
+                ]
+            },
+
+            ping : {
+                f       : function( from, to ){ return `${to}: pong!` },
+                desc    : 'test a response',
+                syntax  : [
+                    `${trigger}ping`
+                ]
             },
 
             travolta : {
                 f       : this.travolta,
-                desc    : 'because'
-            }
+                desc    : 'because',
+                syntax  : [
+                    `${trigger}travolta`
+                ]
+            },
+
+            w   : {
+                f       : this.wiki,
+                desc    : 'search wikipedia',
+                syntax  : [
+                    `${trigger}w <query>`
+                ]
+            },
+
+            wave : {
+                f       : function( from, to ){ return `${to} o/` },
+                desc    : 'say hi',
+                syntax  : [
+                    `${trigger}wave`
+                ]
+            },
+
+            wiki : {
+                f       : this.wiki,
+                desc    : 'search wikipedia',
+                syntax  : [
+                    `${trigger}wiki <query>`
+                ]
+            },
         };
 
 
@@ -285,46 +471,12 @@ class PlainText
         {
             responses[ res ] = {
                 f       : function(){ return textResponses[ res ] },
-                desc    : 'plain test response: textResponses[ res ]',
+                desc    : `plain text response: ${res}`,
                 syntax  : [
                     `${trigger}${res}`
                 ]
             };
         } );
-
-
-                    // case 'bgg':
-                    //     text = text.split( ' ' ).slice( 1 ).join( '+' );
-                    //     return `http://www.boardgamegeek.com/geeksearch.php?action=search&objecttype=boardgame&q=${text}&B1=Go`;
-
-                    // case 'google':
-                    //     text = text.split( ' ' ).slice( 1 ).join( '%20' );
-                    //     return `http://www.lmgtfy.com/?q=${text}`;
-
-                    // case 'w':
-                    // case 'wiki':
-                    //     text = text.split( ' ' ).slice( 1 ).join( '%20' );
-                    //     return `http://en.wikipedia.org/wiki/${text}`;
-
-                    // case 'g':
-                    //     text = text.split( ' ' ).slice( 1 ).join( '%20' );
-                    //     return `https://www.google.de/search?hl=en&q=${text}`;
-
-                    // case 'badyoutube':
-                    // case 'germanysgottalent':
-                    //     var choices = [ 'https://www.youtube.com/watch?v=IeWAPVWXLtM',
-                    //                     'https://www.youtube.com/watch?v=dNUUCHsgRu8',
-                    //                     'https://www.youtube.com/watch?v=PJQVlVHsFF8',
-                    //                     'https://www.youtube.com/watch?v=xRVvegLwK_o'
-                    //                     ];
-                    //     var choice = Math.floor( Math.random() * choices.length );
-                    //     return choices[ choice ];
-
-                    // case 'ping':
-                    //     return to + ': pong';
-
-                    // case 'wave':
-                    //     return to + ' o/';
 
         return responses;
     }
@@ -340,6 +492,25 @@ class PlainText
     travolta()
     {
         return travolta[ Math.floor( Math.random() * travolta.length ) ];
+    }
+
+
+    /**
+     * ## wiki
+     *
+     * searches wikipedia for things
+     *
+     * @param {String} from originating channel
+     * @param {String} to originating user
+     * @param {String} text message text
+     *
+     * @return {String} wikipedia search url
+     */
+    wiki( from, to, text )
+    {
+        text = text.split( ' ' ).join( '%20' );
+
+        return `http://en.wikipedia.org/wiki/${text}`;
     }
 };
 
