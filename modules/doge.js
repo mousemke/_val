@@ -118,7 +118,7 @@ class Doge
      *
      * @return _Void_
      */
-    doge( from, text, full, to )
+    doge( from, to, text, full )
     {
         const _modules = this._modules;
 
@@ -134,7 +134,7 @@ class Doge
         {
             _modules.core.apiGet( url, function( info )
             {
-                var price, amount = parseInt( textSplit[ 1 ] );
+                var price, amount = parseInt( textSplit[ 0 ] );
 
                 if ( typeof amount !== 'number' || isNaN( amount ) === true )
                 {
@@ -180,9 +180,20 @@ class Doge
     }
 
 
-    dogePrice( from, text, to )
+    /**
+     * ## dogePrice
+     *
+     * returns the price in satoshi
+     *
+     * @param {String} from originating channel
+     * @param {String} to originating user
+     * @param {String} text full input string
+     *
+     * @return {String} price
+     */
+    dogePrice( from, to, text )
     {
-        return this.doge( from, text, false, to );
+        return this.doge( from, to, text, false );
     }
 
 
@@ -230,9 +241,20 @@ class Doge
     }
 
 
-    marketPrice( from, text, to )
+    /**
+     * ## marketPrice
+     *
+     * returns the price in multiple currencies
+     *
+     * @param {String} from originating channel
+     * @param {String} to originating user
+     * @param {String} text full input string
+     *
+     * @return {String} price
+     */
+    marketPrice( from, to, text )
     {
-        return this.doge( from, text, true, to );
+        return this.doge( from, to, text, true );
     }
 
 
