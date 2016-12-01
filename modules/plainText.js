@@ -17,6 +17,13 @@ const khanRegex     = /(?:kh([a]+)n)/;
  */
 class PlainText
 {
+    bgg( from, to, text )
+    {
+        text = text.split( ' ' ).join( '+' );
+
+        return `http://www.boardgamegeek.com/geeksearch.php?action=search&objecttype=boardgame&q=${text}&B1=Go`;
+    }
+
     /**
      * ## constructor
      *
@@ -111,6 +118,30 @@ class PlainText
 
 
     /**
+     *
+     **/
+    end( command, text )
+    {
+        var num     = Math.floor( Math.random() * ( nouns.length ) );
+        var noun    = nouns[ num ];
+
+        botText     = command + 's ' + noun[ 0 ];
+
+        var target  = text.split( ' ' );
+
+        if ( target && target[ 1 ] )
+        {
+          var connections = [ ' to ', ' at ' ];
+
+          num = Math.floor( Math.random() * ( connections.length ) );
+          botText += connections[ num ] + target[ 1 ];
+        }
+
+        return botText;
+    }
+
+
+    /**
      * Fetti!
      **/
     fetti( command )
@@ -185,27 +216,32 @@ class PlainText
     }
 
 
-    /**
-     *
-     **/
-    end( command, text )
+    g( from, to, text )
     {
-        var num     = Math.floor( Math.random() * ( nouns.length ) );
-        var noun    = nouns[ num ];
+        text = text.split( ' ' ).join( '%20' );
 
-        botText     = command + 's ' + noun[ 0 ];
+        return `https://www.google.de/search?hl=en&q=${text}`;
+    }
 
-        var target  = text.split( ' ' );
 
-        if ( target && target[ 1 ] )
-        {
-          var connections = [ ' to ', ' at ' ];
+    germanysgottalent( from, to, text )
+    {
+        const choices   = [ 'https://www.youtube.com/watch?v=IeWAPVWXLtM',
+                        'https://www.youtube.com/watch?v=dNUUCHsgRu8',
+                        'https://www.youtube.com/watch?v=PJQVlVHsFF8',
+                        'https://www.youtube.com/watch?v=xRVvegLwK_o'
+                        ];
+        const choice    = Math.floor( Math.random() * choices.length );
 
-          num = Math.floor( Math.random() * ( connections.length ) );
-          botText += connections[ num ] + target[ 1 ];
-        }
+        return choices[ choice ];
+    }
 
-        return botText;
+
+    google( from, to, text )
+    {
+        text = text.split( ' ' ).join( '%20' );
+
+        return `http://www.lmgtfy.com/?q=${text}`;
     }
 
 
@@ -272,34 +308,101 @@ class PlainText
         const { trigger } = this.userConfig;
 
         const responses = {
+            bgg   : {
+                f       : this.bgg,
+                desc    : 'search bgg',
+                syntax  : [
+                    `${trigger}bgg <query>`
+                ]
+            },
+
             dance   : {
                 f       : this.dance,
-                desc    : 'dance dance!'
+                desc    : 'dance dance!',
+                syntax  : [
+                    `${trigger}dance`
+                ]
             },
 
             disappearinacloudofsmoke : {
                 f       : this.disappearinacloudofsmoke,
-                desc    : 'that\'s not at thing...'
+                desc    : 'that\'s not at thing...',
+                syntax  : [
+                    `${trigger}disappearinacloudofsmoke`
+                ]
             },
 
             dodge : {
                 f       : this.dodge,
-                desc    : 'look out!'
+                desc    : 'look out!',
+                syntax  : [
+                    `${trigger}dodge`,
+                    `${trigger}dodge <user>`
+                ]
+            },
+
+            g   : {
+                f       : this.g,
+                desc    : 'search google',
+                syntax  : [
+                    `${trigger}g <query>`
+                ]
+            },
+
+            germanysgottalent   : {
+                f       : this.germanysgottalent,
+                desc    : 'see germany\'s finest',
+                syntax  : [
+                    `${trigger}germanysgottalent`
+                ]
+            },
+
+            google   : {
+                f       : this.google,
+                desc    : 'search google',
+                syntax  : [
+                    `${trigger}g <query>`
+                ]
             },
 
             ping : {
                 f       : function( from, to ){ return `${to}: pong!` },
-                desc    : 'test a response'
+                desc    : 'test a response',
+                syntax  : [
+                    `${trigger}ping`
+                ]
             },
 
             travolta : {
                 f       : this.travolta,
-                desc    : 'because'
+                desc    : 'because',
+                syntax  : [
+                    `${trigger}travolta`
+                ]
+            },
+
+            w   : {
+                f       : this.wiki,
+                desc    : 'search wikipedia',
+                syntax  : [
+                    `${trigger}w <query>`
+                ]
             },
 
             wave : {
                 f       : function( from, to ){ return `${to} o/` },
-                desc    : 'say hi'
+                desc    : 'say hi',
+                syntax  : [
+                    `${trigger}wave`
+                ]
+            },
+
+            wiki : {
+                f       : this.wiki,
+                desc    : 'search wikipedia',
+                syntax  : [
+                    `${trigger}wiki <query>`
+                ]
             },
         };
 
@@ -315,34 +418,6 @@ class PlainText
             };
         } );
 
-
-                    // case 'bgg':
-                    //     text = text.split( ' ' ).slice( 1 ).join( '+' );
-                    //     return `http://www.boardgamegeek.com/geeksearch.php?action=search&objecttype=boardgame&q=${text}&B1=Go`;
-
-                    // case 'google':
-                    //     text = text.split( ' ' ).slice( 1 ).join( '%20' );
-                    //     return `http://www.lmgtfy.com/?q=${text}`;
-
-                    // case 'w':
-                    // case 'wiki':
-                    //     text = text.split( ' ' ).slice( 1 ).join( '%20' );
-                    //     return `http://en.wikipedia.org/wiki/${text}`;
-
-                    // case 'g':
-                    //     text = text.split( ' ' ).slice( 1 ).join( '%20' );
-                    //     return `https://www.google.de/search?hl=en&q=${text}`;
-
-                    // case 'badyoutube':
-                    // case 'germanysgottalent':
-                    //     var choices = [ 'https://www.youtube.com/watch?v=IeWAPVWXLtM',
-                    //                     'https://www.youtube.com/watch?v=dNUUCHsgRu8',
-                    //                     'https://www.youtube.com/watch?v=PJQVlVHsFF8',
-                    //                     'https://www.youtube.com/watch?v=xRVvegLwK_o'
-                    //                     ];
-                    //     var choice = Math.floor( Math.random() * choices.length );
-                    //     return choices[ choice ];
-
         return responses;
     }
 
@@ -357,6 +432,14 @@ class PlainText
     travolta()
     {
         return travolta[ Math.floor( Math.random() * travolta.length ) ];
+    }
+
+
+    wiki( from, to, text )
+    {
+        text = text.split( ' ' ).join( '%20' );
+
+        return `http://en.wikipedia.org/wiki/${text}`;
     }
 };
 
