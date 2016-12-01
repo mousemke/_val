@@ -2,6 +2,18 @@
 
 class Beats
 {
+    /**
+     * ## constructor
+     *
+     * sets the initial "global" variables
+     *
+     * @param {Object} _bot instance of _Val with a core attached
+     * @param {Object} _modules config and instance of all modules
+     * @param {Object} userConfig available options
+     * @param {Object} commandModule instance of the applied core
+     *
+     * @return {Void} void
+     */
     constructor( _bot, _modules, userConfig, commandModule )
     {
         this._bot           = _bot;
@@ -10,19 +22,13 @@ class Beats
         this.commandModule  = commandModule;
     }
 
+
     /**
-     * ## beats
+     * ## getBeat
      *
      * if called, this returns the current time converted to beats
      *
-     * @param {String} from originating channel
-     * @param {String} to originating user
-     * @param {String} text full input string
-     * @param {String} botText text to say
-     * @param {String} command bot command (first word)
-     * @param {Object} confObj extra config object that some command modules need
-     *
-     * @return _String_ changed botText
+     * @return {String} current beat
      */
     getBeat()
     {

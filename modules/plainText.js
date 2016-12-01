@@ -2,20 +2,33 @@
 /**
  * Lists
  */
-const travolta          = require( '../lists/travolta.js' ),
-        nouns           = require( '../lists/nouns.js' ),
-        cars            = require( '../lists/cars.js' ),
-        textResponses   = require( '../lists/plainText.js' );
+const travolta      = require( '../lists/travolta.js' );
+const nouns         = require( '../lists/nouns.js' );
+const cars          = require( '../lists/cars.js' );
+const textResponses = require( '../lists/plainText.js' );
 
-var moonRegex       = /(?:m([o]+)n)/,
-    spaceRegex      = /(?:sp([a]+)ce)/,
-    khanRegex       = /(?:kh([a]+)n)/;
+const moonRegex     = /(?:m([o]+)n)/;
+const spaceRegex    = /(?:sp([a]+)ce)/;
+const khanRegex     = /(?:kh([a]+)n)/;
+
 
 /**
  * this is entirely filled with nonsense.  thats all the docs this needs.
  */
 class PlainText
 {
+    /**
+     * ## constructor
+     *
+     * sets the initial "global" variables
+     *
+     * @param {Object} _bot instance of _Val with a core attached
+     * @param {Object} _modules config and instance of all modules
+     * @param {Object} userConfig available options
+     * @param {Object} commandModule instance of the applied core
+     *
+     * @return {Void} void
+     */
     constructor( _bot, _modules, userConfig, commandModule )
     {
         this._bot           = _bot;
@@ -40,15 +53,15 @@ class PlainText
     }
 
 
-    disappearinacloudofsmoke( from )
+    disappearinacloudofsmoke( from, to, text, textArr, command, confObj )
     {
         setTimeout( () =>
         {
-            _bot.say( from, 'I mean...  why would you just assume you can have any new ability you want....', confObj );
+            this._bot.say( from, 'I mean...  why would you just assume you can have any new ability you want....', confObj );
         }, 7500 );
         setTimeout( () =>
         {
-            _bot.say( from, 'ಠ_ಠ', confObj );
+            this.say( from, 'ಠ_ಠ', confObj );
         }, 1500 );
 
         return 'no...  you don\'t have that ability.';
@@ -274,10 +287,20 @@ class PlainText
                 desc    : 'look out!'
             },
 
+            ping : {
+                f       : function( from, to ){ return `${to}: pong!` },
+                desc    : 'test a response'
+            },
+
             travolta : {
                 f       : this.travolta,
                 desc    : 'because'
-            }
+            },
+
+            wave : {
+                f       : function( from, to ){ return `${to} o/` },
+                desc    : 'say hi'
+            },
         };
 
 
@@ -285,7 +308,7 @@ class PlainText
         {
             responses[ res ] = {
                 f       : function(){ return textResponses[ res ] },
-                desc    : 'plain test response: textResponses[ res ]',
+                desc    : `plain text response: ${res}`,
                 syntax  : [
                     `${trigger}${res}`
                 ]
@@ -319,12 +342,6 @@ class PlainText
                     //                     ];
                     //     var choice = Math.floor( Math.random() * choices.length );
                     //     return choices[ choice ];
-
-                    // case 'ping':
-                    //     return to + ': pong';
-
-                    // case 'wave':
-                    //     return to + ' o/';
 
         return responses;
     }

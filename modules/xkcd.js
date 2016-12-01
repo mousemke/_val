@@ -1,6 +1,18 @@
 
 class XKCD
 {
+    /**
+     * ## constructor
+     *
+     * sets the initial "global" variables
+     *
+     * @param {Object} _bot instance of _Val with a core attached
+     * @param {Object} _modules config and instance of all modules
+     * @param {Object} userConfig available options
+     * @param {Object} commandModule instance of the applied core
+     *
+     * @return {Void} void
+     */
     constructor( _bot, _modules, userConfig, commandModule )
     {
         this._bot           = _bot;
@@ -10,7 +22,18 @@ class XKCD
     }
 
 
-    getComic( from, to, text, botText )
+    /**
+     * ## getComic
+     *
+     * rezrieves and returns a random comic
+     *
+     * @param {String} from originating channel
+     * @param {String} to originating user
+     * @param {String} text full input string
+     *
+     * @return {String} url
+     */
+    getComic( from, to, text )
     {
         return new Promise( function( resolve, reject )
         {
