@@ -606,26 +606,27 @@ function _val( commander )
 }
 
 
-var connectionTimer     = null;
-var up                  = Date.now();
-var lastPing            = Date.now();
+let connectionTimer = null;
+let up              = Date.now();
+let lastPing        = Date.now();
 
-var userConfig          = require( './config/_val.config.js' );
-var packageJSON         = require( './package.json' );
-    userConfig.version  = packageJSON.version;
-var req                 = userConfig.req = {};
+const userConfig    = require( './config/_val.config.js' );
+const packageJSON   = require( './package.json' );
+userConfig.version  = packageJSON.version;
+const req           = userConfig.req = {};
 
-    req.http            = require( 'http' ),
-    req.https           = require( 'https' ),
-    req.fs              = require( 'fs' ),
-    req.chalk           = require( 'chalk' );
+req.http            = require( 'http' ),
+req.https           = require( 'https' ),
+req.fs              = require( 'fs' ),
+req.chalk           = require( 'chalk' );
 
-    userConfig.commandModules   = [];
+userConfig.commandModules   = [];
 
 
-var commanders  = userConfig.command;
-var cores       = [];
-var commandObj;
+const commanders    = userConfig.command;
+const cores         = [];
+
+let commandObj;
 
 for ( var _c in commanders )
 {
