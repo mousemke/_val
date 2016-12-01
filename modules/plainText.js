@@ -17,12 +17,24 @@ const khanRegex     = /(?:kh([a]+)n)/;
  */
 class PlainText
 {
+    /**
+     * ## bgg
+     *
+     * searches board game geek for things
+     *
+     * @param {String} from originating channel
+     * @param {String} to originating user
+     * @param {String} text message text
+     *
+     * @return {String} bgg search url
+     */
     bgg( from, to, text )
     {
         text = text.split( ' ' ).join( '+' );
 
         return `http://www.boardgamegeek.com/geeksearch.php?action=search&objecttype=boardgame&q=${text}&B1=Go`;
     }
+
 
     /**
      * ## constructor
@@ -54,7 +66,7 @@ class PlainText
      */
     dance()
     {
-         var dancer = Math.floor( Math.random() * 80 );
+         const dancer = Math.floor( Math.random() * 80 );
 
         if ( dancer === 3 )
         {
@@ -80,6 +92,7 @@ class PlainText
         {
             this._bot.say( from, 'I mean...  why would you just assume you can have any new ability you want....', confObj );
         }, 7500 );
+
         setTimeout( () =>
         {
             this.say( from, 'ಠ_ಠ', confObj );
@@ -107,22 +120,26 @@ class PlainText
             to = textArr[ 0 ];
         }
 
-        var botText = ` hits ${to} with a `;
-        var car     = cars[ Math.floor( Math.random() * cars.length ) ];
+        let botText = ` hits ${to} with a `;
+        const car     = cars[ Math.floor( Math.random() * cars.length ) ];
 
-        if ( !car[ 1 ] )
+        const carModel      = car[ 0 ];
+        const carYear       = car[ 1 ];
+        const carYearEnd    = car[ 2 ];
+
+        if ( !carYear )
         {
-            botText += `Dodge ${car[ 0 ]}`;
+            botText += `Dodge ${carModel}`;
         }
-        else if ( !car[ 2 ] )
+        else if ( !carYearEnd )
         {
-            botText += `${car[ 1 ]} Dodge ${car[ 0 ]}`;
+            botText += `${carYear} Dodge ${carModel}`;
         }
         else
         {
-            var spread = car[ 2 ] - car[ 1 ];
-            var year = Math.floor( Math.random() * spread ) + car[ 1 ];
-            botText += `${year} Dodge ${car[ 0 ]}`;
+            const spread    = carYearEnd - carYear;
+            const year      = Math.floor( Math.random() * spread ) + carYear;
+            botText += `${year} Dodge ${carModel}`;
         }
 
         return botText;
@@ -145,8 +162,8 @@ class PlainText
         {
           const connections = [ ' to ', ' at ' ];
 
-          num = Math.floor( Math.random() * ( connections.length ) );
-          botText += connections[ num ] + target[ 1 ];
+          num       = Math.floor( Math.random() * ( connections.length ) );
+          botText   += connections[ num ] + target[ 1 ];
         }
 
         return botText;
@@ -158,8 +175,8 @@ class PlainText
      **/
     fetti( command )
     {
-        var type = command.slice( 0, command.length - 5 );
-        var word = type;
+        const type  = command.slice( 0, command.length - 5 );
+        let word    = type;
 
         switch ( type )
         {
@@ -209,18 +226,16 @@ class PlainText
             word = [ word ];
         }
 
-        var i, lenI, option;
-
-        for ( i = 0, lenI = userConfig.fettiOptions.length; i < lenI; i++ )
+        for ( let i = 0, lenI = userConfig.fettiOptions.length; i < lenI; i++ )
         {
             word.push ( userConfig.fettiOptions[ i ] + ' ' );
         }
 
-        var botText = '';
+        let botText = '';
 
-        for ( i = 0; i < userConfig.fettiLength; i++ )
+        for ( let i = 0; i < userConfig.fettiLength; i++ )
         {
-            option   = Math.floor( Math.random() * word.length );
+            const option   = Math.floor( Math.random() * word.length );
             botText += word[ option ];
         }
 
