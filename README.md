@@ -70,16 +70,6 @@ Change log
 + comment updates everywhere
 
 
-#### 0.2.13
-
-+ fixed a blacklist bug
-+ twitter module now accepts '*' as all users
-+ twitter module now accepts '*' as all rooms
-+ tweets limited to 140 characters
-+ t-stream-filter now aliased to +t-stream
-+ twitter streams now filter out retweets
-
-
 
 Older Changes
 =============

@@ -12,7 +12,7 @@ const MemoryDataStore     = slack.MemoryDataStore;
  * https://api.slack.com/methods/im.open
  * https://github.com/slackhq/node-slack-sdk
  *
- * @return _Object_ slack chatbot
+ * @return {Object} slack chatbot
  */
 module.exports =  function slackBot( userConfig, _bot, channels, listenToMessages, displayDebugInfo, context )
 {

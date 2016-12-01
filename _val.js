@@ -1,25 +1,26 @@
 
 
-var _Val = function( commandModule, userConfig )
+const _Val = function( commandModule, userConfig )
 {
     commandModule       = userConfig.command[ commandModule ];
-    var commandType     = commandModule.botName;
 
-    var req             = userConfig.req;
-    var http            = req.http,
-        https           = req.https,
-        fs              = req.fs,
-        chalk           = req.chalk;
+    const commandType   = commandModule.botName;
+    const req           = userConfig.req;
+    const http          = req.http;
+    const https         = req.https;
+    const fs            = req.fs;
+    const chalk         = req.chalk;
+    const modules       = require( './config/_val.modules.js' ),
+    const guysObj       = require( './lists/guys.js' );
+    const trollBlacklist = require( './lists/trollBlacklist.js' );
 
-    // Loads the configuration and sets variables
-    var channel, _bot, _modules = {};
-    var modules             = require( './config/_val.modules.js' ),
-        guysObj             = require( './lists/guys.js' );
-        trollBlacklist      = require( './lists/trollBlacklist.js' );
+    let channel;
+    let _bot;
 
-    var channels            = [];
+    const _modules      = {};
+    const channels      = [];
 
-    var debugChalkBox = {
+    const debugChalkBox = {
         'PING'              : 'blue',
         'MODE'              : 'magenta',
         'rpl_channelmodeis' : 'cyan',
@@ -73,33 +74,33 @@ var _Val = function( commandModule, userConfig )
      */
     function apiGet( options, _cb, secure, from, to )
     {
-        secure = ( secure === false ) ? false : true;
+        secure = !!secure;
 
-        var _error = function( say )
+        const _error = say =>
         {
-            console.log( say );
             if ( say )
             {
                 _bot.say( from, `sorry, ${to} bad query or url. (depends on what you were trying to do)` );
             }
             else
             {
-                console.log( `${options} appears to be down` );
+                console.warn( `${options} appears to be down` );
             }
         };
 
-        var callback = function( res )
+        const callback = res =>
         {
-            var body = '';
+            let body = '';
 
-            res.on( 'data', function( chunk )
+            res.on( 'data', chunk =>
             {
                 body += chunk;
-            });
+            } );
 
-            res.on( 'end', function()
+            res.on( 'end', () =>
             {
-                var data;
+                let data;
+
                 try
                 {
                     data = JSON.parse( body );
@@ -127,6 +128,7 @@ var _Val = function( commandModule, userConfig )
             } );
         }
     }
+
 
     const { trigger } = userConfig;
 
@@ -240,9 +242,16 @@ var _Val = function( commandModule, userConfig )
      */
     function buildCore()
     {
-        var Commander = require( commandModule.url );
-        _bot        = new Commander( userConfig, _bot, channels, listenToMessages, displayDebugInfo , this );
-        _bot.name   = commandModule.botName;
+        const Commander = require( commandModule.url );
+
+        _bot            = new Commander( userConfig,
+                                            _bot,
+                                            channels,
+                                            listenToMessages,
+                                            displayDebugInfo ,
+                                            this );
+
+        _bot.name       = commandModule.botName;
     }
 
 
@@ -260,15 +269,18 @@ var _Val = function( commandModule, userConfig )
      */
     function checkActive( from, to, text, talk )
     {
-        var name, now = Date.now(), i = 0,
-            activeUsers = [];
+        let name;
+        let i       = 0;
+        let now     = Date.now();
+
+        const activeUsers   = [];
 
         if ( ! _bot.active[ from ] )
         {
             _bot.active[ from ] = {};
         }
 
-        var activeChannel = _bot.active[ from ];
+        const activeChannel = _bot.active[ from ];
 
         if ( ! activeChannel[ to ] && to !== _bot.name &&
                 userConfig.bots.indexOf( to ) === -1 )
@@ -379,12 +391,12 @@ var _Val = function( commandModule, userConfig )
      */
     function displayDebugInfo( e )
     {
-        var command = e.command;
+        const command = e.command;
 
         if ( command !== 'PRIVMSG' )
         {
-            var _color  = debugChalkBox[ command ];
-            var text    = `     * ${command} : `;
+            const _color  = debugChalkBox[ command ];
+            const text    = `     * ${command} : `;
 
             e.args.forEach( function( arg ){ text += `${arg} `; } );
 
@@ -392,14 +404,14 @@ var _Val = function( commandModule, userConfig )
             {
                 if ( command === 'PING' )
                 {
-                    var now    = Date.now();
-                    var minUp  = ( Math.round( ( ( now - up ) / 1000 / 60 ) * 100 ) / 100 ) + '';
+                    const now   = Date.now();
+                    let minUp   = ( Math.round( ( ( now - up ) / 1000 / 60 ) * 100 ) / 100 ) + '';
 
                     if ( minUp.indexOf( '.' ) === -1 )
                     {
                         minUp += '.00';
                     }
-                    else if ( minUp.split( '.' )[1].length !== 2 )
+                    else if ( minUp.split( '.' )[ 1 ].length !== 2 )
                     {
                         minUp += '0';
                     }
@@ -411,6 +423,7 @@ var _Val = function( commandModule, userConfig )
                     {
                         clearTimeout( connectionTimer );
                     }
+
                     connectionTimer = setTimeout( reConnection, userConfig.reconnectionTimeout );
                 }
                 else

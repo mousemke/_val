@@ -3,6 +3,17 @@ Older changes
 
 This is truncated from the readme file to keep down the size
 
+
+#### 0.2.13
+
++ fixed a blacklist bug
++ twitter module now accepts '*' as all users
++ twitter module now accepts '*' as all rooms
++ tweets limited to 140 characters
++ t-stream-filter now aliased to +t-stream
++ twitter streams now filter out retweets
+
+
 #### 0.2.11
 
 + 8ball fixed
