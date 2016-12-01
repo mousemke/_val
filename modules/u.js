@@ -65,7 +65,7 @@ class U
      * @param {String} command bot command (first word)
      * @param {Object} confObj extra config object that some command modules need
      *
-     * @return _String_ changed botText
+     * @return {String} changed botText
      */
     responses()
     {

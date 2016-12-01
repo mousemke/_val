@@ -46,7 +46,7 @@ class Words( _bot, _modules, userConfig, activeWord )
      *
      * builds the string to output a specific player's points
      *
-     * @return _String_ new botText
+     * @return {String} new botText
      */
     buildPlayerPointsRequest( to, playerRequest, playerPoints )
     {
@@ -80,7 +80,7 @@ class Words( _bot, _modules, userConfig, activeWord )
      *
      * builds the string to output the points list
      *
-     * @return _String_ new botText
+     * @return {String} new botText
      */
     buildPointsList( points )
     {
@@ -116,7 +116,7 @@ class Words( _bot, _modules, userConfig, activeWord )
      * @param {Boolean} current current word or not
      * @param {String} to originating user
      *
-     * @return _Void_
+     * @return {Void}
      */
     define( from, word, current, to )
     {
@@ -168,7 +168,7 @@ class Words( _bot, _modules, userConfig, activeWord )
      *
      * reads the preexisting scores from json and gets an initial word
      *
-     * @return _Void_
+     * @return {Void}
      */
     ini()
     {
@@ -187,7 +187,7 @@ class Words( _bot, _modules, userConfig, activeWord )
      * @param {String} text full input string
      * @param {Object} confObj extra config object that some command modules need
      *
-     * @return _Void_
+     * @return {Void}
      */
     listenToWord( word, to, text, confObj )
     {
@@ -279,7 +279,7 @@ class Words( _bot, _modules, userConfig, activeWord )
      * @param {String} to originating user
      * @param {Object} confObj extra config object that some command modules need
      *
-     * @return _Void_
+     * @return {Void}
      */
     newWord( from, to, confObj )
     {
@@ -333,7 +333,7 @@ class Words( _bot, _modules, userConfig, activeWord )
      * @param {String} to originating user
      * @param {Object} confObj extra config object that some command modules need
      *
-     * @return _Void_
+     * @return {Void}
      */
     processNewWord( result, to, confObj )
     {
@@ -367,7 +367,7 @@ class Words( _bot, _modules, userConfig, activeWord )
      * @param {String} command bot command (first word)
      * @param {Object} confObj extra config object that some command modules need
      *
-     * @return _String_ changed botText
+     * @return {String} changed botText
      */
     responses( from, to, text, botText, command, confObj )
     {
@@ -489,7 +489,7 @@ class Words( _bot, _modules, userConfig, activeWord )
      *
      * @param {String} word word to scramble
      *
-     * @return _Void_ scrambled word
+     * @return {Void} scrambled word
      */
     scramble( word )
     {
@@ -521,7 +521,7 @@ class Words( _bot, _modules, userConfig, activeWord )
      *
      * @param {Object} confObj extra config object that some command modules need
      *
-     * @return _Void_
+     * @return {Void}
      */
     showVerboseDef( confObj )
     {
@@ -550,7 +550,7 @@ class Words( _bot, _modules, userConfig, activeWord )
      * @param {String} text original text
      * @param {Function} func callback function
      *
-     * @return _Void_
+     * @return {Void}
      */
     translate( langFrom, langTo, from, to, text, func )
     {
@@ -618,7 +618,7 @@ class Words( _bot, _modules, userConfig, activeWord )
      * @param {String} to originating user
      * @param {Object} confObj extra config object that some command modules need
      *
-     * @return _Void_
+     * @return {Void}
      */
     word( from, to, confObj )
     {
