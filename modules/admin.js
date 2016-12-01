@@ -34,7 +34,7 @@ class Admin
      * admin responses.  they are generally called with
     * a double trigger ( '++', '!!', etc)
      *
-     * @return _String_ changed botText
+     * @return {String} changed botText
      */
     responses()
     {

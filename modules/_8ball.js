@@ -17,7 +17,7 @@ class _8ball
      *
      * @param {String} text original text
      *
-     * @return _Boolean_ question or not
+     * @return {Boolean} question or not
      */
     checkQuestions( text )
     {
@@ -65,7 +65,7 @@ class _8ball
      * @param {String} to originating user
      * @param {Sring} text original text minus command
      *
-     * @return _String_ visions of the future
+     * @return {String} visions of the future
      */
     getPrediction( from, to, text )
     {
@@ -109,7 +109,7 @@ class _8ball
      * @param {String} command bot command (first word)
      * @param {Object} confObj extra config object that some command modules need
      *
-     * @return _String_ changed botText
+     * @return {String} changed botText
      */
     responses()
     {

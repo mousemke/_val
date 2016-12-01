@@ -52,7 +52,7 @@ class _4sq
      * @param {String} to originating user
      * @param {String} query search parameter
      *
-     * @return _Promise_ search results
+     * @return {Promise} search results
      */
     lunch( from, to, query )
     {

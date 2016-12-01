@@ -45,6 +45,13 @@ class PlainText
     }
 
 
+    /**
+     * ## dance
+     *
+     * returns 2-3 dancers
+     *
+     * @return {String} dancers
+     */
     dance()
     {
          var dancer = Math.floor( Math.random() * 80 );
@@ -60,6 +67,13 @@ class PlainText
     }
 
 
+    /**
+     * ## disappearinacloudofsmoke
+     *
+     * you cant have this ability!
+     *
+     * @return {String} scolding
+     */
     disappearinacloudofsmoke( from, to, text, textArr, command, confObj )
     {
         setTimeout( () =>
@@ -80,23 +94,21 @@ class PlainText
      *
      * by stefan's request
      *
-     * @param  {str}                    from                originating channel
-     * @param  {str}                    to                  originating user
-     * @param  {str}                    text                message text
+     * @param {String} from originating channel
+     * @param {String} to originating user
+     * @param {String} text message text
      *
-     * @return {void}
+     * @return {Void} void
      */
-    dodge( from, to, text )
+    dodge( from, to, text, textArr )
     {
-        var textSplit = text.split( ' ' );
-
-        if ( textSplit[1] )
+        if ( textArr[ 0 ] )
         {
-            to = textSplit[1];
+            to = textArr[ 0 ];
         }
 
         var botText = ` hits ${to} with a `;
-        var car = cars[ Math.floor( Math.random() * cars.length ) ];
+        var car     = cars[ Math.floor( Math.random() * cars.length ) ];
 
         if ( !car[ 1 ] )
         {
@@ -122,16 +134,16 @@ class PlainText
      **/
     end( command, text )
     {
-        var num     = Math.floor( Math.random() * ( nouns.length ) );
-        var noun    = nouns[ num ];
+        const num     = Math.floor( Math.random() * ( nouns.length ) );
+        const noun    = nouns[ num ];
 
-        botText     = command + 's ' + noun[ 0 ];
+        let botText   = `${command}s ${noun[ 0 ]}`;
 
-        var target  = text.split( ' ' );
+        const target  = text.split( ' ' );
 
         if ( target && target[ 1 ] )
         {
-          var connections = [ ' to ', ' at ' ];
+          const connections = [ ' to ', ' at ' ];
 
           num = Math.floor( Math.random() * ( connections.length ) );
           botText += connections[ num ] + target[ 1 ];
@@ -216,6 +228,17 @@ class PlainText
     }
 
 
+    /**
+     * ## g
+     *
+     * searches google for things
+     *
+     * @param {String} from originating channel
+     * @param {String} to originating user
+     * @param {String} text message text
+     *
+     * @return {String} google search url
+     */
     g( from, to, text )
     {
         text = text.split( ' ' ).join( '%20' );
@@ -224,7 +247,18 @@ class PlainText
     }
 
 
-    germanysgottalent( from, to, text )
+    /**
+     * ## germanysGotTalent
+     *
+     * showcases germany's amazing talents
+     *
+     * @param {String} from originating channel
+     * @param {String} to originating user
+     * @param {String} text message text
+     *
+     * @return {String} youtube url
+     */
+    germanysGotTalent( from, to, text )
     {
         const choices   = [ 'https://www.youtube.com/watch?v=IeWAPVWXLtM',
                         'https://www.youtube.com/watch?v=dNUUCHsgRu8',
@@ -237,6 +271,17 @@ class PlainText
     }
 
 
+    /**
+     * ## google
+     *
+     * searches google for things
+     *
+     * @param {String} from originating channel
+     * @param {String} to originating user
+     * @param {String} text message text
+     *
+     * @return {String} google search url
+     */
     google( from, to, text )
     {
         text = text.split( ' ' ).join( '%20' );
@@ -350,7 +395,7 @@ class PlainText
             },
 
             germanysgottalent   : {
-                f       : this.germanysgottalent,
+                f       : this.germanysGotTalent,
                 desc    : 'see germany\'s finest',
                 syntax  : [
                     `${trigger}germanysgottalent`
@@ -435,6 +480,17 @@ class PlainText
     }
 
 
+    /**
+     * ## wiki
+     *
+     * searches wikipedia for things
+     *
+     * @param {String} from originating channel
+     * @param {String} to originating user
+     * @param {String} text message text
+     *
+     * @return {String} wikipedia search url
+     */
     wiki( from, to, text )
     {
         text = text.split( ' ' ).join( '%20' );

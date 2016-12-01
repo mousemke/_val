@@ -35,7 +35,7 @@ class Mtg
      * @param {String} to originating user
      * @param {Sring} text original text minus command
      *
-     * @return _String_ card image url
+     * @return {String} card image url
      */
     mtg( from, to, text )
     {
@@ -73,7 +73,7 @@ class Mtg
      * @param {String} command bot command (first word)
      * @param {Object} confObj extra config object that some command modules need
      *
-     * @return _String_ changed botText
+     * @return {String} changed botText
      */
     responses()
     {
