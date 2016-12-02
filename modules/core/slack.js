@@ -21,8 +21,6 @@ module.exports =  function slackBot( userConfig, channels, listenToMessages, dis
     let dataStore   = new MemoryDataStore();
     const _bot      = new RtmClient( token, { dataStore } );
 
-    userConfig.command.slack.botName = _bot.dataStore.getUserById( _bot.activeUserId );
-
     let boundListenToMessages = listenToMessages.bind( context );
 
     userConfig.commandModules.push( _bot );

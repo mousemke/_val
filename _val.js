@@ -3,7 +3,7 @@
 const _Val = function( commandModule )
 {
     commandModule       = userConfig.command[ commandModule ];
-console.log( commandModule, '***********' )
+
     const commandType   = commandModule.botName;
     const req           = userConfig.req;
     const http          = req.http;
@@ -248,7 +248,7 @@ console.log( commandModule, '***********' )
                                             listenToMessages,
                                             displayDebugInfo ,
                                             this );
-console.log( commandModule.botName, commandModule )
+
         _bot.name       = commandModule.botName;
     }
 
