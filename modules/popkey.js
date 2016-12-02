@@ -1,5 +1,7 @@
 
-class PopKey
+const Module        = require( './Module.js' );
+
+class PopKey extends Module
 {
     /**
      * ## constructor
@@ -15,11 +17,9 @@ class PopKey
      */
     constructor( _bot, _modules, userConfig, commandModule )
     {
-        this._bot           = _bot;
-        this._modules       = _modules;
-        this.userConfig     = userConfig;
-        this.commandModule  = commandModule;
-        this.apikey         = userConfig.popKeyAPIKey;
+        super( _bot, _modules, userConfig, commandModule );
+
+        this.apikey = userConfig.popKeyAPIKey;
     }
 
 

@@ -1,6 +1,8 @@
-var chairs = require( '../lists/chairs.js' );
 
-class RR
+const Module    = require( './Module.js' );
+const chairs    = require( '../lists/chairs.js' );
+
+class RR extends Module
 {
     /**
      * ## constructor
@@ -16,10 +18,7 @@ class RR
      */
     constructor( _bot, _modules, userConfig, commandModule )
     {
-        this._bot           = _bot;
-        this._modules       = _modules;
-        this.userConfig     = userConfig;
-        this.commandModule  = commandModule;
+        super( _bot, _modules, userConfig, commandModule );
 
         this.clip           = [];
         this.clipSize       = 6;

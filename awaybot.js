@@ -15,7 +15,7 @@ const _Val = function( commandModule, userConfig )
     let _bot;
 
     const _modules      = {};
-    const channels      = [];
+    let channels        = [];
 
     const debugChalkBox = {
         'PING'              : 'blue',
@@ -110,25 +110,6 @@ const _Val = function( commandModule, userConfig )
         }
     }
 
-    const { trigger } = userConfig;
-
-    /**
-     * ## baseResponses
-     *
-     * val's base responses that both require no modules and are non-optional
-     * @type {Object}
-     */
-    baseResponses = {
-        active : {
-            module  : 'base',
-            f       : checkActive,
-            desc    : 'checks how many people are actuve in the channel',
-            syntax  : [
-                `${trigger}active`
-            ]
-        }
-    };
-
 
     /**
      * ## buildClient
@@ -143,8 +124,6 @@ const _Val = function( commandModule, userConfig )
          * adds core components to an obj to be passed modules
          */
         _modules.core = {
-
-             checkActive    : checkActive,
 
              userData       : userData,
 
@@ -190,8 +169,8 @@ const _Val = function( commandModule, userConfig )
 
         if ( command !== 'PRIVMSG' )
         {
-            const _color  = debugChalkBox[ command ];
-            const text    = `     * ${command} : `;
+            const _color    = debugChalkBox[ command ];
+            let text        = `     * ${command} : `;
 
             e.args.forEach( function( arg ){ text += `${arg} `; } );
 
@@ -356,7 +335,6 @@ const _Val = function( commandModule, userConfig )
         buildCore();
 
         _bot.active     = {};
-        _bot.responses  = baseResponses;
         _bot._modules   = _modules;
 
         console.log( `${commandType} built` );
@@ -391,10 +369,8 @@ const _Val = function( commandModule, userConfig )
 
                 if ( text[ 0 ] === userConfig.trigger )
                 {
-                    return `Your ${userConfig.botName} is getting a firmware upgrade, please do not press the power button or unplug your computer.`;
+                    return `Your ${_bot.name} is getting a firmware upgrade, please do not press the power button or unplug your computer.`;
                 }
-
-                return botText;
             }
         }
     }

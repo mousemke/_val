@@ -7,31 +7,45 @@
  * @author  Mouse Braun <mouse@knoblau.ch>
  *
  */
-var words       = require( '../json/u.json' );
+const words     = require( '../json/u.json' );
+const Module    = require( './Module.js' );
 
-class U
+
+class U extends Module
 {
     /**
-     * ## constructor
+     * ## responses
      *
-     * sets the initial "global" variables
-     *
-     * @param {Object} _bot instance of _Val with a core attached
-     * @param {Object} _modules config and instance of all modules
-     * @param {Object} userConfig available options
-     * @param {Object} commandModule instance of the applied core
-     *
-     * @return {Void} void
+     * @return {Object} responses
      */
-    constructor( _bot, _modules, userConfig, commandModule )
+    responses()
     {
-        this._bot           = _bot;
-        this._modules       = _modules;
-        this.userConfig     = userConfig;
-        this.commandModule  = commandModule;
+        const { trigger } = this.userConfig;
+
+        return {
+            u : {
+                f       : this.talk,
+                desc    : 'interesting political discussions with someone angry',
+                syntax  : [
+                    `${trigger}u <question>`
+                ]
+            }
+        };
     }
 
 
+    /**
+     * ## talk
+     *
+     * dont just sit there, u, say something!
+     *
+     * @param {String} from originating channel
+     * @param {String} to originating user
+     * @param {String} text full input string
+     * @param {Array} textSplit input string broken up by word
+     *
+     * @return {String} reply
+     */
     talk( from, to, text, textSplit )
     {
         var _w, _ts, res = [];
@@ -53,34 +67,7 @@ class U
 
         return res.length !== 0 ? res[ Math.floor( Math.random() * res.length ) ] : '';
     }
-
-
-    /**
-     * ## responses
-     *
-     * @param {String} from originating channel
-     * @param {String} to originating user
-     * @param {String} text full input string
-     * @param {String} botText text to say
-     * @param {String} command bot command (first word)
-     * @param {Object} confObj extra config object that some command modules need
-     *
-     * @return {String} changed botText
-     */
-    responses()
-    {
-        const { trigger } = this.userConfig;
-
-        return {
-            u : {
-                f       : this.talk,
-                desc    : 'interesting political discussions with someone angry',
-                syntax  : [
-                    `${trigger}u <question>`
-                ]
-            }
-        };
-    }
 };
+
 
 module.exports = U;

@@ -5,10 +5,12 @@
  *
  * base on https://xkcd.com/1525/
  */
-var emojica         = require('../lists/emojica');
-var questionWords   = require('../lists/questionWords');
+const emojica       = require( '../lists/emojica' );
+const questionWords = require( '../lists/questionWords' );
+const Module        = require( './Module.js' );
 
-class _8ball
+
+class _8ball extends Module
 {
     /**
      * ## checkQuestions
@@ -31,27 +33,6 @@ class _8ball
         } );
 
         return count === none ? false : true;
-    }
-
-
-    /**
-     * ## constructor
-     *
-     * sets the initial "global" variables
-     *
-     * @param {Object} _bot instance of _Val with a core attached
-     * @param {Object} _modules config and instance of all modules
-     * @param {Object} userConfig available options
-     * @param {Object} commandModule instance of the applied core
-     *
-     * @return {Void} void
-     */
-    constructor( _bot, _modules, userConfig, commandModule )
-    {
-        this._bot           = _bot;
-        this._modules       = _modules;
-        this.userConfig     = userConfig;
-        this.commandModule  = commandModule;
     }
 
 
@@ -100,16 +81,7 @@ class _8ball
 
 
     /**
-     * 8ball responses
-     *
-     * @param {String} from originating channel
-     * @param {String} to originating user
-     * @param {String} text full input string
-     * @param {String} botText text to say
-     * @param {String} command bot command (first word)
-     * @param {Object} confObj extra config object that some command modules need
-     *
-     * @return {String} changed botText
+     * @return {Object} responses
      */
     responses()
     {

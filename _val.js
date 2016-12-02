@@ -1,9 +1,9 @@
 
 
-const _Val = function( commandModule, userConfig )
+const _Val = function( commandModule )
 {
     commandModule       = userConfig.command[ commandModule ];
-
+console.log( commandModule, '***********' )
     const commandType   = commandModule.botName;
     const req           = userConfig.req;
     const http          = req.http;
@@ -243,14 +243,12 @@ const _Val = function( commandModule, userConfig )
     function buildCore()
     {
         const Commander = require( commandModule.url );
-
         _bot            = new Commander( userConfig,
-                                            _bot,
                                             channels,
                                             listenToMessages,
                                             displayDebugInfo ,
                                             this );
-
+console.log( commandModule.botName, commandModule )
         _bot.name       = commandModule.botName;
     }
 
@@ -978,7 +976,6 @@ req.fs              = require( 'fs' ),
 req.chalk           = require( 'chalk' );
 
 userConfig.commandModules   = [];
-
 
 const commanders    = userConfig.command;
 const cores         = [];

@@ -1,8 +1,10 @@
 
+const Module        = require( './Module.js' );
+
 /**
  * a magicthegathering.io search module
  */
-class Mtg
+class Mtg extends Module
 {
     /**
      * ## constructor
@@ -18,11 +20,9 @@ class Mtg
      */
     constructor( _bot, _modules, userConfig, commandModule )
     {
-        this._bot           = _bot;
-        this._modules       = _modules;
-        this.userConfig     = userConfig;
-        this.commandModule  = commandModule;
-        this.apiGet         = _modules.core.apiGet;
+        super( _bot, _modules, userConfig, commandModule );
+
+        this.apiGet = _modules.core.apiGet;
     }
 
 

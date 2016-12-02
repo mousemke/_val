@@ -1,18 +1,16 @@
 
-const copy  = require( './i18n/words.i18n.js' );
-const http  = require( 'http' );
-const https = require( 'https' );
-const fs    = require( 'fs' );
+const copy      = require( './i18n/words.i18n.js' );
+const http      = require( 'http' );
+const https     = require( 'https' );
+const fs        = require( 'fs' );
+const Module    = require( './Module.js' );
 
-class Words( _bot, _modules, userConfig, activeWord )
+
+class Words extends Module
 {
     constructor( _bot, _modules, userConfig, commandModule, activeWord )
     {
-        this._bot           = _bot;
-        this._modules       = _modules;
-        this.userConfig     = userConfig;
-        this.commandModule  = commandModule;
-
+        super( _bot, _modules, userConfig, commandModule, activeWord );
 
         this.activeWord = activeWord || {
             currentWord     : '',

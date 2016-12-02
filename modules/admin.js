@@ -1,9 +1,11 @@
 
+const Module        = require( './Module.js' );
+
 /**
  * this modules contains admin only functions.  they are generally called with
  * a double trigger ( '++', '!!', etc)
  */
-class Admin
+class Admin extends Module
 {
     /**
      * ## constructor
@@ -19,11 +21,7 @@ class Admin
      */
     constructor( _bot, _modules, userConfig, commandModule )
     {
-        this._bot           = _bot;
-        this._modules       = _modules;
-        this.userConfig     = userConfig;
-        this.commandModule  = commandModule;
-
+        super( _bot, _modules, userConfig, commandModule );
         this.version        = this.version.bind( this );
     }
 

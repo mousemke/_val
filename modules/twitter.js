@@ -1,15 +1,18 @@
 
 // https://github.com/ttezel/twit
-const Twit = require('twit');
+const Twit      = require( 'twit' );
+const Module    = require( './Module.js' );
 
-class Twitter
+class Twitter extends Module
 {
     /**
      * ## authenticate
      *
      * given twitter info, this authorizses the api for the accounr
      *
-     * @param  {String} from room or person name
+     * @param {String} from room or person name
+     * @param {String} to person name
+     * @param {Boolean} write whether this is asking for write access
      *
      * @return {Object} Twit object
      */
@@ -70,12 +73,9 @@ class Twitter
      */
     constructor( _bot, _modules, userConfig, commandModule )
     {
-        this._bot           = _bot;
-        this._modules       = _modules;
-        this.userConfig     = userConfig;
-        this.commandModule  = commandModule;
+        super( _bot, _modules, userConfig, commandModule );
 
-        this._tStreams      = {};
+        this._tStreams = {};
     }
 
 
@@ -157,11 +157,22 @@ class Twitter
     }
 
 
-    getSlug( from, to, text, botText, command, confObj )
+    /**
+     * ## getSlug
+     *
+     * searches twitter for the provided slug
+     *
+     * @param {String} from originating channel
+     * @param {String} to originating user
+     * @param {String} text full input string
+     *
+     * @return {Void}
+     */
+    getSlug( from, to, text )
     {
         let _t  = this.authenticate( from, to );
 
-        _t.get( 'users/suggestions/:slug', { slug : text }, function ( err, data, response )
+        _t.get( 'users/suggestions/:slug', { slug : text }, ( err, data, response ) =>
         {
             console.log( data )
         } );

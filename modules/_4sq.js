@@ -1,32 +1,12 @@
 
+const Module        = require( './Module.js' );
 
 /**
  * this modules uses the Foursquare API (https://developer.foursquare.com/docs/venues/explore)
  * to find places to eat nearby
  */
-class _4sq
+class _4sq extends Module
 {
-    /**
-     * ## constructor
-     *
-     * sets the initial "global" variables
-     *
-     * @param {Object} _bot instance of _Val with a core attached
-     * @param {Object} _modules config and instance of all modules
-     * @param {Object} userConfig available options
-     * @param {Object} commandModule instance of the applied core
-     *
-     * @return {Void} void
-     */
-    constructor( _bot, _modules, userConfig, commandModule )
-    {
-        this._bot           = _bot;
-        this._modules       = _modules;
-        this.userConfig     = userConfig;
-        this.commandModule  = commandModule;
-    }
-
-
     /**
      * ## getRange
      *

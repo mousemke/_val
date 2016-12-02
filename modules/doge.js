@@ -1,11 +1,12 @@
 
-var http            = require( 'http' );
-var https           = require( 'https' );
-var fs              = require( 'fs' );
+const http          = require( 'http' );
+const https         = require( 'https' );
+const fs            = require( 'fs' );
+const Module        = require( './Module.js' );
 
-var dcMasterList    = {};
+let dcMasterList    = {};
 
-class Doge
+class Doge extends Module
 {
     /**
      * ## balance
@@ -86,10 +87,7 @@ class Doge
      */
     constructor( _bot, _modules, userConfig, commandModule )
     {
-        this._bot           = _bot;
-        this._modules       = _modules;
-        this.userConfig     = userConfig;
-        this.commandModule  = commandModule;
+        super( _bot, _modules, userConfig, commandModule );
 
         this.loadMasterList();
     }

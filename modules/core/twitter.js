@@ -5,7 +5,7 @@
  *
  * @return {Object} twitter chatbot
  */
-module.exports = function twitterBot( userConfig, _bot, channels, listenToMessages, displayDebugInfo, context )
+module.exports = function twitterBot( userConfig, channels, listenToMessages, displayDebugInfo, context )
 {
     const Twit          = require( 'twit' );
     const twitterConfig = userConfig.command.twitter;
@@ -19,7 +19,7 @@ module.exports = function twitterBot( userConfig, _bot, channels, listenToMessag
         users
     } = twitterConfig;
 
-    _bot = new Twit( {
+    const _bot = new Twit( {
         consumer_key        : consumerKey,
         consumer_secret     : consumerSecret,
         access_token        : accessToken,

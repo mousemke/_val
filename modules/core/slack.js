@@ -1,5 +1,5 @@
 
-const slack               = require('@slack/client');
+const slack               = require( '@slack/client' );
 const RtmClient           = slack.RtmClient;
 const CLIENT_EVENTS       = slack.CLIENT_EVENTS;
 const RTM_EVENTS          = slack.RTM_EVENTS;
@@ -14,12 +14,12 @@ const MemoryDataStore     = slack.MemoryDataStore;
  *
  * @return {Object} slack chatbot
  */
-module.exports =  function slackBot( userConfig, _bot, channels, listenToMessages, displayDebugInfo, context )
+module.exports =  function slackBot( userConfig, channels, listenToMessages, displayDebugInfo, context )
 {
     let slackConfig = userConfig.command.slack;
     let token       = slackConfig.apiKey;
     let dataStore   = new MemoryDataStore();
-    _bot            = new RtmClient( token, { dataStore } );
+    const _bot      = new RtmClient( token, { dataStore } );
 
     userConfig.command.slack.botName = _bot.dataStore.getUserById( _bot.activeUserId );
 
