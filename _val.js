@@ -10,7 +10,7 @@ const _Val = function( commandModule, userConfig )
     const https         = req.https;
     const fs            = req.fs;
     const chalk         = req.chalk;
-    const modules       = require( './config/_val.modules.js' ),
+    const modules       = require( './config/_val.modules.js' );
     const guysObj       = require( './lists/guys.js' );
     const trollBlacklist = require( './lists/trollBlacklist.js' );
 
@@ -18,7 +18,7 @@ const _Val = function( commandModule, userConfig )
     let _bot;
 
     const _modules      = {};
-    const channels      = [];
+    let channels        = [];
 
     const debugChalkBox = {
         'PING'              : 'blue',
@@ -396,9 +396,9 @@ const _Val = function( commandModule, userConfig )
         if ( command !== 'PRIVMSG' )
         {
             const _color  = debugChalkBox[ command ];
-            const text    = `     * ${command} : `;
+            let text        = `     * ${command} : `;
 
-            e.args.forEach( function( arg ){ text += `${arg} `; } );
+            e.args.forEach( arg => text += `${arg} ` );
 
             if ( _color )
             {

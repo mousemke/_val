@@ -95,7 +95,7 @@ class PlainText
 
         setTimeout( () =>
         {
-            this.say( from, 'ಠ_ಠ', confObj );
+            this._bot.say( from, 'ಠ_ಠ', confObj );
         }, 1500 );
 
         return 'no...  you don\'t have that ability.';
