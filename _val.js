@@ -1,8 +1,8 @@
 
 
-const _Val = function( commandModule )
+const _Val = function( commandModuleName )
 {
-    commandModule       = userConfig.command[ commandModule ];
+    const commandModule  = userConfig.command[ commandModuleName ];
 
     const commandType   = commandModule.botName;
     const req           = userConfig.req;
@@ -236,7 +236,7 @@ const _Val = function( commandModule )
     /**
      * ## buildCore
      *
-     * this will develop into a dynamic core loader.  for now, it is what it is
+     * dynamic core loader
      *
      * @return _Void_
      */
@@ -247,7 +247,9 @@ const _Val = function( commandModule )
                                             channels,
                                             listenToMessages,
                                             displayDebugInfo ,
-                                            this );
+                                            this,
+                                            commandModule
+                                        );
 
         _bot.name       = commandModule.botName;
     }
@@ -982,7 +984,7 @@ const cores         = [];
 
 let commandObj;
 
-for ( var _c in commanders )
+for ( let _c in commanders )
 {
     commandObj = commanders[ _c ];
 

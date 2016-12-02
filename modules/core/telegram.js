@@ -9,10 +9,8 @@ const File      = require( 'telegram-api/types/File' );
  *
  * @return {Object} telegram chatbot
  */
-module.exports = function telegramBot( userConfig, channels, listenToMessages, displayDebugInfo, context )
+module.exports = function telegramBot( userConfig, channels, listenToMessages, displayDebugInfo, context, telegramConfig )
 {
-    let telegramConfig = userConfig.command.telegram;
-
     const _bot = new Telegram( {
         token   : telegramConfig.apiKey
     } );

@@ -6,10 +6,8 @@ const Irc = require( 'irc' );
  *
  * @return {Object} irc chatbot
  */
-module.exports = function ircBot( userConfig, channels, listenToMessages, displayDebugInfo, context )
+module.exports = function ircBot( userConfig, channels, listenToMessages, displayDebugInfo, context, ircConfig )
 {
-    const ircConfig = userConfig.command.irc;
-
     const _bot = new Irc.Client( ircConfig.server, ircConfig.botName, {
         channels                : channels,
         password                : ircConfig.serverPassword,
