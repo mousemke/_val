@@ -81,7 +81,7 @@ class RR extends Module
 
         var shot    = Math.floor( Math.random() * clipSize );
         var bullet  = clip[ shot ];
-        botText     = '';
+        let botText = '';
 
         if ( bullet === true )
         {
@@ -89,11 +89,9 @@ class RR extends Module
         }
         else
         {
-            text = text.split( ' ' );
-
-            if ( text[ 1 ] )
+            if ( text )
             {
-                to = text[ 1 ];
+                to = text;
             }
 
             if ( bullet === 'bang!' )

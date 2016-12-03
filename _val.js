@@ -1,8 +1,9 @@
 
 
-const _Val = function( commandModuleName )
+const _Val = function( commandModuleName, userConfig )
 {
     const commandModule  = userConfig.command[ commandModuleName ];
+    const _botConfig = Object.assign( {}, userConfig, commandModule.coreConfig || {} );
 
     const commandType   = commandModule.botName;
     const req           = userConfig.req;
@@ -130,7 +131,7 @@ const _Val = function( commandModuleName )
     }
 
 
-    const { trigger } = userConfig;
+    const { trigger } = _botConfig;
 
     /**
      * ## baseResponses
@@ -225,7 +226,7 @@ const _Val = function( commandModuleName )
                 {
                     for ( var option in _module.options )
                     {
-                        userConfig[ option ] = _module.options[ option ];
+                        _botConfig[ option ] = _module.options[ option ];
                     }
                 }
             }
@@ -243,7 +244,8 @@ const _Val = function( commandModuleName )
     function buildCore()
     {
         const Commander = require( commandModule.url );
-        _bot            = new Commander( userConfig,
+
+        _bot            = new Commander( _botConfig,
                                             channels,
                                             listenToMessages,
                                             displayDebugInfo ,
@@ -283,7 +285,7 @@ const _Val = function( commandModuleName )
         const activeChannel = _bot.active[ from ];
 
         if ( ! activeChannel[ to ] && to !== _bot.name &&
-                userConfig.bots.indexOf( to ) === -1 )
+                _botConfig.bots.indexOf( to ) === -1 )
         {
             activeChannel[ to ] = now;
             now++;
@@ -291,7 +293,7 @@ const _Val = function( commandModuleName )
 
         for ( name in activeChannel )
         {
-            if ( now - userConfig.activeTime < activeChannel[ name ] )
+            if ( now - _botConfig.activeTime < activeChannel[ name ] )
             {
                 i++;
                 activeUsers.push( name );
@@ -424,7 +426,7 @@ const _Val = function( commandModuleName )
                         clearTimeout( connectionTimer );
                     }
 
-                    connectionTimer = setTimeout( reConnection, userConfig.reconnectionTimeout );
+                    connectionTimer = setTimeout( reConnection, _botConfig.reconnectionTimeout );
                 }
                 else
                 {
@@ -449,7 +451,7 @@ const _Val = function( commandModuleName )
     function generateChannelList()
     {
         /**
-         * adds private channels from userConfig.channelsPrivateJoin to the list of
+         * adds private channels from _botConfig.channelsPrivateJoin to the list of
          * channels to join.
          */
         function addPrivateChannels()
@@ -478,7 +480,7 @@ const _Val = function( commandModuleName )
          */
         function finishChannels()
         {
-            userConfig.publicChannels = [].concat( channels );
+            _botConfig.publicChannels = [].concat( channels );
 
             if ( commandModule.slackTeam )
             {
@@ -486,19 +488,19 @@ const _Val = function( commandModuleName )
             }
 
             removeBlacklistChannels();
-            userConfig.channels = channels;
+            _botConfig.channels = channels;
 
             ini();
         }
 
 
         /**
-         * if any channels are blacklisted from entering from userConfig.channelsPublicIgnore,
+         * if any channels are blacklisted from entering from _botConfig.channelsPublicIgnore,
          * this removes them from the channels array
          */
         function removeBlacklistChannels()
         {
-            var _b, _bIndex, _black = userConfig.channelsPublicIgnore || [];
+            var _b, _bIndex, _black = _botConfig.channelsPublicIgnore || [];
             var _blackLength        = _black.length;
 
             if ( _blackLength )
@@ -537,9 +539,9 @@ const _Val = function( commandModuleName )
                 finishChannels();
             }, true );
         }
-        else if ( userConfig.channels )
+        else if ( _botConfig.channels )
         {
-            channels = userConfig.channels;
+            channels = _botConfig.channels;
             finishChannels();
         }
         else
@@ -604,30 +606,28 @@ const _Val = function( commandModuleName )
 
         for ( const moduleName in _modules.constructors )
         {
-            const modulesConstructor = _modules.constructors[ moduleName ];
-            const module = _modules[ moduleName ] = new modulesConstructor( _bot, _modules, userConfig, commandModule );
-
-            function formatResponses( module, name )
+            if ( _botConfig.disabledModules.indexOf( moduleName ) === -1 )
             {
-                module.responses = module.responses();
+                const modulesConstructor = _modules.constructors[ moduleName ];
+                const module = _modules[ moduleName ] = new modulesConstructor( _bot, _modules, _botConfig, commandModule );
 
-                Object.keys( module.responses ).forEach( r =>
+                function formatResponses( module, name )
                 {
-                    const res = module.responses[ r ];
+                    module.responses = module.responses();
 
-                    res.f           = res.f.bind( module );
-                    res.moduleName  = name;
-                    res.module      = module;
-                } );
-            };
+                    Object.keys( module.responses ).forEach( r =>
+                    {
+                        const res = module.responses[ r ];
 
-            formatResponses( module, moduleName );
+                        res.f           = res.f.bind( module );
+                        res.moduleName  = name;
+                        res.module      = module;
+                    } );
+                };
 
-            _bot.responses = combineResponses( _bot.responses, module.responses );
+                formatResponses( module, moduleName );
 
-            if ( module.init )
-            {
-                module.init();
+                _bot.responses = combineResponses( _bot.responses, module.responses );
             }
         }
 
@@ -652,7 +652,7 @@ const _Val = function( commandModuleName )
     {
         if ( text )
         {
-            if ( userConfig.verbose === true )
+            if ( _botConfig.verbose === true )
             {
                 console.log( commandType, chalk.green( from ), chalk.red( to ), text );
             }
@@ -663,7 +663,7 @@ const _Val = function( commandModuleName )
 
             text = trollOn( text );
 
-            if ( userConfig.bots.indexOf( to ) === -1 )
+            if ( _botConfig.bots.indexOf( to ) === -1 )
             {
                 var botText = '';
 
@@ -678,15 +678,17 @@ const _Val = function( commandModuleName )
 
                 botText = checkGuys( to, text );
 
-                if ( text[ 0 ] === userConfig.trigger && text !== userConfig.trigger && botText === '' )
+                const trigger       = _botConfig.trigger;
+                const triggerLength = trigger.length;
+
+                if ( text.slice( 0, triggerLength ) === trigger && text !== trigger && botText === '' )
                 {
-                    text = text.slice( 1 );
+                    text = text.slice( triggerLength );
 
                     let textArr     = text.split( ' ' );
                     const command   = textArr[ 0 ];
                     textArr         = textArr.slice( 1 );
                     text            = textArr.join( ' ' );
-
 
                     if ( _bot.responses[ command ] )
                     {
@@ -696,8 +698,8 @@ const _Val = function( commandModuleName )
 
                 return botText;
             }
-            else if ( userConfig.bots.indexOf( to ) !== -1 &&
-                ( text[ 0 ] ===  userConfig.trigger && text !==  userConfig.trigger ) )
+            else if ( _botConfig.bots.indexOf( to ) !== -1 &&
+                ( text[ 0 ] ===  _botConfig.trigger && text !==  _botConfig.trigger ) )
             {
                 // automated response to automated people
             }
@@ -718,41 +720,41 @@ const _Val = function( commandModuleName )
      */
     function listenToPm( from, text )
     {
-        var textSplit   = text.split( ' ' );
-        var command     = textSplit[ 0 ];
+        // var textSplit   = text.split( ' ' );
+        // var command     = textSplit[ 0 ];
 
-        if ( command[0] === userConfig.trigger )
-        {
-            command = command.slice( 1 );
-        }
+        // if ( command[0] === _botConfig.trigger )
+        // {
+        //     command = command.slice( 1 );
+        // }
 
-        if ( userConfig.admins.indexOf( from ) !== -1 )
-        {
-            switch ( command )
-            {
-                case 'die':
-                    _bot.disconnect( 'Fine...  I was on my way out anyways.', function()
-                    {
-                        console.log( from + ' killed me' );
-                    });
-                    break;
-                default:
-                    listenToMessages( from, from, text, command );
-            }
-        }
-        else
-        {
-            switch ( command )
-            {
-                case 'help':
-                    botText = userConfig.helpText();
-                    _bot.say( from, botText );
-                    botText = '';
-                    break;
-                default:
-                    listenToMessages( from, from, text, command );
-            }
-        }
+        // if ( _botConfig.admins.indexOf( from ) !== -1 )
+        // {
+        //     switch ( command )
+        //     {
+        //         case 'die':
+        //             _bot.disconnect( 'Fine...  I was on my way out anyways.', function()
+        //             {
+        //                 console.log( from + ' killed me' );
+        //             });
+        //             break;
+        //         default:
+        //             listenToMessages( from, from, text, command );
+        //     }
+        // }
+        // else
+        // {
+        //     switch ( command )
+        //     {
+        //         case 'help':
+        //             botText = _botConfig.helpText();
+        //             _bot.say( from, botText );
+        //             botText = '';
+        //             break;
+        //         default:
+        //             listenToMessages( from, from, text, command );
+        //     }
+        // }
     }
 
 
@@ -819,13 +821,13 @@ const _Val = function( commandModuleName )
      */
     function trimUsernames( text )
     {
-        if ( userConfig.usernamePrefix && userConfig.usernamePrefix.length > 0 )
+        if ( _botConfig.usernamePrefix && _botConfig.usernamePrefix.length > 0 )
         {
             text = text.split( ' ' );
 
             for ( var i = 0, lenI = text.length; i < lenI; i++ )
             {
-                if ( userConfig.usernamePrefix.indexOf( text[ i ][0] ) !== -1 )
+                if ( _botConfig.usernamePrefix.indexOf( text[ i ][0] ) !== -1 )
                 {
                     text[ i ] = text[ i ].slice( 1 );
                 }
@@ -861,11 +863,11 @@ const _Val = function( commandModuleName )
 
         if ( text.toLowerCase().indexOf( 'troll' ) !== -1 )
         {
-            text = userConfig.trigger + 'trollfetti';
+            text = _botConfig.trigger + 'trollfetti';
         }
         else if ( text.toLowerCase().indexOf( 'trøll' ) !== -1 )
         {
-            text = userConfig.trigger + 'trøllfetti';
+            text = _botConfig.trigger + 'trøllfetti';
         }
 
         return text;
@@ -886,7 +888,7 @@ const _Val = function( commandModuleName )
      */
     function userData( to, from, _cb, origText )
     {
-        if ( userConfig.autoAuth )
+        if ( _botConfig.autoAuth )
         {
             var textSplit = origText.split( ' ' );
 
@@ -904,17 +906,17 @@ const _Val = function( commandModuleName )
                 var user            = textSplit[ 2 ];
                 var result          = textSplit[ 3 ];
 
-                if ( apiReturn === userConfig.nickservAPI &&
+                if ( apiReturn === _botConfig.nickservAPI &&
                     returnMessage === 'identified' && user === to && result === 'true' )
                 {
                     _cb( to, result, textSplit, origText );
                 }
-                else if ( apiReturn === userConfig.nickservAPI &&
+                else if ( apiReturn === _botConfig.nickservAPI &&
                     returnMessage === 'identified' && user === to && result === 'false' )
                 {
                     _bot.say( to, 'You are not identified. (/msg NickServ help)' );
                 }
-                else if ( apiReturn === userConfig.NickservAPI && returnMessage === 'notRegistered' && user === to )
+                else if ( apiReturn === _botConfig.NickservAPI && returnMessage === 'notRegistered' && user === to )
                 {
                     _bot.say( to, 'You are not a registered user. (/msg NickServ help)' );
                 }
@@ -922,7 +924,7 @@ const _Val = function( commandModuleName )
 
             _bot.addListener( 'pm', response );
 
-            _bot.say( userConfig.nickservBot, userConfig.nickservAPI + ' identify ' + to );
+            _bot.say( _botConfig.nickservBot, _botConfig.nickservAPI + ' identify ' + to );
         }
     }
 
@@ -939,7 +941,7 @@ const _Val = function( commandModuleName )
      */
     function watchActive( from, to )
     {
-        var ignoreTheBots = userConfig.bots || [];
+        var ignoreTheBots = _botConfig.bots || [];
 
         if ( ignoreTheBots.indexOf( to ) === -1 )
         {

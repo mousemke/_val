@@ -13,9 +13,7 @@ module.exports = function twitterBot( userConfig, channels, listenToMessages, di
         consumerKey,
         consumerSecret,
         accessToken,
-        accessTokenSecret,
-        account,
-        users
+        accessTokenSecret
     } = twitterConfig;
 
     const _bot = new Twit( {
@@ -25,8 +23,6 @@ module.exports = function twitterBot( userConfig, channels, listenToMessages, di
         access_token_secret : accessTokenSecret
     } );
 
-    _bot.account        = account;
-    _bot.users          = users;
 
     userConfig.commandModules.push( _bot );
 
@@ -34,26 +30,31 @@ module.exports = function twitterBot( userConfig, channels, listenToMessages, di
 
     _bot.say = function( to, text )
     {
-        console.log( to, text );
-        // const answer = new Message()
-        //                 .text( text )
-        //                 .to( to );
-        // _bot.send( answer );
+        const tweet = {
+            status  : `${to} ${text}`
+        };
+
+        _bot.post( 'statuses/update', tweet, ( err, data, response ) =>
+        {
+            if ( err )
+            {
+                console.log( 'error:', err );
+            }
+        } );
     };
 
     const stream = _bot.stream( 'statuses/filter', { track : '@_galaxypotato' } );
 
     stream.on( 'tweet', tweet =>
     {
-        const to        = tweet.text.slice( 0, 1 );
-        const from      = tweet.user;
-        const text      = tweet.text.slice( 1 );
-
-        const botText   = boundListenToMessages( to, from, text );
+        // const to        = `@${tweet.in_reply_to_screen_name}`;
+        const from      = `@${tweet.user.screen_name}`;
+        const text      = tweet.text;
+        const botText   = boundListenToMessages( '', from, text );
 
         if ( botText )
         {
-            _bot.say( from, botText );
+            _bot.say( from, botText.slice( 0, 140 ) );
         }
     } );
 
