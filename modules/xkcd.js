@@ -19,7 +19,7 @@ class XKCD extends Module
     {
         return new Promise( function( resolve, reject )
         {
-            _modules.core.apiGet( userConfig.xkcdAppUrl, function( response )
+            _modules.core.apiGet( userConfig.xkcdAppUrl, response =>
             {
                 resolve( `${response.url}\n${response.title}` );
             }, false, from, to );
