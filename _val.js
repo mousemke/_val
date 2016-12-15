@@ -53,7 +53,7 @@ const _Val = function( commandModuleName, userConfig )
      * @param {String} to originating user
      * @param {String} text full message text
      *
-     * @return _Boolean_  false
+     * @return {Boolean}  false
      */
     function testFunction( from, to, text )
     {
@@ -71,7 +71,7 @@ const _Val = function( commandModuleName, userConfig )
      * @param {Function} _cb callback
      * @param {Boolean} secure https?
      *
-     * @return _Void_
+     * @return {Void}
      */
     function apiGet( options, _cb, secure, from, to )
     {
@@ -193,7 +193,7 @@ const _Val = function( commandModuleName, userConfig )
      *
      * assembles the _val modules.  like Voltron but node
      *
-     * @return _Void_
+     * @return {Void}
      */
     function buildClient()
     {
@@ -239,7 +239,7 @@ const _Val = function( commandModuleName, userConfig )
      *
      * dynamic core loader
      *
-     * @return _Void_
+     * @return {Void}
      */
     function buildCore()
     {
@@ -267,7 +267,7 @@ const _Val = function( commandModuleName, userConfig )
      * @param {String} text full message text
      * @param {Boolean} talk true to say, otherwise active only returns
      *
-     * @return _Array_ active users
+     * @return {Array} active users
      */
     function checkActive( from, to, text, talk )
     {
@@ -329,7 +329,7 @@ const _Val = function( commandModuleName, userConfig )
      *
      * @param {String} text user text
      *
-     * @return _Promise_
+     * @return {Promise}
      */
     function checkGuys( to, text )
     {
@@ -389,7 +389,7 @@ const _Val = function( commandModuleName, userConfig )
      *
      * formats and displays debug information
      *
-     * @return _Void_
+     * @return {Void}
      */
     function displayDebugInfo( e )
     {
@@ -446,7 +446,7 @@ const _Val = function( commandModuleName, userConfig )
      *
      * generates a channel list based on settings and environment.
      *
-     * @return _Void_
+     * @return {Void}
      */
     function generateChannelList()
     {
@@ -476,7 +476,7 @@ const _Val = function( commandModuleName, userConfig )
         /**
          * assembles the channel list and starts the client
          *
-         * @return _Void_
+         * @return {Void}
          */
         function finishChannels()
         {
@@ -595,7 +595,7 @@ const _Val = function( commandModuleName, userConfig )
      *
      * sets listeners and module list up
      *
-     * @return _Void_
+     * @return {Void}
      */
     function ini()
     {
@@ -646,7 +646,7 @@ const _Val = function( commandModuleName, userConfig )
      * @param {String} to user
      * @param {String} text full message text
      *
-     * @return _Void_
+     * @return {Void}
      */
     function listenToMessages( to, from, text, confObj )
     {
@@ -716,7 +716,7 @@ const _Val = function( commandModuleName, userConfig )
      * @param {String} from originating user
      * @param {String} text full message text
      *
-     * @return _Void_
+     * @return {Void}
      */
     function listenToPm( from, text )
     {
@@ -763,7 +763,7 @@ const _Val = function( commandModuleName, userConfig )
      *
      * disconnects and reconnects _val
      *
-     * @return _Void_
+     * @return {Void}
      */
     function reConnection()
     {
@@ -785,7 +785,7 @@ const _Val = function( commandModuleName, userConfig )
      * @param {String} to user
      * @param {Object} obj triggered word object
      *
-     * @return _String_ suggestion
+     * @return {String} suggestion
      */
     function replaceGuys( to, obj )
     {
@@ -801,7 +801,7 @@ const _Val = function( commandModuleName, userConfig )
      *
      * start the thing!
      *
-     * @return _Void_
+     * @return {Void}
      */
     function start()
     {
@@ -817,7 +817,7 @@ const _Val = function( commandModuleName, userConfig )
      *
      * @param {String} text original text
      *
-     * @return _String_
+     * @return {String}
      */
     function trimUsernames( text )
     {
@@ -847,7 +847,7 @@ const _Val = function( commandModuleName, userConfig )
      *
      * @param {String} text original text string
      *
-     * @return _String_ original or modified text
+     * @return {String} original or modified text
      */
     function trollOn( text )
     {
@@ -884,7 +884,7 @@ const _Val = function( commandModuleName, userConfig )
      * @param {Function} _cb callback
      * @param {String} origText original message text
      *
-     * @return _Void_
+     * @return {Void}
      */
     function userData( to, from, _cb, origText )
     {
@@ -937,7 +937,7 @@ const _Val = function( commandModuleName, userConfig )
      * @param {String} from originating channel
      * @param {String} to originating user
      *
-     * @return _Void_
+     * @return {Void}
      */
     function watchActive( from, to )
     {

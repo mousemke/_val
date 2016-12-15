@@ -36,50 +36,49 @@ class _4sq extends Module
      */
     lunch( from, to, query )
     {
-        var _botText;
-        const userConfig = this.userConfig;
+        const {
+            foursquareSection,
+            foursquareRadius,
+            foursquareID,
+            foursquareSecret,
+            latLong
+             } = this.userConfig;
 
-        var section     = userConfig.foursquareSection;
-        var radius      = userConfig.foursquareRadius;
-        var intent      = 'browse'; // checkin
-        // var intent      = 'checkin';             // DEBUG
-        var searchType  = 'explore'; // search
-        // var searchType  = 'search';              // DEBUG
+        const intent      = 'browse'; // checkin
+        // const intent      = 'checkin';             // DEBUG
+        const searchType  = 'explore'; // search
+        // const searchType  = 'search';              // DEBUG
 
-        var noSpaces = new RegExp( ' ', 'g' );
+        const noSpaces = new RegExp( ' ', 'g' );
 
         query = query.split( ' ' ).slice( 1 ).join( '%20' );
 
-        var url = 'https://api.foursquare.com/v2/venues/' + searchType +
-                            '?client_id=' + userConfig.foursquareID +
-                            '&client_secret=' + userConfig.foursquareSecret +
-                            '&v=20130815%20&ll=' + userConfig.latLong +
-                            '&llAcc=1000&openNow=1&radius=' + radius;
+        let url = `https://api.foursquare.com/v2/venues/${searchType}?client_id=${foursquareID}&client_secret=${foursquareSecret}&v=20130815%20&ll=${latLong}&llAcc=1000&openNow=1&radius=${foursquareRadius}`;
 
         if ( query !== '' )
         {
-             url += '&query=' + query;
+             url += `&query=${query}`;
         }
         else
         {
-            url += '&section=' + section;
+            url += `&section=${foursquareSection}`;
         }
 
         if ( searchType === 'search' )
         {
-            url += '&intent=' + intent;
+            url += `&intent=${intent}`;
         }
 
         // url += '&novelty=new&friendVisits=notvisited';
-        // url = 'https://api.foursquare.com/v2/venues/suggestCompletion?ll=' + userConfig.latLong + '&query=' + query;
+        // url = `https://api.foursquare.com/v2/venues/suggestCompletion?ll=${latLong}&query=${query}`;
         //
         return new Promise( ( resolve, reject ) =>
         {
             this._modules.core.apiGet( url, function( result )
             {
-                var _valsChoice;
-                var venues      = result.response.groups[0].items;
-                var venueCount  = venues.length;
+                try {
+                const venues     = result.response.groups[0].items;
+                const venueCount = venues.length;
 
                 if ( venues.length === 0 )
                 {
@@ -87,48 +86,57 @@ class _4sq extends Module
                 }
                 else
                 {
-                    _valsChoice = Math.floor( Math.random() * venueCount );
+                    const valsChoice = venues[ Math.floor( Math.random() * venueCount ) ];
 
-                    _valsChoice = venues[ _valsChoice ];
-                    var venue   = _valsChoice.venue;
-                    var name    = venue.name;
-                    var phone   = venue.contact.formattedPhone;
-                    var address = venue.location.address;
-                    var url     = venue.url;
+                    const { venue, tips } = valsChoice;
+                    const {
+                        contact,
+                        name,
+                        location,
+                        url,
+                        id
+                    } = venue;
 
-                    var tip     = _valsChoice.tips;
-                    var tips    = tip.length;
 
-                    tip         = tip[ Math.floor( Math.random() * tips ) ];
+                    const tipCount  = tips.length;
+                    const tip       = tips[ Math.floor( Math.random() * tipCount ) ];
 
-                    var tipUser = tip.user.firstName;
+                    const { user, text } = tip;
 
-                    if ( tip.user.lastName )
+                    const phone     = contact.formattedPhone;
+                    const address   = location.address;
+
+                    let tipUser     = user.firstName;
+
+                    if ( user.lastName )
                     {
-                        tipUser += ` ${tip.user.lastName}`;
+                        tipUser += ` ${user.lastName}`;
                     }
 
-                    tip         = `${tipUser} says, "${tip.text}"`;
-
-                    _botText = `Try ${name}\n${address}`;
+                    const tipText   = `${tipUser} says, "${text}"`;
+                    let botText     = `Try ${name}\n${address}`;
 
                     if ( phone )
                     {
-                        _botText += ` - ${phone}`;
+                        botText += ` - ${phone}`;
                     }
+
                     if ( url )
                     {
-                        _botText += `\n${url}`;
+                        botText += `\n${url}`;
                     }
-                    if ( tip )
+
+                    if ( tipText )
                     {
-                         _botText += `\n${tip}`;
+                         botText += `\n${tipText}`;
                     }
 
-                    var venueUrl = `${name.replace( noSpaces, '-' )}/${venue.id}`;
+                    const venueUrl = `${name.replace( noSpaces, '-' )}/${id}`;
 
-                    resolve( `${_botText}\nhttps://foursquare.com/v/${venueUrl}` );
+                    resolve( `${botText}\nhttps://foursquare.com/v/${venueUrl}` );
                 }
+            }
+            catch(e){ console.log( e )}
 
             }, true, from, to );
         } );
