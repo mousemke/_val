@@ -6,13 +6,13 @@ v. 1.0.0
 
 `requires node 6.2.2+`
 
-install
+## install
 
 ```
 npm i val-bot
 ```
 
-Go to `http://knoblau.ch/_val` for a list of commands.
+Use `+help` for a list of commands.
 
 If you would like to have _val running on your irc/slack/twitch/whatever in our hosting pool let us know.  The hosting pool is run on an EC2 instance and is funded only by donations.  It's a good way to have your bots running without having to worry about it.
 
@@ -34,14 +34,16 @@ Change log
 
 #### 1.0.0
 
++ updated 8ball and 4square
 + complete rebuild of how commands and responses are handled
 + module ini removed, now handled in the constructor
-+ added help mode
++ added imporoved help mode
 + modules are now classes
 + made syntax help available
 + multiple commanders from each core are now allowed
 + twitter core works
 + added core specific ability to disable modules
++ website removed
 
 
 
