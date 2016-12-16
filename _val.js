@@ -67,17 +67,17 @@ const _Val = function( commandModuleName, userConfig )
      *
      * gets and parses JSON from api sources
      *
-     * @param {String} _url target url
-     * @param {Function} _cb callback
+     * @param {String} url target url
+     * @param {Function} cb callback
      * @param {Boolean} secure https?
      *
      * @return {Void}
      */
-    function apiGet( options, _cb, secure, from, to )
+    function apiGet( options, cb, secure, from, to )
     {
         secure = !!secure;
 
-        const _error = say =>
+        const error = say =>
         {
             if ( say )
             {
@@ -105,28 +105,35 @@ const _Val = function( commandModuleName, userConfig )
                 try
                 {
                     data = JSON.parse( body );
-                    _cb( data );
+                    cb( data );
                 }
                 catch( e )
                 {
-                    _error( e );
+                    error( e );
                 }
             } );
         };
 
-        if ( secure )
+        try
         {
-            https.get( options, callback ).on( 'error', function( e )
+            if ( secure )
             {
-                _error( _bot );
-            } );
+                https.get( options, callback ).on( 'error', function( e )
+                {
+                    error( _bot );
+                } );
+            }
+            else
+            {
+                http.get( options, callback ).on( 'error', function( e )
+                {
+                    error( _bot );
+                } );
+            }
         }
-        else
+        catch( e )
         {
-            http.get( options, callback ).on( 'error', function( e )
-            {
-                _error( _bot );
-            } );
+            console.log( e );
         }
     }
 
@@ -214,19 +221,19 @@ const _Val = function( commandModuleName, userConfig )
         /**
          * load _val modules
          */
-        for ( var module in modules )
+        for ( const moduleName in modules )
         {
-            var _module = modules[ module ];
+            const module = modules[ moduleName ];
 
-            if ( _module.enabled )
+            if ( module.enabled )
             {
-                _modules.constructors[ module ] = require( _module.url );
+                modules.constructors[ moduleName ] = require( module.url );
 
-                if ( _module.options )
+                if ( module.options )
                 {
-                    for ( var option in _module.options )
+                    for ( let option in module.options )
                     {
-                        _botConfig[ option ] = _module.options[ option ];
+                        _botConfig[ option ] = module.options[ option ];
                     }
                 }
             }
@@ -397,12 +404,12 @@ const _Val = function( commandModuleName, userConfig )
 
         if ( command !== 'PRIVMSG' )
         {
-            const _color  = debugChalkBox[ command ];
-            let text        = `     * ${command} : `;
+            const color = debugChalkBox[ command ];
+            let text    = `     * ${command} : `;
 
             e.args.forEach( arg => text += `${arg} ` );
 
-            if ( _color )
+            if ( color )
             {
                 if ( command === 'PING' )
                 {
@@ -418,7 +425,7 @@ const _Val = function( commandModuleName, userConfig )
                         minUp += '0';
                     }
 
-                    console.log( chalk[ _color ]( text ), `${now - lastPing}ms`, chalk.grey( `(${minUp}min up)`, new Date().toLocaleString() ) );
+                    console.log( chalk[ color ]( text ), `${now - lastPing}ms`, chalk.grey( `(${minUp}min up)`, new Date().toLocaleString() ) );
                     lastPing = now;
 
                     if ( connectionTimer )
@@ -430,7 +437,7 @@ const _Val = function( commandModuleName, userConfig )
                 }
                 else
                 {
-                    console.log( chalk[ _color ]( text ) );
+                    console.log( chalk[ color ]( text ) );
                 }
             }
             else
@@ -456,22 +463,24 @@ const _Val = function( commandModuleName, userConfig )
          */
         function addPrivateChannels()
         {
-            var _p, _private    = commandModule.channelsPrivateJoin;
+            const privateChannels    = commandModule.channelsPrivateJoin;
 
-            if ( _private )
+            if ( privateChannels )
             {
-                var _privateLength  = _private.length;
+                const privateChannelsLength  = privateChannels.length;
 
-                for ( var i = 0; i < _privateLength; i++ )
+                for ( let i = 0; i < privateChannelsLength; i++ )
                 {
-                    _p = _private[ i ];
-                    if ( channels.indexOf( _p ) === -1 )
+                    const channel = privateChannels[ i ];
+
+                    if ( channels.indexOf( channel ) === -1 )
                     {
-                        channels.push( _p );
+                        channels.push( channel );
                     }
                 }
             }
         }
+
 
         /**
          * assembles the channel list and starts the client
@@ -500,20 +509,20 @@ const _Val = function( commandModuleName, userConfig )
          */
         function removeBlacklistChannels()
         {
-            var _b, _bIndex, _black = _botConfig.channelsPublicIgnore || [];
-            var _blackLength        = _black.length;
+            const blockedChannels       = _botConfig.channelsPublicIgnore || [];
+            const blockedChannelsLength = blockedChannels.length;
 
-            if ( _blackLength )
+            if ( blockedChannelsLength )
             {
-                for ( var i = 0; i < _blackLength; i++ )
+                for ( let i = 0; i < blockedChannelsLength; i++ )
                 {
-                    _b = _black[ i ];
+                    const b = blockedChannels[ i ];
 
-                    _bIndex = channels.indexOf( _b );
+                    const index = channels.indexOf( b );
 
-                    if ( _bIndex !== -1 )
+                    if ( index !== -1 )
                     {
-                        channels.splice( _bIndex, 1 );
+                        channels.splice( index, 1 );
                     }
                 }
             }
@@ -522,18 +531,18 @@ const _Val = function( commandModuleName, userConfig )
 
         if ( commandModule.slackTeam && commandModule.autojoin )
         {
-            var _url    = `https://${commandModule.slackTeam}.slack.com/api/channels.list?token=${userConfig.slackAPIKey}`;
+            const url = `https://${commandModule.slackTeam}.slack.com/api/channels.list?token=${userConfig.slackAPIKey}`;
 
-            apiGet( _url, function( res )
+            apiGet( url, function( res )
             {
-                var _channels = res.channels;
+                const channels = res.channels;
 
-                for ( var _c in _channels )
+                for ( let channel in channels )
                 {
-                    _c = _channels[ _c ].name;
-                    _c = _c[0] !== '#' ? '#' + _c : _c;
+                    channel = channels[ channel ].name;
+                    channel = channel[0] !== '#' ? `#${channel}` : channel;
 
-                    channels.push( _c );
+                    channels.push( channel );
                 }
 
                 finishChannels();
@@ -564,11 +573,14 @@ const _Val = function( commandModuleName, userConfig )
      */
     function helpText( from, to, text )
     {
-        if ( text.length === 0 || !_bot.responses[ text ] )
+        const responses     = _bot.responses;
+        const responseText  = responses[ text ];
+
+        if ( text.length === 0 || !responseText )
         {
             let str = 'available commands: ';
 
-            Object.keys( _bot.responses ).forEach( key =>
+            Object.keys( responses ).forEach( key =>
             {
                 str += ` ${key}, `;
             } );
@@ -577,8 +589,8 @@ const _Val = function( commandModuleName, userConfig )
         }
         else
         {
-            let helpText    = _bot.responses[ text ].desc;
-            let syntax      = _bot.responses[ text ].syntax;
+            let helpText    = responseText.desc;
+            const syntax    = responseText.syntax;
 
             if ( syntax )
             {
@@ -665,7 +677,7 @@ const _Val = function( commandModuleName, userConfig )
 
             if ( _botConfig.bots.indexOf( to ) === -1 )
             {
-                var botText = '';
+                let botText = '';
 
                 if ( text === '_val' || text === '_val?' )
                 {
@@ -789,10 +801,13 @@ const _Val = function( commandModuleName, userConfig )
      */
     function replaceGuys( to, obj )
     {
-        var _alternative    = obj.alternatives[ Math.floor( Math.random() * obj.alternatives.length ) ];
-        var _speech         = obj.speech[ Math.floor( Math.random() * obj.speech.length ) ];
+        const alternative   = obj.alternatives[ Math.floor( Math.random() *
+                                                    obj.alternatives.length ) ];
 
-        return `${to}, ${_speech[ 0 ]}${_alternative}${_speech[ 1 ]}`;
+        const speech        = obj.speech[ Math.floor( Math.random() *
+                                                    obj.speech.length ) ];
+
+        return `${to}, ${speech[ 0 ]}${alternative}${speech[ 1 ]}`;
     }
 
 
@@ -825,7 +840,7 @@ const _Val = function( commandModuleName, userConfig )
         {
             text = text.split( ' ' );
 
-            for ( var i = 0, lenI = text.length; i < lenI; i++ )
+            for ( let i = 0, lenI = text.length; i < lenI; i++ )
             {
                 if ( _botConfig.usernamePrefix.indexOf( text[ i ][0] ) !== -1 )
                 {
@@ -851,9 +866,9 @@ const _Val = function( commandModuleName, userConfig )
      */
     function trollOn( text )
     {
-        var textSplit = text.split( ' ' );
+        const textSplit = text.split( ' ' );
 
-        for ( var i = 0, lenI = textSplit.length; i < lenI; i++ )
+        for ( let i = 0, lenI = textSplit.length; i < lenI; i++ )
         {
             if ( trollBlacklist.indexOf( textSplit[ i ] ) !== -1 )
             {
@@ -881,50 +896,56 @@ const _Val = function( commandModuleName, userConfig )
      *
      * @param {String} to user
      * @param {String} from originating channel
-     * @param {Function} _cb callback
+     * @param {Function} cb callback
      * @param {String} origText original message text
      *
      * @return {Void}
      */
-    function userData( to, from, _cb, origText )
+    function userData( to, from, cb, origText )
     {
         if ( _botConfig.autoAuth )
         {
-            var textSplit = origText.split( ' ' );
+            const textSplit = origText.split( ' ' );
 
-            _cb( to, 'true', textSplit, origText );
+            cb( to, 'true', textSplit, origText );
         }
         else
         {
-            var response = function( _from, text )
+            const response = function( _from, text )
             {
                 _bot.removeListener( 'pm', response );
 
-                var textSplit       = text.split( ' ' );
-                var apiReturn       = textSplit[ 0 ];
-                var returnMessage   = textSplit[ 1 ];
-                var user            = textSplit[ 2 ];
-                var result          = textSplit[ 3 ];
+                const textSplit     = text.split( ' ' );
+                const apiReturn     = textSplit[ 0 ];
+                const returnMessage = textSplit[ 1 ];
+                const user          = textSplit[ 2 ];
+                const result        = textSplit[ 3 ];
 
                 if ( apiReturn === _botConfig.nickservAPI &&
-                    returnMessage === 'identified' && user === to && result === 'true' )
+                    returnMessage === 'identified' && user === to &&
+                                                            result === 'true' )
                 {
-                    _cb( to, result, textSplit, origText );
+                    cb( to, result, textSplit, origText );
                 }
                 else if ( apiReturn === _botConfig.nickservAPI &&
-                    returnMessage === 'identified' && user === to && result === 'false' )
+                            returnMessage === 'identified' && user === to &&
+                            result === 'false' )
                 {
-                    _bot.say( to, 'You are not identified. (/msg NickServ help)' );
+                    _bot.say( to,
+                            'You are not identified. (/msg NickServ help)' );
                 }
-                else if ( apiReturn === _botConfig.NickservAPI && returnMessage === 'notRegistered' && user === to )
+                else if ( apiReturn === _botConfig.NickservAPI &&
+                            returnMessage === 'notRegistered' && user === to )
                 {
-                    _bot.say( to, 'You are not a registered user. (/msg NickServ help)' );
+                    _bot.say( to,
+                        'You are not a registered user. (/msg NickServ help)' );
                 }
             };
 
             _bot.addListener( 'pm', response );
 
-            _bot.say( _botConfig.nickservBot, _botConfig.nickservAPI + ' identify ' + to );
+            _bot.say( _botConfig.nickservBot,
+                                `${_botConfig.nickservAPI} identify ${to}` );
         }
     }
 
@@ -941,7 +962,7 @@ const _Val = function( commandModuleName, userConfig )
      */
     function watchActive( from, to )
     {
-        var ignoreTheBots = _botConfig.bots || [];
+        const ignoreTheBots = _botConfig.bots || [];
 
         if ( ignoreTheBots.indexOf( to ) === -1 )
         {
