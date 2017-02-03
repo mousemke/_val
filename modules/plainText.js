@@ -350,7 +350,7 @@ class PlainText extends Module
         const responses = {
             bgg   : {
                 f       : this.bgg,
-                desc    : 'search bgg',
+                desc    : 'search board game geek',
                 syntax  : [
                     `${trigger}bgg <query>`
                 ]

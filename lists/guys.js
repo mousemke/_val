@@ -71,11 +71,11 @@ module.exports = [
     },
 
 
-    // retarted
+    // retarded
     {
 
         triggers : [
-            'retarted', 'herp', 'derp'
+            'retarded', 'herp', 'derp'
         ],
 
         alternatives : [
