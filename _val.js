@@ -2,9 +2,11 @@
 
 const _Val = function( commandModuleName, userConfig )
 {
-    const commandModule  = userConfig.command[ commandModuleName ];
-    const _botConfig = Object.assign( {}, userConfig, commandModule.coreConfig || {} );
+    const commandModule = userConfig.command[ commandModuleName ];
+    const coreConfig    = commandModule.coreConfig || {};
+    const _botConfig    = Object.assign( {}, userConfig, coreConfig );
 
+    const { trigger }   = _botConfig;
     const commandType   = commandModule.botName;
     const req           = userConfig.req;
     const http          = req.http;
@@ -160,8 +162,6 @@ return botText;
         }
     }
 
-
-    const { trigger } = _botConfig;
 
     /**
      * ## baseResponses
@@ -1030,13 +1030,13 @@ const cores         = [];
 
 let commandObj;
 
-for ( let _c in commanders )
+for ( let commander in commanders )
 {
-    commandObj = commanders[ _c ];
+    commandObj = commanders[ commander ];
 
     if ( commandObj.disabled !== true )
     {
-        cores.push( _val( _c ) );
+        cores.push( _val( commander ) );
     }
 }
 
