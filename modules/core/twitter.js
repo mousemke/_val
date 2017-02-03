@@ -30,8 +30,10 @@ module.exports = function twitterBot( userConfig, channels, listenToMessages, di
 
     _bot.say = function( to, text )
     {
+        const status = ( `${to} ${text}` ).slice( 0, 140 );
+
         const tweet = {
-            status  : `${to} ${text}`
+            status
         };
 
         _bot.post( 'statuses/update', tweet, ( err, data, response ) =>
@@ -54,7 +56,17 @@ module.exports = function twitterBot( userConfig, channels, listenToMessages, di
 
         if ( botText )
         {
-            _bot.say( from, botText.slice( 0, 140 ) );
+            if ( typeof botText.then === 'function' )
+            {
+                botText.then( text =>
+                {
+                    _bot.say( from, text );
+                } );
+            }
+            else
+            {
+                _bot.say( from, botText );
+            }
         }
     } );
 

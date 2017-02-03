@@ -16,14 +16,14 @@ module.exports = function ircBot( userConfig, channels, listenToMessages, displa
         autoConnect             : true,
         floodProtection         : ircConfig.floodProtection,
         floodProtectionDelay    : ircConfig.floodProtectionDelay,
-    });
+    } );
 
     userConfig.commandModules.push( _bot );
 
     _bot.addListener( 'error', message =>
     {
         console.log( 'error: ', chalk.red( message ) );
-    });
+    } );
 
     // _bot.addListener( 'pm', listenToPm );
 

@@ -44,6 +44,8 @@ Change log
 + twitter core works
 + added core specific ability to disable modules
 + website removed
++ updated irc version
++ twitter now trims to 140 chars and supports promises
 
 
 

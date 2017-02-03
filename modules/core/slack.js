@@ -16,7 +16,6 @@ const MemoryDataStore     = slack.MemoryDataStore;
  */
 module.exports =  function slackBot( userConfig, channels, listenToMessages, displayDebugInfo, context, slackConfig )
 {
-    // let slackConfig = userConfig.command.slack;
     const token     = slackConfig.apiKey;
     const dataStore = new MemoryDataStore();
     const _bot      = new RtmClient( token, { dataStore } );

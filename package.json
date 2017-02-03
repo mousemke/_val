@@ -1,7 +1,7 @@
 {
   "name": "val-bot",
   "version": "1.0.0",
-  "description": "An IRC bot that does things.",
+  "description": "A bot that does things.",
   "main": "_val.js",
   "scripts": {
     "serve": "node _val.js"
@@ -24,11 +24,11 @@
   "bugs": {
     "url": "https://github.com/mousemke/_val/issues"
   },
-  "homepage": "https://knoblau.ch/_val",
+  "homepage": "https://github.com/mousemke/_val",
   "dependencies": {
     "@slack/client": "^3.5.1",
     "chalk": "^1.1.1",
-    "irc": "^0.4.0",
+    "irc": "^0.5.2",
     "telegram-api": "^0.4.4",
     "twit": "^2.1.0"
   },

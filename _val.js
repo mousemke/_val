@@ -11,14 +11,14 @@ const _Val = function( commandModuleName, userConfig )
     const https         = req.https;
     const fs            = req.fs;
     const chalk         = req.chalk;
-    const modules       = require( './config/_val.modules.js' );
+    const modulesConfig = require( './config/_val.modules.js' );
     const guysObj       = require( './lists/guys.js' );
     const trollBlacklist = require( './lists/trollBlacklist.js' );
 
     let channel;
     let _bot;
 
-    const _modules      = {};
+    const modules       = {};
     let channels        = [];
 
     const debugChalkBox = {
@@ -57,8 +57,31 @@ const _Val = function( commandModuleName, userConfig )
      */
     function testFunction( from, to, text )
     {
-        console.log( 'nothing here now' );
-        return false;
+        const nlp = require( 'nlp_compromise' );
+
+        const textObj   = nlp.text( text );
+        const textRoot  = textObj.root();
+        const terms     = textObj.terms();
+        const verb      = nlp.verb( text );
+
+        const sentence  = nlp.sentence( text );
+        const sentenceType = sentence.sentence_type();
+
+        const tags      = sentence.tags();
+        let botText = '';
+
+        terms.forEach( t =>
+        {
+            botText += `${t.text}: ${JSON.stringify( t )}\n`;
+        } );
+return botText;
+        // return `root sentence: ${textRoot}
+        //             sentence type: ${sentenceType}
+        //             verb: ${JSON.stringify( verb.to_present() )}
+        //             verb is negative: ${verb.isNegative()}
+        //             tags: ${JSON.stringify( tags )}
+        //             terms: ${JSON.stringify( terms )}`;
+        // return tags;
     }
 
 
@@ -146,7 +169,7 @@ const _Val = function( commandModuleName, userConfig )
      * val's base responses that both require no modules and are non-optional
      * @type {Object}
      */
-    baseResponses = {
+    const baseResponses = {
         active : {
             module  : 'base',
             f       : checkActive,
@@ -207,7 +230,7 @@ const _Val = function( commandModuleName, userConfig )
         /*
          * adds core components to an obj to be passed modules
          */
-        _modules.core = {
+        modules.core = {
 
              checkActive    : checkActive,
 
@@ -216,14 +239,14 @@ const _Val = function( commandModuleName, userConfig )
              apiGet         : apiGet
         };
 
-        _modules.constructors = {};
+        modules.constructors = {};
 
         /**
          * load _val modules
          */
-        for ( const moduleName in modules )
+        for ( const moduleName in modulesConfig )
         {
-            const module = modules[ moduleName ];
+            const module = modulesConfig[ moduleName ];
 
             if ( module.enabled )
             {
@@ -414,7 +437,7 @@ const _Val = function( commandModuleName, userConfig )
                 if ( command === 'PING' )
                 {
                     const now   = Date.now();
-                    let minUp   = ( Math.round( ( ( now - up ) / 1000 / 60 ) * 100 ) / 100 ) + '';
+                    let minUp   = `${Math.round( ( ( now - up ) / 1000 / 60 ) * 100 ) / 100 }`;
 
                     if ( minUp.indexOf( '.' ) === -1 )
                     {
@@ -616,12 +639,12 @@ const _Val = function( commandModuleName, userConfig )
         _bot.active     = {};
         _bot.responses  = baseResponses;
 
-        for ( const moduleName in _modules.constructors )
+        for ( const moduleName in modules.constructors )
         {
             if ( _botConfig.disabledModules.indexOf( moduleName ) === -1 )
             {
-                const modulesConstructor = _modules.constructors[ moduleName ];
-                const module = _modules[ moduleName ] = new modulesConstructor( _bot, _modules, _botConfig, commandModule );
+                const modulesConstructor = modules.constructors[ moduleName ];
+                const module = modules[ moduleName ] = new modulesConstructor( _bot, modules, _botConfig, commandModule );
 
                 function formatResponses( module, name )
                 {
@@ -643,7 +666,7 @@ const _Val = function( commandModuleName, userConfig )
             }
         }
 
-        _bot._modules = _modules;
+        _bot.modules = modules;
 
         console.log( `${commandType} built` );
     }
