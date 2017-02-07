@@ -34,6 +34,8 @@ Change log
 
 #### 1.0.0
 
++ updated question words
++ remove doge->tip ability to dm
 + updated 8ball and 4square
 + complete rebuild of how commands and responses are handled
 + module ini removed, now handled in the constructor

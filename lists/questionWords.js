@@ -1,4 +1,5 @@
 module.exports = [
+                    'are',
                     'am',
                     'art',
                     'can',

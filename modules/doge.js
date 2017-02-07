@@ -478,7 +478,7 @@ class Doge extends Module
      *
      * @return {Void}
      */
-    tip( from, to, text )
+    tip( from, to, text, textArr, command, confObj )
     {
         const _modules      = this._modules;
         const userConfig    = this.userConfig;
@@ -532,10 +532,6 @@ class Doge extends Module
                         {
                             dcMasterList[ reciever.toLowerCase() ] = ( dcMasterList[ reciever.toLowerCase() ] ) ?
                                                                             dcMasterList[ reciever.toLowerCase() ] + amount : amount;
-                            if ( userConfig.enablePM )
-                            {
-                                _bot.pm( reciever,   `Such ${to} tipped you Ð${amount} (to claim /msg ${_bot.name})` );
-                            }
                         }
                         else
                         {
@@ -548,7 +544,7 @@ class Doge extends Module
 
                         if ( reciever === _bot.name )
                         {
-                            setTimeout( () => _bot.say( from, 'Thanks!' ), 3000 );
+                            setTimeout( () => _bot.say( from, 'Thanks!', confObj ), 3000 );
                         }
                     }
                     else
