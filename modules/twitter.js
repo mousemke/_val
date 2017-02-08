@@ -435,9 +435,14 @@ class Twitter extends Module
     {
         let searchText  = text.split( ' ' ).join( ',' );
 
-        this.stream( from, 'statuses/filter', 'tweet', searchText, confObj );
+        if ( searchText !== '' )
+        {
+            this.stream( from, 'statuses/filter', 'tweet', searchText, confObj );
 
-        return `Filtered tweet stream for ${searchText} started`;
+            return `Filtered tweet stream for ${searchText} started`;
+        }
+
+        return `Please definine a filteer term`;
     }
 
 
