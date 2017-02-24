@@ -49,6 +49,7 @@ Change log
 + website removed
 + updated irc version
 + twitter now trims to 140 chars and supports promises
++ listen to pm removed
 
 
 

@@ -353,40 +353,6 @@ return botText;
 
 
     /**
-     * ## checkGuys
-     *
-     * checks for "guys" and/or other words set in the guys.json
-     *
-     * @param {String} text user text
-     *
-     * @return {Promise}
-     */
-    function checkGuys( to, text )
-    {
-        let botText         = '';
-
-        guysObj.forEach( obj =>
-        {
-            obj.triggers.forEach( word =>
-            {
-                if ( botText === '' )
-                {
-                    let guysRegex   = `(^|\\s)+${word}([\\.!?,\\s]+|$)`;
-                    guysRegex       = new RegExp( guysRegex, 'i' );
-
-                    if ( guysRegex.test( text ) )
-                    {
-                        botText = replaceGuys( to, obj );
-                    }
-                }
-            } );
-        } );
-
-        return botText;
-    }
-
-
-    /**
      * ## combineResponses
      *
      * combines two response structures while checking for duplicate keys
@@ -680,8 +646,7 @@ return botText;
      * @param {String} from originating channel
      * @param {String} to user
      * @param {String} text full message text
-     *
-     * @return {Void}
+     * @param {Object} confObj pass through variables from the core
      */
     function listenToMessages( to, from, text, confObj )
     {
@@ -711,7 +676,93 @@ return botText;
                     return 'what!?';
                 }
 
+
+                //********** ********** ********** ********** **********//
+                //********** ********** ********** ********** **********//
+                //********** ********** ********** ********** **********//
+                //********** ********** ********** ********** **********//
+                //********** ********** ********** ********** **********//
+                //                                                      //
+                //    language parsers go here, including checkGuys     //
+                //                                                      //
+                //********** ********** ********** ********** **********//
+                //********** ********** ********** ********** **********//
+                //********** ********** ********** ********** **********//
+                //********** ********** ********** ********** **********//
+                //********** ********** ********** ********** **********//
+
+                /**
+                 * ## checkGuys
+                 *
+                 * checks for "guys" and/or other words set in the guys.json
+                 *
+                 * @param {String} text user text
+                 *
+                 * @return {Promise}
+                 */
+                function checkGuys( to, text )
+                {
+                    /**
+                     * ## replaceGuys
+                     *
+                     * responds to 'guys' (and other trigger words) with alternative suggestions
+                     *
+                     * @param {String} to user
+                     * @param {Object} obj triggered word object
+                     *
+                     * @return {String} suggestion
+                     */
+                    function replaceGuys( to, obj )
+                    {
+                        const alternative   = obj.alternatives[ Math.floor( Math.random() *
+                                                                    obj.alternatives.length ) ];
+
+                        const speech        = obj.speech[ Math.floor( Math.random() *
+                                                                    obj.speech.length ) ];
+
+                        return `${to}, ${speech[ 0 ]}${alternative}${speech[ 1 ]}`;
+                    }
+
+
+                    let botText         = '';
+
+                    guysObj.forEach( obj =>
+                    {
+                        obj.triggers.forEach( word =>
+                        {
+                            if ( botText === '' )
+                            {
+                                let guysRegex   = `(^|\\s)+${word}([\\.!?,\\s]+|$)`;
+                                guysRegex       = new RegExp( guysRegex, 'i' );
+
+                                if ( guysRegex.test( text ) )
+                                {
+                                    botText = replaceGuys( to, obj );
+                                }
+                            }
+                        } );
+                    } );
+
+                    return botText;
+                }
+
                 botText = checkGuys( to, text );
+
+                //********** ********** ********** ********** **********//
+                //********** ********** ********** ********** **********//
+                //********** ********** ********** ********** **********//
+                //********** ********** ********** ********** **********//
+                //********** ********** ********** ********** **********//
+                //                                                      //
+                //                         \o/                          //
+                //                                                      //
+                //********** ********** ********** ********** **********//
+                //********** ********** ********** ********** **********//
+                //********** ********** ********** ********** **********//
+                //********** ********** ********** ********** **********//
+                //********** ********** ********** ********** **********//
+
+
 
                 const trigger       = _botConfig.trigger;
                 const triggerLength = trigger.length;
@@ -743,57 +794,6 @@ return botText;
 
 
     /**
-     * ## listenToPm
-     *
-     * .... what do you think?
-     * if there is no specific whisper command, the text is passed to normal messages
-     *
-     * @param {String} from originating user
-     * @param {String} text full message text
-     *
-     * @return {Void}
-     */
-    function listenToPm( from, text )
-    {
-        // var textSplit   = text.split( ' ' );
-        // var command     = textSplit[ 0 ];
-
-        // if ( command[0] === _botConfig.trigger )
-        // {
-        //     command = command.slice( 1 );
-        // }
-
-        // if ( _botConfig.admins.indexOf( from ) !== -1 )
-        // {
-        //     switch ( command )
-        //     {
-        //         case 'die':
-        //             _bot.disconnect( 'Fine...  I was on my way out anyways.', function()
-        //             {
-        //                 console.log( from + ' killed me' );
-        //             });
-        //             break;
-        //         default:
-        //             listenToMessages( from, from, text, command );
-        //     }
-        // }
-        // else
-        // {
-        //     switch ( command )
-        //     {
-        //         case 'help':
-        //             botText = _botConfig.helpText();
-        //             _bot.say( from, botText );
-        //             botText = '';
-        //             break;
-        //         default:
-        //             listenToMessages( from, from, text, command );
-        //     }
-        // }
-    }
-
-
-    /**
      * ## reConnection
      *
      * disconnects and reconnects _val
@@ -809,28 +809,6 @@ return botText;
 
         ini();
         console.log( 're-initializing client...' );
-    }
-
-
-    /**
-     * ## replaceGuys
-     *
-     * responds to 'guys' (and other trigger words) with alternative suggestions
-     *
-     * @param {String} to user
-     * @param {Object} obj triggered word object
-     *
-     * @return {String} suggestion
-     */
-    function replaceGuys( to, obj )
-    {
-        const alternative   = obj.alternatives[ Math.floor( Math.random() *
-                                                    obj.alternatives.length ) ];
-
-        const speech        = obj.speech[ Math.floor( Math.random() *
-                                                    obj.speech.length ) ];
-
-        return `${to}, ${speech[ 0 ]}${alternative}${speech[ 1 ]}`;
     }
 
 

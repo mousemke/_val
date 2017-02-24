@@ -12,6 +12,11 @@ class Jetlore extends Module
      * ## constructor
      *
      * sets a customer id and initializes the jetlore sdk
+     *
+     * @param {Object} _bot instance of _Val with a core attached
+     * @param {Object} _modules config and instance of all modules
+     * @param {Object} userConfig available options
+     * @param {Object} commandModule instance of the applied core
      */
     constructor( _bot, _modules, userConfig, commandModule )
     {
