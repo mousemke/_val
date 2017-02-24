@@ -26,7 +26,7 @@ var getMoment = function()
 
 var helpText = function()
 {
-    return 'Moin Moin!  I\'ll be your IRC bot for the' + getMoment() + '. ' +
+    return 'Moin Moin!  I\'ll be your bot for the' + getMoment() + '. ' +
             'Valid commands are listed here: ' + ( userConfig.helpUrl );
 };
 

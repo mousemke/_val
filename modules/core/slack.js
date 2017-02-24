@@ -49,7 +49,12 @@ module.exports =  function slackBot( userConfig, channels, listenToMessages, dis
             const channel   = `#${_bot.dataStore.getChannelGroupOrDMById( message.channel ).name}`;
             const user      = _bot.dataStore.getUserById( to ).name;
 
-            const confObj   = { to, from, user, channel };
+            const confObj   = {
+                to,
+                from,
+                user,
+                channel
+            };
 
             botText         = boundListenToMessages( user, channel, botText, confObj );
 

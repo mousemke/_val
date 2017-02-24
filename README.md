@@ -34,6 +34,10 @@ Change log
 
 #### 1.0.0
 
++ multiple commanders from each core are now allowed
++ twitter core works
++ added core specific ability to disable modules
++ web api core added
 + updated question words
 + remove doge->tip ability to dm
 + updated 8ball and 4square
@@ -42,9 +46,6 @@ Change log
 + added imporoved help mode
 + modules are now classes
 + made syntax help available
-+ multiple commanders from each core are now allowed
-+ twitter core works
-+ added core specific ability to disable modules
 + website removed
 + updated irc version
 + twitter now trims to 140 chars and supports promises
