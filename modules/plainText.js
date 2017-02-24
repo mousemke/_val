@@ -287,6 +287,8 @@ class PlainText extends Module
 
     /**
      * ## responses
+     *
+     * @return {Object} responses
      */
     responses()
     {

@@ -84,6 +84,8 @@ class _8ball extends Module
 
 
     /**
+     * ## responses
+     *
      * @return {Object} responses
      */
     responses()

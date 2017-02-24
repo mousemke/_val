@@ -45,6 +45,8 @@ class RR extends Module
 
     /**
      * responses
+     *
+     * @return {Object} responses
      */
     responses()
     {

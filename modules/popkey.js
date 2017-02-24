@@ -88,6 +88,8 @@ class PopKey extends Module
 
     /**
      * ## responses
+     *
+     * @return {Object} responses
      */
     responses()
     {

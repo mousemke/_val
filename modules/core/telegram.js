@@ -19,11 +19,11 @@ module.exports = function telegramBot( userConfig, channels, listenToMessages, d
 
     _bot.start();
 
-    let boundListenToMessages = listenToMessages.bind( context );
+    const boundListenToMessages = listenToMessages.bind( context );
 
     _bot.say = ( to, text, confObj ) =>
     {
-        let answer = new Message()
+        const answer = new Message()
                         .text( text )
                         .to( to );
 
@@ -36,36 +36,44 @@ module.exports = function telegramBot( userConfig, channels, listenToMessages, d
     {
         try
         {
-            let { text, chat } = message;
+            const {
+                text,
+                chat
+            } = message;
 
-            let from    = chat.id;
-            let to      = chat[ 'first_name' ] || message.from[ 'first_name' ];
+            const from  = chat.id;
+            const to    = chat[ 'first_name' ] || message.from[ 'first_name' ];
             let botText = text[0] === '/' ? userConfig.trigger + text.slice( 1 ) : text;
 
             botText     = boundListenToMessages( to, from, botText );
 
             if ( botText !== '' && botText !== false )
             {
+                /**
+                 * ## sayTheThing
+                 *
+                 * replaces useless telegram identifiers with names
+                 *
+                 * @param {String} text response
+                 */
+                function sayTheThing( text )
+                {
+                    const regex = new RegExp( chat.id, 'g' );
+                    text        = text.replace( regex, chat.title );
+                    _bot.say( from, text );
+                }
+
+
                 if ( typeof botText.then === 'function' )
                 {
                     botText.then( function( text )
                     {
-                        /*
-                         * replaces useless telegram identifiers with names
-                         */
-                        let regex   = new RegExp( chat.id, 'g' );
-                        text        = text.replace( regex, chat.title );
-                        _bot.say( from, text )
+                        sayTheThing( text );
                     } );
                 }
                 else
                 {
-                    /*
-                     * replaces useless telegram identifiers with names
-                     */
-                    let regex   = new RegExp( chat.id, 'g' );
-                    botText     = botText.replace( regex, chat.title );
-                    _bot.say( from, botText );
+                    sayTheThing( botText );
                 }
             }
         }

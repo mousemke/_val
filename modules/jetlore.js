@@ -13,15 +13,15 @@ class Jetlore extends Module
      *
      * sets a customer id and initializes the jetlore sdk
      */
-    constructor()
+    constructor( _bot, _modules, userConfig, commandModule )
     {
-        super();
+        super( _bot, _modules, userConfig, commandModule );
 
         this.customerId = this.getCustomerId();
 
         JL_RANKER.init(
         {
-            cid     : 'b7a4bc084ffec88a2c8fe716ad3297ea',
+            cid     : userConfig.jetloreCid,
             id      : this.customerId
         } );
     }
@@ -97,6 +97,8 @@ class Jetlore extends Module
 
     /**
      * ## responses
+     *
+     * @return {Object} responses
      */
     responses()
     {

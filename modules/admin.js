@@ -30,9 +30,9 @@ class Admin extends Module
      * ## responses
      *
      * admin responses.  they are generally called with
-    * a double trigger ( '++', '!!', etc)
+     * a double trigger ( '++', '!!', etc)
      *
-     * @return {String} changed botText
+     * @return {Object} responses
      */
     responses()
     {

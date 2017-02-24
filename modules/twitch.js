@@ -5,6 +5,8 @@ class Twitch extends Module
 {
     /**
      * responses
+     *
+     * @return {Object} responses
      */
     responses()
     {

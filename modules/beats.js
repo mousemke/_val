@@ -32,6 +32,8 @@ class Beats extends Module
 
     /**
      * ## responses
+     *
+     * @return {Object} responses
      */
     responses()
     {

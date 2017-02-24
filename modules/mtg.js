@@ -65,15 +65,6 @@ class Mtg extends Module
 
     /**
      * mtg responses
-     *
-     * @param {String} from originating channel
-     * @param {String} to originating user
-     * @param {String} text full input string
-     * @param {String} botText text to say
-     * @param {String} command bot command (first word)
-     * @param {Object} confObj extra config object that some command modules need
-     *
-     * @return {String} changed botText
      */
     responses()
     {

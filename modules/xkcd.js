@@ -29,6 +29,8 @@ class XKCD extends Module
 
     /**
      * responses
+     *
+     * @return {Object} responses
      */
     responses()
     {
