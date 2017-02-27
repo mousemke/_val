@@ -51,8 +51,9 @@ module.exports =  function webBot( userConfig, channels, listenToMessages, displ
      */
     function say( from, text, confObj )
     {
+        console.log( 'text', text )
         const botTextObj = {
-            status  :  200,
+            status  :  '200',
             text
         };
 
@@ -108,6 +109,11 @@ module.exports =  function webBot( userConfig, channels, listenToMessages, displ
                 {
                     _bot.say( ip, botText, confObj );
                 }
+            }
+            else
+            {
+                const botText = '{"status":"200","text":""}';
+                sendResponse( botText, confObj );
             }
         }
         else
