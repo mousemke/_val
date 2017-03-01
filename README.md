@@ -12,7 +12,23 @@ v. 1.0.0
 npm i val-bot
 ```
 
+## Running val
+
++ Change the `_val.config.js` and `_val.modules.js` in `./config` where appropriate
++ `npm run serve`
+
 Use `+help` for a list of commands.
+
+
+## scripts
+
+
+| `script` | description |
+|----------|-------------|
+| `npm run serve` | starts _val in Xvfb mode (recommended) |
+| `npm run serveAlt` | starts _val in simple mode. not all commands may work |
+
+
 
 If you would like to have _val running on your irc/slack/twitch/whatever in our hosting pool let us know.  The hosting pool is run on an EC2 instance and is funded only by donations.  It's a good way to have your bots running without having to worry about it.
 
@@ -34,6 +50,7 @@ Change log
 
 #### 1.0.0
 
++ updated scripts to run Xvfb mode by default
 + multiple commanders from each core are now allowed
 + twitter core works
 + added core specific ability to disable modules

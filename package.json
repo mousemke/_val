@@ -4,7 +4,8 @@
   "description": "A bot that does things.",
   "main": "_val.js",
   "scripts": {
-    "serve": "node _val.js"
+    "serve": "xvfb-run --auto-servernum --server-num=1 node --harmony _val.js",
+    "serveAlt": "node _val.js"
   },
   "repository": {
     "type": "git",
