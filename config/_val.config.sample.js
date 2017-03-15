@@ -27,27 +27,98 @@ const getMoment = function()
 const userConfig = {
 
     command     : {
-        irc         : {
-            url                     : './modules/core/irc.js',
-            botName                 : '_val',
-            server                  : 'irc.server',
-            serverPassword          : 'srever.password',
-            floodProtection         : true,
-            floodProtectionDelay    : 50
+
+        web     : {
+            url                     : './modules/core/web.js',
+            botName                 : '_valpi',
+            host                    : '192.168.0.1',
+            port                    : 666,
+            coreConfig              : {
+                trigger                 : '',
+                usernamePrefix          : [],
+                enablePM                : false,
+                disabledModules         : [
+                    'Admin',
+                    'Anagramm',
+                    'Twitter',
+                    'Words',
+                    'Nico'
+                ]
+            }
         },
 
-        slack       : {
+
+        twitter : {
+            url                     : './modules/core/twitter.js',
+            botName                 : '@example',
+            consumerKey             : 'moon1moon1moon1moon1',
+            consumerSecret          : 'moon1moon1moon1moon1moon1moon1moon1',
+            accessToken             : 'moon1moon1moon1moon1moon1',
+            accessTokenSecret       : 'moon1moon1moon1moon1moon1moon1moon1',
+            coreConfig              : {
+                trigger                 : '@example ',
+                usernamePrefix          : [],
+                enablePM                : false,
+                nico                    : '@nbrugneaux',
+                disabledModules         : [
+                    'Admin',
+                    'Anagramm',
+                    'CAH',
+                    'Twitter',
+                    'Words'
+                ]
+            }
+        },
+
+
+        slackulon       : {
             url                     : './modules/core/slack.js',
-            botName                 : '_val',
-            apiKey                  : 'slackapi',
-            slackTeam               : 'teamName',
+            botName                 : 'val-bot',
+            apiKey                  : 'moon1moon1moon1moon1moon1moon1moon1moon1',
+            slackTeam               : 'spaaceteam101',
             channelsPrivateJoin     : []
         },
+
 
         telegram    : {
             url                     : './modules/core/telegram.js',
             botName                 : 'val2000bot',
-            apiKey                  : 'telegram-api-key'
+            apiKey                  : 'moon1moon1moon1moon1moon1moon1moon1',
+            coreConfig              : {
+                trigger                 : '/',
+                enablePM                : false
+            }
+        },
+
+
+        ircExample : {
+            url                     : './modules/core/irc.js',
+            botName                 : 'valulon',
+            server                  : 'chat.freenode.net',
+            serverPassword          : 'password123',
+            floodProtection         : true,
+            floodProtectionDelay    : 50,
+            sasl                    : true,
+            coreConfig              : {
+                usernamePrefix          : [],
+                channels                : [
+                    'your-mom'
+                ],
+                enablePM                : false,
+                disabledModules         : [
+                    'Admin',
+                    'Anagramm',
+                    'CAH',
+                    'DnD',
+                    'Doge',
+                    'Jetlore',
+                    'Music',
+                    'Nico',
+                    'Twitch',
+                    'Twitter',
+                    'Words'
+                ]
+            }
         }
     },
 
