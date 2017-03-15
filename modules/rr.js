@@ -78,12 +78,14 @@ class RR extends Module
      */
     rr( from, to, text )
     {
-        const clipSize  = this.clipSize;
         let clip        = this.clip;
+        let botText     = '';
 
-        var shot    = Math.floor( Math.random() * clipSize );
-        var bullet  = clip[ shot ];
-        let botText = '';
+        const clipSize  = this.clipSize;
+        const _bot      = this._bot;
+        const shot      = Math.floor( Math.random() * clipSize );
+        const bullet    = clip[ shot ];
+
 
         if ( bullet === true )
         {
@@ -91,7 +93,7 @@ class RR extends Module
         }
         else
         {
-            if ( text )
+            if ( text && text !== _bot.name )
             {
                 to = text;
             }

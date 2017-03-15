@@ -45,12 +45,20 @@ This project adheres to the [Contributor Covenant](http://contributor-covenant.o
 Need to report something? [val@knoblau.ch](mailto:val@knoblau.ch)
 
 
+1.0.0 to do!
+=========
+
++ dynamic commands
++ regex commands
+
+
 Change log
 ==========
 
 #### 1.0.0
 
-+ updated scripts to run Xvfb mode by default
++ val can no longer shoot itself
++ updated scripts to run Xvfb mode by gdefault
 + multiple commanders from each core are now allowed
 + twitter core works
 + added core specific ability to disable modules
@@ -64,7 +72,6 @@ Change log
 + modules are now classes
 + made syntax help available
 + website removed
-+ updated irc version
 + twitter now trims to 140 chars and supports promises
 + listen to pm removed
 
