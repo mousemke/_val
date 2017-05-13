@@ -58,7 +58,7 @@ class Jetlore extends Module
      *
      * @return {String} current beat
      */
-    getJetloreDeals()
+    getJetloreDeals( from, to, text, textArr, command, confObj )
     {
         const productId = null;
         // const productId = SE && SE.saleId ? SE.saleId : null;

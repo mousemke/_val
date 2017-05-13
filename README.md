@@ -12,7 +12,23 @@ v. 1.0.0
 npm i val-bot
 ```
 
+## Running val
+
++ Change the `_val.config.js` and `_val.modules.js` in `./config` where appropriate
++ `npm run serve`
+
 Use `+help` for a list of commands.
+
+
+## scripts
+
+
+| `script` | description |
+|----------|-------------|
+| `npm run serve` | starts _val in Xvfb mode (recommended) |
+| `npm run serveAlt` | starts _val in simple mode. not all commands may work |
+
+
 
 If you would like to have _val running on your irc/slack/twitch/whatever in our hosting pool let us know.  The hosting pool is run on an EC2 instance and is funded only by donations.  It's a good way to have your bots running without having to worry about it.
 
@@ -29,11 +45,20 @@ This project adheres to the [Contributor Covenant](http://contributor-covenant.o
 Need to report something? [val@knoblau.ch](mailto:val@knoblau.ch)
 
 
+1.0.0 to do!
+=========
+
++ dynamic commands
++ regex commands
+
+
 Change log
 ==========
 
 #### 1.0.0
 
++ val can no longer shoot itself
++ updated scripts to run Xvfb mode by gdefault
 + multiple commanders from each core are now allowed
 + twitter core works
 + added core specific ability to disable modules
@@ -47,7 +72,6 @@ Change log
 + modules are now classes
 + made syntax help available
 + website removed
-+ updated irc version
 + twitter now trims to 140 chars and supports promises
 + listen to pm removed
 
