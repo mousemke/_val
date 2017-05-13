@@ -89,6 +89,11 @@ class Doge extends Module
     {
         super( _bot, _modules, userConfig, commandModule );
 
+        if ( userConfig.dogeTickerEnabled )
+        {
+            this.startTicker();
+        }
+
         this.loadMasterList();
     }
 
@@ -338,6 +343,22 @@ class Doge extends Module
                 ]
             },
 
+            startTicker : {
+                f       : this.startTicker,
+                desc    : 'starts the doge ticker',
+                syntax      : [
+                    `${trigger}startTicker`
+                ]
+            },
+
+            stopTicker : {
+                f       : this.stopTicker,
+                desc    : 'stops the doge ticker',
+                syntax      : [
+                    `${trigger}stopTicker`
+                ]
+            },
+
             soak : {
                 f       : this.soak,
                 desc    : 'tip all active users',
@@ -368,7 +389,7 @@ class Doge extends Module
         const userConfig    = this.userConfig;
 
         var list            = _modules.core.checkActive( from, to, text, false );
-        var users           = list.length - 1;
+        const users         = list.length - 1;
         var textSplit       = text.split( ' ' );
         var soakTotal       = parseInt( textSplit[ 0 ] );
         var soakAmount      = Math.floor( soakTotal / users );
@@ -466,6 +487,50 @@ class Doge extends Module
 
             _modules.core.userData( to, from, _soakCB, text );
         } );
+    }
+
+
+    startTicker()
+    {
+        const _modules      = this._modules;
+        const _bot          = this._bot;
+        const userConfig    = this.userConfig;
+
+        const channel       = userConfig.dogeTickerChannel;
+        const acct          = userConfig.dogeTickerAccount;
+        const timeout       = userConfig.dogeTickerTimeout;
+
+        const res = new Promise( ( resolve, reject ) =>
+        {
+            _modules.core.apiGet( `https://chain.so/api/v2/address/DOGE/${acct}`, res =>
+            {
+                resolve( res.data ? res.data.balance : 1 );
+            }, true, channel, _bot.name );
+        } );
+
+        res.then( amount =>
+        {
+            this.dogeTicker = setInterval( () =>
+            {
+                const text = this.doge( channel, _bot.name, amount, true );
+                text.then( t => _bot.say( channel, t ) )
+            }, timeout * 1000 * 60 );
+
+            _bot.say( channel, `Ticker started to report once every ${timeout} minutes.  Use stopTicker to stop` ); // eslint-ignore-line
+
+            const text = this.doge( channel, _bot.name, amount, true );
+            text.then( t => _bot.say( channel, t ) )
+        } );
+    }
+
+
+    stopTicker()
+    {
+        const channel       = this.userConfig.dogeTickerChannel;
+        const _bot          = this._bot;
+
+        clearInterval( this.dogeTicker );
+        _bot.say( channel, `Doge ticker stopped` );
     }
 
 
