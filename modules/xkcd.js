@@ -17,6 +17,8 @@ class XKCD extends Module
      */
     getComic( from, to, text )
     {
+        const _modules = this._modules;
+
         return new Promise( function( resolve, reject )
         {
             _modules.core.apiGet( userConfig.xkcdAppUrl, response =>

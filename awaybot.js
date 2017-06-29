@@ -390,7 +390,7 @@ const _Val = function( commandModule, userConfig )
     function listenToPm( from, text )
     {
         console.log( 'AWAYBOT: ', commandType, chalk.green( from ), chalk.red( to ), text );
-        return _bot.say ( from, userConfig.botName + '\'s not here, man...' );
+        return _bot.say ( from, `${userConfig.botName}\'s not here, man...` );
     }
 
 

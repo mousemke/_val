@@ -74,6 +74,8 @@ Change log
 + website removed
 + twitter now trims to 140 chars and supports promises
 + listen to pm removed
++ xkcd bug fixed
++ awaybogt updated
 
 
 
