@@ -170,7 +170,7 @@ return botText;
      * @type {Object}
      */
     const baseResponses = {
-        active : {
+        active  : {
             module  : 'base',
             f       : checkActive,
             desc    : 'checks how many people are actuve in the channel',
@@ -179,7 +179,7 @@ return botText;
             ]
         },
 
-        help     : {
+        help    : {
             module  : 'base',
             f       : helpText,
             desc    : 'returns help text',
@@ -189,7 +189,7 @@ return botText;
             ]
         },
 
-        'isup' : {
+        isup    : {
             module  : 'base',
             f       : () => 'Yes, but c\'mon!  At least use a full sentence!',
             desc    : 'returns _val\'s current status',
