@@ -490,6 +490,7 @@ class Doge extends Module
     }
 
 
+
     startTicker()
     {
         if ( !this.dogeTicker )
@@ -551,9 +552,12 @@ class Doge extends Module
      *
      * @param {String} from originating channel
      * @param {String} to originating user
-     * @param {String} text full message text
+     * @param {String} text message text
+     * @param {Array} textArr text broken into an array of words
+     * @param {String} command text that triggered the bot
+     * @param {Object} confObj configuration object
      *
-     * @return {Void}
+     * @return {Promise} tip result
      */
     tip( from, to, text, textArr, command, confObj )
     {

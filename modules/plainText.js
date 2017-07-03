@@ -64,6 +64,13 @@ class PlainText extends Module
      *
      * you cant have this ability!
      *
+     * @param {String} from originating channel
+     * @param {String} to originating user
+     * @param {String} text message text
+     * @param {Array} textArr text broken into an array of words
+     * @param {String} command text that triggered the bot
+     * @param {Object} confObj configuration object
+     *
      * @return {String} scolding
      */
     disappearinacloudofsmoke( from, to, text, textArr, command, confObj )
@@ -90,6 +97,9 @@ class PlainText extends Module
      * @param {String} from originating channel
      * @param {String} to originating user
      * @param {String} text message text
+     * @param {Array} textArr text broken into an array of words
+     * @param {String} command text that triggered the bot
+     * @param {Object} confObj configuration object
      *
      * @return {Void} void
      */
@@ -127,23 +137,32 @@ class PlainText extends Module
 
 
     /**
+     * ## end
      *
-     **/
-    end( command, text )
+     * what can you do with the tools available?
+     *
+     * @param {String} from originating channel
+     * @param {String} to originating user
+     * @param {String} text message text
+     * @param {Array} textArr text broken into an array of words
+     * @param {String} command text that triggered the bot
+     * @param {Object} confObj configuration object
+     *
+     * @return {String} action action action
+     */
+    end( from, to, text, textArr, command )
     {
         const num     = Math.floor( Math.random() * ( nouns.length ) );
         const noun    = nouns[ num ];
 
         let botText   = `${command}s ${noun[ 0 ]}`;
 
-        const target  = text.split( ' ' );
-
-        if ( target && target[ 1 ] )
+        if ( textArr[ 1 ] )
         {
           const connections = [ ' to ', ' at ' ];
 
           num       = Math.floor( Math.random() * ( connections.length ) );
-          botText   += connections[ num ] + target[ 1 ];
+          botText   += connections[ num ] + textArr[ 1 ];
         }
 
         return botText;
@@ -151,9 +170,19 @@ class PlainText extends Module
 
 
     /**
-     * Fetti!
-     **/
-    fetti( command )
+     * ## Fetti!
+     *
+     * confetti all the things
+     *
+     * @param {String} from originating channel
+     * @param {String} to originating user
+     * @param {String} text message text
+     * @param {Array} textArr text broken into an array of words
+     * @param {String} command text that triggered the bot
+     *
+     * @return {String} a party.  in string form
+     */
+    fetti( from, to, text, textArr, command, confObj )
     {
         const type  = command.slice( 0, command.length - 5 );
         let word    = type;
@@ -286,70 +315,139 @@ class PlainText extends Module
 
 
     /**
+     * ## khan
+     *
+     * because.  i mean seriously, everything in this particular file is
+     * fairly useless
+     *
+     * @param {String} from originating channel
+     * @param {String} to originating user
+     * @param {String} text message text
+     * @param {Array} textArr text broken into an array of words
+     * @param {String} command text that triggered the bot
+     *
+     * @return {String} Botany Bay?
+     */
+    khan( from, to, text, textArr, command )
+    {
+        const khan  = khanRegex.exec( command );
+
+        let botText = 'kh';
+
+        khan.forEach( () =>
+        {
+            botText += 'aa';
+        } );
+
+        return `${botText.toUpperCase()}N!!!!!!`;
+    }
+
+
+    /**
+     * ## moon
+     *
+     * because.  i mean seriously, everything in this particular file is
+     * fairly useless
+     *
+     * @param {String} from originating channel
+     * @param {String} to originating user
+     * @param {String} text message text
+     * @param {Array} textArr text broken into an array of words
+     * @param {String} command text that triggered the bot
+     *
+     * @return {String} to the moon!
+     */
+    moon( from, to, text, textArr, command )
+    {
+        if ( command !== 'moonflakes' )
+        {
+            const moon   = moonRegex.exec( command );
+
+            let botText = 'm';
+
+            moon.forEach( () =>
+            {
+                botText += 'ooo';
+            } );
+
+
+            if ( moon.length < 4 )
+            {
+                return `To the ${botText}n!`;
+            }
+            if ( moonLength > 6 )
+            {
+                return `${botText.toUpperCase()}N!!!!!!!!`;
+            }
+        }
+    }
+
+
+    /**
      * ## responses
      *
      * @return {Object} responses
      */
     responses()
     {
-        // var moon    = moonRegex.exec( command );
-        // var space   = spaceRegex.exec( command );
-        // var khan    = khanRegex.exec( command );
-
-        // if ( command.slice( command.length - 3 ) === 'end' )
-        // {
-        //     return this.end( command, text );
-        // }
-        // else if ( command.slice( command.length - 5 ) === 'fetti' )
-        // {
-        //     return this.fetti( command );
-        // }
-        // else if ( moon && moon[1] && text !== '+moonflakes' )
-        // {
-        //     botText = 'm';
-        //     var moonLength = moon[1].length;
-        //     for ( var j = 0; j < moonLength; j++ )
-        //     {
-        //       botText += 'ooo';
-        //     }
-        //     botText += 'n';
-
-        //     if ( moonLength < 4 )
-        //     {
-        //       return `To the ${botText}!`;
-        //     }
-        //     if ( moonLength > 6 )
-        //     {
-        //       return `${botText.toUpperCase()}!!!!!!!!`;
-        //     }
-        // }
-        // else if ( space && space[1] )
-        // {
-        //     botText = 'sp';
-        //     var spaceLength = space[1].length;
-        //     for ( var k = 0, lenK = spaceLength; k < lenK; k++ )
-        //     {
-        //       botText += 'aa';
-        //     }
-        //     botText += 'ce';
-
-        //     return `${botText.toUpperCase()}!!!!!!`;
-        // }
-        // else if ( khan && khan[1] )
-        // {
-        //     botText = 'kh';
-        //     var khanLength = khan[1].length;
-        //     for ( var l = 0, lenL = khanLength; l < lenL; l++ )
-        //     {
-        //       botText += 'aa';
-        //     }
-        //     botText += 'n';
-
-        //     return `${botText.toUpperCase()}!!!!!!`;
-        // }
         const { trigger } = this.userConfig;
 
         const responses = {
+            '/.+end$/' : {
+                module  : 'plainText',
+                f       : this.end,
+                desc    : 'defend yourself',
+                syntax  : [
+                    `${trigger}defend`,
+                    `${trigger}lowend <user>`,
+                    `${trigger}upend`
+                ]
+            },
+
+            '/.+fetti$/' : {
+                module  : 'plainText',
+                f       : this.fetti,
+                desc    : 'confetti all the things \o/',
+                syntax  : [
+                    `${trigger}confetti`,
+                    `${trigger}moonfetti`,
+                    `${trigger}fettofetti`
+                ]
+            },
+
+            '/(?:kh([a]+)n)/' : {
+                module  : 'plainText',
+                f       : this.khan,
+                desc    : 'Botany Bay?',
+                syntax  : [
+                    `${trigger}khan`,
+                    `${trigger}khaaaaan`,
+                    `${trigger}khaaaaaaaaaaan`
+                ]
+            },
+
+            '/(?:m([o]+)n)/' : {
+                module  : 'plainText',
+                f       : this.moon,
+                desc    : '',
+                syntax  : [
+                    `${trigger}moon`,
+                    `${trigger}moooooon`,
+                    `${trigger}moooooooooon`
+                ]
+            },
+
+            '/(?:sp([a]+)ce)/' : {
+                module  : 'plainText',
+                f       : this.space,
+                desc    : '',
+                syntax  : [
+                    `${trigger}space`,
+                    `${trigger}spaaace`,
+                    `${trigger}spaaaaaaaace`
+                ]
+            },
+
             bgg   : {
                 f       : this.bgg,
                 desc    : 'search board game geek',
@@ -474,6 +572,35 @@ class PlainText extends Module
     travolta()
     {
         return travolta[ Math.floor( Math.random() * travolta.length ) ];
+    }
+
+
+    /**
+     * ## space
+     *
+     * because.  i mean seriously, everything in this particular file is
+     * fairly useless
+     *
+     * @param {String} from originating channel
+     * @param {String} to originating user
+     * @param {String} text message text
+     * @param {Array} textArr text broken into an array of words
+     * @param {String} command text that triggered the bot
+     *
+     * @return {String} to the moon!
+     */
+    space( from, to, text, textArr, command )
+    {
+        const space   = spaceRegex.exec( command );
+
+        let botText = 'sp';
+
+        space.forEach( () =>
+        {
+            botText += 'aa';
+        } );
+
+        return `${botText.toUpperCase()}CE!!!!!!`;
     }
 
 
