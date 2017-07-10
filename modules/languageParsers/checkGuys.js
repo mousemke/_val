@@ -53,7 +53,7 @@ function checkGuys( to, text, botText )
         } );
     } );
 
-    return {  to, text, botText };
+    return { to, text, botText };
 }
 
 export default checkGuys;

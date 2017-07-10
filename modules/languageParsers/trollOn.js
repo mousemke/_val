@@ -31,7 +31,7 @@ function trollOn( to, text, botText, _botConfig )
         text = `${_botConfig.trigger}trøllfetti`;
     }
 
-    return {  to, text, botText };
+    return { to, text, botText };
 }
 
 export default trollOn;

@@ -698,32 +698,16 @@ const _Val = function( commandModuleName, userConfig )
 
             if ( _botConfig.bots.indexOf( to ) === -1 )
             {
-                let botText = '';
-
-
-                //********** ********** ********** ********** **********//
-                //********** ********** ********** ********** **********//
-                //********** ********** ********** ********** **********//
-                //********** ********** ********** ********** **********//
-                //********** ********** ********** ********** **********//
-                //               language parsers go here.              //
-                //                                                      //
-                const checkGuys = require( './modules/languageParsers/checkGuys.js' );
-                const trollOn = require( './modules/languageParsers/trollOn.js' );
-                //                                                      //
-                { to, text, botText } = checkGuys( to, text, botText, _botConfig );
-                { to, text, botText } = trollOn( to, text, botText, _botConfig );
-                //                                                      //
-                //                         \o/                          //
-                //********** ********** ********** ********** **********//
-                //********** ********** ********** ********** **********//
-                //********** ********** ********** ********** **********//
-                //********** ********** ********** ********** **********//
-                //********** ********** ********** ********** **********//
-
-
                 const trigger       = _botConfig.trigger;
                 const triggerLength = trigger.length;
+
+                let botText = '';
+
+                _bot.language.forEach( func =>
+                {
+                    { to, text, botText } = func( to, text, botText, _botConfig );
+                } );
+
 
                 if ( text.slice( 0, triggerLength ) === trigger &&
                         text !== trigger && botText === '' )

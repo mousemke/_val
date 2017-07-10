@@ -27,6 +27,7 @@ Use `+help` for a list of commands.
 |----------|-------------|
 | `npm run serve` | starts _val in Xvfb mode (recommended) |
 | `npm run serveAlt` | starts _val in simple mode. not all commands may work |
+| `npm run away` | starts awaybot as a placeholder |
 
 
 
@@ -78,7 +79,8 @@ Change log
 + awaybot updated
 + responses altered to support regex and dynamic commands
 + regex responses added
-
++ language parser module capabilities added
++ added awaybot npm script
 
 
 Older Changes

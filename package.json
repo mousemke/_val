@@ -4,6 +4,7 @@
   "description": "A bot that does things.",
   "main": "_val.js",
   "scripts": {
+    "away": "node awaybot.js",
     "serve": "xvfb-run --auto-servernum --server-num=1 node --harmony _val.js",
     "serveAlt": "node _val.js"
   },
