@@ -153,42 +153,44 @@ class _4sq extends Module
         const { trigger } = this.userConfig;
 
         return {
-            '4sq-range' : {
-                f           : this.getRange,
-                desc        : 'returns the current range and location of the search',
-                syntax      : [
-                    `${trigger}4sq-range`
-                ]
-            },
+            commands : {
+                '4sq-range' : {
+                    f           : this.getRange,
+                    desc        : 'returns the current range and location of the search',
+                    syntax      : [
+                        `${trigger}4sq-range`
+                    ]
+                },
 
 
-            feedme      : {
-                f           : this.lunch,
-                desc        : 'don\'t starve',
-                syntax      : [
-                    `${trigger}feedme`,
-                    `${trigger}feedme <query>`
-                ]
-            },
+                feedme      : {
+                    f           : this.lunch,
+                    desc        : 'don\'t starve',
+                    syntax      : [
+                        `${trigger}feedme`,
+                        `${trigger}feedme <query>`
+                    ]
+                },
 
 
-            food        : {
-                f           : this.lunch,
-                desc        : 'don\'t starve',
-                syntax      : [
-                    `${trigger}food`,
-                    `${trigger}food <query>`
-                ]
-            },
+                food        : {
+                    f           : this.lunch,
+                    desc        : 'don\'t starve',
+                    syntax      : [
+                        `${trigger}food`,
+                        `${trigger}food <query>`
+                    ]
+                },
 
 
-            lunch       : {
-                f           : this.lunch,
-                desc        : 'don\'t starve',
-                syntax      : [
-                    `${trigger}lunch`,
-                    `${trigger}lunch <query>`
-                ]
+                lunch       : {
+                    f           : this.lunch,
+                    desc        : 'don\'t starve',
+                    syntax      : [
+                        `${trigger}lunch`,
+                        `${trigger}lunch <query>`
+                    ]
+                }
             }
         };
     }

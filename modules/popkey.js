@@ -96,12 +96,14 @@ class PopKey extends Module
         const { trigger } = this.userConfig;
 
         return {
-            gif : {
-                f       : this.getGif,
-                desc    : 'finds a gif matching the passed query',
-                syntax      : [
-                    `${trigger}gif <query>`
-                ]
+            commands : {
+                gif : {
+                    f       : this.getGif,
+                    desc    : 'finds a gif matching the passed query',
+                    syntax      : [
+                        `${trigger}gif <query>`
+                    ]
+                }
             }
         }
     }

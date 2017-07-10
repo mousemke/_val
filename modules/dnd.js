@@ -24,27 +24,45 @@ class DND( _bot, _modules, userConfig, commandModule )
      */
     responses()
     {
-        if ( dndRooms.indexOf( from ) !== -1 || dndRooms === '*' || 
-                dndRooms[ 0 ] === '*' )
-        {
-            var roll    = rollRegex.exec( command );
+        return {
+            commands : {
 
-            if ( roll && roll[2] )
-            {
-                return this.roll( from, to, text, roll )
-            }
-            else
-            {
-                // switch ( command )
-                // {
-                //     case 'players':
-                //         botText = this.listPlayers();
-                //         break;
-                // }
-            }
-        }
+            },
 
-        return botText;
+            regex : {
+                '/^(\d+)?(?:d([0-9][\d]+|[1-9]))(?:[+](\d+))?$/' : {
+                    module  : 'dnd',
+                    f       : this.roll,
+                    desc    : 'roll the bones',
+                    syntax  : [
+                        `${trigger}d10`,
+                        `${trigger}16d6`,
+                        `${trigger}9d12`
+                    ]
+                }
+            }
+        };
+
+        // if ( dndRooms.indexOf( from ) !== -1 || dndRooms === '*' || 
+        //         dndRooms[ 0 ] === '*' )
+        // {
+        //     var roll    = rollRegex.exec( command );
+
+        //     if ( roll && roll[2] )
+        //     {
+        //         return this.roll( from, to, text, roll )
+        //     }
+        //     else
+        //     {
+        //         // switch ( command )
+        //         // {
+        //         //     case 'players':
+        //         //         botText = this.listPlayers();
+        //         //         break;
+        //         // }
+        //     }
+        // }
+
     },
 
 
@@ -59,7 +77,7 @@ class DND( _bot, _modules, userConfig, commandModule )
      *
      * @return _Void_
      */
-    roll : function( from, to, text, roll )
+    roll( from, to, text, roll )
     {
         function _getDie( _max )
         {

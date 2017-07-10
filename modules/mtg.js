@@ -71,20 +71,22 @@ class Mtg extends Module
         const { trigger } = this.userConfig;
 
         return {
-            m   : {
-                f       : this.mtg,
-                desc    : 'searches for a magic card of the given name',
-                syntax      : [
-                    `${trigger}m <query>`
-                ]
-            },
+            commands : {
+                m   : {
+                    f       : this.mtg,
+                    desc    : 'searches for a magic card of the given name',
+                    syntax      : [
+                        `${trigger}m <query>`
+                    ]
+                },
 
-            mtg : {
-                f       : this.mtg,
-                desc    : 'searches for a magic card of the given name',
-                syntax      : [
-                    `${trigger}mtg <query>`
-                ]
+                mtg : {
+                    f       : this.mtg,
+                    desc    : 'searches for a magic card of the given name',
+                    syntax      : [
+                        `${trigger}mtg <query>`
+                    ]
+                }
             }
         };
     }

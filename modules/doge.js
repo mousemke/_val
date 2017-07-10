@@ -283,88 +283,90 @@ class Doge extends Module
         const { trigger } = this.userConfig;
 
         return {
-            doge : {
-                f       : this.dogePrice,
-                desc    : 'return the price of doge in satoshi',
-                syntax      : [
-                    `${trigger}doge`,
-                    `${trigger}doge <amount>`
-                ]
-            },
+            commands: {
+                doge : {
+                    f       : this.dogePrice,
+                    desc    : 'return the price of doge in satoshi',
+                    syntax      : [
+                        `${trigger}doge`,
+                        `${trigger}doge <amount>`
+                    ]
+                },
 
-            market : {
-                f       : this.marketPrice,
-                desc    : 'return the price of doge in multiple currencies',
-                syntax      : [
-                    `${trigger}market`,
-                    `${trigger}market <amount>`
-                ]
-            },
+                market : {
+                    f       : this.marketPrice,
+                    desc    : 'return the price of doge in multiple currencies',
+                    syntax      : [
+                        `${trigger}market`,
+                        `${trigger}market <amount>`
+                    ]
+                },
 
-            tip : {
-                f       : this.tip,
-                desc    : 'tip someone',
-                syntax      : [
-                    `${trigger}tip <user> <amount>`
-                ]
-            },
+                tip : {
+                    f       : this.tip,
+                    desc    : 'tip someone',
+                    syntax      : [
+                        `${trigger}tip <user> <amount>`
+                    ]
+                },
 
-            withdraw : {
-                f       : this.withdraw,
-                desc    : 'withdraw some doge to an external wallet',
-                syntax      : [
-                    `${trigger}withdraw <amount>`
-                ]
-            },
+                withdraw : {
+                    f       : this.withdraw,
+                    desc    : 'withdraw some doge to an external wallet',
+                    syntax      : [
+                        `${trigger}withdraw <amount>`
+                    ]
+                },
 
-            balance : {
-                f       : this.balance,
-                desc    : 'returns a users balance',
-                syntax      : [
-                    `${trigger}balance`,
-                    `${trigger}balance bank`,
-                    `${trigger}balance all`
-                ]
-            },
+                balance : {
+                    f       : this.balance,
+                    desc    : 'returns a users balance',
+                    syntax      : [
+                        `${trigger}balance`,
+                        `${trigger}balance bank`,
+                        `${trigger}balance all`
+                    ]
+                },
 
-            deposit : {
-                f       : this.deposit,
-                desc    : 'deposit money doge in from an external wallet',
-                syntax      : [
-                    `${trigger}deposit <amount>`
-                ]
-            },
+                deposit : {
+                    f       : this.deposit,
+                    desc    : 'deposit money doge in from an external wallet',
+                    syntax      : [
+                        `${trigger}deposit <amount>`
+                    ]
+                },
 
-            makeitrain : {
-                f       : this.soak,
-                desc    : 'tip all active users',
-                syntax      : [
-                    `${trigger}makeitrain <amount>`
-                ]
-            },
+                makeitrain : {
+                    f       : this.soak,
+                    desc    : 'tip all active users',
+                    syntax      : [
+                        `${trigger}makeitrain <amount>`
+                    ]
+                },
 
-            startTicker : {
-                f       : this.startTicker,
-                desc    : 'starts the doge ticker',
-                syntax      : [
-                    `${trigger}startTicker`
-                ]
-            },
+                startTicker : {
+                    f       : this.startTicker,
+                    desc    : 'starts the doge ticker',
+                    syntax      : [
+                        `${trigger}startTicker`
+                    ]
+                },
 
-            stopTicker : {
-                f       : this.stopTicker,
-                desc    : 'stops the doge ticker',
-                syntax      : [
-                    `${trigger}stopTicker`
-                ]
-            },
+                stopTicker : {
+                    f       : this.stopTicker,
+                    desc    : 'stops the doge ticker',
+                    syntax      : [
+                        `${trigger}stopTicker`
+                    ]
+                },
 
-            soak : {
-                f       : this.soak,
-                desc    : 'tip all active users',
-                syntax      : [
-                    `${trigger}soak <amount>`
-                ]
+                soak : {
+                    f       : this.soak,
+                    desc    : 'tip all active users',
+                    syntax      : [
+                        `${trigger}soak <amount>`
+                    ]
+                }
             }
         };
     }

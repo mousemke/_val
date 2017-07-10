@@ -27,7 +27,11 @@ class Module
      */
     responses()
     {
-        return {};
+        return {
+            commands    : {},
+
+            regex       : {}
+        };
     };
 };
 

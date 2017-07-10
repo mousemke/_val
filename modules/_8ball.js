@@ -91,12 +91,14 @@ class _8ball extends Module
     responses()
     {
         return {
-            '8ball': {
-                f       : this.getPrediction,
-                desc    : `let ${this._bot.name} predict the future`,
-                syntax      : [
-                    `${this.userConfig.trigger}8ball <question>?`
-                ]
+            commands : {
+                '8ball': {
+                    f       : this.getPrediction,
+                    desc    : `let ${this._bot.name} predict the future`,
+                    syntax      : [
+                        `${this.userConfig.trigger}8ball <question>?`
+                    ]
+                }
             }
         };
     };

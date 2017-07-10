@@ -393,157 +393,162 @@ class PlainText extends Module
         const { trigger } = this.userConfig;
 
         const responses = {
-            '/.+end$/' : {
-                module  : 'plainText',
-                f       : this.end,
-                desc    : 'defend yourself',
-                syntax  : [
-                    `${trigger}defend`,
-                    `${trigger}lowend <user>`,
-                    `${trigger}upend`
-                ]
+            regex : {
+                '/.+end$/' : {
+                    module  : 'plainText',
+                    f       : this.end,
+                    desc    : 'defend yourself',
+                    syntax  : [
+                        `${trigger}defend`,
+                        `${trigger}lowend <user>`,
+                        `${trigger}upend`
+                    ]
+                },
+
+                '/.+fetti$/' : {
+                    module  : 'plainText',
+                    f       : this.fetti,
+                    desc    : 'confetti all the things \o/',
+                    syntax  : [
+                        `${trigger}confetti`,
+                        `${trigger}moonfetti`,
+                        `${trigger}fettofetti`
+                    ]
+                },
+
+                '/(?:kh([a]+)n)/' : {
+                    module  : 'plainText',
+                    f       : this.khan,
+                    desc    : 'Botany Bay?',
+                    syntax  : [
+                        `${trigger}khan`,
+                        `${trigger}khaaaaan`,
+                        `${trigger}khaaaaaaaaaaan`
+                    ]
+                },
+
+                '/(?:m([o]+)n)/' : {
+                    module  : 'plainText',
+                    f       : this.moon,
+                    desc    : '',
+                    syntax  : [
+                        `${trigger}moon`,
+                        `${trigger}moooooon`,
+                        `${trigger}moooooooooon`
+                    ]
+                },
+
+                '/(?:sp([a]+)ce)/' : {
+                    module  : 'plainText',
+                    f       : this.space,
+                    desc    : '',
+                    syntax  : [
+                        `${trigger}space`,
+                        `${trigger}spaaace`,
+                        `${trigger}spaaaaaaaace`
+                    ]
+                }
             },
 
-            '/.+fetti$/' : {
-                module  : 'plainText',
-                f       : this.fetti,
-                desc    : 'confetti all the things \o/',
-                syntax  : [
-                    `${trigger}confetti`,
-                    `${trigger}moonfetti`,
-                    `${trigger}fettofetti`
-                ]
-            },
+            commands : {
 
-            '/(?:kh([a]+)n)/' : {
-                module  : 'plainText',
-                f       : this.khan,
-                desc    : 'Botany Bay?',
-                syntax  : [
-                    `${trigger}khan`,
-                    `${trigger}khaaaaan`,
-                    `${trigger}khaaaaaaaaaaan`
-                ]
-            },
+                bgg   : {
+                    f       : this.bgg,
+                    desc    : 'search board game geek',
+                    syntax  : [
+                        `${trigger}bgg <query>`
+                    ]
+                },
 
-            '/(?:m([o]+)n)/' : {
-                module  : 'plainText',
-                f       : this.moon,
-                desc    : '',
-                syntax  : [
-                    `${trigger}moon`,
-                    `${trigger}moooooon`,
-                    `${trigger}moooooooooon`
-                ]
-            },
+                dance   : {
+                    f       : this.dance,
+                    desc    : 'dance dance!',
+                    syntax  : [
+                        `${trigger}dance`
+                    ]
+                },
 
-            '/(?:sp([a]+)ce)/' : {
-                module  : 'plainText',
-                f       : this.space,
-                desc    : '',
-                syntax  : [
-                    `${trigger}space`,
-                    `${trigger}spaaace`,
-                    `${trigger}spaaaaaaaace`
-                ]
-            },
+                disappearinacloudofsmoke : {
+                    f       : this.disappearinacloudofsmoke,
+                    desc    : 'that\'s not at thing...',
+                    syntax  : [
+                        `${trigger}disappearinacloudofsmoke`
+                    ]
+                },
 
-            bgg   : {
-                f       : this.bgg,
-                desc    : 'search board game geek',
-                syntax  : [
-                    `${trigger}bgg <query>`
-                ]
-            },
+                dodge : {
+                    f       : this.dodge,
+                    desc    : 'look out!',
+                    syntax  : [
+                        `${trigger}dodge`,
+                        `${trigger}dodge <user>`
+                    ]
+                },
 
-            dance   : {
-                f       : this.dance,
-                desc    : 'dance dance!',
-                syntax  : [
-                    `${trigger}dance`
-                ]
-            },
+                g   : {
+                    f       : this.g,
+                    desc    : 'search google',
+                    syntax  : [
+                        `${trigger}g <query>`
+                    ]
+                },
 
-            disappearinacloudofsmoke : {
-                f       : this.disappearinacloudofsmoke,
-                desc    : 'that\'s not at thing...',
-                syntax  : [
-                    `${trigger}disappearinacloudofsmoke`
-                ]
-            },
+                germanysgottalent   : {
+                    f       : this.germanysGotTalent,
+                    desc    : 'see germany\'s finest',
+                    syntax  : [
+                        `${trigger}germanysgottalent`
+                    ]
+                },
 
-            dodge : {
-                f       : this.dodge,
-                desc    : 'look out!',
-                syntax  : [
-                    `${trigger}dodge`,
-                    `${trigger}dodge <user>`
-                ]
-            },
+                google   : {
+                    f       : this.google,
+                    desc    : 'search google',
+                    syntax  : [
+                        `${trigger}g <query>`
+                    ]
+                },
 
-            g   : {
-                f       : this.g,
-                desc    : 'search google',
-                syntax  : [
-                    `${trigger}g <query>`
-                ]
-            },
+                ping : {
+                    f       : function( from, to ){ return `${to}: pong!` },
+                    desc    : 'test a response',
+                    syntax  : [
+                        `${trigger}ping`
+                    ]
+                },
 
-            germanysgottalent   : {
-                f       : this.germanysGotTalent,
-                desc    : 'see germany\'s finest',
-                syntax  : [
-                    `${trigger}germanysgottalent`
-                ]
-            },
+                travolta : {
+                    f       : this.travolta,
+                    desc    : 'because',
+                    syntax  : [
+                        `${trigger}travolta`
+                    ]
+                },
 
-            google   : {
-                f       : this.google,
-                desc    : 'search google',
-                syntax  : [
-                    `${trigger}g <query>`
-                ]
-            },
+                w   : {
+                    f       : this.wiki,
+                    desc    : 'search wikipedia',
+                    syntax  : [
+                        `${trigger}w <query>`
+                    ]
+                },
 
-            ping : {
-                f       : function( from, to ){ return `${to}: pong!` },
-                desc    : 'test a response',
-                syntax  : [
-                    `${trigger}ping`
-                ]
-            },
+                wave : {
+                    f       : function( from, to ){ return `${to} o/` },
+                    desc    : 'say hi',
+                    syntax  : [
+                        `${trigger}wave`
+                    ]
+                },
 
-            travolta : {
-                f       : this.travolta,
-                desc    : 'because',
-                syntax  : [
-                    `${trigger}travolta`
-                ]
-            },
-
-            w   : {
-                f       : this.wiki,
-                desc    : 'search wikipedia',
-                syntax  : [
-                    `${trigger}w <query>`
-                ]
-            },
-
-            wave : {
-                f       : function( from, to ){ return `${to} o/` },
-                desc    : 'say hi',
-                syntax  : [
-                    `${trigger}wave`
-                ]
-            },
-
-            wiki : {
-                f       : this.wiki,
-                desc    : 'search wikipedia',
-                syntax  : [
-                    `${trigger}wiki <query>`
-                ]
-            },
+                wiki : {
+                    f       : this.wiki,
+                    desc    : 'search wikipedia',
+                    syntax  : [
+                        `${trigger}wiki <query>`
+                    ]
+                }
+            }
         };
 
 

@@ -23,12 +23,14 @@ class U extends Module
         const { trigger } = this.userConfig;
 
         return {
-            u : {
-                f       : this.talk,
-                desc    : 'interesting political discussions with someone angry',
-                syntax  : [
-                    `${trigger}u <question>`
-                ]
+            commands : {
+                u : {
+                    f       : this.talk,
+                    desc    : 'interesting political discussions with someone angry',
+                    syntax  : [
+                        `${trigger}u <question>`
+                    ]
+                }
             }
         };
     }

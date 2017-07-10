@@ -76,7 +76,9 @@ const _Val = function( commandModuleName, userConfig )
         {
             botText += `${t.text}: ${JSON.stringify( t )}\n`;
         } );
-return botText;
+
+        return botText;
+
         // return `root sentence: ${textRoot}
         //             sentence type: ${sentenceType}
         //             verb: ${JSON.stringify( verb.to_present() )}
@@ -170,51 +172,57 @@ return botText;
      * @type {Object}
      */
     const baseResponses = {
-        active  : {
-            module  : 'base',
-            f       : checkActive,
-            desc    : 'checks how many people are actuve in the channel',
-            syntax  : [
-                `${trigger}active`
-            ]
+        commands : {
+            active  : {
+                module  : 'base',
+                f       : checkActive,
+                desc    : 'checks how many people are actuve in the channel',
+                syntax  : [
+                    `${trigger}active`
+                ]
+            },
+
+            help    : {
+                module  : 'base',
+                f       : helpText,
+                desc    : 'returns help text',
+                syntax  : [
+                    `${trigger}help`,
+                    `${trigger}help <command>`,
+                ]
+            },
+
+            isup    : {
+                module  : 'base',
+                f       : () => 'Yes, but c\'mon!  At least use a full sentence!',
+                desc    : 'returns _val\'s current status',
+                syntax  : [
+                    `${trigger}isup`
+                ]
+            },
+
+            'moon?' : {
+                module  : 'base',
+                f       : () => 'In 500 million years, the moon will be 14,600 miles farther away than it is right now. When it is that far, total eclipses will not take place',
+                desc    : 'learn more about the moon',
+                syntax  : [
+                    `${trigger}moon`
+                ]
+            },
+
+            test    : {
+                module  : 'base',
+                f       : testFunction,
+                desc    : 'this could honestly be anything.  mostly features are incubated here for later expansion',
+                syntax  : [
+                    `${trigger}test`
+                ]
+            }
         },
 
-        help    : {
-            module  : 'base',
-            f       : helpText,
-            desc    : 'returns help text',
-            syntax  : [
-                `${trigger}help`,
-                `${trigger}help <command>`,
-            ]
-        },
+        dynamic : {},
 
-        isup    : {
-            module  : 'base',
-            f       : () => 'Yes, but c\'mon!  At least use a full sentence!',
-            desc    : 'returns _val\'s current status',
-            syntax  : [
-                `${trigger}isup`
-            ]
-        },
-
-        'moon?' : {
-            module  : 'base',
-            f       : () => 'In 500 million years, the moon will be 14,600 miles farther away than it is right now. When it is that far, total eclipses will not take place',
-            desc    : 'learn more about the moon',
-            syntax  : [
-                `${trigger}moon`
-            ]
-        },
-
-        test    : {
-            module  : 'base',
-            f       : testFunction,
-            desc    : 'this could honestly be anything.  mostly features are incubated here for later expansion',
-            syntax  : [
-                `${trigger}test`
-            ]
-        }
+        regex : {}
     };
 
 
@@ -261,6 +269,22 @@ return botText;
                 }
             }
         }
+
+
+        //********** ********** ********** **********//
+        //********** ********** ********** **********//
+        //********** ********** ********** **********//
+        //********** ********** ********** **********//
+        //********** ********** ********** **********//
+        //
+        //                    TODO
+        //            load language parsers
+        //
+        //********** ********** ********** **********//
+        //********** ********** ********** **********//
+        //********** ********** ********** **********//
+        //********** ********** ********** **********//
+        //********** ********** ********** **********//
     }
 
 
@@ -609,26 +633,31 @@ return botText;
         {
             if ( _botConfig.disabledModules.indexOf( moduleName ) === -1 )
             {
-                const modulesConstructor = modules.constructors[ moduleName ];
-                const module = modules[ moduleName ] = new modulesConstructor( _bot, modules, _botConfig, commandModule );
+                const ModulesConstructor = modules.constructors[ moduleName ];
+                const module = modules[ moduleName ] = new ModulesConstructor( _bot, modules, _botConfig, commandModule );
 
                 function formatResponses( module, name )
                 {
                     module.responses = module.responses();
 
-                    Object.keys( module.responses ).forEach( r =>
-                    {
-                        const res = module.responses[ r ];
+                    _bot.responses.regex = combineResponses( _bot.responses.regex, module.responses.regex );
 
-                        res.f           = res.f.bind( module );
-                        res.moduleName  = name;
-                        res.module      = module;
-                    } );
+                    if ( module.responses.commands )
+                    {
+                        Object.keys( module.responses.commands ).forEach( r =>
+                        {
+                            const res = module.responses[ r ];
+
+                            res.f           = res.f.bind( module );
+                            res.moduleName  = name;
+                            res.module      = module;
+                        } );
+                    }
                 };
 
                 formatResponses( module, moduleName );
 
-                _bot.responses = combineResponses( _bot.responses, module.responses );
+                _bot.responses = combineResponses( _bot.responses.commands, module.responses.commands );
             }
         }
 
@@ -667,15 +696,6 @@ return botText;
             {
                 let botText = '';
 
-                if ( text === '_val' || text === '_val?' )
-                {
-                    return 'yes?';
-                }
-                else if ( text === '_val!' )
-                {
-                    return 'what!?';
-                }
-
 
                 //********** ********** ********** ********** **********//
                 //********** ********** ********** ********** **********//
@@ -685,11 +705,6 @@ return botText;
                 //                                                      //
                 //    language parsers go here, including checkGuys     //
                 //                                                      //
-                //********** ********** ********** ********** **********//
-                //********** ********** ********** ********** **********//
-                //********** ********** ********** ********** **********//
-                //********** ********** ********** ********** **********//
-                //********** ********** ********** ********** **********//
 
                 /**
                  * ## checkGuys
@@ -748,12 +763,7 @@ return botText;
 
                 botText = checkGuys( to, text );
 
-                //********** ********** ********** ********** **********//
-                //********** ********** ********** ********** **********//
-                //********** ********** ********** ********** **********//
-                //********** ********** ********** ********** **********//
-                //********** ********** ********** ********** **********//
-                //                                                      //
+
                 //                         \o/                          //
                 //                                                      //
                 //********** ********** ********** ********** **********//
@@ -767,7 +777,8 @@ return botText;
                 const trigger       = _botConfig.trigger;
                 const triggerLength = trigger.length;
 
-                if ( text.slice( 0, triggerLength ) === trigger && text !== trigger && botText === '' )
+                if ( text.slice( 0, triggerLength ) === trigger &&
+                        text !== trigger && botText === '' )
                 {
                     text = text.slice( triggerLength );
 
@@ -776,9 +787,28 @@ return botText;
                     textArr         = textArr.slice( 1 );
                     text            = textArr.join( ' ' );
 
-                    if ( _bot.responses[ command ] )
+                    if ( _bot.responses.commands[ command ] )
                     {
-                        return _bot.responses[ command ].f( from, to, text, textArr, command, confObj );
+                        return _bot.responses.commands[ command ].f( from, to, text, textArr, command, confObj );
+                    }
+                    else
+                    {
+                        console.log( _bot.responses.regex );
+
+                        //********** ********** ********** **********//
+                        //********** ********** ********** **********//
+                        //********** ********** ********** **********//
+                        //********** ********** ********** **********//
+                        //********** ********** ********** **********//
+                        //
+                        //                    TODO
+                        //            REGEX response structure
+                        //
+                        //********** ********** ********** **********//
+                        //********** ********** ********** **********//
+                        //********** ********** ********** **********//
+                        //********** ********** ********** **********//
+                        //********** ********** ********** **********//
                     }
                 }
 

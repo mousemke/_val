@@ -39,12 +39,14 @@ class XKCD extends Module
         const { trigger } = this.userConfig;
 
         return {
-            xkcd : {
-                f       : this.getComic,
-                desc    : 'returns a random xkcd comic',
-                syntax  : [
-                    `${trigger}xkcd`
-                ]
+            commands : {
+                xkcd : {
+                    f       : this.getComic,
+                    desc    : 'returns a random xkcd comic',
+                    syntax  : [
+                        `${trigger}xkcd`
+                    ]
+                }
             }
         };
     }

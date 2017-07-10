@@ -40,20 +40,22 @@ class Beats extends Module
         const { trigger } = this.userConfig;
 
         return {
-            beat      : {
-                f           : this.getBeat,
-                desc        : 'returns the current time in beats',
-                syntax      : [
-                    `${trigger}beat`
-                ]
-            },
+            commands : {
+                beat      : {
+                    f           : this.getBeat,
+                    desc        : 'returns the current time in beats',
+                    syntax      : [
+                        `${trigger}beat`
+                    ]
+                },
 
-            time      : {
-                f           : this.getBeat,
-                desc        : 'returns the current time in beats',
-                syntax      : [
-                    `${trigger}time`
-                ]
+                time      : {
+                    f           : this.getBeat,
+                    desc        : 'returns the current time in beats',
+                    syntax      : [
+                        `${trigger}time`
+                    ]
+                }
             }
         };
     }

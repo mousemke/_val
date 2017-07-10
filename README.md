@@ -49,6 +49,7 @@ Need to report something? [val@knoblau.ch](mailto:val@knoblau.ch)
 =========
 
 + dynamic commands
++ temporarily moved non working modules
 
 
 Change log
@@ -75,6 +76,8 @@ Change log
 + listen to pm removed
 + xkcd bug fixed
 + awaybot updated
++ responses altered to support regex and dynamic commands
++ regex responses added
 
 
 

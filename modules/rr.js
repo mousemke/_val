@@ -53,13 +53,15 @@ class RR extends Module
         const { trigger } = this.userConfig;
 
         return {
-            rr : {
-                f       : this.rr,
-                desc    : 'try your luck',
-                syntax      : [
-                    `${trigger}rr`,
-                    `${trigger}rr <name>`
-                ]
+            commands : {
+                rr : {
+                    f       : this.rr,
+                    desc    : 'try your luck',
+                    syntax      : [
+                        `${trigger}rr`,
+                        `${trigger}rr <name>`
+                    ]
+                }
             }
         };
     }

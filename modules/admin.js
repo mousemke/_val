@@ -36,16 +36,19 @@ class Admin extends Module
      */
     responses()
     {
-        const { userConfig }     = this;
+        const { userConfig }    = this;
         const { trigger }       = userConfig;
-        const res = {};
 
-        res[ `${trigger}v` ] = {
-            f       : this.version,
-            desc    : 'returns the current running version number',
-            syntax      : [
-                `${trigger}${trigger}v`
-            ]
+        const res = {
+            commands : {
+                [ `${trigger}v` ] : {
+                    f       : this.version,
+                    desc    : 'returns the current running version number',
+                    syntax      : [
+                        `${trigger}${trigger}v`
+                    ]
+                }
+            }
         };
 
         return res;
