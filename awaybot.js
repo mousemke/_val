@@ -458,90 +458,62 @@ const _Val = function( commandModule, userConfig )
 
 
     /**
-     * ## trollOn
-     *
-     * responds if the word "troll" or "trøll" is in the text.  ignores blacklist items
-     *
-     * @param {String} text original text string
-     *
-     * @return {String} original or modified text
-     */
-    function trollOn( text )
-    {
-        var textSplit = text.split( ' ' );
-
-        for ( var i = 0, lenI = textSplit.length; i < lenI; i++ )
-        {
-            if ( trollBlacklist.indexOf( textSplit[ i ] ) !== -1 )
-            {
-                return text;
-            }
-        }
-
-        if ( text.toLowerCase().indexOf( 'troll' ) !== -1 )
-        {
-            text = userConfig.trigger + 'trollfetti';
-        }
-        else if ( text.toLowerCase().indexOf( 'trøll' ) !== -1 )
-        {
-            text = userConfig.trigger + 'trøllfetti';
-        }
-
-        return text;
-    }
-
-
-    /**
      * ## userData
      *
      * gets userdata from the nickserv authentication bot
      *
      * @param {String} to user
      * @param {String} from originating channel
-     * @param {Function} _cb callback
+     * @param {Function} cb callback
      * @param {String} origText original message text
      *
      * @return {Void}
      */
-    function userData( to, from, _cb, origText )
+    function userData( to, from, cb, origText )
     {
-        if ( userConfig.autoAuth )
+        if ( _botConfig.autoAuth )
         {
-            var textSplit = origText.split( ' ' );
+            const textSplit = origText.split( ' ' );
 
-            _cb( to, 'true', textSplit, origText );
+            cb( to, 'true', textSplit, origText );
         }
         else
         {
-            var response = function( _from, text )
+            const response = function( _from, text )
             {
                 _bot.removeListener( 'pm', response );
 
-                var textSplit       = text.split( ' ' );
-                var apiReturn       = textSplit[ 0 ];
-                var returnMessage   = textSplit[ 1 ];
-                var user            = textSplit[ 2 ];
-                var result          = textSplit[ 3 ];
+                const textSplit     = text.split( ' ' );
+                const apiReturn     = textSplit[ 0 ];
+                const returnMessage = textSplit[ 1 ];
+                const user          = textSplit[ 2 ];
+                const result        = textSplit[ 3 ];
 
-                if ( apiReturn === userConfig.nickservAPI &&
-                    returnMessage === 'identified' && user === to && result === 'true' )
+                if ( apiReturn === _botConfig.nickservAPI &&
+                    returnMessage === 'identified' && user === to &&
+                                                            result === 'true' )
                 {
-                    _cb( to, result, textSplit, origText );
+                    cb( to, result, textSplit, origText );
                 }
-                else if ( apiReturn === userConfig.nickservAPI &&
-                    returnMessage === 'identified' && user === to && result === 'false' )
+                else if ( apiReturn === _botConfig.nickservAPI &&
+                            returnMessage === 'identified' && user === to &&
+                            result === 'false' )
                 {
-                    _bot.say( to, 'You are not identified. (/msg NickServ help)' );
+                    _bot.say( to,
+                            'You are not identified. (/msg NickServ help)' );
                 }
-                else if ( apiReturn === userConfig.NickservAPI && returnMessage === 'notRegistered' && user === to )
+                else if ( apiReturn === _botConfig.NickservAPI &&
+                            returnMessage === 'notRegistered' && user === to )
                 {
-                    _bot.say( to, 'You are not a registered user. (/msg NickServ help)' );
+                    _bot.say( to,
+                        'You are not a registered user. (/msg NickServ help)' );
                 }
             };
 
             _bot.addListener( 'pm', response );
 
-            _bot.say( userConfig.nickservBot, userConfig.nickservAPI + ' identify ' + to );
+            _bot.say( _botConfig.nickservBot,
+                                `${_botConfig.nickservAPI} identify ${to}` );
         }
     }
 
@@ -558,7 +530,7 @@ const _Val = function( commandModule, userConfig )
      */
     function watchActive( from, to )
     {
-        var ignoreTheBots = userConfig.bots || [];
+        const ignoreTheBots = _botConfig.bots || [];
 
         if ( ignoreTheBots.indexOf( to ) === -1 )
         {
@@ -598,19 +570,18 @@ req.chalk           = require( 'chalk' );
 
 userConfig.commandModules   = [];
 
-
 const commanders    = userConfig.command;
 const cores         = [];
 
 let commandObj;
 
-for ( var _c in commanders )
+for ( let commander in commanders )
 {
-    commandObj = commanders[ _c ];
+    commandObj = commanders[ commander ];
 
     if ( commandObj.disabled !== true )
     {
-        cores.push( _val( _c ) );
+        cores.push( _val( commander ) );
     }
 }
 
