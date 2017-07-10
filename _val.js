@@ -14,8 +14,6 @@ const _Val = function( commandModuleName, userConfig )
     const fs            = req.fs;
     const chalk         = req.chalk;
     const modulesConfig = require( './config/_val.modules.js' );
-    const guysObj       = require( './lists/guys.js' );
-    const trollBlacklist = require( './lists/trollBlacklist.js' );
 
     let channel;
     let _bot;
@@ -271,20 +269,28 @@ const _Val = function( commandModuleName, userConfig )
         }
 
 
-        //********** ********** ********** **********//
-        //********** ********** ********** **********//
-        //********** ********** ********** **********//
-        //********** ********** ********** **********//
-        //********** ********** ********** **********//
-        //
-        //                    TODO
-        //            load language parsers
-        //
-        //********** ********** ********** **********//
-        //********** ********** ********** **********//
-        //********** ********** ********** **********//
-        //********** ********** ********** **********//
-        //********** ********** ********** **********//
+        /**
+         * load _val language parsers
+         */
+        const languageParsers = userConfig.language;
+
+        for ( const parserName in languageParsers )
+        {
+            const parser = parserName;
+
+            if ( parser.enabled )
+            {
+                _bot.languageParsers[ parserName ] = require( parser.url );
+
+                if ( parser.options )
+                {
+                    for ( let option in parser.options )
+                    {
+                        _botConfig[ option ] = parser.options[ option ];
+                    }
+                }
+            }
+        }
     }
 
 
@@ -302,7 +308,7 @@ const _Val = function( commandModuleName, userConfig )
         _bot            = new Commander( _botConfig,
                                             channels,
                                             listenToMessages,
-                                            displayDebugInfo ,
+                                            displayDebugInfo,
                                             this,
                                             commandModule
                                         );
@@ -586,8 +592,8 @@ const _Val = function( commandModuleName, userConfig )
      */
     function helpText( from, to, text )
     {
-        const responses     = _bot.responses;
-        const responseText  = responses[ text ];
+        const responses     = Object.assign( _bot.responses.commands, _bot.responses.regex, _bot.responses.dynamic );
+        const responseText  = responses.commands[ text ] || responses.dynamic[ text ];
 
         if ( text.length === 0 || !responseText )
         {
@@ -690,8 +696,6 @@ const _Val = function( commandModuleName, userConfig )
 
             watchActive( from, to );
 
-            text = trollOn( text );
-
             if ( _botConfig.bots.indexOf( to ) === -1 )
             {
                 let botText = '';
@@ -702,76 +706,20 @@ const _Val = function( commandModuleName, userConfig )
                 //********** ********** ********** ********** **********//
                 //********** ********** ********** ********** **********//
                 //********** ********** ********** ********** **********//
+                //               language parsers go here.              //
                 //                                                      //
-                //    language parsers go here, including checkGuys     //
+                const checkGuys = require( './modules/languageParsers/checkGuys.js' );
+                const trollOn = require( './modules/languageParsers/trollOn.js' );
                 //                                                      //
-
-                /**
-                 * ## checkGuys
-                 *
-                 * checks for "guys" and/or other words set in the guys.json
-                 *
-                 * @param {String} text user text
-                 *
-                 * @return {Promise}
-                 */
-                function checkGuys( to, text )
-                {
-                    /**
-                     * ## replaceGuys
-                     *
-                     * responds to 'guys' (and other trigger words) with alternative suggestions
-                     *
-                     * @param {String} to user
-                     * @param {Object} obj triggered word object
-                     *
-                     * @return {String} suggestion
-                     */
-                    function replaceGuys( to, obj )
-                    {
-                        const alternative   = obj.alternatives[ Math.floor( Math.random() *
-                                                                    obj.alternatives.length ) ];
-
-                        const speech        = obj.speech[ Math.floor( Math.random() *
-                                                                    obj.speech.length ) ];
-
-                        return `${to}, ${speech[ 0 ]}${alternative}${speech[ 1 ]}`;
-                    }
-
-
-                    let botText         = '';
-
-                    guysObj.forEach( obj =>
-                    {
-                        obj.triggers.forEach( word =>
-                        {
-                            if ( botText === '' )
-                            {
-                                let guysRegex   = `(^|\\s)+${word}([\\.!?,\\s]+|$)`;
-                                guysRegex       = new RegExp( guysRegex, 'i' );
-
-                                if ( guysRegex.test( text ) )
-                                {
-                                    botText = replaceGuys( to, obj );
-                                }
-                            }
-                        } );
-                    } );
-
-                    return botText;
-                }
-
-                botText = checkGuys( to, text );
-
-
+                { to, text, botText } = checkGuys( to, text, botText, _botConfig );
+                { to, text, botText } = trollOn( to, text, botText, _botConfig );
+                //                                                      //
                 //                         \o/                          //
-                //                                                      //
                 //********** ********** ********** ********** **********//
                 //********** ********** ********** ********** **********//
                 //********** ********** ********** ********** **********//
                 //********** ********** ********** ********** **********//
                 //********** ********** ********** ********** **********//
-
 
 
                 const trigger       = _botConfig.trigger;
@@ -791,24 +739,30 @@ const _Val = function( commandModuleName, userConfig )
                     {
                         return _bot.responses.commands[ command ].f( from, to, text, textArr, command, confObj );
                     }
+                    else if ( _bot.responses.dynamic[ command ] )
+                    {
+                        return _bot.responses.dynamic[ command ].f( from, to, text, textArr, command, confObj );
+                    }
                     else
                     {
-                        console.log( _bot.responses.regex );
+                        const regexKeys = Object.keys( _bot.responses.regex );
 
-                        //********** ********** ********** **********//
-                        //********** ********** ********** **********//
-                        //********** ********** ********** **********//
-                        //********** ********** ********** **********//
-                        //********** ********** ********** **********//
-                        //
-                        //                    TODO
-                        //            REGEX response structure
-                        //
-                        //********** ********** ********** **********//
-                        //********** ********** ********** **********//
-                        //********** ********** ********** **********//
-                        //********** ********** ********** **********//
-                        //********** ********** ********** **********//
+                        console.log( regexKeys );
+
+                        regexKeys.every( r =>
+                        {
+                            const regex = new RegExp( r );
+                            const match = command.match( regex );
+
+                            if ( match.length > 0 )
+                            {
+                                botText = _bot.responses.regex[ r ].f( from, to, text, textArr, command, confObj );
+
+                                return false;
+                            }
+
+                            return true;
+                        } );
                     }
                 }
 
@@ -880,40 +834,6 @@ const _Val = function( commandModuleName, userConfig )
             }
 
             return text.join( ' ' );
-        }
-
-        return text;
-    }
-
-
-    /**
-     * ## trollOn
-     *
-     * responds if the word "troll" or "trøll" is in the text.  ignores blacklist items
-     *
-     * @param {String} text original text string
-     *
-     * @return {String} original or modified text
-     */
-    function trollOn( text )
-    {
-        const textSplit = text.split( ' ' );
-
-        for ( let i = 0, lenI = textSplit.length; i < lenI; i++ )
-        {
-            if ( trollBlacklist.indexOf( textSplit[ i ] ) !== -1 )
-            {
-                return text;
-            }
-        }
-
-        if ( text.toLowerCase().indexOf( 'troll' ) !== -1 )
-        {
-            text = _botConfig.trigger + 'trollfetti';
-        }
-        else if ( text.toLowerCase().indexOf( 'trøll' ) !== -1 )
-        {
-            text = _botConfig.trigger + 'trøllfetti';
         }
 
         return text;
