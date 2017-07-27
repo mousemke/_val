@@ -34,26 +34,28 @@ function checkGuys( to, text, botText )
     }
 
 
-    let botText         = '';
+    let newBotText = '';
 
     guysObj.forEach( obj =>
     {
         obj.triggers.forEach( word =>
         {
-            if ( botText === '' )
+            if ( newBotText === '' )
             {
                 let guysRegex   = `(^|\\s)+${word}([\\.!?,\\s]+|$)`;
                 guysRegex       = new RegExp( guysRegex, 'i' );
 
                 if ( guysRegex.test( text ) )
                 {
-                    botText = replaceGuys( to, obj );
+                    newBotText = replaceGuys( to, obj );
                 }
             }
         } );
     } );
+console.log( newBotText )
+    botText = newBotText === '' ? botText : newBotText;
 
     return { to, text, botText };
 }
 
-export default checkGuys;
+module.exports = checkGuys;

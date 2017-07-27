@@ -123,6 +123,19 @@ const userConfig = {
     },
 
 
+    language : {
+        guys    : {
+            enabled : true,
+            url     : './modules/languageParsers/checkGuys.js',
+        },
+
+        troll   : {
+            enabled : true,
+            url     : './modules/languageParsers/trollOn.js',
+        }
+    },
+
+
     /**
      * timout for a user to be considered active
      **/

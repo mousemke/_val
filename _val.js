@@ -16,7 +16,7 @@ const _Val = function( commandModuleName, userConfig )
     const modulesConfig = require( './config/_val.modules.js' );
 
     let channel;
-    let _bot;
+    let _bot = {};
 
     const modules       = {};
     let channels        = [];
@@ -84,6 +84,39 @@ const _Val = function( commandModuleName, userConfig )
         //             tags: ${JSON.stringify( tags )}
         //             terms: ${JSON.stringify( terms )}`;
         // return tags;
+    }
+
+
+    /**
+     * ## addLanguageParsers
+     *
+     * resolves the language parsers from the config and adds them to _bot
+     *
+     * @return {Void}
+     */
+    function addLanguageParsers()
+    {
+        _bot.languageParsers = [];
+
+        const languageParsers   = userConfig.language;
+
+        for ( const parserName in languageParsers )
+        {
+            const parser = languageParsers[ parserName ];
+
+            if ( parser.enabled )
+            {
+                _bot.languageParsers.push( require( parser.url ) );
+
+                if ( parser.options )
+                {
+                    for ( let option in parser.options )
+                    {
+                        _botConfig[ option ] = parser.options[ option ];
+                    }
+                }
+            }
+        }
     }
 
 
@@ -174,7 +207,7 @@ const _Val = function( commandModuleName, userConfig )
             active  : {
                 module  : 'base',
                 f       : checkActive,
-                desc    : 'checks how many people are actuve in the channel',
+                desc    : 'checks how many people are active in the channel',
                 syntax  : [
                     `${trigger}active`
                 ]
@@ -267,30 +300,6 @@ const _Val = function( commandModuleName, userConfig )
                 }
             }
         }
-
-
-        /**
-         * load _val language parsers
-         */
-        const languageParsers = userConfig.language;
-
-        for ( const parserName in languageParsers )
-        {
-            const parser = parserName;
-
-            if ( parser.enabled )
-            {
-                _bot.languageParsers[ parserName ] = require( parser.url );
-
-                if ( parser.options )
-                {
-                    for ( let option in parser.options )
-                    {
-                        _botConfig[ option ] = parser.options[ option ];
-                    }
-                }
-            }
-        }
     }
 
 
@@ -313,7 +322,9 @@ const _Val = function( commandModuleName, userConfig )
                                             commandModule
                                         );
 
-        _bot.name       = commandModule.botName;
+        _bot.name               = commandModule.botName;
+
+        addLanguageParsers();
     }
 
 
@@ -392,19 +403,29 @@ const _Val = function( commandModuleName, userConfig )
      *
      * @return {Object} combined object
     */
-    function combineResponses( res, newRes )
+    function combineResponses( res, newRes, regex )
     {
-        Object.keys( newRes ).forEach( command =>
+        if ( newRes )
         {
-            if ( res[ command ] )
+            Object.keys( newRes ).forEach( c =>
             {
-                console.warn( `duplicate property ${command}` );
-            }
-            else
-            {
-                res[ command ] = newRes[ command ];
-            }
-        } );
+                let command = c;
+
+                if ( regex )
+                {
+                    command = c.slice( 0, c.length - 1 ).slice( 1 );
+                }
+
+                if ( res[ c ] )
+                {
+                    console.warn( `duplicate property ${c}` );
+                }
+                else
+                {
+                    res[ command ] = newRes[ c ];
+                }
+            } );
+        }
 
         return res;
     }
@@ -592,8 +613,8 @@ const _Val = function( commandModuleName, userConfig )
      */
     function helpText( from, to, text )
     {
-        const responses     = Object.assign( _bot.responses.commands, _bot.responses.regex, _bot.responses.dynamic );
-        const responseText  = responses.commands[ text ] || responses.dynamic[ text ];
+        const responses     = Object.assign( _bot.responses.commands || {}, _bot.responses.regex, _bot.responses.dynamic );
+        const responseText  = responses[ text ];
 
         if ( text.length === 0 || !responseText )
         {
@@ -645,14 +666,15 @@ const _Val = function( commandModuleName, userConfig )
                 function formatResponses( module, name )
                 {
                     module.responses = module.responses();
+                    _bot.responses.regex = combineResponses( _bot.responses.regex, module.responses.regex, 'regex' );
 
-                    _bot.responses.regex = combineResponses( _bot.responses.regex, module.responses.regex );
+                    const commands = module.responses.commands;
 
-                    if ( module.responses.commands )
+                    if ( commands )
                     {
-                        Object.keys( module.responses.commands ).forEach( r =>
+                        Object.keys( commands ).forEach( r =>
                         {
-                            const res = module.responses[ r ];
+                            const res = commands[ r ];
 
                             res.f           = res.f.bind( module );
                             res.moduleName  = name;
@@ -663,24 +685,9 @@ const _Val = function( commandModuleName, userConfig )
 
                 formatResponses( module, moduleName );
 
-                _bot.responses = combineResponses( _bot.responses.commands, module.responses.commands );
+                _bot.responses.commands = combineResponses( _bot.responses.commands, module.responses.commands );
             }
         }
-
-        //********** ********** ********** ********** **********//
-        //********** ********** ********** ********** **********//
-        //********** ********** ********** ********** **********//
-        //********** ********** ********** ********** **********//
-        //********** ********** ********** ********** **********//
-        //
-        //                    TODO
-        //            sort regex responses out
-        //
-        //********** ********** ********** ********** **********//
-        //********** ********** ********** ********** **********//
-        //********** ********** ********** ********** **********//
-        //********** ********** ********** ********** **********//
-        //********** ********** ********** ********** **********//
 
 
         _bot.modules = modules;
@@ -719,9 +726,13 @@ const _Val = function( commandModuleName, userConfig )
 
                 let botText = '';
 
-                _bot.language.forEach( func =>
+                _bot.languageParsers.forEach( func =>
                 {
-                    { to, text, botText } = func( to, text, botText, _botConfig );
+                    let res = func( to, text, botText, _botConfig );
+
+                    to      = res.to;
+                    text    = res.text;
+                    botText = res.botText;
                 } );
 
 
@@ -737,24 +748,25 @@ const _Val = function( commandModuleName, userConfig )
 
                     if ( _bot.responses.commands[ command ] )
                     {
+                        console.log( 'normal response triggered' );
                         return _bot.responses.commands[ command ].f( from, to, text, textArr, command, confObj );
                     }
                     else if ( _bot.responses.dynamic[ command ] )
                     {
+                        console.log( 'dynamic response triggered' );
                         return _bot.responses.dynamic[ command ].f( from, to, text, textArr, command, confObj );
                     }
                     else
                     {
-                        const regexKeys = Object.keys( _bot.responses.regex );
-
-                        console.log( regexKeys );
+                        console.log( 'regex response triggered' );
+                        const regexKeys  = Object.keys( _bot.responses.regex );
 
                         regexKeys.every( r =>
                         {
                             const regex = new RegExp( r );
                             const match = command.match( regex );
 
-                            if ( match.length > 0 )
+                            if ( match && match.length > 0 )
                             {
                                 botText = _bot.responses.regex[ r ].f( from, to, text, textArr, command, confObj );
 
@@ -763,23 +775,6 @@ const _Val = function( commandModuleName, userConfig )
 
                             return true;
                         } );
-                    }
-                    else
-                    {
-                        //********** ********** ********** **********//
-                        //********** ********** ********** **********//
-                        //********** ********** ********** **********//
-                        //********** ********** ********** **********//
-                        //********** ********** ********** **********//
-                        //
-                        //                    TODO
-                        //            REGEX response structure
-                        //
-                        //********** ********** ********** **********//
-                        //********** ********** ********** **********//
-                        //********** ********** ********** **********//
-                        //********** ********** ********** **********//
-                        //********** ********** ********** **********//
                     }
                 }
 

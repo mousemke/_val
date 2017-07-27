@@ -225,6 +225,8 @@ class PlainText extends Module
                 break;
         }
 
+        const userConfig = this.userConfig;
+
         if ( type.length > userConfig.fettiWordLength )
         {
             word = [ 'toolong' ];

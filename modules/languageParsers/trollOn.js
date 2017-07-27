@@ -34,4 +34,4 @@ function trollOn( to, text, botText, _botConfig )
     return { to, text, botText };
 }
 
-export default trollOn;
+module.exports = trollOn;
