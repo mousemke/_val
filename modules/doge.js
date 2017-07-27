@@ -163,21 +163,22 @@ class Doge extends Module
 
                 if ( full )
                 {
-                    url = 'https://btc-e.com/api/3/ticker/btc_usd-btc_eur-ltc_btc';
+                    url =' https://api.coindesk.com/v1/bpi/currentprice.json';
 
-                    _modules.core.apiGet( url, function( info )
+                    _modules.core.apiGet( url, function( { bpi} )
                     {
                         var formatPrice = function( price )
                         {
+                            price = price.replace( ',', '' )
+                                            .replace( ',', '.' );
+
                             price = ( price * dogeBase * amount );
                             return price > 1 ? price.toFixed( 2 ) : price.toFixed( 4 );
                         };
 
-                        var usd = formatPrice( info.btc_usd.last );
-                        var eur = formatPrice( info.btc_eur.last );
-                        var ltc = formatPrice( 1 / info.ltc_btc.last );
-
-                        doge += `, $${usd}, ${eur}€, ${ltc} LTC.`;
+                        var usd = formatPrice( bpi.USD.rate );
+                        var eur = formatPrice( bpi.EUR.rate );
+                        doge += `, $${usd}, ${eur}€`;
 
                         resolve( doge );
                     }, true, from, to )

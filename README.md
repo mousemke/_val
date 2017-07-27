@@ -81,6 +81,7 @@ Change log
 + regex responses added
 + language parser module capabilities added
 + added awaybot npm script
++ switched market api
 
 
 
