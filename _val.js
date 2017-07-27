@@ -666,25 +666,31 @@ const _Val = function( commandModuleName, userConfig )
                 function formatResponses( module, name )
                 {
                     module.responses = module.responses();
-                    _bot.responses.regex = combineResponses( _bot.responses.regex, module.responses.regex, 'regex' );
 
-                    const commands = module.responses.commands;
-
-                    if ( commands )
+                    [
+                        'commands',
+                        'regex'
+                    ].forEach( category =>
                     {
-                        Object.keys( commands ).forEach( r =>
-                        {
-                            const res = commands[ r ];
+                        const commands  = module.responses[ category ];
 
-                            res.f           = res.f.bind( module );
-                            res.moduleName  = name;
-                            res.module      = module;
-                        } );
-                    }
+                        if ( commands )
+                        {
+                            Object.keys( commands ).forEach( r =>
+                            {
+                                const res       = commands[ r ];
+
+                                res.f           = res.f.bind( module );
+                                res.moduleName  = name;
+                                res.module      = module;
+                            } );
+                        }
+                    } );
                 };
 
                 formatResponses( module, moduleName );
 
+                _bot.responses.regex    = combineResponses( _bot.responses.regex, module.responses.regex, 'regex' );
                 _bot.responses.commands = combineResponses( _bot.responses.commands, module.responses.commands );
             }
         }
