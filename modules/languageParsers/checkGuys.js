@@ -52,7 +52,7 @@ function checkGuys( to, text, botText )
             }
         } );
     } );
-console.log( newBotText )
+
     botText = newBotText === '' ? botText : newBotText;
 
     return { to, text, botText };
