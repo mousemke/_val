@@ -1,4 +1,4 @@
-
+const modulesConfig = require( './config/_val.modules.js' );
 
 const _Val = function( commandModuleName, userConfig )
 {
@@ -13,13 +13,12 @@ const _Val = function( commandModuleName, userConfig )
     const https         = req.https;
     const fs            = req.fs;
     const chalk         = req.chalk;
-    const modulesConfig = require( './config/_val.modules.js' );
+
 
     let channel;
-    let _bot = {};
-
-    const modules       = {};
+    let _bot            = {};
     let channels        = [];
+    const modules       = {};
 
     const debugChalkBox = {
         'PING'              : 'blue',
@@ -41,50 +40,6 @@ const _Val = function( commandModuleName, userConfig )
         'NOTICE'            : 'yellow',
         'TOPIC'             : 'yellow'
     };
-
-
-    /**
-     * ## testFunction
-     *
-     * this function is run with the test command.  it exists purely for feature
-     * testing.  otherwise it does nothing
-     *
-     * @param {String} from originating channel
-     * @param {String} to originating user
-     * @param {String} text full message text
-     *
-     * @return {Boolean}  false
-     */
-    function testFunction( from, to, text )
-    {
-        const nlp = require( 'nlp_compromise' );
-
-        const textObj   = nlp.text( text );
-        const textRoot  = textObj.root();
-        const terms     = textObj.terms();
-        const verb      = nlp.verb( text );
-
-        const sentence  = nlp.sentence( text );
-        const sentenceType = sentence.sentence_type();
-
-        const tags      = sentence.tags();
-        let botText = '';
-
-        terms.forEach( t =>
-        {
-            botText += `${t.text}: ${JSON.stringify( t )}\n`;
-        } );
-
-        return botText;
-
-        // return `root sentence: ${textRoot}
-        //             sentence type: ${sentenceType}
-        //             verb: ${JSON.stringify( verb.to_present() )}
-        //             verb is negative: ${verb.isNegative()}
-        //             tags: ${JSON.stringify( tags )}
-        //             terms: ${JSON.stringify( terms )}`;
-        // return tags;
-    }
 
 
     /**
@@ -238,15 +193,6 @@ const _Val = function( commandModuleName, userConfig )
                 desc    : 'learn more about the moon',
                 syntax  : [
                     `${trigger}moon`
-                ]
-            },
-
-            test    : {
-                module  : 'base',
-                f       : testFunction,
-                desc    : 'this could honestly be anything.  mostly features are incubated here for later expansion',
-                syntax  : [
-                    `${trigger}test`
                 ]
             }
         },
@@ -690,8 +636,8 @@ const _Val = function( commandModuleName, userConfig )
 
                 formatResponses( module, moduleName );
 
-                _bot.responses.regex    = combineResponses( _bot.responses.regex, module.responses.regex, 'regex' );
-                _bot.responses.commands = combineResponses( _bot.responses.commands, module.responses.commands );
+                _bot.responses.regex    = combineResponses( _bot.responses.regex || {}, module.responses.regex, 'regex' );
+                _bot.responses.commands = combineResponses( _bot.responses.commands || {}, module.responses.commands );
             }
         }
 
@@ -764,7 +710,6 @@ const _Val = function( commandModuleName, userConfig )
                     }
                     else
                     {
-                        console.log( 'regex response triggered' );
                         const regexKeys  = Object.keys( _bot.responses.regex );
 
                         regexKeys.every( r =>
@@ -774,8 +719,9 @@ const _Val = function( commandModuleName, userConfig )
 
                             if ( match && match.length > 0 )
                             {
+                                console.log( 'regex response triggered' );
                                 botText = _bot.responses.regex[ r ].f( from, to, text, textArr, command, confObj );
-
+console.log( botText )
                                 return false;
                             }
 
@@ -954,13 +900,13 @@ function _val( commander )
     return new _Val( commander, userConfig );
 }
 
+const userConfig    = require( './config/_val.config.js' );
+const packageJSON   = require( './package.json' );
 
 let connectionTimer = null;
 let up              = Date.now();
 let lastPing        = Date.now();
 
-const userConfig    = require( './config/_val.config.js' );
-const packageJSON   = require( './package.json' );
 userConfig.version  = packageJSON.version;
 const req           = userConfig.req = {};
 

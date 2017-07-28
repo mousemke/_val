@@ -1,9 +1,9 @@
 
-const fs        = userConfig.req.fs;
-const dndRooms  = userConfig.dndRooms;
-const maxDice   = userConfig.dndMaxDice;
+const Module        = require( './Module.js' );
 
-class DND( _bot, _modules, userConfig, commandModule )
+const rollRegex     = /^([0-9]*)d([0-9]+)\+?(\d)?/;
+
+class DND extends Module
 {
     /**
      * ## responses
@@ -12,13 +12,15 @@ class DND( _bot, _modules, userConfig, commandModule )
      */
     responses()
     {
+        const { trigger } = this.userConfig;
+
         return {
             commands : {
 
             },
 
             regex : {
-                '/^(\d+)?(?:d([0-9][\d]+|[1-9]))(?:[+](\d+))?$/' : {
+                [ `${rollRegex}` ] : {
                     module  : 'dnd',
                     f       : this.roll,
                     desc    : 'roll the bones',
@@ -30,7 +32,7 @@ class DND( _bot, _modules, userConfig, commandModule )
                 }
             }
         };
-    },
+    }
 
 
     /**
@@ -41,11 +43,19 @@ class DND( _bot, _modules, userConfig, commandModule )
      * @param {String} from originating channel
      * @param {String} to originating user
      * @param {String} text message text
+     * @param {Array} textArr text broken into an array of words
+     * @param {String} command text that triggered the bot
+     * @param {Object} confObj configuration object
      *
      * @return {Void}
      */
-    roll( from, to, text )
+    roll( from, to, text, textArr, command, confObj )
     {
+        const userConfig    = this.userConfig;
+
+        const dndRooms  = userConfig.dndRooms;
+        const maxDice   = userConfig.dndMaxDice;
+
         let botText = '';
 
         function exectuteRoll( roll )
@@ -72,16 +82,16 @@ class DND( _bot, _modules, userConfig, commandModule )
             const multiple  = rolls > 1;
             let total       = 0;
 
-            botText = `${to}, your ${rolls}d${max}${bonus} rolls: `;
+            botText = `${to}, your ${rolls}d${max}${bonus ? '+' + bonus : ''} rolls: `;
 
-            for ( const i = 0; i < rolls; i++ )
+            for ( let i = 0; i < rolls; i++ )
             {
                 if ( multiple && i === rolls - 1 )
                 {
                     botText += ' &'
                 }
 
-                const result = _getDie( max + bonus );
+                const result = _getDie( max ) + bonus;
                 total       += result;
                 botText     += ` ${result}, `;
             }
@@ -111,4 +121,4 @@ class DND( _bot, _modules, userConfig, commandModule )
     }
 };
 
-module.exports  = DND;
+module.exports = DND;

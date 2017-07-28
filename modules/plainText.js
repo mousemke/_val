@@ -11,7 +11,8 @@ const Module        = require( './Module.js' );
 const moonRegex     = /(?:m([o]+)n)/;
 const spaceRegex    = /(?:sp([a]+)ce)/;
 const khanRegex     = /(?:kh([a]+)n)/;
-
+const fettiRegex    = /.+fetti$/;
+const endRegex      = /.+end$/;
 
 /**
  * this is entirely filled with nonsense.  thats all the docs this needs.
@@ -396,7 +397,7 @@ class PlainText extends Module
 
         const responses = {
             regex : {
-                '/.+end$/' : {
+                [ `${endRegex}` ] : {
                     module  : 'plainText',
                     f       : this.end,
                     desc    : 'defend yourself',
@@ -407,7 +408,7 @@ class PlainText extends Module
                     ]
                 },
 
-                '/.+fetti$/' : {
+                [ `${fettiRegex}` ] : {
                     module  : 'plainText',
                     f       : this.fetti,
                     desc    : 'confetti all the things \o/',
@@ -418,7 +419,7 @@ class PlainText extends Module
                     ]
                 },
 
-                '/(?:kh([a]+)n)/' : {
+                [ `${khanRegex}` ] : {
                     module  : 'plainText',
                     f       : this.khan,
                     desc    : 'Botany Bay?',
@@ -429,7 +430,7 @@ class PlainText extends Module
                     ]
                 },
 
-                '/(?:m([o]+)n)/' : {
+                [ `${moonRegex}` ] : {
                     module  : 'plainText',
                     f       : this.moon,
                     desc    : '',
@@ -440,7 +441,7 @@ class PlainText extends Module
                     ]
                 },
 
-                '/(?:sp([a]+)ce)/' : {
+                [ `${spaceRegex}` ] : {
                     module  : 'plainText',
                     f       : this.space,
                     desc    : '',
@@ -556,7 +557,7 @@ class PlainText extends Module
 
         Object.keys( textResponses ).forEach( res =>
         {
-            responses[ res ] = {
+            responses.commands[ res ] = {
                 f       : function(){ return textResponses[ res ] },
                 desc    : `plain text response: ${res}`,
                 syntax  : [

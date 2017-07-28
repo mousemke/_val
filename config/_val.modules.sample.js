@@ -139,6 +139,12 @@
     },
 
 
+    Test          : {
+        enabled : true,
+        url     : './modules/test.js',
+    },
+
+
     Twitch      : {
         enabled : true,
         url     : './modules/twitch.js',

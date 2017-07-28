@@ -59,7 +59,7 @@ Change log
 #### 1.0.0
 
 + val can no longer shoot itself
-+ updated scripts to run Xvfb mode by gdefault
++ updated scripts to run Xvfb mode by default
 + multiple commanders from each core are now allowed
 + twitter core works
 + added core specific ability to disable modules
@@ -82,6 +82,8 @@ Change log
 + language parser module capabilities added
 + added awaybot npm script
 + switched market api
++ fixed plainText list responses
++ updated dnd module regex
 
 
 
