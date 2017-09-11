@@ -189,11 +189,6 @@ const userConfig = {
     nickservAPI             : 'Help, I\'m trapped in an api factory',
 
     /**
-     * sets the default target for shenanigans
-     */
-    nico                    : 'nico',
-
-    /**
      * ms to reconnection on disconnect
      */
     reconnectionTimeout     : 50000,

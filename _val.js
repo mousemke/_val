@@ -700,7 +700,6 @@ const _Val = function( commandModuleName, userConfig )
 
                     if ( _bot.responses.commands[ command ] )
                     {
-                        console.log( 'normal response triggered' );
                         return _bot.responses.commands[ command ].f( from, to, text, textArr, command, confObj );
                     }
                     else if ( _bot.responses.dynamic[ command ] )
@@ -719,9 +718,8 @@ const _Val = function( commandModuleName, userConfig )
 
                             if ( match && match.length > 0 )
                             {
-                                console.log( 'regex response triggered' );
                                 botText = _bot.responses.regex[ r ].f( from, to, text, textArr, command, confObj );
-console.log( botText )
+
                                 return false;
                             }
 

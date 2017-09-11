@@ -16,10 +16,45 @@ class Module
      */
     constructor( _bot, _modules, userConfig, commandModule )
     {
+        function insert( command, object )
+        {
+            if ( !this._bot.responses.dynamic[ command ] )
+            {
+                this._bot.responses.dynamic[ command ] = object;
+            }
+            else
+            {
+                console.error( 'Duplicate dynamic response', command );
+            }
+        }
+
+
+        function remove( command )
+        {
+            if ( this._bot.responses.dynamic[ command ] )
+            {
+                this._bot.responses.dynamic[ command ] = null;
+            }
+        }
+
+
+        function insertTimed( command, object, time )
+        {
+            insert( command, object );
+
+            setTimeout( () => remove( command ), time );
+        }
+
+
         this._bot           = _bot;
         this._modules       = _modules;
         this.userConfig     = userConfig;
         this.commandModule  = commandModule;
+        this.dynamic        = {
+            insert : insert,
+            remove : remove,
+            insertTimed : insertTimed
+        };
     }
 
     /**
