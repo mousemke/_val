@@ -686,11 +686,14 @@ const _Val = function( commandModuleName, userConfig )
 
                 _bot.languageParsers.forEach( func =>
                 {
-                    let res = func( to, text, botText, _botConfig );
+                    if ( text && botText === '' )
+                    {
+                        let res = func( to, text, botText, _botConfig );
 
-                    to      = res.to;
-                    text    = res.text;
-                    botText = res.botText;
+                        to      = res.to;
+                        text    = res.text;
+                        botText = res.botText;
+                    }
                 } );
 
 
@@ -710,7 +713,6 @@ const _Val = function( commandModuleName, userConfig )
                     }
                     else if ( _bot.responses.dynamic[ command ] )
                     {
-                        console.log( 'dynamic response triggered' );
                         return _bot.responses.dynamic[ command ].f( from, to, text, textArr, command, confObj );
                     }
                     else
