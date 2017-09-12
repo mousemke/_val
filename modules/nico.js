@@ -10,7 +10,7 @@ class Nico extends Module
     /**
      * ## constructor
      *
-     * sets the initial "global" variables
+     * sets the initial state
      *
      * @param {Object} _bot instance of _Val with a core attached
      * @param {Object} _modules config and instance of all modules
@@ -31,6 +31,13 @@ class Nico extends Module
     }
 
 
+    /**
+     * ## fipTheNico
+     *
+     * flip that nico!
+     *
+     * @return {String} flipped!
+     */
     fipTheNico()
     {
         this.userConfig.nicoFlipped = true;
@@ -39,18 +46,39 @@ class Nico extends Module
     }
 
 
+    /**
+     * ## isNicoABadPerson
+     *
+     * the nico is a bad person
+     *
+     * @return {String} ofc
+     */
     isNicoABadPerson()
     {
         return 'yes.  most definitely';
     }
 
 
+    /**
+     * ## isNicoFlipped
+     *
+     * is nico flipped or not.  also the only command a flipped nico can use
+     *
+     * @return {String} yes or no
+     */
     isNicoFlipped()
     {
         return this.userConfig.nicoFlipped ? 'yes' : 'no';
     }
 
 
+    /**
+     * ## putTheNicoBack
+     *
+     * takes pity on the nico
+     *
+     * @return {String} careful!
+     */
     putTheNicoBack()
     {
         this.userConfig.nicoFlipped = false;
@@ -59,6 +87,11 @@ class Nico extends Module
     }
 
 
+    /**
+     * ## removeNico
+     *
+     * removes all the dynamic commands
+     */
     removeNico( nico )
     {
         const { remove } = this.dynamic;
@@ -112,6 +145,11 @@ class Nico extends Module
     }
 
 
+    /**
+     * ## setNico
+     *
+     * sets all the dynamic commands
+     */
     setNico( newNico )
     {
         const { trigger } = this.userConfig;
@@ -167,9 +205,11 @@ class Nico extends Module
      *
      * tags a user
      *
-     * @param {String} from originating channel
      * @param {String} to originating user
-     * @param {Sring} text original text minus command
+     * @param {String} text message text
+     * @param {Array} textArr text broken into an array of words
+     * @param {String} command text that triggered the bot
+     * @param {Object} confObj configuration object
      *
      * @return {String}
      */
@@ -212,6 +252,13 @@ class Nico extends Module
     }
 
 
+    /**
+     * ## whosIt
+     *
+     * tells the people who the nico is
+     *
+     * @return {String}
+     */
     whosIt()
     {
         return `${this.userConfig.nico} is it!`;
