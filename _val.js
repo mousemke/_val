@@ -580,7 +580,13 @@ const _Val = function( commandModuleName, userConfig )
 
             if ( syntax )
             {
-                syntax.forEach( s => helpText += `\n${s}` )
+                try {
+                    syntax.forEach( s => helpText += `\n${s}` )
+                }
+                catch (e)
+                {
+                    throw `broken help : is ${text} syntax an array?`;
+                }
             }
 
             return helpText;

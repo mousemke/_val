@@ -48,8 +48,6 @@ Need to report something? [mouse@knoblau.ch](mailto:mouse@knoblau.ch)
 
 1.0.0 to do!
 =========
-
-+ dynamic commands
 + temporarily moved non working modules
 
 
@@ -84,6 +82,7 @@ Change log
 + switched market api
 + fixed plainText list responses
 + updated dnd module regex
++ added dynamic commands
 
 
 

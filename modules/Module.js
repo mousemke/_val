@@ -16,24 +16,31 @@ class Module
      */
     constructor( _bot, _modules, userConfig, commandModule )
     {
+        const module = this;
+
         function insert( command, object )
         {
-            if ( !this._bot.responses.dynamic[ command ] )
+            if ( !_bot.responses.dynamic[ command ] )
             {
-                this._bot.responses.dynamic[ command ] = object;
+                object.f = object.f.bind( module );
+                _bot.responses.dynamic[ command ] = object;
             }
             else
             {
-                console.error( 'Duplicate dynamic response', command );
+                console.error( 'Duplicate dynamic response:', command );
             }
         }
 
 
         function remove( command )
         {
-            if ( this._bot.responses.dynamic[ command ] )
+            if ( _bot.responses.dynamic[ command ] )
             {
-                this._bot.responses.dynamic[ command ] = null;
+                delete _bot.responses.dynamic[ command ];
+            }
+            else
+            {
+                console.error( 'Tried to remove something that didn\'t exists:', command );
             }
         }
 

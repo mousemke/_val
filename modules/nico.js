@@ -1,24 +1,39 @@
 
 const Module = require( './Module.js' );
 
-let nicoFlipped = false;
-
 
 /**
  * this is entirely filled with nonsense.  thats all the docs this needs.
  */
 class Nico extends Module
 {
-    constuctor()
+    /**
+     * ## constructor
+     *
+     * sets the initial "global" variables
+     *
+     * @param {Object} _bot instance of _Val with a core attached
+     * @param {Object} _modules config and instance of all modules
+     * @param {Object} userConfig available options
+     * @param {Object} commandModule instance of the applied core
+     *
+     * @return {Void} void
+     */
+    constructor( _bot, _modules, userConfig, commandModule )
     {
-        this.nico = this.userConfig.nico || 'nico';
-        // setNico( this.nico ) // timing?
+        super( _bot, _modules, userConfig, commandModule );
+
+        userConfig.nico = userConfig.nico || 'nico';
+
+        userConfig.nicoFlipped = false;
+
+        this.setNico( userConfig.nico );
     }
 
 
     fipTheNico()
     {
-        nicoFlipped = true;
+        this.userConfig.nicoFlipped = true;
 
         return '(╯°Д°）╯︵/(.□ . ) ᶰᵒᵒᵒᵒᵒᵒᵒᵒᵒ﹗';
     }
@@ -32,15 +47,27 @@ class Nico extends Module
 
     isNicoFlipped()
     {
-        return nicoFlipped ? 'yes' : 'no';
+        return this.userConfig.nicoFlipped ? 'yes' : 'no';
     }
 
 
     putTheNicoBack()
     {
-        nicoFlipped = false;
+        this.userConfig.nicoFlipped = false;
 
         return '(._. ) ノ( ゜-゜ノ)';
+    }
+
+
+    removeNico( nico )
+    {
+        const { remove } = this.dynamic;
+
+        remove( `flipthe${nico}` );
+        remove( `flip${nico}` );
+        remove( `putthe${nico}back` );
+        remove( `is${nico}flipped?` );
+        remove( `is${nico}abadperson?` );
     }
 
 
@@ -55,27 +82,31 @@ class Nico extends Module
         const { trigger } = this.userConfig;
 
         return {
-            tag : {
-                f           : this.tag,
-                desc        : 'Tag all the bad people',
-                syntax      : `${trigger}tag <name>!`
-            },
+            commands : {
+                tag : {
+                    f           : this.tag,
+                    desc        : 'Tag all the bad people',
+                    syntax      : [
+                        `${trigger}tag <name>!`
+                    ]
+                },
 
-            'whoisit?' : {
-                f           : this.whosIt,
-                desc        : 'show\s who is it',
-                syntax      : [
-                    `${trigger}whoisit?`
-                ]
-            },
+                'whoisit?' : {
+                    f           : this.whosIt,
+                    desc        : 'show\s who is it',
+                    syntax      : [
+                        `${trigger}whoisit?`
+                    ]
+                },
 
 
-            'whosit?': {
-                f           : this.whosIt,
-                desc        : 'show\s who\'s it',
-                syntax      : [
-                    `${trigger}whosit?`
-                ]
+                'whosit?': {
+                    f           : this.whosIt,
+                    desc        : 'show\s who\'s it',
+                    syntax      : [
+                        `${trigger}whosit?`
+                    ]
+                }
             }
         };
     }
@@ -83,32 +114,51 @@ class Nico extends Module
 
     setNico( newNico )
     {
-        const nico = this.nico = newNico;
+        const { trigger } = this.userConfig;
+
+        const nico = this.userConfig.nico = newNico;
         const { insert } = this.dynamic;
 
-        insert( `flipthe${nico}` );
-        insert( `flip${nico}` );
-        insert( `putthe${nico}back` );
-        insert( `is${nico}flipped` );
-        insert( `is${nico}abadperson?` );
-    }
+        insert( `flipthe${nico}`, {
+            f           : this.fipTheNico,
+            desc        : `show the ${nico} who\'s boss`,
+            syntax      : [
+                `${trigger}flipthe${nico}`
+            ]
+        } );
 
+        insert( `flip${nico}`, {
+            f           : this.fipTheNico,
+            desc        : `show the ${nico} who\'s boss`,
+            syntax      : [
+                `${trigger}flip${nico}`
+            ]
+        } );
 
-    removeNico( nico )
-    {
-        const { remove } = this.dynamic;
+        insert( `putthe${nico}back`, {
+            f           : this.putTheNicoBack,
+            desc        : `have pity on the poor ${nico}`,
+            syntax      : [
+                `${trigger}putthe${nico}back`
+            ]
+        } );
 
-        remove( `flipthe${nico}` );
-        remove( `flip${nico}` );
-        remove( `putthe${nico}back` );
-        remove( `is${nico}flipped` );
-        remove( `is${nico}abadperson?` );
-    }
+        insert( `is${nico}flipped?`, {
+            f           : this.isNicoFlipped,
+            desc        : `report the ${nico} status`,
+            syntax      : [
+                `${trigger}is${nico}flipped?`
+            ]
+        } );
 
+        insert( `is${nico}abadperson?`, {
+            f           : this.isNicoABadPerson,
+            desc        : 'an obvious question',
+            syntax      : [
+                `${trigger}is${nico}abadperson?`
+            ]
+        } );
 
-    whosIt()
-    {
-        return `${this.nico} is it!`;
     }
 
 
@@ -123,41 +173,49 @@ class Nico extends Module
      *
      * @return {String}
      */
-    tag( from, to, text, textArr )
+    tag( from, to, text, textArr, command, confObj )
     {
-        let newNico = textArr[1];
+        const {
+            admins,
+            nicoFlipped,
+            nico
+        } = this.userConfig;
+
+        let newNico = textArr[0];
 
         if ( newNico && newNico[ newNico.length - 1 ] === '!' )
         {
             newNico = newNico.slice( 0, newNico.length - 1 );
 
-            if ( userConfig.admins.indexOf( newNico ) !== -1 )
+            if ( admins.indexOf( newNico ) !== -1 )
             {
-                botText = `Ha! You can't tag an admin! They're my buddies!`;
+                return `Ha! You can't tag an admin! They're my buddies!`;
             }
-            else if ( _bot.name === newNico )
+            else if ( this._bot.name === newNico )
             {
-                botText = `You can't tag me! I'm out of your league!`;
+                return `You can't tag me! I'm out of your league!`;
             }
             else
             {
                 if ( nicoFlipped )
                 {
-                    _bot.say( from, `Lemme help you up, ${this.nico}` );
-                    nicoFlipped = false;
+                    this._bot.say( from, `Lemme help you up, ${nico}`, confObj );
+                    this.userConfig.nicoFlipped = false;
                 }
 
-                removeNico( userConfig.nico );
-                setNico( newNico );
+                this.removeNico( nico );
+                this.setNico( newNico );
 
-                botText = `${newNico} is it!`;
+                return `${newNico} is it!`;
             }
         }
     }
 
 
-// if ( nicoFlipped === true && to === userConfig.nico && command !== `is${userConfig.nico}flipped` )
-// {
-//     return `I'm sorry, ${userConfig.nico}... I can't hear you while you're flipped`;
-// }
+    whosIt()
+    {
+        return `${this.userConfig.nico} is it!`;
+    }
 };
+
+module.exports = Nico;
