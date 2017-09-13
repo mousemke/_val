@@ -23,11 +23,16 @@ class Module
             if ( !_bot.responses.dynamic[ command ] )
             {
                 object.f = object.f.bind( module );
+                object.source = module.constructor.name;
                 _bot.responses.dynamic[ command ] = object;
             }
             else
             {
-                console.error( 'Duplicate dynamic response:', command );
+                console.error(
+                    'Duplicate dynamic response:',
+                    command,
+                    _bot.responses.dynamic[ command ].source
+                );
             }
         }
 
