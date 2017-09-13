@@ -48,7 +48,8 @@ Need to report something? [mouse@knoblau.ch](mailto:mouse@knoblau.ch)
 
 1.0.0 to do!
 =========
-+ temporarily moved non working modules
++ readd words
++ readd anagramm
 
 
 Change log
@@ -83,6 +84,7 @@ Change log
 + fixed plainText list responses
 + updated dnd module regex
 + added dynamic commands
++ updated guys list
 
 
 

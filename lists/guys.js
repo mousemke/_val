@@ -10,6 +10,13 @@ module.exports = [
         ],
 
         alternatives : [
+            'you all',
+            'yiz',
+            'you-uns',
+            'yinz',
+            'you lot',
+            'allyou',
+            'yer',
             'team',
             'squad',
             'gang',
