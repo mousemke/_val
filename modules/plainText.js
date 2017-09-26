@@ -228,7 +228,7 @@ class PlainText extends Module
 
         const userConfig = this.userConfig;
 
-        if ( type.length > userConfig.fettiWordLength )
+        if ( type.length > userConfig.plainTextFettiWordLength )
         {
             word = [ 'toolong' ];
         }
@@ -238,14 +238,14 @@ class PlainText extends Module
             word = [ word ];
         }
 
-        for ( let i = 0, lenI = userConfig.fettiOptions.length; i < lenI; i++ )
+        for ( let i = 0, lenI = userConfig.plainTextFettiOptions.length; i < lenI; i++ )
         {
-            word.push ( userConfig.fettiOptions[ i ] + ' ' );
+            word.push ( userConfig.plainTextFettiOptions[ i ] + ' ' );
         }
 
         let botText = '';
 
-        for ( let i = 0; i < userConfig.fettiLength; i++ )
+        for ( let i = 0; i < userConfig.plainTextFettiLength; i++ )
         {
             const option   = Math.floor( Math.random() * word.length );
             botText += word[ option ];
@@ -398,7 +398,6 @@ class PlainText extends Module
         const responses = {
             regex : {
                 [ `${endRegex}` ] : {
-                    module  : 'plainText',
                     f       : this.end,
                     desc    : 'defend yourself',
                     syntax  : [
@@ -409,7 +408,6 @@ class PlainText extends Module
                 },
 
                 [ `${fettiRegex}` ] : {
-                    module  : 'plainText',
                     f       : this.fetti,
                     desc    : 'confetti all the things \o/',
                     syntax  : [
@@ -420,7 +418,6 @@ class PlainText extends Module
                 },
 
                 [ `${khanRegex}` ] : {
-                    module  : 'plainText',
                     f       : this.khan,
                     desc    : 'Botany Bay?',
                     syntax  : [
@@ -431,7 +428,6 @@ class PlainText extends Module
                 },
 
                 [ `${moonRegex}` ] : {
-                    module  : 'plainText',
                     f       : this.moon,
                     desc    : '',
                     syntax  : [
@@ -442,7 +438,6 @@ class PlainText extends Module
                 },
 
                 [ `${spaceRegex}` ] : {
-                    module  : 'plainText',
                     f       : this.space,
                     desc    : '',
                     syntax  : [
