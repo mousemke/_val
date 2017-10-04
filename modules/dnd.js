@@ -21,13 +21,12 @@ class DND extends Module
 
             regex : {
                 [ `${rollRegex}` ] : {
-                    module  : 'dnd',
                     f       : this.roll,
                     desc    : 'roll the bones',
                     syntax  : [
                         `${trigger}d10`,
                         `${trigger}16d6`,
-                        `${trigger}9d12`
+                        `${trigger}9d12+6`
                     ]
                 }
             }
