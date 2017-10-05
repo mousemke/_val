@@ -697,7 +697,7 @@ const _Val = function( commandModuleName, userConfig )
                 } );
 
 
-                if ( text.slice( 0, triggerLength ) === trigger &&
+                if ( text && text.slice( 0, triggerLength ) === trigger &&
                         text !== trigger && botText === '' )
                 {
                     text = text.slice( triggerLength );

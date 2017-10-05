@@ -18,7 +18,7 @@ function trollOn( to, text, botText, _botConfig )
     {
         if ( trollBlacklist.indexOf( textSplit[ i ] ) !== -1 )
         {
-            return text;
+            return { to, text, botText };
         }
     }
 

@@ -26,7 +26,7 @@ Use `+help` for a list of commands.
 | `script` | description |
 |----------|-------------|
 | `npm run serve` | starts _val in Xvfb mode (recommended) |
-| `npm run serveAlt` | starts _val in simple mode. not all commands may work |
+| `npm run serveAlt` | starts _val in simple mode. nightmare commands may work |
 | `npm run away` | starts awaybot as a placeholder |
 
 
@@ -85,6 +85,8 @@ Change log
 + updated dnd module regex
 + added dynamic commands
 + updated guys list
++ fixed troll blacklist bug
+
 
 
 
