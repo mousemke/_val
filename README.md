@@ -85,7 +85,7 @@ Change log
 + updated dnd module regex
 + added dynamic commands
 + updated guys list
-+ fixed troll blacklist bug
++ trollOn blacklist now ignores punctuation and case
 
 
 

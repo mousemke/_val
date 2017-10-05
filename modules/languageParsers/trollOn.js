@@ -16,7 +16,7 @@ function trollOn( to, text, botText, _botConfig )
 
     for ( let i = 0, lenI = textSplit.length; i < lenI; i++ )
     {
-        if ( trollBlacklist.indexOf( textSplit[ i ] ) !== -1 )
+        if ( trollBlacklist.indexOf( textSplit[ i ].replace( /[^A-Za-z0-9]/, '' ).toLowerCase() ) !== -1 )
         {
             return { to, text, botText };
         }
