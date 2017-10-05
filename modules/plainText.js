@@ -532,7 +532,7 @@ class PlainText extends Module
                 },
 
                 wave : {
-                    f       : function( from, to ){ return `${to} o/` },
+                    f       : this.wave,
                     desc    : 'say hi',
                     syntax  : [
                         `${trigger}wave`
@@ -604,6 +604,23 @@ class PlainText extends Module
         } );
 
         return `${botText.toUpperCase()}CE!!!!!!`;
+    }
+
+
+    /**
+     * ## wave
+     *
+     * waves at people or the sender
+     *
+     * @param {String} from originating channel
+     * @param {String} to originating user
+     * @param {String} text message text
+     */
+    wave( from, to, text )
+    {
+        const target = text || to;
+
+        return `${target} o/`;
     }
 
 
