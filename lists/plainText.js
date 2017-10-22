@@ -27,6 +27,7 @@ module.exports = {
     'why?!'                 : 'ლ(ಠ_ಠლ)',
     'why!?'                 : 'щ(ಥДಥщ)',
     '...'                   : 'ಠ_ಠ',
+    '…'                     : 'ಠ_ಠ',
     'facepalm'              : '(－‸ლ)',
     'bot'                   : 'I AM BOT\nINSERT DOGE',
     'witchhunt'             : 'http://i.imgur.com/x63cdJW.jpg',
