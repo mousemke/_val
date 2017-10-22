@@ -397,6 +397,7 @@ class Doge extends Module
         var soakTotal       = parseInt( textSplit[ 0 ] );
         var soakAmount      = Math.floor( soakTotal / users );
         var soakRemainder   = soakTotal - ( soakAmount * users );
+        let botText         = '';
 
         return new Promise( ( resolve, reject ) =>
         {
