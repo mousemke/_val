@@ -139,4 +139,6 @@ module.exports =  function webBot( userConfig, channels, listenToMessages, displ
     const boundListenToMessages = listenToMessages.bind( context );
 
     console.warn( `${botName} - ${host}:${port}` );
+
+    return _bot;
 }

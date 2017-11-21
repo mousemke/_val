@@ -28,6 +28,16 @@ const userConfig = {
 
     command     : {
 
+        hipchat : {
+            url                     : './modules/core/hipchat.js',
+            botName                 : 'hipVal',
+            token                   : 'tokens tokens everywhere but not a drop to drink',
+            color                   : 'green',
+            host                    : '192.168.0.2',
+            port                    : 666
+        },
+
+
         web     : {
             url                     : './modules/core/web.js',
             botName                 : '_valpi',

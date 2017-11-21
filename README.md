@@ -17,7 +17,7 @@ npm i val-bot
 + Change the `_val.config.js` and `_val.modules.js` in `./config` where appropriate
 + `npm run serve`
 
-Use `+help` for a list of commands.
+Use `${trigger}help` for a list of commands.
 
 
 ## scripts
@@ -48,8 +48,8 @@ Need to report something? [mouse@knoblau.ch](mailto:mouse@knoblau.ch)
 
 1.0.0 to do!
 =========
-+ readd words
-+ readd anagramm
++ re-add words
++ re-add anagramm
 
 
 Change log
@@ -87,6 +87,7 @@ Change log
 + updated guys list
 + trollOn blacklist now ignores punctuation and case
 + updated mtg plugin info and api source
++ added hipchat core head
 
 
 
