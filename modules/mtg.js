@@ -39,25 +39,45 @@ class Mtg extends Module
      */
     mtg( from, to, text )
     {
-        var textNoSpaces = text.replace( / /g, '%20' );
-        var url = `https://api.magicthegathering.io/v1/cards?name="${text}"`;
+        const textNoSpaces = text.replace( / /g, '%20' );
+        const url = `https://api.deckbrew.com/mtg/cards?name=${textNoSpaces}`;
 
         return new Promise( ( resolve, reject ) =>
         {
-            this._modules.core.apiGet( url, function( res )
+            this._modules.core.apiGet( url, function( cards )
             {
-                var cards = res.cards;
-                var imageUrl;
+                const filteredCards = cards.filter(c => c.name.toLowerCase() === text.toLowerCase() );
 
-                cards.forEach( _c =>
+                const card = filteredCards[0];
+
+                if ( card )
                 {
-                    imageUrl = _c.imageUrl;
+                    const { formats, name } = card;
 
-                    if ( imageUrl )
-                    {
-                        resolve( imageUrl );
-                    }
-                } );
+                    let legalFormats = 'Legal in: ';
+                    Object.keys(formats).forEach( r => {
+                        if ( formats[r] === 'legal') {
+                            legalFormats += `${r}, `;
+                        }
+                    });
+
+                    legalFormats = legalFormats.slice(0, -2);
+
+                    const link = `http://tappedout.net/mtg-card/${name.replace( ' ', '-' ).toLowerCase()}/`;
+
+                    card.editions.forEach( cardEdition => {
+                        const imageUrl = cardEdition['image_url'];
+
+                        if ( imageUrl && imageUrl !== 'https://image.deckbrew.com/mtg/multiverseid/0.jpg' )
+                        {
+                            resolve( `${imageUrl}\n${legalFormats}\n\n${link}` );
+                        }
+                    });
+
+                    resolve(`${legalFormats}\n\n${link}`);
+                }
+
+                resolve( 'No card found...  I\'m very sorry...' );
             }, true, from, to );
         } );
     }

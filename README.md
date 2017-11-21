@@ -86,6 +86,7 @@ Change log
 + added dynamic commands
 + updated guys list
 + trollOn blacklist now ignores punctuation and case
++ updated mtg plugin info and api source
 
 
 
