@@ -1,6 +1,8 @@
 
 const Module        = require( './Module.js' );
 
+const capitalize = word => word.split(' ').map(s => s.charAt(0).toUpperCase() + s.slice(1)).join(' ');
+
 /**
  * a magicthegathering.io search module
  */
@@ -39,47 +41,95 @@ class Mtg extends Module
      */
     mtg( from, to, text )
     {
+        const { _modules } = this;
+
         const textNoSpaces = text.replace( / /g, '%20' );
         const url = `https://api.deckbrew.com/mtg/cards?name=${textNoSpaces}`;
+        // const priceUrl = ``;
 
-        return new Promise( ( resolve, reject ) =>
-        {
-            this._modules.core.apiGet( url, function( cards )
+        return Promise.all([
+            new Promise( ( resolve, reject ) =>
             {
-                const filteredCards = cards.filter(c => c.name.toLowerCase() === text.toLowerCase() );
+                // _modules.core.apiGet( priceUrl, function( res )
+                // {
+                //     const prices = res.split(',').slice(1, -1).map(r=>r.trim());
 
-                const card = filteredCards[0];
+                //     if (prices)
+                //     {
+                //         const price = prices[0];
+                //         const high = prices[3];
+                //         const low = prices[4];
 
-                if ( card )
+                //         if (price)
+                //         {
+                //             resolve(`Price : ${price}€  :  H ${high}€  -  L ${low}€`);
+                //         }
+                //     }
+
+                    resolve(null);
+                // }, false, from, to );
+            }),
+            new Promise( ( resolve, reject ) =>
+            {
+                this._modules.core.apiGet( url, function( cards )
                 {
-                    const { formats, name } = card;
+                    const filteredCards = cards.filter(c => c.name.toLowerCase() === text.toLowerCase() );
 
-                    let legalFormats = 'Legal in: ';
-                    Object.keys(formats).forEach( r => {
-                        if ( formats[r] === 'legal') {
-                            legalFormats += `${r}, `;
-                        }
-                    });
+                    const card = filteredCards[0];
 
-                    legalFormats = legalFormats.slice(0, -2);
+                    if ( card )
+                    {
+                        const { formats, name } = card;
 
-                    const link = `http://tappedout.net/mtg-card/${name.replace( ' ', '-' ).toLowerCase()}/`;
+                        let legalFormats = '';
 
-                    card.editions.forEach( cardEdition => {
-                        const imageUrl = cardEdition['image_url'];
-
-                        if ( imageUrl && imageUrl !== 'https://image.deckbrew.com/mtg/multiverseid/0.jpg' )
+                        Object.keys(formats).forEach( format =>
                         {
-                            resolve( `${imageUrl}\n${legalFormats}\n\n${link}` );
-                        }
-                    });
+                            legalFormats += `${capitalize(format)}: ${capitalize(formats[format])}\n`;
+                        });
 
-                    resolve(`${legalFormats}\n\n${link}`);
-                }
+                        legalFormats += '\n';
 
-                resolve( 'No card found...  I\'m very sorry...' );
-            }, true, from, to );
-        } );
+                        const link = `http://tappedout.net/mtg-card/${name.replace( ' ', '-' ).toLowerCase()}/`;
+
+                        let imageUrl;
+
+                        card.editions.forEach( cardEdition => {
+                            const image = cardEdition['image_url'];
+
+                            if ( !imageUrl && image !== 'https://image.deckbrew.com/mtg/multiverseid/0.jpg' )
+                            {
+                                imageUrl = image;
+                            }
+                        });
+
+                        resolve({
+                            imageUrl,
+                            legalFormats,
+                            link,
+                        });
+                    }
+
+                    resolve(null);
+                }, true, from, to );
+            })
+        ]).then( res =>
+        {
+            if (res[0] === null && res[1] === null)
+            {
+                return 'No card found...  I\'m very sorry...';
+            }
+
+            const price = res[0] ? `${res[0]}\n\n` :'';
+
+            const {
+                imageUrl,
+                legalFormats,
+                link,
+            } = res[1];
+
+            return `${imageUrl}\n${legalFormats}\n${price}${link}`;
+        })
     }
 
 
