@@ -117,7 +117,15 @@ const _Val = function( commandModuleName, userConfig )
 
                 try
                 {
-                    data = JSON.parse( body );
+                    try
+                    {
+                        data = JSON.parse( body );
+                    }
+                    catch(e)
+                    {   data = body;
+
+                    }
+
                     cb( data );
                 }
                 catch( e )
