@@ -28,16 +28,6 @@ const userConfig = {
 
     command     : {
 
-        hipchat : {
-            url                     : './modules/core/hipchat.js',
-            botName                 : 'hipVal',
-            token                   : 'tokens tokens everywhere but not a drop to drink',
-            color                   : 'green',
-            host                    : '192.168.0.2',
-            port                    : 666
-        },
-
-
         web     : {
             url                     : './modules/core/web.js',
             botName                 : '_valpi',
@@ -104,6 +94,9 @@ const userConfig = {
         ircExample : {
             url                     : './modules/core/irc.js',
             botName                 : 'valulon',
+            channels                : [
+                'your-mom'
+            ],
             server                  : 'chat.freenode.net',
             serverPassword          : 'password123',
             floodProtection         : true,
@@ -111,10 +104,6 @@ const userConfig = {
             sasl                    : true,
             coreConfig              : {
                 usernamePrefix          : [],
-                channels                : [
-                    'your-mom'
-                ],
-                enablePM                : false,
                 disabledModules         : [
                     'Admin',
                     'Anagramm',
@@ -147,14 +136,9 @@ const userConfig = {
 
 
     /**
-     * timout for a user to be considered active
+     * timeout for a user to be considered active
      **/
     activeTime              : 600000,
-
-    /**
-     * admins get to issue admin commands
-     **/
-    admins                  : [ 'user' ],
 
     /**
      * connection to nickserv bot.  in twitch, users are already identified,
@@ -168,35 +152,27 @@ const userConfig = {
     bots                    : [ 'bot1', 'bot2', 'bot3' ],
 
     /**
-     * server, channel, name connection details
-     **/
-    channels                : [ '#channel-bots', '#channel1', '#channel2', '#channel3', '#channel4', '#channel5', '#channel6' ],
+     * disables the base commands (help, active, etc)
+     */
+    disableBaseCommands     : true,
 
     /**
-     * some services (**cough* twitch**) dont support private messages or
-     * multiline messages.
+     * modules disabled. mostly here to be disabled per head
      */
-    enableHelp              : true,
+    disabledModules         : [],
 
     /**
-     * enables private messages
+     * provided in config in case translations are necessary
      */
-    enablePM                : true,
-
-    /**
-     * anything ending in 'fetti'
-     */
-    fettiWordLength         : 15,
-    fettiLength             : 25,
-    fettiOptions            : [ '. ', '´ ', '\' ', ' ,' ],
-
-    floodProtection         : false,
-    floodProtectionDelay    : 1200,
-
     months                  : [ 'Jan.', 'Feb.', 'Mar.', 'Apr.', 'May', 'June', 'July', 'Aug.', 'Sept.', 'Oct.', 'Nov.', 'Dec' ],
 
     nickservBot             : 'NickServ',
     nickservAPI             : 'Help, I\'m trapped in an api factory',
+
+    /**
+     * sets the default target for shenanigans
+     */
+    nico                    : 'nico',
 
     /**
      * ms to reconnection on disconnect

@@ -499,37 +499,48 @@ class Doge extends Module
     {
         if ( !this.dogeTicker )
         {
-            const _modules      = this._modules;
-            const _bot          = this._bot;
-            const userConfig    = this.userConfig;
+            const {
+                _modules,
+                _bot,
+                userConfig
+            } = this;
 
-            const channel       = userConfig.dogeTickerChannel;
-            const acct          = userConfig.dogeTickerAccount;
-            const timeout       = userConfig.dogeTickerTimeout;
+            const {
+                dogeTickerChannel,
+                dogeTickerAccount,
+                dogeTickerTimeout
+            } = userConfig;
 
-            const res = new Promise( ( resolve, reject ) =>
+            const accounts = Array.isArray(dogeTickerAccount) ? dogeTickerAccount : [dogeTickerAccount];
+
+            const res = Promise.all(accounts.map(acct =>
             {
-                _modules.core.apiGet( `https://chain.so/api/v2/address/DOGE/${acct}`, res =>
+                return new Promise( ( resolve, reject ) =>
                 {
-                    resolve( res.data ? res.data.balance : 1 );
-                }, true, channel, _bot.name );
-            } );
+                    _modules.core.apiGet( `https://chain.so/api/v2/address/DOGE/${acct}`, res =>
+                    {
+                        resolve( res.data ? res.data.balance : 0);
+                    }, true, dogeTickerChannel, _bot.name );
+                } )
+            })).then(walletContents =>
+                walletContents.reduce((a, b) => parseFloat(a) + parseFloat(b), 0))
+            .then(a => `${a}`);
 
-            res.then( amount =>
+            res.then(amount =>
             {
                 setTimeout( () =>
                 {
-                    _bot.say( channel, `Ticker started to report once every ${timeout} minutes.  Use stopTicker to stop` ); // eslint-ignore-line
+                    _bot.say( dogeTickerChannel, `Ticker started to report once every ${dogeTickerTimeout} minutes.  Use stopTicker to stop` ); // eslint-ignore-line
 
-                    const text = this.doge( channel, _bot.name, amount, true );
-                    text.then( t => _bot.say( channel, t ) );
-                }, 300000 );
+                    const text = this.doge( dogeTickerChannel, _bot.name, amount, true );
+                    text.then( t => _bot.say( dogeTickerChannel, t ) );
+                }, 30000 );
 
                 this.dogeTicker = setInterval( () =>
                 {
-                    const text = this.doge( channel, _bot.name, amount, true );
-                    text.then( t => _bot.say( channel, t ) )
-                }, timeout * 1000 * 60 );
+                    const text = this.doge( dogeTickerChannel, _bot.name, amount, true );
+                    text.then( t => _bot.say( dogeTickerChannel, t ) )
+                }, dogeTickerTimeout * 1000 * 60 );
             } );
         }
         else

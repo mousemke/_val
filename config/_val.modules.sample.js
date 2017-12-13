@@ -17,6 +17,7 @@
         enabled : true,
         url     : './modules/admin.js',
         options : {
+            admins  : [ 'user' ]
         }
     },
 
@@ -118,7 +119,12 @@
 
     PlainText   : {
         enabled : true,
-        url     : './modules/plainText.js'
+        url     : './modules/plainText.js',
+        options : {
+            plainTextFettiWordLength    : 15,
+            plainTextFettiLength        : 25,
+            plainTextFettiOptions       : [ '. ', '´ ', '\' ', ' ,' ]
+        }
     },
 
 
