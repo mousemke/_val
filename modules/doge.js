@@ -427,51 +427,51 @@ class Doge extends Module
                     {
                         if ( success === 'true' )
                         {
+                            botText = 'Searching for active users....  ';
+
                             if ( users !== 1 )
                             {
-                                botText = 'Searching for active users....  ';
-
                                 botText += `${to} tipped Ð${soakTotal} and is soaking ${users} people with Ð${soakAmount} each! : `;
-
-                                dcMasterList[ to ]  = dcMasterList[ to ] - soakTotal;
-
-                                for ( i = 0, lenI = list.length; i < lenI; i++)
-                                {
-                                    if ( list[ i ] !== _to )
-                                    {
-                                        if ( dcMasterList[ list[ i ] ] )
-                                        {
-                                            dcMasterList[ list[ i ] ] = dcMasterList[ list[ i ] ] + soakAmount;
-                                        }
-                                        else
-                                        {
-                                            dcMasterList[ list[ i ] ] = soakAmount;
-                                        }
-                                        botText += `${list[ i ]}, `;
-                                    }
-                                }
-                                botText = botText.slice( 0, botText.length - 2 );
-
-                                if ( soakRemainder !== 0 )
-                                {
-                                    dcMasterList[ _bot.name ] = dcMasterList[ _bot.name ] + soakRemainder;
-                                    botText += ` (Ð${soakRemainder} in scraps eaten by ${_bot.name})`;
-                                }
                             }
-                            else
+
+                            dcMasterList[ to ]  = dcMasterList[ to ] - soakTotal;
+
+                            for ( i = 0, lenI = list.length; i < lenI; i++)
                             {
-                                dcMasterList[ to ]  = dcMasterList[ to ] - soakTotal;
-                                for ( i = 0; i < list.length; i++ )
+                                if ( list[ i ] !== _to )
                                 {
-                                    if ( list[ i ] !== to )
+                                    if ( dcMasterList[ list[ i ] ] )
                                     {
                                         dcMasterList[ list[ i ] ] = dcMasterList[ list[ i ] ] + soakAmount;
+                                    }
+                                    else
+                                    {
+                                        dcMasterList[ list[ i ] ] = soakAmount;
+                                    }
+
+                                    if ( users !== 1 )
+                                    {
+                                        botText += `${list[ i ]}, `;
+                                    }
+                                    else
+                                    {
                                         botText = `${to} tipped Ð${soakAmount} to ${list[ i ]}`;
+                                        botText += '. It\'s not soaking if there\'s just one person!';
                                     }
                                 }
-
-                                botText += '. It\'s not soaking if there\'s just one person!';
                             }
+
+                            if ( users !== 1 )
+                            {
+                                botText = botText.slice( 0, botText.length - 2 );
+                            }
+
+                            if ( soakRemainder !== 0 )
+                            {
+                                dcMasterList[ _bot.name ] = dcMasterList[ _bot.name ] + soakRemainder;
+                                botText += ` (Ð${soakRemainder} in scraps eaten by ${_bot.name})`;
+                            }
+
                             self.writeMasterList();
                         }
                         else
