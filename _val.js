@@ -909,9 +909,9 @@ const _Val = function( commandModuleName, userConfig )
 };
 
 
-function _val( commander )
+function _val( commander, commanderConfig )
 {
-    return new _Val( commander, userConfig );
+    return new _Val( commander, commanderConfig );
 }
 
 const userConfig    = require( './config/_val.config.js' );
@@ -934,15 +934,20 @@ userConfig.commandModules   = [];
 const commanders    = userConfig.command;
 const cores         = [];
 
-let commandObj;
-
 for ( let commander in commanders )
 {
-    commandObj = commanders[ commander ];
+    const commandObj = commanders[ commander ];
 
     if ( commandObj.disabled !== true )
     {
-        cores.push( _val( commander ) );
+        let commanderConfig = userConfig;
+
+        if ( commandObj.coreConfig )
+        {
+            // commanderConfig = Object.assign( {}, userConfig, commandObj.coreConfig );
+        }
+
+        cores.push( _val( commander, commanderConfig ) );
     }
 }
 

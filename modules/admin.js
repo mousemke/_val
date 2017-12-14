@@ -8,6 +8,26 @@ const Module        = require( './Module.js' );
 class Admin extends Module
 {
     /**
+     * ## checkChannel
+     *
+     * return the actual current channel id
+     *
+     * @param {String} from originating channel
+     * @param {String} to originating user
+     * @param {String} text message text
+     * @param {Array} textArr text broken into an array of words
+     * @param {String} command text that triggered the bot
+     * @param {Object} confObj configuration object
+     *
+     * @return {String} chnnel id
+     */
+    checkChannel( from, to, text, textArr, command, confObj )
+    {
+        return confObj.from;
+    }
+
+
+    /**
      * ## constructor
      *
      * sets the initial "global" variables
@@ -22,6 +42,7 @@ class Admin extends Module
     constructor( _bot, _modules, userConfig, commandModule )
     {
         super( _bot, _modules, userConfig, commandModule );
+
         this.version        = this.version.bind( this );
     }
 
@@ -41,6 +62,15 @@ class Admin extends Module
 
         const res = {
             commands : {
+                [ `${trigger}channel` ] : {
+                    f       : this.checkChannel,
+                    desc    : 'returns the current channel\'s identifier',
+                    syntax      : [
+                        `${trigger}${trigger}channel`
+                    ]
+                },
+
+
                 [ `${trigger}v` ] : {
                     f       : this.version,
                     desc    : 'returns the current running version number',

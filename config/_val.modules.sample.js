@@ -30,7 +30,6 @@
 
     Anagramm    : {
         enabled : true, // requires module: words
-        ini     : true,
         url     : './modules/anagramm.js',
         options : {
             anagrammLang            : 'de',
@@ -54,7 +53,6 @@
 
     CAH        : {
         enabled : true,
-        ini     : true,
         url     : './modules/cah.js',
         options : {
             cahRoom                     : '#cards_against_humanity',
@@ -76,8 +74,26 @@
 
     Doge        : {
         enabled : true,
-        ini     : true,
-        url     : './modules/doge.js'
+        url     : './modules/doge.js',
+        options : {
+            dogeTicker: {
+                enabled: true,
+                channels: {
+                    G8E3JTD7B: {
+                        accts: [
+                            'DWalLETNumBER1',
+                            'DWalLETNumBER2',
+                            'DWalLETNumBER4'
+                        ],
+                        timeout: 30
+                    },
+                    C59PDK5T7: {
+                        accts: 1000000,
+                        timeout: 30
+                    }
+                }
+            }
+        }
     },
 
 
@@ -140,7 +156,6 @@
 
     RR          : {
         enabled : true,
-        ini     : true,
         url     : './modules/rr.js',
     },
 
@@ -165,7 +180,6 @@
 
     Twitter     : {
         enabled : true,
-        ini     : true,
         url     : './modules/twitter.js',
         options : {
             twitterRooms : {
@@ -201,7 +215,6 @@
 
     Words       : {
         enabled : true,
-        ini     : true,
         url     : './modules/words.js',
         options : {
             wordsLang               : 'en',

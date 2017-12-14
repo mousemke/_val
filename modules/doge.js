@@ -89,11 +89,7 @@ class Doge extends Module
     {
         super( _bot, _modules, userConfig, commandModule );
 
-        if ( userConfig.dogeTickerEnabled )
-        {
-            this.startTicker();
-        }
-
+        this.startTicker();
         this.loadMasterList();
     }
 
@@ -497,66 +493,88 @@ class Doge extends Module
 
     startTicker()
     {
-        if ( !this.dogeTicker )
+        const {
+            _modules,
+            _bot,
+            userConfig,
+            commandModule,
+            dogeTickers
+        } = this;
+
+        if ( !dogeTickers && userConfig.dogeTicker)
         {
             const {
-                _modules,
-                _bot,
-                userConfig
-            } = this;
+                enabled,
+                channels
+            } = userConfig.dogeTicker
 
-            const {
-                dogeTickerChannel,
-                dogeTickerAccount,
-                dogeTickerTimeout
-            } = userConfig;
-
-            const accounts = Array.isArray(dogeTickerAccount) ? dogeTickerAccount : [dogeTickerAccount];
-
-            const res = Promise.all(accounts.map(acct =>
+            if ( enabled )
             {
-                return new Promise( ( resolve, reject ) =>
+                this.dogeTickers = Object.keys(channels).map(channel =>
                 {
-                    _modules.core.apiGet( `https://chain.so/api/v2/address/DOGE/${acct}`, res =>
+                    const {
+                        accts,
+                        timeout
+                    } = channels[ channel ];
+
+                    const accounts = Array.isArray(accts) ? accts : [accts];
+
+                    const res = Promise.all(accounts.map(acct =>
                     {
-                        resolve( res.data ? res.data.balance : 0);
-                    }, true, dogeTickerChannel, _bot.name );
-                } )
-            })).then(walletContents =>
-                walletContents.reduce((a, b) => parseFloat(a) + parseFloat(b), 0))
-            .then(a => `${a}`);
+                        if (typeof acct === 'number' && !Number.isNaN(acct))
+                        {
+                            return acct;
+                        }
 
-            res.then(amount =>
-            {
-                setTimeout( () =>
-                {
-                    _bot.say( dogeTickerChannel, `Ticker started to report once every ${dogeTickerTimeout} minutes.  Use stopTicker to stop` ); // eslint-ignore-line
+                        return new Promise( ( resolve, reject ) =>
+                        {
+                            _modules.core.apiGet( `https://chain.so/api/v2/address/DOGE/${acct}`, res =>
+                            {
+                                resolve( res.data ? res.data.balance : 0);
+                            }, true, channel, _bot.name );
+                        } );
+                    })).then(walletContents =>
+                        walletContents.reduce((a, b) => parseFloat(a) + parseFloat(b), 0))
+                    .then(a => `${a}`);
 
-                    const text = this.doge( dogeTickerChannel, _bot.name, amount, true );
-                    text.then( t => _bot.say( dogeTickerChannel, t ) );
-                }, 30000 );
+                    return res.then(amount =>
+                    {
+                        setTimeout( () =>
+                        {
+                            _bot.say( channel, `Ticker started to report once every ${timeout} minutes.  Use stopTicker to stop` ); // eslint-ignore-line
 
-                this.dogeTicker = setInterval( () =>
-                {
-                    const text = this.doge( dogeTickerChannel, _bot.name, amount, true );
-                    text.then( t => _bot.say( dogeTickerChannel, t ) )
-                }, dogeTickerTimeout * 1000 * 60 );
-            } );
+                            const text = this.doge( channel, _bot.name, amount, true );
+                            text.then( t => _bot.say( channel, t ) );
+                        }, 30000 );
+
+                        return setInterval( () =>
+                        {
+                            const text = this.doge( channel, _bot.name, amount, true );
+                            text.then( t => _bot.say( channel, t ) )
+                        }, timeout * 1000 * 60 );
+                    } );
+
+                });
+            }
         }
         else
         {
-            return 'Ticker alreacy running.  Please stop the ticker then restart it (if necessary)'; // eslint-ignore-line
+            return 'Ticker already running.  Please stop the ticker then restart it (if necessary)'; // eslint-ignore-line
         }
     }
 
 
     stopTicker()
     {
-        const channel       = this.userConfig.dogeTickerChannel;
+        const dogeTicker = this.userConfig.dogeTicker;
+
+        const channels      = Object.keys(dogeTicker ? dogeTicker.channels : []);
         const _bot          = this._bot;
 
-        clearInterval( this.dogeTicker );
-        _bot.say( channel, `Doge ticker stopped` );
+        (this.dogeTickers || []).forEach(t => clearInterval( t ) );
+        this.dogeTickers    = null;
+
+        channels.forEach(c => _bot.say( c, `Doge ticker stopped` ))
     }
 
 

@@ -88,7 +88,8 @@ Change log
 + trollOn blacklist now ignores punctuation and case
 + updated mtg plugin info and api source
 + added hipchat core head
-+ doge now accepts arrays for doge ticker
++ doge ticker refactored
++ multiple doge tickers based on acct or number are now available
 
 
 
