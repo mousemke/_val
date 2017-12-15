@@ -19,11 +19,14 @@ class Admin extends Module
      * @param {String} command text that triggered the bot
      * @param {Object} confObj configuration object
      *
-     * @return {String} chnnel id
+     * @return {String} channel id
      */
     checkChannel( from, to, text, textArr, command, confObj )
     {
-        return confObj.from;
+        if ( this.isAdmin( to ) )
+        {
+            return confObj.from;
+        }
     }
 
 
@@ -44,6 +47,27 @@ class Admin extends Module
         super( _bot, _modules, userConfig, commandModule );
 
         this.version        = this.version.bind( this );
+    }
+
+
+    /**
+     * ## isAdmin
+     *
+     * checks if someone is an admin or not
+     *
+     * @param {String} to originating user
+     *
+     * @return {Boolean} admin or not
+     */
+    isAdmin( to ) {
+        const { userConfig } = this;
+
+        if ( userConfig.admins.indexOf( to.toLowerCase() ) !== -1 )
+        {
+            return true;
+        }
+
+        return false;
     }
 
 
@@ -97,9 +121,7 @@ class Admin extends Module
      */
     version( from, to )
     {
-        const { userConfig } = this;
-
-        if ( userConfig.admins.indexOf( to.toLowerCase() ) !== -1 )
+        if ( this.isAdmin( to ) )
         {
             return `Well, ${to}, thanks for asking!  I'm currently running version ${userConfig.version}`;
         }
