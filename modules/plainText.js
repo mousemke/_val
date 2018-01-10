@@ -545,6 +545,14 @@ class PlainText extends Module
                     syntax  : [
                         `${trigger}wiki <query>`
                     ]
+                },
+
+                wow : {
+                    f       : () => 'http://pics.knoblau.ch/wow.gif',
+                    desc    : 'Bravo!',
+                    syntax  : [
+                        `${trigger}wow`
+                    ]
                 }
             }
         };
