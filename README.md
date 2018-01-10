@@ -90,6 +90,8 @@ Change log
 + added hipchat core head
 + doge ticker refactored
 + multiple doge tickers based on acct or number are now available
++ added POST possibility to api calls
+
 
 
 

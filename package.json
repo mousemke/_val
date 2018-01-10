@@ -31,8 +31,8 @@
     "@slack/client": "^3.5.1",
     "chalk": "^1.1.1",
     "irc": "^0.5.2",
-    "request": "^2.83.0",
     "nlp_compromise": "^6.5.3",
+    "request": "^2.83.0",
     "telegram-api": "^0.4.4",
     "twit": "^2.1.0"
   },

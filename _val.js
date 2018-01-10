@@ -83,6 +83,8 @@ const _Val = function( commandModuleName, userConfig )
      * @param {String} url target url
      * @param {Function} cb callback
      * @param {Boolean} secure https?
+     * @param {String} from channel
+     * @param {String} to user
      *
      * @return {Void}
      */
@@ -90,15 +92,15 @@ const _Val = function( commandModuleName, userConfig )
     {
         secure = !!secure;
 
-        const error = say =>
+        const error = (e, _bot) =>
         {
-            if ( say )
+            if ( _bot.say && from && to )
             {
                 _bot.say( from, `sorry, ${to} bad query or url. (depends on what you were trying to do)` );
             }
             else
             {
-                console.warn( `${options} appears to be down` );
+                console.warn( `${options.url || options.host || options} appears to be down`, e );
             }
         };
 
@@ -137,19 +139,39 @@ const _Val = function( commandModuleName, userConfig )
 
         try
         {
-            if ( secure )
+            if ( options.method === 'POST' )
             {
-                https.get( options, callback ).on( 'error', function( e )
+                if ( secure )
                 {
-                    error( _bot );
-                } );
+                    https.request( options, callback ).on( 'error', function( e )
+                    {
+                        error( e, _bot );
+                    } );
+                }
+                else
+                {
+                    http.request( options, callback ).on( 'error', function( e )
+                    {
+                        error( e, _bot );
+                    } );
+                }
             }
             else
             {
-                http.get( options, callback ).on( 'error', function( e )
+                if ( secure )
                 {
-                    error( _bot );
-                } );
+                    https.get( options, callback ).on( 'error', function( e )
+                    {
+                        error( e, _bot );
+                    } );
+                }
+                else
+                {
+                    http.get( options, callback ).on( 'error', function( e )
+                    {
+                        error( e, _bot );
+                    } );
+                }
             }
         }
         catch( e )
@@ -914,24 +936,25 @@ function _val( commander, commanderConfig )
     return new _Val( commander, commanderConfig );
 }
 
-const userConfig    = require( './config/_val.config.js' );
+const valConfig     = require( './config/_val.config.js' );
 const packageJSON   = require( './package.json' );
 
 let connectionTimer = null;
 let up              = Date.now();
 let lastPing        = Date.now();
 
-userConfig.version  = packageJSON.version;
-const req           = userConfig.req = {};
+valConfig.version   = packageJSON.version;
+const req           = valConfig.req = {};
 
 req.http            = require( 'http' ),
 req.https           = require( 'https' ),
 req.fs              = require( 'fs' ),
 req.chalk           = require( 'chalk' );
+req.request         = require( 'request' );
 
-userConfig.commandModules   = [];
+valConfig.commandModules   = [];
 
-const commanders    = userConfig.command;
+const commanders    = valConfig.command;
 const cores         = [];
 
 for ( let commander in commanders )
@@ -940,14 +963,7 @@ for ( let commander in commanders )
 
     if ( commandObj.disabled !== true )
     {
-        let commanderConfig = userConfig;
-
-        if ( commandObj.coreConfig )
-        {
-            // commanderConfig = Object.assign( {}, userConfig, commandObj.coreConfig );
-        }
-
-        cores.push( _val( commander, commanderConfig ) );
+        cores.push( _val( commander, valConfig ) );
     }
 }
 
