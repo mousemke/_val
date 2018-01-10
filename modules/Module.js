@@ -18,6 +18,16 @@ class Module
     {
         const module = this;
 
+        /**
+         * ## insert
+         *
+         * inserts a dynamic command
+         *
+         * @param {String} command trigger for the function
+         * @param {Object} object response object
+         *
+         * @return {Void} void
+         */
         function insert( command, object )
         {
             if ( !_bot.responses.dynamic[ command ] )
@@ -37,6 +47,15 @@ class Module
         }
 
 
+        /**
+         * ## remove
+         *
+         * removes a dynamic command
+         *
+         * @param {String} command response to remove
+         *
+         * @return {Void} void
+         */
         function remove( command )
         {
             if ( _bot.responses.dynamic[ command ] )
@@ -50,6 +69,17 @@ class Module
         }
 
 
+        /**
+         * ## insertTimed
+         *
+         * inserts a dynamic command with time bound removal
+         *
+         * @param {String} command trigger for the function
+         * @param {Object} object response object
+         * @param {Number} time ms until removal
+         *
+         * @return {Void} void
+         */
         function insertTimed( command, object, time )
         {
             insert( command, object );

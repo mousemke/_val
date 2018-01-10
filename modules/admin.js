@@ -121,6 +121,8 @@ class Admin extends Module
      */
     version( from, to )
     {
+        const { userConfig } = this;
+
         if ( this.isAdmin( to ) )
         {
             return `Well, ${to}, thanks for asking!  I'm currently running version ${userConfig.version}`;

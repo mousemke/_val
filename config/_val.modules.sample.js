@@ -79,7 +79,7 @@
             dogeTicker: {
                 enabled: true,
                 channels: {
-                    G8E3JTD7B: {
+                    G8E3JBFJTD7B: {
                         accts: [
                             'DWalLETNumBER1',
                             'DWalLETNumBER2',
@@ -87,7 +87,7 @@
                         ],
                         timeout: 30
                     },
-                    C59PDK5T7: {
+                    C5MHFGJ9PDK5T7: {
                         accts: 1000000,
                         timeout: 30
                     }
@@ -123,7 +123,13 @@
 
     Mtg         : {
         enabled : true,
-        url     : './modules/mtg.js'
+        url     : './modules/mtg.js',
+        options : {
+            mtgApiPublicKey         : 'public-api-key-here',
+            mtgApiPrivateKey        : 'private-api-key-here',
+            mtgApiAppId             : '1382',
+            mtgApiBaseUrl           : 'api.tcgplayer.com',
+        }
     },
 
 
