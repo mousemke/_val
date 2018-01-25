@@ -92,7 +92,7 @@ const _Val = function( commandModuleName, userConfig )
     {
         secure = !!secure;
 
-        const error = (e, _bot) =>
+        const error = e =>
         {
             if ( _bot.say && from && to )
             {
@@ -145,14 +145,14 @@ const _Val = function( commandModuleName, userConfig )
                 {
                     https.request( options, callback ).on( 'error', function( e )
                     {
-                        error( e, _bot );
+                        error( e );
                     } );
                 }
                 else
                 {
                     http.request( options, callback ).on( 'error', function( e )
                     {
-                        error( e, _bot );
+                        error( e );
                     } );
                 }
             }
@@ -162,14 +162,14 @@ const _Val = function( commandModuleName, userConfig )
                 {
                     https.get( options, callback ).on( 'error', function( e )
                     {
-                        error( e, _bot );
+                        error( e );
                     } );
                 }
                 else
                 {
                     http.get( options, callback ).on( 'error', function( e )
                     {
-                        error( e, _bot );
+                        error( e );
                     } );
                 }
             }
