@@ -431,11 +431,13 @@ class Twitter extends Module
      * @param {String} from originating channel
      * @param {String} to originating user
      * @param {String} text full message text
+     * @param {String} textArr full message text split by " "
+     * @param {String} command trigger word that brought us here
      * @param {Object} confObj extra config object that some command modules need
      *
      * @return {String} success message
      */
-    streamFilter( from, to, text, botText, command, confObj )
+    streamFilter( from, to, text, textArr, command, confObj )
     {
         let searchText  = text.split( ' ' ).join( ',' );
 
@@ -458,11 +460,13 @@ class Twitter extends Module
      * @param {String} from originating channel
      * @param {String} to originating user
      * @param {String} text full message text
+     * @param {String} textArr full message text split by " "
+     * @param {String} command trigger word that brought us here
      * @param {Object} confObj extra config object that some command modules need
      *
      * @return {String} success message
      */
-    streamRaw( from, to, text, botText, command, confObj )
+    streamRaw( from, to, text, textArr, command, confObj )
     {
         let searchText  = text.split( ' ' );
 
@@ -509,11 +513,13 @@ class Twitter extends Module
      * @param {String} from originating channel
      * @param {String} to originating user
      * @param {String} text full message text
+     * @param {String} textArr full message text split by " "
+     * @param {String} command trigger word that brought us here
      * @param {Object} confObj extra config object that some command modules need
      *
      * @return {String} success message
      */
-    streamUser( from, to, text, botText, command, confObj )
+    streamUser( from, to, text, textArr, command, confObj )
     {
         let searchText  = text.split( ' ' ).join( ',' );
 

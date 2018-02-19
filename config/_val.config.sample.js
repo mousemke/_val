@@ -38,8 +38,6 @@ const userConfig = {
                 usernamePrefix          : [],
                 enablePM                : false,
                 disabledModules         : [
-                    'Admin',
-                    'Anagramm',
                     'Twitter',
                     'Words',
                     'Nico'
@@ -61,8 +59,6 @@ const userConfig = {
                 enablePM                : false,
                 nico                    : '@nbrugneaux',
                 disabledModules         : [
-                    'Admin',
-                    'Anagramm',
                     'CAH',
                     'Twitter',
                     'Words'
@@ -105,15 +101,10 @@ const userConfig = {
             coreConfig              : {
                 usernamePrefix          : [],
                 disabledModules         : [
-                    'Admin',
-                    'Anagramm',
-                    'CAH',
                     'DnD',
                     'Doge',
-                    'Jetlore',
                     'Music',
                     'Nico',
-                    'Twitch',
                     'Twitter',
                     'Words'
                 ]

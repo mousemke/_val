@@ -22,43 +22,9 @@
     },
 
 
-    Allthemaths : { // not included - https://www.npmjs.com/package/allthemaths
-        enabled : false,
-        url     : './node_modules/allthemaths/allthemaths.js'
-    },
-
-
-    Anagramm    : {
-        enabled : true, // requires module: words
-        url     : './modules/anagramm.js',
-        options : {
-            anagrammLang            : 'de',
-            anagrammChannel         : '#bots',
-            anagrammDogePayout      : true, // requires module: doge
-            anagrammDogeModifier    : 3,
-            anagrammPointTimeout    : 86400000, // 24 hours
-            newWordVoteNeeded       : 0.6,
-            wordnikBaseUrl          : 'http://api.wordnik.com:80/v4/',
-            translationBaseUrl      : 'http://mymemory.translated.net/api/',
-            wordnikAPIKey           : 'api-key'
-        }
-    },
-
-
     Beats       : {
         enabled : true,
         url     : './modules/beats.js'
-    },
-
-
-    CAH        : {
-        enabled : true,
-        url     : './modules/cah.js',
-        options : {
-            cahRoom                     : '#cards_against_humanity',
-            cahMaxMin                   : 5,
-            cahMinPlayers               : 3
-        }
     },
 
 
@@ -74,26 +40,7 @@
 
     Doge        : {
         enabled : true,
-        url     : './modules/doge.js',
-        options : {
-            dogeTicker: {
-                enabled: true,
-                channels: {
-                    G8E3JBFJTD7B: {
-                        accts: [
-                            'DWalLETNumBER1',
-                            'DWalLETNumBER2',
-                            'DWalLETNumBER4'
-                        ],
-                        timeout: 30
-                    },
-                    C5MHFGJ9PDK5T7: {
-                        accts: 1000000,
-                        timeout: 30
-                    }
-                }
-            }
-        }
+        url     : './modules/doge.js'
     },
 
 
@@ -166,24 +113,6 @@
     },
 
 
-    Test          : {
-        enabled : true,
-        url     : './modules/test.js',
-    },
-
-
-    Twitch      : {
-        enabled : true,
-        url     : './modules/twitch.js',
-        options : {
-            autoAuth                : true,
-            enablePM                : false,
-            floodProtection         : true,
-            floodProtectionDelay    : 1200
-        }
-    },
-
-
     Twitter     : {
         enabled : true,
         url     : './modules/twitter.js',
@@ -225,10 +154,6 @@
         options : {
             wordsLang               : 'en',
             wordsChannel            : '#bots',
-            wordsDogePayout         : true, // requires module: doge
-            wordsDogeModifier       : 1,
-            wordsPointTimeout       : 86400000, // 24 hours
-            newWordVoteNeeded       : 0.6,
             wordnikBaseUrl          : 'http://api.wordnik.com:80/v4/',
             translationBaseUrl      : 'http://mymemory.translated.net/api/',
             wordnikAPIKey           : 'api-key'

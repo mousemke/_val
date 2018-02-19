@@ -1,6 +1,6 @@
 .DS_Store
 dcMasterList.json
-dcMasterList.bak
+tickers.json
 node_modules/
 npm-debug.log
 _val.config.js
