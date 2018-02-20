@@ -5,6 +5,7 @@
   "main": "_val.js",
   "scripts": {
     "away": "node awaybot.js",
+    "postinstall": "cp -n ./config/_val.config.sample.js ./config/_val.config.js & cp -n ./config/_val.modules.sample.js ./config/_val.modules.js & cp -n ./json/dcMasterList.sample.json ./json/dcMasterList.json & cp -n ./json/tickers.sample.json ./json/tickers.json",
     "serve": "xvfb-run --auto-servernum --server-num=1 node --harmony _val.js",
     "serveAlt": "node _val.js"
   },

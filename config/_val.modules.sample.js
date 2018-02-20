@@ -57,17 +57,6 @@
     },
 
 
-    GuildWars   : {
-        enabled : true,
-        url     : './modules/gw2.js',
-        options : {
-            guildWars2Trigger       : 'gw2',
-            guildWars2Room          : '#guildwars',
-            guildWars2apiUrl        : 'https://api.guildwars2.com/v2'
-        }
-    },
-
-
     Mtg         : {
         enabled : true,
         url     : './modules/mtg.js',
@@ -110,6 +99,12 @@
     RR          : {
         enabled : true,
         url     : './modules/rr.js',
+    },
+
+
+    Test          : {
+        enabled : true,
+        url     : './modules/test.js',
     },
 
 

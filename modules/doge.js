@@ -36,13 +36,9 @@ class Doge extends Module
 
                     var botText     = '';
 
-                    if ( _to === 'mastertotal' )
+                    if ( _to === 'mastertotal' || _to === '___bank___' )
                     {
-                        botText += `There are currently Ð${amount} in circulation`;
-                    }
-                    else if ( _to === '___bank___' )
-                    {
-                        botText += `There are currently Ð${amount} in the bank`;
+                        resolve('');
                     }
                     else
                     {
@@ -50,10 +46,11 @@ class Doge extends Module
                         {
                           botText += `${to}, `;
                         }
-                        botText += `you currently have Ð${amount}`;
-                    }
 
-                    resolve( botText );
+                        botText += `you currently have Ð${amount}`;
+
+                        resolve( botText );
+                    }
                 }
             };
 
@@ -89,7 +86,6 @@ class Doge extends Module
     {
         super( _bot, _modules, userConfig, commandModule );
 
-        this.startTicker();
         this.loadMasterList();
     }
 
@@ -118,96 +114,6 @@ class Doge extends Module
 
         return 'deposit and withdraw are in between APIs at the moment.  Ask mouse for more info';
     }
-
-
-    /**
-     * ## doge
-     *
-     * returns satoshi value of 1 doge
-     *
-     * @param {String} from originating channel
-     *
-     * @return {Void}
-     */
-    doge( from, to, text, full )
-    {
-        const _modules = this._modules;
-
-        var toSatoshi = function( num )
-        {
-            return Math.floor( num * 100000000 );
-        }
-
-        var textSplit = text.split( ' ' );
-        var url = 'https://bittrex.com/api/v1.1/public/getmarketsummary?market=BTC-DOGE';
-
-        return new Promise( ( resolve, reject ) =>
-        {
-            _modules.core.apiGet( url, function( info )
-            {
-                var price, amount = parseInt( textSplit[ 0 ] );
-
-                if ( typeof amount !== 'number' || isNaN( amount ) === true )
-                {
-                    amount = 1;
-                }
-
-                var res         = info.result[0];
-                var dogeBase    = res.Last;
-                var lastPrice   = amount * toSatoshi( res.Last );
-                var doge        = `狗狗币!  Ð${amount} = ${lastPrice} Satoshi`;
-
-                if ( full )
-                {
-                    url =' https://api.coindesk.com/v1/bpi/currentprice.json';
-
-                    _modules.core.apiGet( url, function( { bpi} )
-                    {
-                        var formatPrice = function( price )
-                        {
-                            price = price.replace( ',', '' )
-                                            .replace( ',', '.' );
-
-                            price = ( price * dogeBase * amount );
-                            return price > 1 ? price.toFixed( 2 ) : price.toFixed( 4 );
-                        };
-
-                        var usd = formatPrice( bpi.USD.rate );
-                        var eur = formatPrice( bpi.EUR.rate );
-                        doge += `, $${usd}, ${eur}€`;
-
-                        resolve( doge );
-                    }, true, from, to )
-                }
-                else
-                {
-                    var highPrice   = amount * toSatoshi( res.High );
-                    var lowPrice    = amount * toSatoshi( res.Low );
-                    doge += `. TO THE MOON!!!! ( H: ${highPrice}, L: ${lowPrice} )`;
-
-                    resolve( doge );
-                }
-            }, true, from, to );
-        } );
-    }
-
-
-    /**
-     * ## dogePrice
-     *
-     * returns the price in satoshi
-     *
-     * @param {String} from originating channel
-     * @param {String} to originating user
-     * @param {String} text full input string
-     *
-     * @return {String} price
-     */
-    dogePrice( from, to, text )
-    {
-        return this.doge( from, to, text, false );
-    }
-
 
     /**
      * ## giveFromBank
@@ -254,23 +160,6 @@ class Doge extends Module
 
 
     /**
-     * ## marketPrice
-     *
-     * returns the price in multiple currencies
-     *
-     * @param {String} from originating channel
-     * @param {String} to originating user
-     * @param {String} text full input string
-     *
-     * @return {String} price
-     */
-    marketPrice( from, to, text )
-    {
-        return this.doge( from, to, text, true );
-    }
-
-
-    /**
      * ## responses
      *
      * @return {Object} responses
@@ -281,24 +170,6 @@ class Doge extends Module
 
         return {
             commands: {
-                doge : {
-                    f       : this.dogePrice,
-                    desc    : 'return the price of doge in satoshi',
-                    syntax      : [
-                        `${trigger}doge`,
-                        `${trigger}doge <amount>`
-                    ]
-                },
-
-                market : {
-                    f       : this.marketPrice,
-                    desc    : 'return the price of doge in multiple currencies',
-                    syntax      : [
-                        `${trigger}market`,
-                        `${trigger}market <amount>`
-                    ]
-                },
-
                 tip : {
                     f       : this.tip,
                     desc    : 'tip someone',
@@ -338,22 +209,6 @@ class Doge extends Module
                     desc    : 'tip all active users',
                     syntax      : [
                         `${trigger}makeitrain <amount>`
-                    ]
-                },
-
-                startTicker : {
-                    f       : this.startTicker,
-                    desc    : 'starts the doge ticker',
-                    syntax      : [
-                        `${trigger}startTicker`
-                    ]
-                },
-
-                stopTicker : {
-                    f       : this.stopTicker,
-                    desc    : 'stops the doge ticker',
-                    syntax      : [
-                        `${trigger}stopTicker`
                     ]
                 },
 
@@ -487,94 +342,6 @@ class Doge extends Module
 
             _modules.core.userData( to, from, _soakCB, text );
         } );
-    }
-
-
-
-    startTicker()
-    {
-        const {
-            _modules,
-            _bot,
-            userConfig,
-            commandModule,
-            dogeTickers
-        } = this;
-
-        if ( !dogeTickers && userConfig.dogeTicker)
-        {
-            const {
-                enabled,
-                channels
-            } = userConfig.dogeTicker
-
-            if ( enabled )
-            {
-                this.dogeTickers = Object.keys(channels).map(channel =>
-                {
-                    const {
-                        accts,
-                        timeout
-                    } = channels[ channel ];
-
-                    const accounts = Array.isArray(accts) ? accts : [accts];
-
-                    const res = Promise.all(accounts.map(acct =>
-                    {
-                        if (typeof acct === 'number' && !Number.isNaN(acct))
-                        {
-                            return acct;
-                        }
-
-                        return new Promise( ( resolve, reject ) =>
-                        {
-                            _modules.core.apiGet( `https://chain.so/api/v2/address/DOGE/${acct}`, res =>
-                            {
-                                resolve( res.data ? res.data.balance : 0);
-                            }, true, channel, _bot.name );
-                        } );
-                    })).then(walletContents =>
-                        walletContents.reduce((a, b) => parseFloat(a) + parseFloat(b), 0))
-                    .then(a => `${a}`);
-
-                    return res.then(amount =>
-                    {
-                        setTimeout( () =>
-                        {
-                            _bot.say( channel, `Ticker started to report once every ${timeout} minutes.  Use stopTicker to stop` ); // eslint-ignore-line
-
-                            const text = this.doge( channel, _bot.name, amount, true );
-                            text.then( t => _bot.say( channel, t ) );
-                        }, 30000 );
-
-                        return setInterval( () =>
-                        {
-                            const text = this.doge( channel, _bot.name, amount, true );
-                            text.then( t => _bot.say( channel, t ) )
-                        }, timeout * 1000 * 60 );
-                    } );
-
-                });
-            }
-        }
-        else
-        {
-            return 'Ticker already running.  Please stop the ticker then restart it (if necessary)'; // eslint-ignore-line
-        }
-    }
-
-
-    stopTicker()
-    {
-        const dogeTicker = this.userConfig.dogeTicker;
-
-        const channels      = Object.keys(dogeTicker ? dogeTicker.channels : []);
-        const _bot          = this._bot;
-
-        (this.dogeTickers || []).forEach(t => clearInterval( t ) );
-        this.dogeTickers    = null;
-
-        channels.forEach(c => _bot.say( c, `Doge ticker stopped` ))
     }
 
 

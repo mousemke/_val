@@ -59,7 +59,6 @@ const userConfig = {
                 enablePM                : false,
                 nico                    : '@nbrugneaux',
                 disabledModules         : [
-                    'CAH',
                     'Twitter',
                     'Words'
                 ]
@@ -103,7 +102,6 @@ const userConfig = {
                 disabledModules         : [
                     'DnD',
                     'Doge',
-                    'Music',
                     'Nico',
                     'Twitter',
                     'Words'
@@ -114,12 +112,22 @@ const userConfig = {
 
 
     language : {
-        guys    : {
+        mtgBrackets : {
+            enabled : true,
+            url     : './modules/languageParsers/mtgBrackets.js',
+        },
+
+        guys        : {
             enabled : true,
             url     : './modules/languageParsers/checkGuys.js',
         },
 
-        troll   : {
+        nicoBlocker : {
+            enabled : true,
+            url     : './modules/languageParsers/nicoBlocker.js'
+        },
+
+        troll       : {
             enabled : true,
             url     : './modules/languageParsers/trollOn.js',
         }
