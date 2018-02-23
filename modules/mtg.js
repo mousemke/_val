@@ -3,9 +3,6 @@ const Module        = require( './Module.js' );
 
 const capitalize = word => word.split(' ').map(s => s.charAt(0).toUpperCase() + s.slice(1)).join(' ');
 
-/**
- * a magicthegathering.io search module
- */
 class Mtg extends Module
 {
     /**
@@ -24,7 +21,9 @@ class Mtg extends Module
     {
         super( _bot, _modules, userConfig, commandModule );
 
-        this.apiGet = _modules.core.apiGet;
+        this.apiGet         = _modules.core.apiGet;
+        this.mtg            = this.mtg.bind(this);
+        this.bearerToken    = this.userConfig;
     }
 
 
@@ -36,100 +35,169 @@ class Mtg extends Module
      * @param {String} from originating channel
      * @param {String} to originating user
      * @param {Sring} text original text minus command
+     * @param {Sring} textArr text minus command split into an array by ' '
      *
      * @return {String} card image url
      */
-    mtg( from, to, text )
+    mtg( from, to, text, textArr )
     {
-        const { _modules } = this;
+        return new Promise((resolve, reject) => {
+            const {
+                mtgApiBaseUrl,
+                mtgBearerToken,
+                mtgCategory,
+                req
+            } = this.userConfig;
 
-        const textNoSpaces = text.replace( / /g, '%20' );
-        const url = `https://api.deckbrew.com/mtg/cards?name=${textNoSpaces}`;
-        // const priceUrl = ``;
+            const request   = req.request;
 
-        return Promise.all([
-            new Promise( ( resolve, reject ) =>
-            {
-                // _modules.core.apiGet( priceUrl, function( res )
-                // {
-                //     const prices = res.split(',').slice(1, -1).map(r=>r.trim());
+            const headers = {
+                'Content-Type': 'application/json',
+                Authorization: `Bearer ${mtgBearerToken}`
+            };
 
-                //     if (prices)
-                //     {
-                //         const price = prices[0];
-                //         const high = prices[3];
-                //         const low = prices[4];
-
-                //         if (price)
-                //         {
-                //             resolve(`Price : ${price}€  :  H ${high}€  -  L ${low}€`);
-                //         }
-                //     }
-
-                    resolve(null);
-                // }, false, from, to );
-            }),
-            new Promise( ( resolve, reject ) =>
-            {
-                this._modules.core.apiGet( url, function( cards )
-                {
-                    const filteredCards = cards.filter(c => c.name.toLowerCase() === text.toLowerCase() );
-
-                    const card = filteredCards[0];
-
-                    if ( card )
+            const postBody  = JSON.stringify({
+                // sort: 'Relevance',
+                sort: 'Sales DESC',
+                limit: 10,
+                offset: 0,
+                filters: [
                     {
-                        const { formats, name } = card;
-
-                        let legalFormats = '';
-
-                        Object.keys(formats).forEach( format =>
-                        {
-                            legalFormats += `${capitalize(format)}: ${capitalize(formats[format])}\n`;
-                        });
-
-                        legalFormats += '\n';
-
-                        const link = `http://tappedout.net/mtg-card/${name.replace( ' ', '-' ).toLowerCase()}/`;
-
-                        let imageUrl;
-
-                        card.editions.forEach( cardEdition => {
-                            const image = cardEdition['image_url'];
-
-                            if ( !imageUrl && image !== 'https://image.deckbrew.com/mtg/multiverseid/0.jpg' )
-                            {
-                                imageUrl = image;
-                            }
-                        });
-
-                        resolve({
-                            imageUrl,
-                            legalFormats,
-                            link,
-                        });
+                        name: 'ProductName',
+                        values: [ text ]
+                    },
+                    {
+                        name: 'Rarity',
+                        values: [ 'S', 'T', 'L', 'P', 'C', 'U', 'R', 'M' ]
                     }
+                ]
+            });
 
-                    resolve(null);
-                }, true, from, to );
-            })
-        ]).then( res =>
-        {
-            if (res[0] === null && res[1] === null)
+            // if this ever stops working....   check if the manifest changed
+            // const options   = {
+            //     method  : 'GET',
+            //     url     : `https://${mtgApiBaseUrl}/catalog/categories/${mtgCategory}/search/manifest`,
+            //     headers : headers,
+            // };
+
+            const options   = {
+                method  : 'POST',
+                url     : `https://${mtgApiBaseUrl}/catalog/categories/${mtgCategory}/search`,
+                headers : headers,
+                body    : postBody,
+            };
+
+            const callback = ( error, response, body ) =>
             {
-                return 'No card found...  I\'m very sorry...';
+                if ( body && !error && response.statusCode === 200 )
+                {
+                    const res = JSON.parse(body).results;
+
+                    const itemOptions = {
+                        method  : 'GET',
+                        url     : `https://${mtgApiBaseUrl}/catalog/products/${res.join( ',' )}?getExtendedFields=true`,
+                        headers : headers,
+                    };
+
+                    const itemCb = ( error, response, body ) =>
+                    {
+                        const res = JSON.parse(body);
+
+                        if ( !res.results || res.results.length < 1 || res.success !== true )
+                        {
+                            console.log(`Sorry ${to}, I didn't find anything.`)
+                        }
+                        else
+                        {
+                            const uniqueResultNames = [];
+
+                            const uniqueResults = res.results.map(r =>
+                            {
+                                if ( uniqueResultNames.indexOf(r.productName) === -1 )
+                                {
+                                    uniqueResultNames.push( r.productName );
+
+                                    return r;
+                                }
+
+                                // save all
+                                // {
+                                    // expansion
+                                    // id
+                                // }
+                                return null;
+                            }).filter(r => !!r);
+
+                            const cards = [];
+
+                            uniqueResults.forEach(c =>
+                            {
+                                let card = {
+                                    name: c.productName,
+                                    id:  c.productId,
+                                    image: c.image,
+                                    store: c.url,
+                                };
+
+                                uniqueResults[0].extendedData.forEach(data =>
+                                {
+                                    card[ data.name.toLowerCase() ] = data.value;
+                                });
+
+                                cards.push(card);
+                            })
+
+
+
+                            if ( cards.length === 0 )
+                            {
+                                resolve( `Sorry....   no results for ${text}` )
+                            }
+                            else if ( cards.length === 1 )
+                            {
+                                const card = cards[0];
+
+                                // http://api.tcgplayer.com/v1.8.1/pricing/product/127425,127428
+
+                                const priceOptions = {
+                                    method  : 'GET',
+                                    url     : `https://${mtgApiBaseUrl}/pricing/product/${card.id}`,
+                                    headers : headers,
+                                };
+
+                                const priceCb = ( error, response, body ) =>
+                                {
+                                    const res = JSON.parse(body).results[0];
+
+                                    card.low = res.lowPrice;
+                                    card.mid = res.highPrice;
+                                    card.high = res.highPrice;
+                                    card.market = res.marketPrice
+
+                                    resolve(`${card.image}\n${card.name}\n\n${card.oracletext}\n\nMarket: ${card.market}\nL: ${card.low}, H: ${card.high}`)
+                                };
+
+                                request(priceOptions, priceCb);
+                            }
+                            else
+                            {
+                                resolve(`Can you be more specific? I found ${cards.length} different cards`);
+                            }
+                        }
+
+                    };
+
+                    request(itemOptions, itemCb);
+                }
+                else if ( response.statusCode === 401 )
+                {
+                    console.log('refreshing mtg api token....');
+                    resolve(this.setBearerToken(this.mtg, [ from, to, text, textArr ] ));
+                }
             }
 
-            const price = res[0] ? `${res[0]}\n\n` :'';
-
-            const {
-                imageUrl,
-                legalFormats,
-                link,
-            } = res[1];
-
-            return `${imageUrl}\n${legalFormats}\n${price}${link}`;
-        })
+            request(options, callback);
+        });
     }
 
 
@@ -144,7 +212,7 @@ class Mtg extends Module
             commands : {
                 m   : {
                     f       : this.mtg,
-                    desc    : 'searches for a magic card of the given name',
+                    desc    : 'searches for a magic card by name',
                     syntax      : [
                         `${trigger}m <query>`
                     ]
@@ -152,13 +220,69 @@ class Mtg extends Module
 
                 mtg : {
                     f       : this.mtg,
-                    desc    : 'searches for a magic card of the given name',
+                    desc    : 'searches for a magic card by name',
                     syntax      : [
                         `${trigger}mtg <query>`
                     ]
-                }
+                },
+
+                tok : {
+                    f       : () => {
+                        return this.setBearerToken( ()=>{}, []);
+                    },
+                    desc    : 'searches for a magic card by name',
+                    syntax      : [
+                        `${trigger}mtg <query>`
+                    ]
+                },
             }
         };
+    }
+
+    setBearerToken( cb, arr )
+    {
+        return new Promise((resolve, reject) => {
+            const { userConfig } = this;
+
+            const {
+                mtgApiBaseUrl,
+                mtgApiPublicKey,
+                mtgApiPrivateKey,
+                mtgBearerTokenExp,
+                req
+            } = userConfig;
+
+            const request   = req.request;
+            const now       = Date.now();
+
+            const headers   = {
+                'Content-Type': 'application/json',
+                'Accept': 'application/json',
+            };
+
+            const postBody  = `grant_type=client_credentials&client_id=${mtgApiPublicKey}&client_secret=${mtgApiPrivateKey}`;
+
+            const options   = {
+                url: `https://${mtgApiBaseUrl}/token`,
+                method: 'POST',
+                headers: headers,
+                body: postBody
+            };
+
+            const callback = ( error, response, body ) =>
+            {
+                if ( !error && response.statusCode == 200 )
+                {
+                    const res = JSON.parse( body );
+
+                    userConfig.mtgBearerTokenExp = now + res[ 'expires_in' ] - 10000; // 10000 buffer
+                    userConfig.mtgBearerToken = res[ 'access_token' ];
+                    resolve(cb( ...arr ));
+                }
+            }
+
+            request(options, callback);
+        });
     }
 };
 

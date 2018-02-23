@@ -5,13 +5,16 @@
  * pairs with the nico module to block
  *
  * @param {String} to
+ * @param {String} from originating channel
  * @param {String} text original text string
  * @param {String} botText
  * @param {Object} _botConfig
+ * @param {Object} confObject
+ * @param {object} _bot active bot
  *
- * @return {Object} modified values
+ * @return {String} original or modified text
  */
-function nicoBlocker( to, text, botText, _botConfig )
+function nicoBlocker( to, from, text, botText, _botConfig, confObj, _bot )
 {
     const textSplit = text.split( ' ' );
     const command = textSplit[0];

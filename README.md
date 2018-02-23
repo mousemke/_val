@@ -1,4 +1,4 @@
-# _val an irc bot, dogecoin tip bot, and all around good person.
+ # _val an irc bot, dogecoin tip bot, and all around good person.
 
 erm.... bot.
 
@@ -31,26 +31,25 @@ Use `${trigger}help` for a list of commands.
 
 
 
-If you would like to have _val running on your irc/slack/twitch/whatever in our hosting pool let us know.  The hosting pool is run on an EC2 instance and is funded only by donations.  It's a good way to have your bots running without having to worry about it.
+ If you would like to have _val running on your irc/slack/twitch/whatever in our hosting pool let us know.  The hosting pool is run on an EC2 instance and is funded only by donations.  It's a good way to have your bots running without having to worry about it.
 
 All json configuration files are missing.  Be sure to copy the example files to the correct name.
 
-Feel free to donate to keep _val's hosting server up and running!
+ Feel free to donate to keep _val's hosting server up and running!
 
 DOGE `DQiQ8e62CQGqx378EuS8i8gUW2mLkfBuXu`
 
 This project adheres to the [Contributor Covenant](http://contributor-covenant.org/). By participating, you are expected to honor this code.
 
-[_val - Code of Conduct](https://github.com/mousemke/_val/blob/master/CODE_OF_CONDUCT.md)
+ [_val - Code of Conduct](https://github.com/mousemke/_val/blob/master/CODE_OF_CONDUCT.md)
 
 Need to report something? [mouse@knoblau.ch](mailto:mouse@knoblau.ch)
 
 
 1.0.0 to do!
 =========
-+ re-add words
-+ re-add anagramm
-
++ mtg api
++ doge ticker
 
 Change log
 ==========
@@ -91,8 +90,9 @@ Change log
 + doge ticker refactored
 + multiple doge tickers based on acct or number are now available
 + added POST possibility to api calls
-
-
++ removed unscramble game
++ magic api completely revamped
++ [[magic card name]] language parser added
 
 
 

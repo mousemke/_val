@@ -689,8 +689,8 @@ const _Val = function( commandModuleName, userConfig )
      *
      * .... what do you think?
      *
-     * @param {String} from originating channel
      * @param {String} to user
+     * @param {String} from originating channel
      * @param {String} text full message text
      * @param {Object} confObj pass through variables from the core
      */
@@ -718,7 +718,7 @@ const _Val = function( commandModuleName, userConfig )
                 {
                     if ( text && botText === '' )
                     {
-                        let res = func( to, text, botText, _botConfig );
+                        let res = func( to, from, text, botText, _botConfig, confObj, _bot );
 
                         to      = res.to;
                         text    = res.text;

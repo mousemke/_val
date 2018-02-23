@@ -6,11 +6,17 @@ const guysObj       = require( '../../lists/guys.js' );
  *
  * checks for "guys" and/or other words set in the guys.json
  *
- * @param {String} text user text
+ * @param {String} to
+ * @param {String} from originating channel
+ * @param {String} text original text string
+ * @param {String} botText
+ * @param {Object} _botConfig
+ * @param {Object} confObject
+ * @param {object} _bot active bot
  *
- * @return {Promise}
+ * @return {String} original or modified text
  */
-function checkGuys( to, text, botText )
+function checkGuys( to, from, text, botText, _botConfig, confObj, _bot )
 {
     /**
      * ## replaceGuys
