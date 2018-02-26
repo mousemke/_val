@@ -6,7 +6,7 @@ const Module    = require( './Module.js' );
 
 const TIMEOUT           =  30; // in min
 const MARKET_TIMEOUT    =  5; // in min
-const MARKETS           = 'https://api.coinmarketcap.com/v1/ticker/';
+const MARKETS           = 'https://api.coinmarketcap.com/v1/ticker/?limit=250';
 const BTC_MARKET        = 'https://api.coindesk.com/v1/bpi/currentprice.json';
 const CURRENCY          = 'EUR';
 const CURRENCY_SYMBOL   = '€';
@@ -31,16 +31,20 @@ class Crypto extends Module
      * @param {String} command trigger word that brought us here
      * @param {Object} confObj extra config object that some command modules need
      *
-     * @return {String} success message
+     * @return {String} list of activly tracked coins
      */
     activeTickers( from, to, text, textArr, command, confObj )
     {
-        const channelId = confObj.from;
-        this.loadTickerList();
-
-        return JSON.stringify( tickers[ channelId ] || {} );
+        return this.tickNow( from, to, text, textArr, command, confObj );
     }
 
+    /**
+     * ## availableTickers
+     *
+     * lists the coins that are available for the ticker
+     *
+     * @return {String} available coins
+     */
     availableTickers()
     {
         const coins = 'Available coins are:';
@@ -139,6 +143,43 @@ class Crypto extends Module
 
 
     /**
+     * ## market
+     *
+     * returns the price of a certain amount of a single coin in EUR
+     *
+     * @param {String} from originating channel
+     * @param {String} to originating user
+     * @param {String} text full message text
+     * @param {String} textArr full message text split by " "
+     *
+     * @return {String} list of activly tracked coins
+     */
+    market( from, to, text, textArr )
+    {
+        const coin      = textArr[0].toLowerCase();
+        const amount    = parseFloat(textArr[1]);
+
+        let botText = '';
+
+        if ( !coin || isNaN(amount) )
+        {
+            return 'invalid syntax';
+        }
+
+        if ( !marketPrices[ coin ] )
+        {
+            const { trigger } = this.userConfig;
+
+            return `invalid coin abbreviation.  check ${trigger}availableTickers for available coins`;
+        }
+
+        const value = amount * marketPrices[ coin ];
+
+        return `${amount} ${coin.toUpperCase()} = ${this.fixed2(value)}${CURRENCY_SYMBOL}`;
+    }
+
+
+    /**
      * ## responses
      *
      * @return {Object} responses
@@ -162,6 +203,14 @@ class Crypto extends Module
                     desc    : 'lists the coins available for tickers',
                     syntax      : [
                         `${trigger}availableTickers`
+                    ]
+                },
+
+                market : {
+                    f       : this.market,
+                    desc    : `returns the price of a certain amount of a single coin in ${CURRENCY}`,
+                    syntax      : [
+                        `${trigger}market <coin> <amount>`
                     ]
                 },
 
@@ -258,7 +307,7 @@ class Crypto extends Module
 
         tickers[ channelId ] = tickers[ channelId ] || {};
 
-        if ( ( !amount || amount === 0 ) && tickers[ channelId ][ coin ] )
+        if ( ( !amount || amount === '0' ) && tickers[ channelId ][ coin ] )
         {
             delete tickers[ channelId ][ coin ];
 
@@ -286,7 +335,7 @@ class Crypto extends Module
     tick(localTickers)
     {
         let eurTotal    = 0;
-        let botText     = ' ';
+        let botText     = '';
 
         Object.keys(localTickers).forEach(coin =>
         {
@@ -298,7 +347,7 @@ class Crypto extends Module
             eurTotal += coinValue
         });
 
-        botText += `|\n|    Total: ${this.fixed2( eurTotal )}${CURRENCY_SYMBOL}`;
+        botText += `|\n|    Total: ${this.fixed2( eurTotal )}${CURRENCY_SYMBOL}\n|`;
 
         return botText;
     }
@@ -363,6 +412,7 @@ class Crypto extends Module
                 res[ 0 ][ coin ] = res[ 0 ][ coin ] * activeCurrency;
             });
 
+            res[ 0 ].btc = activeCurrency;
             marketPrices = res[ 0 ];
 
             return res;
