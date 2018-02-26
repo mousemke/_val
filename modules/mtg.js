@@ -1,6 +1,8 @@
 
 const Module        = require( './Module.js' );
 
+const dumpWierdChars = /[^a-zA-z0-9 -\/]/g;
+
 const capitalize = word => word.split(' ').map(s => s.charAt(0).toUpperCase() + s.slice(1)).join(' ');
 
 class Mtg extends Module
@@ -57,14 +59,13 @@ class Mtg extends Module
             };
 
             const postBody  = JSON.stringify({
-                // sort: 'Relevance',
                 sort: 'Sales DESC',
                 limit: 10,
                 offset: 0,
                 filters: [
                     {
                         name: 'ProductName',
-                        values: [ text ]
+                        values: [ text.replace(dumpWierdChars, '') ]
                     },
                     {
                         name: 'Rarity',
@@ -93,6 +94,13 @@ class Mtg extends Module
                 {
                     const res = JSON.parse(body).results;
 
+                    if ( !res || res.length < 1 )
+                    {
+                        console.log(`Sorry ${to}, I didn't find anything.`)
+
+                        return null;
+                    }
+
                     const itemOptions = {
                         method  : 'GET',
                         url     : `https://${mtgApiBaseUrl}/catalog/products/${res.join( ',' )}?getExtendedFields=true`,
@@ -110,78 +118,90 @@ class Mtg extends Module
                         else
                         {
                             const uniqueResultNames = [];
+                            const uniqueResults = {};
 
-                            const uniqueResults = res.results.map(r =>
+                            res.results.forEach(r =>
                             {
-                                if ( uniqueResultNames.indexOf(r.productName) === -1 )
-                                {
-                                    uniqueResultNames.push( r.productName );
+                                const cardName      = r.productName;
+                                const cardPosition  = uniqueResultNames.indexOf( cardName );
 
-                                    return r;
+                                if ( cardPosition === -1 )
+                                {
+                                    uniqueResultNames.push( cardName );
+
+                                    uniqueResults[ cardName ] = {
+                                        name: r.productName,
+                                        image: r.image,
+                                        store: r.url,
+                                        ids:  [ r.productId ],
+                                        sets: [ r.group.abbreviation ],
+                                    };
+
+
+                                    r.extendedData.forEach(data =>
+                                    {
+                                        uniqueResults[ cardName ][ data.name.toLowerCase() ] = data.value;
+                                    });
                                 }
-
-                                // save all
-                                // {
-                                    // expansion
-                                    // id
-                                // }
-                                return null;
-                            }).filter(r => !!r);
-
-                            const cards = [];
-
-                            uniqueResults.forEach(c =>
-                            {
-                                let card = {
-                                    name: c.productName,
-                                    id:  c.productId,
-                                    image: c.image,
-                                    store: c.url,
-                                };
-
-                                uniqueResults[0].extendedData.forEach(data =>
+                                else
                                 {
-                                    card[ data.name.toLowerCase() ] = data.value;
-                                });
-
-                                cards.push(card);
-                            })
-
+                                    uniqueResults[ cardName ].ids.push( r.productId );
+                                    uniqueResults[ cardName ].sets.push( r.group.abbreviation );
+                                }
+                            });
 
 
-                            if ( cards.length === 0 )
+                            if ( uniqueResultNames.length === 1 )
                             {
-                                resolve( `Sorry....   no results for ${text}` )
-                            }
-                            else if ( cards.length === 1 )
-                            {
-                                const card = cards[0];
+                                const card = uniqueResults[ uniqueResultNames[0] ];
 
                                 // http://api.tcgplayer.com/v1.8.1/pricing/product/127425,127428
 
                                 const priceOptions = {
                                     method  : 'GET',
-                                    url     : `https://${mtgApiBaseUrl}/pricing/product/${card.id}`,
+                                    url     : `https://${mtgApiBaseUrl}/pricing/product/${card.ids.join(',')}`,
                                     headers : headers,
                                 };
 
                                 const priceCb = ( error, response, body ) =>
                                 {
-                                    const res = JSON.parse(body).results[0];
+                                    const res = JSON.parse(body).results;
 
-                                    card.low = res.lowPrice;
-                                    card.mid = res.highPrice;
-                                    card.high = res.highPrice;
-                                    card.market = res.marketPrice
+                                    const prices = {};
 
-                                    resolve(`${card.image}\n${card.name}\n\n${card.oracletext}\n\nMarket: ${card.market}\nL: ${card.low}, H: ${card.high}`)
+                                    res.forEach( r =>
+                                    {
+                                        prices[ r.productId ] = prices[ r.productId ] || {};
+                                        prices[ r.productId ][ r.subTypeName ] = r;
+                                    });
+
+                                    let sets = '';
+
+                                    card.ids.forEach( ( id, i ) =>
+                                    {
+                                        const cardPrices = prices[ id ];
+
+                                        sets += `\n${card.sets[ i ]}: `;
+
+                                        if ( cardPrices.Normal )
+                                        {
+                                            sets += `$${cardPrices.Normal.marketPrice} `;
+                                        }
+
+                                        if ( cardPrices.Foil )
+                                        {
+                                            sets += `*F* $${cardPrices.Foil.marketPrice} `;
+                                        }
+                                    });
+
+                                    resolve( `${card.image}\n${card.name}\n\n${card.oracletext}\n${sets}` );
                                 };
 
-                                request(priceOptions, priceCb);
+                                request( priceOptions, priceCb );
                             }
                             else
                             {
-                                resolve(`Can you be more specific? I found ${cards.length} different cards`);
+                                resolve(`Can you be more specific? I found ${uniqueResultNames.length} different cards`);
                             }
                         }
 
