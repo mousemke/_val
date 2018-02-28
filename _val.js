@@ -1,25 +1,26 @@
+const modulesConfig = require( './config/_val.modules.js' );
 
-
-var _Val = function( commandModule, userConfig )
+const _Val = function( commandModuleName, userConfig )
 {
-    commandModule       = userConfig.command[ commandModule ];
-    var commandType     = commandModule.botName;
+    const commandModule = userConfig.command[ commandModuleName ];
+    const coreConfig    = commandModule.coreConfig || {};
+    const _botConfig    = Object.assign( {}, userConfig, coreConfig );
 
-    var req             = userConfig.req;
-    var http            = req.http,
-        https           = req.https,
-        fs              = req.fs,
-        chalk           = req.chalk;
+    const { trigger }   = _botConfig;
+    const commandType   = commandModule.botName;
+    const req           = userConfig.req;
+    const http          = req.http;
+    const https         = req.https;
+    const fs            = req.fs;
+    const chalk         = req.chalk;
 
-    // Loads the configuration and sets variables
-    var channel, _bot, _modules = {};
-    var modules             = require( './config/_val.modules.js' ),
-        guys                = require( './lists/guys.js' );
-        trollBlacklist      = require( './lists/trollBlacklist.js' );
 
-    var channels            = [];
+    let channel;
+    let _bot            = {};
+    let channels        = [];
+    const modules       = {};
 
-    var debugChalkBox = {
+    const debugChalkBox = {
         'PING'              : 'blue',
         'MODE'              : 'magenta',
         'rpl_channelmodeis' : 'cyan',
@@ -42,21 +43,35 @@ var _Val = function( commandModule, userConfig )
 
 
     /**
-     * ## testFunction
+     * ## addLanguageParsers
      *
-     * this function is run with the test command.  it exists purely for feature
-     * testing.  otherwise it does nothing
+     * resolves the language parsers from the config and adds them to _bot
      *
-     * @param {String} from originating channel
-     * @param {String} to originating user
-     * @param {String} text full message text
-     *
-     * @return _Boolean_  false
+     * @return {Void}
      */
-    function testFunction( from, to, text )
+    function addLanguageParsers()
     {
-        console.log( 'nothing here now' );
-        return false;
+        _bot.languageParsers = [];
+
+        const languageParsers   = userConfig.language;
+
+        for ( const parserName in languageParsers )
+        {
+            const parser = languageParsers[ parserName ];
+
+            if ( parser.enabled )
+            {
+                _bot.languageParsers.push( require( parser.url ) );
+
+                if ( parser.options )
+                {
+                    for ( let option in parser.options )
+                    {
+                        _botConfig[ option ] = parser.options[ option ];
+                    }
+                }
+            }
+        }
     }
 
 
@@ -65,68 +80,157 @@ var _Val = function( commandModule, userConfig )
      *
      * gets and parses JSON from api sources
      *
-     * @param {String} _url target url
-     * @param {Function} _cb callback
+     * @param {String} url target url
+     * @param {Function} cb callback
      * @param {Boolean} secure https?
+     * @param {String} from channel
+     * @param {String} to user
      *
-     * @return _Void_
+     * @return {Void}
      */
-    function apiGet( options, _cb, secure, from, to )
+    function apiGet( options, cb, secure, from, to )
     {
-        secure = ( secure === false ) ? false : true;
+        secure = !!secure;
 
-        var _error = function( say )
+        const error = e =>
         {
-            console.log( say );
-            if ( say )
+            if ( _bot.say && from && to )
             {
                 _bot.say( from, `sorry, ${to} bad query or url. (depends on what you were trying to do)` );
             }
             else
             {
-                console.log( `${options} appears to be down` );
+                console.warn( `${options.url || options.host || options} appears to be down`, e );
             }
         };
 
-        var callback = function( res )
+        const callback = res =>
         {
-            var body = '';
+            let body = '';
 
-            res.on( 'data', function( chunk )
+            res.on( 'data', chunk =>
             {
                 body += chunk;
-            });
+            } );
 
-            res.on( 'end', function()
+            res.on( 'end', () =>
             {
-                var data;
+                let data;
+
                 try
                 {
-                    data = JSON.parse( body );
-                    _cb( data );
+                    try
+                    {
+                        data = JSON.parse( body );
+                    }
+                    catch(e)
+                    {   data = body;
+
+                    }
+
+                    cb( data );
                 }
                 catch( e )
                 {
-                    _error( e );
+                    error( e );
                 }
             } );
         };
 
-        if ( secure )
+        try
         {
-            https.get( options, callback ).on( 'error', function( e )
+            if ( options.method === 'POST' )
             {
-                _error( _bot );
-            } );
+                if ( secure )
+                {
+                    https.request( options, callback ).on( 'error', function( e )
+                    {
+                        error( e );
+                    } );
+                }
+                else
+                {
+                    http.request( options, callback ).on( 'error', function( e )
+                    {
+                        error( e );
+                    } );
+                }
+            }
+            else
+            {
+                if ( secure )
+                {
+                    https.get( options, callback ).on( 'error', function( e )
+                    {
+                        error( e );
+                    } );
+                }
+                else
+                {
+                    http.get( options, callback ).on( 'error', function( e )
+                    {
+                        error( e );
+                    } );
+                }
+            }
         }
-        else
+        catch( e )
         {
-            http.get( options, callback ).on( 'error', function( e )
-            {
-                _error( _bot );
-            } );
+            console.log( e );
         }
     }
+
+
+    /**
+     * ## baseResponses
+     *
+     * val's base responses that both require no modules and are non-optional
+     * @type {Object}
+     */
+    const baseResponses = {
+        commands : {
+            active  : {
+                module  : 'base',
+                f       : checkActive,
+                desc    : 'checks how many people are active in the channel',
+                syntax  : [
+                    `${trigger}active`
+                ]
+            },
+
+            help    : {
+                module  : 'base',
+                f       : helpText,
+                desc    : 'returns help text',
+                syntax  : [
+                    `${trigger}help`,
+                    `${trigger}help <command>`,
+                ]
+            },
+
+            isup    : {
+                module  : 'base',
+                f       : () => 'Yes, but c\'mon!  At least use a full sentence!',
+                desc    : 'returns _val\'s current status',
+                syntax  : [
+                    `${trigger}isup`
+                ]
+            },
+
+            'moon?' : {
+                module  : 'base',
+                f       : () => 'In 500 million years, the moon will be 14,600 miles farther away than it is right now. When it is that far, total eclipses will not take place',
+                desc    : 'learn more about the moon',
+                syntax  : [
+                    `${trigger}moon`
+                ]
+            }
+        },
+
+        dynamic : {},
+
+        regex : {}
+    };
 
 
     /**
@@ -134,42 +238,40 @@ var _Val = function( commandModule, userConfig )
      *
      * assembles the _val modules.  like Voltron but node
      *
-     * @return _Void_
+     * @return {Void}
      */
     function buildClient()
     {
         /*
          * adds core components to an obj to be passed modules
          */
-        _modules.core = {
+        modules.core = {
 
              checkActive    : checkActive,
 
              userData       : userData,
 
-             apiGet         : apiGet,
-
-             responses      : responses
+             apiGet         : apiGet
         };
 
-        _modules.constructors = {};
+        modules.constructors = {};
 
         /**
          * load _val modules
          */
-        for ( var module in modules )
+        for ( const moduleName in modulesConfig )
         {
-            var _module = modules[ module ];
+            const module = modulesConfig[ moduleName ];
 
-            if ( _module.enabled )
+            if ( module.enabled )
             {
-                _modules.constructors[ module ] = require( _module.url );
+                modules.constructors[ moduleName ] = require( module.url );
 
-                if ( _module.options )
+                if ( module.options )
                 {
-                    for ( var option in _module.options )
+                    for ( let option in module.options )
                     {
-                        userConfig[ option ] = _module.options[ option ];
+                        _botConfig[ option ] = module.options[ option ];
                     }
                 }
             }
@@ -180,14 +282,25 @@ var _Val = function( commandModule, userConfig )
     /**
      * ## buildCore
      *
-     * this will develop into a dynamic core loader.  for now, it is what it is
+     * dynamic core loader
      *
-     * @return _Void_
+     * @return {Void}
      */
     function buildCore()
     {
-        var commander = require( commandModule.url );
-        _bot = commander( userConfig, _bot, channels, listenToMessages, displayDebugInfo , this );
+        const Commander = require( commandModule.url );
+
+        _bot            = new Commander( _botConfig,
+                                            channels,
+                                            listenToMessages,
+                                            displayDebugInfo,
+                                            this,
+                                            commandModule
+                                        );
+
+        _bot.name               = commandModule.botName;
+
+        addLanguageParsers();
     }
 
 
@@ -201,22 +314,25 @@ var _Val = function( commandModule, userConfig )
      * @param {String} text full message text
      * @param {Boolean} talk true to say, otherwise active only returns
      *
-     * @return _Array_ active users
+     * @return {Array} active users
      */
     function checkActive( from, to, text, talk )
     {
-        var name, now = Date.now(), i = 0,
-            activeUsers = [];
+        let name;
+        let i       = 0;
+        let now     = Date.now();
+
+        const activeUsers   = [];
 
         if ( ! _bot.active[ from ] )
         {
             _bot.active[ from ] = {};
         }
 
-        var activeChannel = _bot.active[ from ];
+        const activeChannel = _bot.active[ from ];
 
-        if ( ! activeChannel[ to ] && to !== userConfig.botName &&
-                userConfig.bots.indexOf( to ) === -1 )
+        if ( ! activeChannel[ to ] && to !== _bot.name &&
+                _botConfig.bots.indexOf( to ) === -1 )
         {
             activeChannel[ to ] = now;
             now++;
@@ -224,7 +340,7 @@ var _Val = function( commandModule, userConfig )
 
         for ( name in activeChannel )
         {
-            if ( now - userConfig.activeTime < activeChannel[ name ] )
+            if ( now - _botConfig.activeTime < activeChannel[ name ] )
             {
                 i++;
                 activeUsers.push( name );
@@ -254,51 +370,90 @@ var _Val = function( commandModule, userConfig )
 
 
     /**
+     * ## combineResponses
+     *
+     * combines two response structures while checking for duplicate keys
+     *
+     * @param {Object} res responses
+     * @param {Object} newRes responses to add
+     *
+     * @return {Object} combined object
+    */
+    function combineResponses( res, newRes, regex )
+    {
+        if ( newRes )
+        {
+            Object.keys( newRes ).forEach( c =>
+            {
+                let command = c;
+
+                if ( regex )
+                {
+                    command = c.slice( 0, c.length - 1 ).slice( 1 );
+                }
+
+                if ( res[ c ] )
+                {
+                    console.warn( `duplicate property ${c}` );
+                }
+                else
+                {
+                    res[ command ] = newRes[ c ];
+                }
+            } );
+        }
+
+        return res;
+    }
+
+
+    /**
      * ## displayDebugInfo
      *
      * formats and displays debug information
      *
-     * @return _Void_
+     * @return {Void}
      */
     function displayDebugInfo( e )
     {
-        var command = e.command;
+        const command = e.command;
 
         if ( command !== 'PRIVMSG' )
         {
-            var _color  = debugChalkBox[ command ];
-            var text    = `     * ${command} : `;
+            const color = debugChalkBox[ command ];
+            let text    = `     * ${command} : `;
 
-            e.args.forEach( function( arg ){ text += `${arg} `; } );
+            e.args.forEach( arg => text += `${arg} ` );
 
-            if ( _color )
+            if ( color )
             {
                 if ( command === 'PING' )
                 {
-                    var now    = Date.now();
-                    var minUp  = ( Math.round( ( ( now - up ) / 1000 / 60 ) * 100 ) / 100 ) + '';
+                    const now   = Date.now();
+                    let minUp   = `${Math.round( ( ( now - up ) / 1000 / 60 ) * 100 ) / 100 }`;
 
                     if ( minUp.indexOf( '.' ) === -1 )
                     {
                         minUp += '.00';
                     }
-                    else if ( minUp.split( '.' )[1].length !== 2 )
+                    else if ( minUp.split( '.' )[ 1 ].length !== 2 )
                     {
                         minUp += '0';
                     }
 
-                    console.log( chalk[ _color ]( text ), `${now - lastPing}ms`, chalk.grey( `(${minUp}min up)`, new Date().toLocaleString() ) );
+                    console.log( chalk[ color ]( text ), `${now - lastPing}ms`, chalk.grey( `(${minUp}min up)`, new Date().toLocaleString() ) );
                     lastPing = now;
 
                     if ( connectionTimer )
                     {
                         clearTimeout( connectionTimer );
                     }
-                    connectionTimer = setTimeout( reConnection, userConfig.reconnectionTimeout );
+
+                    connectionTimer = setTimeout( reConnection, _botConfig.reconnectionTimeout );
                 }
                 else
                 {
-                    console.log( chalk[ _color ]( text ) );
+                    console.log( chalk[ color ]( text ) );
                 }
             }
             else
@@ -314,41 +469,43 @@ var _Val = function( commandModule, userConfig )
      *
      * generates a channel list based on settings and environment.
      *
-     * @return _Void_
+     * @return {Void}
      */
     function generateChannelList()
     {
         /**
-         * adds private channels from userConfig.channelsPrivateJoin to the list of
+         * adds private channels from _botConfig.channelsPrivateJoin to the list of
          * channels to join.
          */
         function addPrivateChannels()
         {
-            var _p, _private    = commandModule.channelsPrivateJoin;
+            const privateChannels    = commandModule.channelsPrivateJoin;
 
-            if ( _private )
+            if ( privateChannels )
             {
-                var _privateLength  = _private.length;
+                const privateChannelsLength  = privateChannels.length;
 
-                for ( var i = 0; i < _privateLength; i++ )
+                for ( let i = 0; i < privateChannelsLength; i++ )
                 {
-                    _p = _private[ i ];
-                    if ( channels.indexOf( _p ) === -1 )
+                    const channel = privateChannels[ i ];
+
+                    if ( channels.indexOf( channel ) === -1 )
                     {
-                        channels.push( _p );
+                        channels.push( channel );
                     }
                 }
             }
         }
 
+
         /**
          * assembles the channel list and starts the client
          *
-         * @return _Void_
+         * @return {Void}
          */
         function finishChannels()
         {
-            userConfig.publicChannels = [].concat( channels );
+            _botConfig.publicChannels = [].concat( channels );
 
             if ( commandModule.slackTeam )
             {
@@ -356,32 +513,32 @@ var _Val = function( commandModule, userConfig )
             }
 
             removeBlacklistChannels();
-            userConfig.channels = channels;
+            _botConfig.channels = channels;
 
             ini();
         }
 
 
         /**
-         * if any channels are blacklisted from entering from userConfig.channelsPublicIgnore,
+         * if any channels are blacklisted from entering from _botConfig.channelsPublicIgnore,
          * this removes them from the channels array
          */
         function removeBlacklistChannels()
         {
-            var _b, _bIndex, _black = userConfig.channelsPublicIgnore || [];
-            var _blackLength        = _black.length;
+            const blockedChannels       = _botConfig.channelsPublicIgnore || [];
+            const blockedChannelsLength = blockedChannels.length;
 
-            if ( _blackLength )
+            if ( blockedChannelsLength )
             {
-                for ( var i = 0; i < _blackLength; i++ )
+                for ( let i = 0; i < blockedChannelsLength; i++ )
                 {
-                    _b = _black[ i ];
+                    const b = blockedChannels[ i ];
 
-                    _bIndex = channels.indexOf( _b );
+                    const index = channels.indexOf( b );
 
-                    if ( _bIndex !== -1 )
+                    if ( index !== -1 )
                     {
-                        channels.splice( _bIndex, 1 );
+                        channels.splice( index, 1 );
                     }
                 }
             }
@@ -390,26 +547,26 @@ var _Val = function( commandModule, userConfig )
 
         if ( commandModule.slackTeam && commandModule.autojoin )
         {
-            var _url    = `https://${commandModule.slackTeam}.slack.com/api/channels.list?token=${userConfig.slackAPIKey}`;
+            const url = `https://${commandModule.slackTeam}.slack.com/api/channels.list?token=${userConfig.slackAPIKey}`;
 
-            apiGet( _url, function( res )
+            apiGet( url, function( res )
             {
-                var _channels = res.channels;
+                const channels = res.channels;
 
-                for ( var _c in _channels )
+                for ( let channel in channels )
                 {
-                    _c = _channels[ _c ].name;
-                    _c = _c[0] !== '#' ? '#' + _c : _c;
+                    channel = channels[ channel ].name;
+                    channel = channel[0] !== '#' ? `#${channel}` : channel;
 
-                    channels.push( _c );
+                    channels.push( channel );
                 }
 
                 finishChannels();
             }, true );
         }
-        else if ( userConfig.channels )
+        else if ( _botConfig.channels )
         {
-            channels = userConfig.channels;
+            channels = _botConfig.channels;
             finishChannels();
         }
         else
@@ -420,29 +577,108 @@ var _Val = function( commandModule, userConfig )
 
 
     /**
+     * ## helpText
+     *
+     * displays help text to the channel
+     *
+     * @param {String} from originating channel
+     * @param {String} to originating user
+     * @param {String} query search parameter
+     *
+     * @return {String} help text
+     */
+    function helpText( from, to, text )
+    {
+        const responses     = Object.assign( _bot.responses.commands || {}, _bot.responses.regex, _bot.responses.dynamic );
+        const responseText  = responses[ text ];
+
+        if ( text.length === 0 || !responseText )
+        {
+            let str = 'available commands: ';
+
+            Object.keys( responses ).forEach( key =>
+            {
+                str += ` ${key}, `;
+            } );
+
+            return str.slice( 0, str.length - 2 );
+        }
+        else
+        {
+            let helpText    = responseText.desc;
+            const syntax    = responseText.syntax;
+
+            if ( syntax )
+            {
+                try {
+                    syntax.forEach( s => helpText += `\n${s}` )
+                }
+                catch (e)
+                {
+                    throw `broken help : is ${text} syntax an array?`;
+                }
+            }
+
+            return helpText;
+        }
+    }
+
+
+    /**
      * ## ini
      *
      * sets listeners and module list up
      *
-     * @return _Void_
+     * @return {Void}
      */
     function ini()
     {
         buildCore();
 
-        _bot.active = {};
+        _bot.active     = {};
+        _bot.responses  = baseResponses;
 
-        for ( var module in _modules.constructors )
+        for ( const moduleName in modules.constructors )
         {
-            _modules[ module ]   = new _modules.constructors[ module ]( _bot, _modules, userConfig );
-
-            if ( modules[ module ].ini )
+            if ( _botConfig.disabledModules.indexOf( moduleName ) === -1 )
             {
-                _modules[ module ].ini();
+                const ModulesConstructor = modules.constructors[ moduleName ];
+                const module = modules[ moduleName ] = new ModulesConstructor( _bot, modules, _botConfig, commandModule );
+
+                function formatResponses( module, name )
+                {
+                    module.responses = module.responses();
+
+                    [
+                        'commands',
+                        'regex'
+                    ].forEach( category =>
+                    {
+                        const commands  = module.responses[ category ];
+
+                        if ( commands )
+                        {
+                            Object.keys( commands ).forEach( r =>
+                            {
+                                const res       = commands[ r ];
+
+                                res.f           = res.f.bind( module );
+                                res.moduleName  = name;
+                                res.module      = module;
+                            } );
+                        }
+                    } );
+                };
+
+                formatResponses( module, moduleName );
+
+                _bot.responses.regex    = combineResponses( _bot.responses.regex || {}, module.responses.regex, 'regex' );
+                _bot.responses.commands = combineResponses( _bot.responses.commands || {}, module.responses.commands );
             }
         }
 
-        _bot._modules = _modules;
+
+        _bot.modules = modules;
 
         console.log( `${commandType} built` );
     }
@@ -453,17 +689,16 @@ var _Val = function( commandModule, userConfig )
      *
      * .... what do you think?
      *
-     * @param {String} from originating channel
      * @param {String} to user
+     * @param {String} from originating channel
      * @param {String} text full message text
-     *
-     * @return _Void_
+     * @param {Object} confObj pass through variables from the core
      */
     function listenToMessages( to, from, text, confObj )
     {
         if ( text )
         {
-            if ( userConfig.verbose === true )
+            if ( _botConfig.verbose === true )
             {
                 console.log( commandType, chalk.green( from ), chalk.red( to ), text );
             }
@@ -472,121 +707,71 @@ var _Val = function( commandModule, userConfig )
 
             watchActive( from, to );
 
-            text = trollOn( text );
-
-            if ( userConfig.bots.indexOf( to ) === -1 )
+            if ( _botConfig.bots.indexOf( to ) === -1 )
             {
-                var botText = '';
+                const trigger       = _botConfig.trigger;
+                const triggerLength = trigger.length;
 
-                if ( text === '_val' || text === '_val?' )
+                let botText = '';
+
+                _bot.languageParsers.forEach( func =>
                 {
-                    botText = 'yes?';
-                }
-                else if ( text === '_val!' )
+                    if ( text && botText === '' )
+                    {
+                        let res = func( to, from, text, botText, _botConfig, confObj, _bot );
+
+                        to      = res.to;
+                        text    = res.text;
+                        botText = res.botText;
+                    }
+                } );
+
+
+                if ( text && text.slice( 0, triggerLength ) === trigger &&
+                        text !== trigger && botText === '' )
                 {
-                    botText = 'what!?';
-                }
+                    text = text.slice( triggerLength );
 
-                var triggers = guys.triggers;
+                    let textArr     = text.split( ' ' );
+                    const command   = textArr[ 0 ];
+                    textArr         = textArr.slice( 1 );
+                    text            = textArr.join( ' ' );
 
-                for ( var i = 0, lenI = triggers.length; i < lenI; i++ )
-                {
-                    if ( text.toLowerCase().indexOf( guys.triggers[ i ] ) !== -1 )
+                    if ( _bot.responses.commands[ command ] )
                     {
-                        botText = replaceGuys( to, text );
-                        break;
+                        return _bot.responses.commands[ command ].f( from, to, text, textArr, command, confObj );
                     }
-                }
-
-                if ( text[ 0 ] === userConfig.trigger && text !== userConfig.trigger && botText === '' )
-                {
-                    if ( text === userConfig.trigger + 'moon?' )
+                    else if ( _bot.responses.dynamic[ command ] )
                     {
-                        botText = 'In 500 million years, the moon will be 14,600 miles farther away than it is right now. When it is that far, total eclipses will not take place';
+                        return _bot.responses.dynamic[ command ].f( from, to, text, textArr, command, confObj );
                     }
-                    else if ( text === userConfig.trigger + 'isup' )
+                    else
                     {
-                        botText = 'Yes, but c\'mon!  At least use a full sentence!';
-                    }
+                        const regexKeys  = Object.keys( _bot.responses.regex );
 
-                    if ( text[0] === userConfig.trigger )
-                    {
-                        text = text.slice( 1 );
-                    }
-
-                    var command = text.split( ' ' )[ 0 ];
-
-                    for ( var module in _modules )
-                    {
-                        if ( botText !== '' )
+                        regexKeys.every( r =>
                         {
-                            break;
-                        }
+                            const regex = new RegExp( r );
+                            const match = command.match( regex );
 
-                        if ( module !== 'constructors' )
-                        {
-                            botText = _modules[ module ].responses( from, to, text, botText, command, confObj );
-                        }
+                            if ( match && match.length > 0 )
+                            {
+                                botText = _bot.responses.regex[ r ].f( from, to, text, textArr, command, confObj );
+
+                                return false;
+                            }
+
+                            return true;
+                        } );
                     }
                 }
 
                 return botText;
             }
-            else if ( userConfig.bots.indexOf( to ) !== -1 &&
-                ( text[ 0 ] ===  userConfig.trigger && text !==  userConfig.trigger ) )
+            else if ( _botConfig.bots.indexOf( to ) !== -1 &&
+                ( text[ 0 ] ===  _botConfig.trigger && text !==  _botConfig.trigger ) )
             {
                 // automated response to automated people
-            }
-        }
-    }
-
-
-    /**
-     * ## listenToPm
-     *
-     * .... what do you think?
-     * if there is no specific whisper command, the text is passed to normal messages
-     *
-     * @param {String} from originating user
-     * @param {String} text full message text
-     *
-     * @return _Void_
-     */
-    function listenToPm( from, text )
-    {
-        var textSplit   = text.split( ' ' );
-        var command     = textSplit[ 0 ];
-
-        if ( command[0] === userConfig.trigger )
-        {
-            command = command.slice( 1 );
-        }
-
-        if ( userConfig.admins.indexOf( from ) !== -1 )
-        {
-            switch ( command )
-            {
-                case 'die':
-                    _bot.disconnect( 'Fine...  I was on my way out anyways.', function()
-                    {
-                        console.log( from + ' killed me' );
-                    });
-                    break;
-                default:
-                    listenToMessages( from, from, text, command );
-            }
-        }
-        else
-        {
-            switch ( command )
-            {
-                case 'help':
-                    botText = userConfig.helpText();
-                    _bot.say( from, botText );
-                    botText = '';
-                    break;
-                default:
-                    listenToMessages( from, from, text, command );
             }
         }
     }
@@ -597,7 +782,7 @@ var _Val = function( commandModule, userConfig )
      *
      * disconnects and reconnects _val
      *
-     * @return _Void_
+     * @return {Void}
      */
     function reConnection()
     {
@@ -612,73 +797,11 @@ var _Val = function( commandModule, userConfig )
 
 
     /**
-     * ## replaceGuys
-     *
-     * responds to 'guys' (and other trigger words) with alternative suggestions
-     *
-     * @param {String} to user
-     * @param {String} text original text
-     *
-     * @return _String_ suggestion
-     */
-    function replaceGuys( to, text )
-    {
-        var _alternative    = guys.alternatives[ Math.floor( Math.random() * guys.alternatives.length ) ];
-        var _speech         = guys.speech[ Math.floor( Math.random() * guys.speech.length ) ];
-
-        return to + ', ' + _speech + _alternative + '...';
-    }
-
-
-    /**
-     * ## responses
-     *
-     * base reponse functions of val
-     *
-     * @param {String} from channel of origin
-     * @param {String} to player of origin
-     * @param {String} text full text
-     * @param {String} botText response text
-     *
-     * @return _String_ response text
-     */
-    function responses( from, to, text, botText, command )
-    {
-        switch ( command )
-        {
-            case 'active':
-                return checkActive( from, to, text );
-
-            case 'test':
-                return testFunction( from, to, text );
-
-            case 'help':
-                if ( userConfig.enableHelp )
-                {
-                    // if ( userConfig.enablePM )
-                    // {
-                    //     _bot.say ( to, userConfig.helpText() );
-                    // }
-                    // else
-                    // {
-                        return `${to}: ${userConfig.helpText()}`;
-                    // }
-                }
-                break;
-            default:
-                botText = '';
-        }
-
-        return botText;
-    }
-
-
-    /**
      * ## start
      *
      * start the thing!
      *
-     * @return _Void_
+     * @return {Void}
      */
     function start()
     {
@@ -694,17 +817,17 @@ var _Val = function( commandModule, userConfig )
      *
      * @param {String} text original text
      *
-     * @return _String_
+     * @return {String}
      */
     function trimUsernames( text )
     {
-        if ( userConfig.usernamePrefix && userConfig.usernamePrefix.length > 0 )
+        if ( _botConfig.usernamePrefix && _botConfig.usernamePrefix.length > 0 )
         {
             text = text.split( ' ' );
 
-            for ( var i = 0, lenI = text.length; i < lenI; i++ )
+            for ( let i = 0, lenI = text.length; i < lenI; i++ )
             {
-                if ( userConfig.usernamePrefix.indexOf( text[ i ][0] ) !== -1 )
+                if ( _botConfig.usernamePrefix.indexOf( text[ i ][0] ) !== -1 )
                 {
                     text[ i ] = text[ i ].slice( 1 );
                 }
@@ -718,90 +841,62 @@ var _Val = function( commandModule, userConfig )
 
 
     /**
-     * ## trollOn
-     *
-     * responds if the word "troll" or "trøll" is in the text.  ignores blacklist items
-     *
-     * @param {String} text original text string
-     *
-     * @return _String_ original or modified text
-     */
-    function trollOn( text )
-    {
-        var textSplit = text.split( ' ' );
-
-        for ( var i = 0, lenI = textSplit.length; i < lenI; i++ )
-        {
-            if ( trollBlacklist.indexOf( textSplit[ i ] ) !== -1 )
-            {
-                return text;
-            }
-        }
-
-        if ( text.toLowerCase().indexOf( 'troll' ) !== -1 )
-        {
-            text = userConfig.trigger + 'trollfetti';
-        }
-        else if ( text.toLowerCase().indexOf( 'trøll' ) !== -1 )
-        {
-            text = userConfig.trigger + 'trøllfetti';
-        }
-
-        return text;
-    }
-
-
-    /**
      * ## userData
      *
      * gets userdata from the nickserv authentication bot
      *
      * @param {String} to user
      * @param {String} from originating channel
-     * @param {Function} _cb callback
+     * @param {Function} cb callback
      * @param {String} origText original message text
      *
-     * @return _Void_
+     * @return {Void}
      */
-    function userData( to, from, _cb, origText )
+    function userData( to, from, cb, origText )
     {
-        if ( userConfig.autoAuth )
+        if ( _botConfig.autoAuth )
         {
-            var textSplit = origText.slice( 1 ).split( ' ' );
+            const textSplit = origText.split( ' ' );
 
-            _cb( to, 'true', textSplit, origText );
+            cb( to, 'true', textSplit, origText );
         }
         else
         {
-            var response = function( _from, text )
+            const response = function( _from, text )
             {
                 _bot.removeListener( 'pm', response );
 
-                var textSplit       = text.split( ' ' );
-                var apiReturn       = textSplit[ 0 ];
-                var returnMessage   = textSplit[ 1 ];
-                var user            = textSplit[ 2 ];
-                var result          = textSplit[ 3 ];
+                const textSplit     = text.split( ' ' );
+                const apiReturn     = textSplit[ 0 ];
+                const returnMessage = textSplit[ 1 ];
+                const user          = textSplit[ 2 ];
+                const result        = textSplit[ 3 ];
 
-                if ( apiReturn === userConfig.nickservAPI &&
-                    returnMessage === 'identified' && user === to && result === 'true' )
+                if ( apiReturn === _botConfig.nickservAPI &&
+                    returnMessage === 'identified' && user === to &&
+                                                            result === 'true' )
                 {
-                    _cb( to, result, textSplit, origText );
+                    cb( to, result, textSplit, origText );
                 }
-                else if ( apiReturn === userConfig.nickservAPI &&
-                    returnMessage === 'identified' && user === to && result === 'false' )
+                else if ( apiReturn === _botConfig.nickservAPI &&
+                            returnMessage === 'identified' && user === to &&
+                            result === 'false' )
                 {
-                    _bot.say( to, 'You are not identified. (/msg NickServ help)' );
+                    _bot.say( to,
+                            'You are not identified. (/msg NickServ help)' );
                 }
-                else if ( apiReturn === userConfig.NickservAPI && returnMessage === 'notRegistered' && user === to )
+                else if ( apiReturn === _botConfig.NickservAPI &&
+                            returnMessage === 'notRegistered' && user === to )
                 {
-                    _bot.say( to, 'You are not a registered user. (/msg NickServ help)' );
+                    _bot.say( to,
+                        'You are not a registered user. (/msg NickServ help)' );
                 }
             };
 
             _bot.addListener( 'pm', response );
 
-            _bot.say( userConfig.nickservBot, userConfig.nickservAPI + ' identify ' + to );
+            _bot.say( _botConfig.nickservBot,
+                                `${_botConfig.nickservAPI} identify ${to}` );
         }
     }
 
@@ -814,11 +909,11 @@ var _Val = function( commandModule, userConfig )
      * @param {String} from originating channel
      * @param {String} to originating user
      *
-     * @return _Void_
+     * @return {Void}
      */
     function watchActive( from, to )
     {
-        var ignoreTheBots = userConfig.bots || [];
+        const ignoreTheBots = _botConfig.bots || [];
 
         if ( ignoreTheBots.indexOf( to ) === -1 )
         {
@@ -836,40 +931,39 @@ var _Val = function( commandModule, userConfig )
 };
 
 
-function _val( commander )
+function _val( commander, commanderConfig )
 {
-    return new _Val( commander, userConfig );
+    return new _Val( commander, commanderConfig );
 }
 
+const valConfig     = require( './config/_val.config.js' );
+const packageJSON   = require( './package.json' );
 
-var connectionTimer     = null;
-var up                  = Date.now();
-var lastPing            = Date.now();
+let connectionTimer = null;
+let up              = Date.now();
+let lastPing        = Date.now();
 
-var userConfig          = require( './config/_val.config.js' );
-var packageJSON         = require( './package.json' );
-    userConfig.version  = packageJSON.version;
-var req                 = userConfig.req = {};
+valConfig.version   = packageJSON.version;
+const req           = valConfig.req = {};
 
-    req.http            = require( 'http' ),
-    req.https           = require( 'https' ),
-    req.fs              = require( 'fs' ),
-    req.chalk           = require( 'chalk' );
+req.http            = require( 'http' ),
+req.https           = require( 'https' ),
+req.fs              = require( 'fs' ),
+req.chalk           = require( 'chalk' );
+req.request         = require( 'request' );
 
-    userConfig.commandModules   = [];
+valConfig.commandModules   = [];
 
+const commanders    = valConfig.command;
+const cores         = [];
 
-var commanders  = userConfig.command;
-var cores       = [];
-var commandObj;
-
-for ( var _c in commanders )
+for ( let commander in commanders )
 {
-    commandObj = commanders[ _c ];
+    const commandObj = commanders[ commander ];
 
     if ( commandObj.disabled !== true )
     {
-        cores.push( _val( _c ) );
+        cores.push( _val( commander, valConfig ) );
     }
 }
 

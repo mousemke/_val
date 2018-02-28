@@ -1,5 +1,5 @@
 
-const slack               = require('@slack/client');
+const slack               = require( '@slack/client' );
 const RtmClient           = slack.RtmClient;
 const CLIENT_EVENTS       = slack.CLIENT_EVENTS;
 const RTM_EVENTS          = slack.RTM_EVENTS;
@@ -9,16 +9,16 @@ const MemoryDataStore     = slack.MemoryDataStore;
 /**
  * ## val slack loader
  *
- * @return _Object_ slack chatbot
+ * https://api.slack.com/methods/im.open
+ * https://github.com/slackhq/node-slack-sdk
+ *
+ * @return {Object} slack chatbot
  */
-module.exports =  function slackBot( userConfig, _bot, channels, listenToMessages, displayDebugInfo, context )
+module.exports =  function slackBot( userConfig, channels, listenToMessages, displayDebugInfo, context, slackConfig )
 {
-    let slackConfig = userConfig.command.slack;
-    let token       = slackConfig.apiKey;
-    let dataStore   = new MemoryDataStore();
-    _bot            = new RtmClient( token, { dataStore } );
-
-    userConfig.command.slack.botName = _bot.dataStore.getUserById( _bot.activeUserId );
+    const token     = slackConfig.apiKey;
+    const dataStore = new MemoryDataStore();
+    const _bot      = new RtmClient( token, { dataStore } );
 
     let boundListenToMessages = listenToMessages.bind( context );
 
@@ -27,14 +27,14 @@ module.exports =  function slackBot( userConfig, _bot, channels, listenToMessage
 
     _bot.on( RTM_EVENTS.MESSAGE, message =>
     {
-        let { type, subtype, hidden } = message;
+        const { type, subtype, hidden } = message;
 
         if ( !hidden && message.user && message.channel )
         {
-            let from        = message.channel;
-            let to          = message.user;
+            const from  = message.channel;
+            const to    = message.user;
 
-            let botText     = message.text;
+            let botText = message.text;
 
             /*
              * replaces useless slack identifiers with names
@@ -46,10 +46,15 @@ module.exports =  function slackBot( userConfig, _bot, channels, listenToMessage
                 return userName ? userName.name : user;
             } );
 
-            let channel     = `#${_bot.dataStore.getChannelGroupOrDMById( message.channel ).name}`;
-            let user        = _bot.dataStore.getUserById( to ).name;
+            const channel   = `#${_bot.dataStore.getChannelGroupOrDMById( message.channel ).name}`;
+            const user      = _bot.dataStore.getUserById( to ).name;
 
-            let confObj = { to, from, user, channel };
+            const confObj   = {
+                to,
+                from,
+                user,
+                channel
+            };
 
             botText         = boundListenToMessages( user, channel, botText, confObj );
 
@@ -91,7 +96,7 @@ module.exports =  function slackBot( userConfig, _bot, channels, listenToMessage
 
             _bot._modules.core.apiGet( `https://slack.com/api/im.open?token=${token}&user=${to}`, res =>
             {
-                let id = res.channel.id;
+                const id = res.channel.id;
 
                 _bot.sendMessage( botText, id );
             } );

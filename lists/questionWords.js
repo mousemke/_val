@@ -1,10 +1,12 @@
 module.exports = [
+                    'are',
                     'am',
                     'art',
                     'can',
                     'could',
                     'did',
                     'do',
+                    'does',
                     'how',
                     'hows',
                     'howd',

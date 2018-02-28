@@ -17,30 +17,7 @@
         enabled : true,
         url     : './modules/admin.js',
         options : {
-        }
-    },
-
-
-    Allthemaths : { // not included - https://www.npmjs.com/package/allthemaths
-        enabled : false,
-        url     : './node_modules/allthemaths/allthemaths.js'
-    },
-
-
-    Anagramm    : {
-        enabled : true, // requires module: words
-        ini     : true,
-        url     : './modules/anagramm.js',
-        options : {
-            anagrammLang            : 'de',
-            anagrammChannel         : '#bots',
-            anagrammDogePayout      : true, // requires module: doge
-            anagrammDogeModifier    : 3,
-            anagrammPointTimeout    : 86400000, // 24 hours
-            newWordVoteNeeded       : 0.6,
-            wordnikBaseUrl          : 'http://api.wordnik.com:80/v4/',
-            translationBaseUrl      : 'http://mymemory.translated.net/api/',
-            wordnikAPIKey           : 'api-key'
+            admins  : [ 'user' ]
         }
     },
 
@@ -48,18 +25,6 @@
     Beats       : {
         enabled : true,
         url     : './modules/beats.js'
-    },
-
-
-    CAH        : {
-        enabled : true,
-        ini     : true,
-        url     : './modules/cah.js',
-        options : {
-            cahRoom                     : '#cards_against_humanity',
-            cahMaxMin                   : 5,
-            cahMinPlayers               : 3
-        }
     },
 
 
@@ -75,7 +40,6 @@
 
     Doge        : {
         enabled : true,
-        ini     : true,
         url     : './modules/doge.js'
     },
 
@@ -93,20 +57,15 @@
     },
 
 
-    GuildWars   : {
-        enabled : true,
-        url     : './modules/gw2.js',
-        options : {
-            guildWars2Trigger       : 'gw2',
-            guildWars2Room          : '#guildwars',
-            guildWars2apiUrl        : 'https://api.guildwars2.com/v2'
-        }
-    },
-
-
     Mtg         : {
         enabled : true,
-        url     : './modules/mtg.js'
+        url     : './modules/mtg.js',
+        options : {
+            mtgApiPublicKey         : 'public-api-key-here',
+            mtgApiPrivateKey        : 'private-api-key-here',
+            mtgApiAppId             : '1382',
+            mtgApiBaseUrl           : 'api.tcgplayer.com',
+        }
     },
 
 
@@ -118,7 +77,12 @@
 
     PlainText   : {
         enabled : true,
-        url     : './modules/plainText.js'
+        url     : './modules/plainText.js',
+        options : {
+            plainTextFettiWordLength    : 15,
+            plainTextFettiLength        : 25,
+            plainTextFettiOptions       : [ '. ', '´ ', '\' ', ' ,' ]
+        }
     },
 
 
@@ -134,26 +98,18 @@
 
     RR          : {
         enabled : true,
-        ini     : true,
         url     : './modules/rr.js',
     },
 
 
-    Twitch      : {
+    Test          : {
         enabled : true,
-        url     : './modules/twitch.js',
-        options : {
-            autoAuth                : true,
-            enablePM                : false,
-            floodProtection         : true,
-            floodProtectionDelay    : 1200
-        }
+        url     : './modules/test.js',
     },
 
 
     Twitter     : {
         enabled : true,
-        ini     : true,
         url     : './modules/twitter.js',
         options : {
             twitterRooms : {
@@ -189,15 +145,10 @@
 
     Words       : {
         enabled : true,
-        ini     : true,
         url     : './modules/words.js',
         options : {
             wordsLang               : 'en',
             wordsChannel            : '#bots',
-            wordsDogePayout         : true, // requires module: doge
-            wordsDogeModifier       : 1,
-            wordsPointTimeout       : 86400000, // 24 hours
-            newWordVoteNeeded       : 0.6,
             wordnikBaseUrl          : 'http://api.wordnik.com:80/v4/',
             translationBaseUrl      : 'http://mymemory.translated.net/api/',
             wordnikAPIKey           : 'api-key'

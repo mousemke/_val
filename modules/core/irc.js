@@ -4,13 +4,11 @@ const Irc = require( 'irc' );
 /**
  * ## val irc loader
  *
- * @return _Object_ irc chatbot
+ * @return {Object} irc chatbot
  */
-module.exports = function ircBot( userConfig, _bot, channels, listenToMessages, displayDebugInfo, context )
+module.exports = function ircBot( userConfig, channels, listenToMessages, displayDebugInfo, context, ircConfig )
 {
-    var ircConfig = userConfig.command.irc;
-
-    _bot = new Irc.Client( ircConfig.server, ircConfig.botName, {
+    const _bot = new Irc.Client( ircConfig.server, ircConfig.botName, {
         channels                : channels,
         password                : ircConfig.serverPassword,
         showErrors              : false,
@@ -18,14 +16,14 @@ module.exports = function ircBot( userConfig, _bot, channels, listenToMessages, 
         autoConnect             : true,
         floodProtection         : ircConfig.floodProtection,
         floodProtectionDelay    : ircConfig.floodProtectionDelay,
-    });
+    } );
 
     userConfig.commandModules.push( _bot );
 
     _bot.addListener( 'error', message =>
     {
         console.log( 'error: ', chalk.red( message ) );
-    });
+    } );
 
     // _bot.addListener( 'pm', listenToPm );
 

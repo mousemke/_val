@@ -6,66 +6,70 @@
  *
  * @author  Mouse Braun <mouse@knoblau.ch>
  *
- * @for _val <git@github.com:mousemke/_val.git>
- *
- * @param {Object} _bot node irc bot instance
- * @param {Object} _modules all the modules (including this one)
- * @param {Object} userConfig config options
  */
-var words       = require( '../json/u.json' );
+const words     = require( '../json/u.json' );
+const Module    = require( './Module.js' );
 
-module.exports = function U( _bot, _modules, userConfig )
+
+class U extends Module
 {
-    return {
+    /**
+     * ## responses
+     *
+     * @return {Object} responses
+     */
+    responses()
+    {
+        const { trigger } = this.userConfig;
 
-        talk : function( from, to, textSplit )
+        return {
+            commands : {
+                u : {
+                    f       : this.talk,
+                    desc    : 'interesting political discussions with someone angry',
+                    syntax  : [
+                        `${trigger}u <question>`
+                    ]
+                }
+            }
+        };
+    }
+
+
+    /**
+     * ## talk
+     *
+     * dont just sit there, u, say something!
+     *
+     * @param {String} from originating channel
+     * @param {String} to originating user
+     * @param {String} text full input string
+     * @param {Array} textSplit input string broken up by word
+     *
+     * @return {String} reply
+     */
+    talk( from, to, text, textSplit )
+    {
+        var _w, _ts, res = [];
+
+        for ( var i = 0, lenI = textSplit.length; i < lenI; i++ )
         {
-            var _w, _ts, res = [];
+            _ts = textSplit[ i ].replace( /\W/g, '' ).toLowerCase();
 
-            for ( var i = 0, lenI = textSplit.length; i < lenI; i++ )
+            words.forEach( function( _w )
             {
-                _ts = textSplit[ i ].replace( /\W/g, '' ).toLowerCase();
+                const _wSmall = _w.replace( /[^\da-zA-Z\s]/g, '' ).toLowerCase();
 
-                words.forEach( function( _w )
+                if ( _wSmall.indexOf( _ts ) !== -1 && res.indexOf( _wSmall ) === -1 )
                 {
-                    _wSmall     = _w.replace( /[^\da-zA-Z\s]/g, '' ).toLowerCase();
-
-                    if ( _wSmall.indexOf( _ts ) !== -1 && res.indexOf( _wSmall ) === -1 )
-                    {
-                        res.push( _w );
-                    }
-                } );
-            }
-
-            return res.length !== 0 ? res[ Math.floor( Math.random() * res.length ) ] : '';
-        },
-
-
-        /**
-         * ## responses
-         *
-         * main i/o for the twitter module
-         *
-         * @param {String} from originating channel
-         * @param {String} to originating user
-         * @param {String} text full input string
-         * @param {String} botText text to say
-         * @param {String} command bot command (first word)
-         * @param {Object} confObj extra config object that some command modules need
-         *
-         * @return _String_ changed botText
-         */
-        responses : function( from, to, text, botText, command, confObj )
-        {
-            var textSplit   = text.split( ' ' ).slice( 1 );
-
-            switch ( command )
-            {
-                case 'u':
-                    return this.talk( from, to, textSplit );
-            }
-
-            return botText;
+                    res.push( _w );
+                }
+            } );
         }
-    };
+
+        return res.length !== 0 ? res[ Math.floor( Math.random() * res.length ) ] : '';
+    }
 };
+
+
+module.exports = U;

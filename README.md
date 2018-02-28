@@ -1,62 +1,93 @@
-# _val an irc bot, dogecoin tip bot, and all around good person.
+ # _val an irc bot, dogecoin tip bot, and all around good person.
 
 erm.... bot.
 
-v. 0.3.0
+v. 1.0.0
 
 `requires node 6.2.2+`
 
-install
+## install
 
 ```
 npm i val-bot
 ```
 
-Go to `http://knoblau.ch/_val` for a list of commands.
+## Running val
 
-If you would like to have _val running on your irc/slack/twitch/whatever in our hosting pool let us know.  The hosting pool is run on an EC2 instance and is funded only by donations.  It's a good way to have your bots running without having to worry about it.
++ Change the `_val.config.js` and `_val.modules.js` in `./config` where appropriate
++ `npm run serve`
+
+Use `${trigger}help` for a list of commands.
+
+
+## scripts
+
+
+| `script` | description |
+|----------|-------------|
+| `npm run serve` | starts _val in Xvfb mode (recommended) |
+| `npm run serveAlt` | starts _val in simple mode. nightmare commands may work |
+| `npm run away` | starts awaybot as a placeholder |
+
+
+
+ If you would like to have _val running on your irc/slack/twitch/whatever in our hosting pool let us know.  The hosting pool is run on an EC2 instance and is funded only by donations.  It's a good way to have your bots running without having to worry about it.
 
 All json configuration files are missing.  Be sure to copy the example files to the correct name.
 
-Feel free to donate to keep _val's hosting server up and running!
+ Feel free to donate to keep _val's hosting server up and running!
 
 DOGE `DQiQ8e62CQGqx378EuS8i8gUW2mLkfBuXu`
 
 This project adheres to the [Contributor Covenant](http://contributor-covenant.org/). By participating, you are expected to honor this code.
 
-[_val - Code of Conduct](https://github.com/mousemke/_val/blob/master/CODE_OF_CONDUCT.md)
+ [_val - Code of Conduct](https://github.com/mousemke/_val/blob/master/CODE_OF_CONDUCT.md)
 
-Need to report something? [val@knoblau.ch](mailto:val@knoblau.ch)
+Need to report something? [mouse@knoblau.ch](mailto:mouse@knoblau.ch)
 
 
 Change log
 ==========
 
-#### 0.3.0
+#### 1.0.0
 
-+ botText now supports promises
-+ added dnd module
-+ removed seen - given expansion into other command modules, this presents a security risk
-+ seperated command modules
-+ added the u conversations
-+ slight xkcd organizatonial fixes
-+ removed _bot.say when promises would be a better fit
-+ added slack command module
-+ added sayNow to command modules
-+ started es6ification.  node requirements bumped to 6.2.2
-+ all responses now get confObj passed from onMessage to say for the sake of switching between readable and programatic channel and user names
-+ unscramble scoring removed.  doge can still be earned
-+ comment updates everywhere
-
-
-#### 0.2.13
-
-+ fixed a blacklist bug
-+ twitter module now accepts '*' as all users
-+ twitter module now accepts '*' as all rooms
-+ tweets limited to 140 characters
-+ t-stream-filter now aliased to +t-stream
-+ twitter streams now filter out retweets
++ val can no longer shoot itself
++ updated scripts to run Xvfb mode by default
++ multiple commanders from each core are now allowed
++ twitter core works
++ added core specific ability to disable modules
++ web api core added
++ updated question words
++ remove doge->tip ability to dm
++ updated 8ball and 4square
++ complete rebuild of how commands and responses are handled
++ module ini removed, now handled in the constructor
++ added imporoved help mode
++ modules are now classes
++ made syntax help available
++ website removed
++ twitter now trims to 140 chars and supports promises
++ listen to pm removed
++ xkcd bug fixed
++ awaybot updated
++ responses altered to support regex and dynamic commands
++ regex responses added
++ language parser module capabilities added
++ added awaybot npm script
++ switched market api
++ fixed plainText list responses
++ updated dnd module regex
++ added dynamic commands
++ updated guys list
++ trollOn blacklist now ignores punctuation and case
++ updated mtg plugin info and api source
++ added hipchat core head
++ doge ticker refactored
++ multiple doge tickers based on acct or number are now available
++ added POST possibility to api calls
++ removed unscramble game
++ magic api completely revamped
++ [[magic card name]] language parser added
 
 
 

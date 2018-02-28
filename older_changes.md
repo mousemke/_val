@@ -3,6 +3,47 @@ Older changes
 
 This is truncated from the readme file to keep down the size
 
+
+
+#### 0.4.0
+
++ added music module
++ expanded guys module
++ botNames are now different across different bots
++ guys module switched to regex
++ added some plain text options
++ added board game geek search
++ nico now rights whoever was flipped before someone else can be tagged
++ 8ball no longer checks case
+
+
+#### 0.3.0
+
++ botText now supports promises
++ added dnd module
++ removed seen - given expansion into other command modules, this presents a security risk
++ seperated command modules
++ added the u conversations
++ slight xkcd organizatonial fixes
++ removed _bot.say when promises would be a better fit
++ added slack command module
++ added sayNow to command modules
++ started es6ification.  node requirements bumped to 6.2.2
++ all responses now get confObj passed from onMessage to say for the sake of switching between readable and programatic channel and user names
++ unscramble scoring removed.  doge can still be earned
++ comment updates everywhere
+
+
+#### 0.2.13
+
++ fixed a blacklist bug
++ twitter module now accepts '*' as all users
++ twitter module now accepts '*' as all rooms
++ tweets limited to 140 characters
++ t-stream-filter now aliased to +t-stream
++ twitter streams now filter out retweets
+
+
 #### 0.2.11
 
 + 8ball fixed

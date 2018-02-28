@@ -1,10 +1,13 @@
 {
   "name": "val-bot",
-  "version": "0.3.0",
-  "description": "An IRC bot that does things.",
+  "version": "1.0.0",
+  "description": "A bot that does things.",
   "main": "_val.js",
   "scripts": {
-    "serve": "node _val.js"
+    "away": "node awaybot.js",
+    "postinstall": "cp -n ./config/_val.config.sample.js ./config/_val.config.js & cp -n ./config/_val.modules.sample.js ./config/_val.modules.js & cp -n ./json/dcMasterList.sample.json ./json/dcMasterList.json & cp -n ./json/tickers.sample.json ./json/tickers.json",
+    "serve": "xvfb-run --auto-servernum --server-num=1 node --harmony _val.js",
+    "serveAlt": "node _val.js"
   },
   "repository": {
     "type": "git",
@@ -24,11 +27,13 @@
   "bugs": {
     "url": "https://github.com/mousemke/_val/issues"
   },
-  "homepage": "https://knoblau.ch/_val",
+  "homepage": "https://github.com/mousemke/_val",
   "dependencies": {
     "@slack/client": "^3.5.1",
     "chalk": "^1.1.1",
-    "irc": "^0.4.0",
+    "irc": "^0.5.2",
+    "nlp_compromise": "^6.5.3",
+    "request": "^2.83.0",
     "telegram-api": "^0.4.4",
     "twit": "^2.1.0"
   },
@@ -36,12 +41,10 @@
     "CODE_OF_CONDUCT.md",
     "older_changes.md",
     "awaybot.js",
-    "testbots.js",
     "README.md",
     "_val.js",
     "json/unscrambleScores.sample.json",
     "json/dcMasterList.sample.json",
-    "json/seen.sample.json",
     "json/cards.json",
     "config/_val.config.sample.js",
     "config/_val.modules.sample.js",

@@ -1,75 +1,72 @@
 
-module.exports  = function CAH( _bot, _modules, userConfig )
+const Module        = require( './Module.js' );
+
+const rollRegex     = /^([0-9]*)d([0-9]+)\+?(\d)?/;
+
+class DND extends Module
 {
-    var fs              = userConfig.req.fs;
+    /**
+     * ## responses
+     *
+     * @return {Object} responses
+     */
+    responses()
+    {
+        const { trigger } = this.userConfig;
 
-    var dndRooms        = userConfig.dndRooms;
-    var rollRegex       = /^(\d+)?(?:d([0-9][\d]+|[1-9]))(?:[+](\d+))?$/;
+        return {
+            commands : {
 
-    var maxDice         = userConfig.dndMaxDice;
+            },
 
-    return {
-
-
-        /**
-         * possible responses to commands
-         *
-         * @param {String} from originating channel
-         * @param {String} to originating user
-         * @param {String} text full input string
-         * @param {String} botText text to say
-         * @param {String} command bot command (first word)
-         * @param {Object} confObj extra config object that some command modules need
-         *
-         * @return _String_ changed botText
-         */
-        responses : function( from, to, text, botText, command, confObj )
-        {
-            if ( dndRooms.indexOf( from ) !== -1 || dndRooms === '*' || 
-                    dndRooms[ 0 ] === '*' )
-            {
-                var roll    = rollRegex.exec( command );
-
-                if ( roll && roll[2] )
-                {
-                    return this.roll( from, to, text, roll )
-                }
-                else
-                {
-                    // switch ( command )
-                    // {
-                    //     case 'players':
-                    //         botText = this.listPlayers();
-                    //         break;
-                    // }
+            regex : {
+                [ `${rollRegex}` ] : {
+                    f       : this.roll,
+                    desc    : 'roll the bones',
+                    syntax  : [
+                        `${trigger}d10`,
+                        `${trigger}16d6`,
+                        `${trigger}9d12+6`
+                    ]
                 }
             }
+        };
+    }
 
-            return botText;
-        },
 
+    /**
+     * ## roll
+     *
+     * rolls X dice with the Y sides
+     *
+     * @param {String} from originating channel
+     * @param {String} to originating user
+     * @param {String} text message text
+     * @param {Array} textArr text broken into an array of words
+     * @param {String} command text that triggered the bot
+     * @param {Object} confObj configuration object
+     *
+     * @return {Void}
+     */
+    roll( from, to, text, textArr, command, confObj )
+    {
+        const userConfig    = this.userConfig;
 
-        /**
-         * roll
-         *
-         * rolls a die with the given sides
-         *
-         * @param {String} from originating channel
-         * @param {String} to originating user
-         * @param {String} text message text
-         *
-         * @return _Void_
-         */
-        roll : function( from, to, text, roll )
+        const dndRooms  = userConfig.dndRooms;
+        const maxDice   = userConfig.dndMaxDice;
+
+        let botText = '';
+
+        function exectuteRoll( roll )
         {
             function _getDie( _max )
             {
                 return Math.floor( Math.random() * _max ) + 1
             }
 
-            var rolls       = parseInt( roll[ 1 ] );
-            var max         = parseInt( roll[ 2 ] );
-            var bonus       = parseInt( roll[ 3 ] || 0 );
+            let rolls   = parseInt( roll[ 1 ] );
+            const max   = parseInt( roll[ 2 ] );
+            const bonus = parseInt( roll[ 3 ] || 0 );
 
             if ( rolls > maxDice )
             {
@@ -81,19 +78,19 @@ module.exports  = function CAH( _bot, _modules, userConfig )
             }
 
             rolls           = rolls || 1;
-            var multiple    = rolls > 1;
-            var total       = 0;
+            const multiple  = rolls > 1;
+            let total       = 0;
 
-            botText = `${to}, your ${rolls}d${max}${bonusText} rolls: `;
+            botText = `${to}, your ${rolls}d${max}${bonus ? '+' + bonus : ''} rolls: `;
 
-            for ( var i = 0; i < rolls; i++ )
+            for ( let i = 0; i < rolls; i++ )
             {
                 if ( multiple && i === rolls - 1 )
                 {
                     botText += ' &'
                 }
 
-                var result  = _getDie( max + bonus );
+                const result = _getDie( max ) + bonus;
                 total       += result;
                 botText     += ` ${result}, `;
             }
@@ -104,8 +101,23 @@ module.exports  = function CAH( _bot, _modules, userConfig )
             {
                 botText += ` (total: ${total})`;
             }
+        }
 
-            return botText;
-        },
-    };
+
+        if ( dndRooms.indexOf( from ) !== -1 || dndRooms === '*' || 
+                dndRooms[ 0 ] === '*' )
+        {
+            const rollRegex = /^(\d+)?(?:d([0-9][\d]+|[1-9]))(?:[+](\d+))?$/;
+            const roll      = rollRegex.exec( command );
+
+            if ( roll && roll[2] )
+            {
+                exectuteRoll( roll );
+            }
+        }
+
+        return botText;
+    }
 };
+
+module.exports = DND;

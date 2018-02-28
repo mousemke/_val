@@ -1,8 +1,8 @@
 
-var getMoment = function()
+const getMoment = function()
 {
-    var date = new Date();
-    var hours = date.getHours();
+    const date = new Date();
+    const hours = date.getHours();
 
     if ( 8 < hours )
     {
@@ -24,50 +24,120 @@ var getMoment = function()
 };
 
 
-var helpText = function()
-{
-    return 'Moin Moin!  I\'ll be your IRC bot for the' + getMoment() + '. ' +
-            'Valid commands are listed here: ' + ( userConfig.helpUrl );
-};
-
-
-var userConfig = {
+const userConfig = {
 
     command     : {
-        irc         : {
-            url                     : './modules/core/irc.js',
-            botName                 : '_val',
-            server                  : 'irc.server',
-            serverPassword          : 'srever.password',
-            floodProtection         : true,
-            floodProtectionDelay    : 50
+
+        web     : {
+            url                     : './modules/core/web.js',
+            botName                 : '_valpi',
+            host                    : '192.168.0.1',
+            port                    : 666,
+            coreConfig              : {
+                trigger                 : '',
+                usernamePrefix          : [],
+                enablePM                : false,
+                disabledModules         : [
+                    'Twitter',
+                    'Words',
+                    'Nico'
+                ]
+            }
         },
 
-        slack       : {
+
+        twitter : {
+            url                     : './modules/core/twitter.js',
+            botName                 : '@example',
+            consumerKey             : 'moon1moon1moon1moon1',
+            consumerSecret          : 'moon1moon1moon1moon1moon1moon1moon1',
+            accessToken             : 'moon1moon1moon1moon1moon1',
+            accessTokenSecret       : 'moon1moon1moon1moon1moon1moon1moon1',
+            coreConfig              : {
+                trigger                 : '@example ',
+                usernamePrefix          : [],
+                enablePM                : false,
+                nico                    : '@nbrugneaux',
+                disabledModules         : [
+                    'Twitter',
+                    'Words'
+                ]
+            }
+        },
+
+
+        slackulon       : {
             url                     : './modules/core/slack.js',
-            botName                 : '_val',
-            apiKey                  : 'slackapi',
-            slackTeam               : 'teamName',
+            botName                 : 'val-bot',
+            apiKey                  : 'moon1moon1moon1moon1moon1moon1moon1moon1',
+            slackTeam               : 'spaaceteam101',
             channelsPrivateJoin     : []
         },
+
 
         telegram    : {
             url                     : './modules/core/telegram.js',
             botName                 : 'val2000bot',
-            apiKey                  : 'telegram-api-key'
+            apiKey                  : 'moon1moon1moon1moon1moon1moon1moon1',
+            coreConfig              : {
+                trigger                 : '/',
+                enablePM                : false
+            }
+        },
+
+
+        ircExample : {
+            url                     : './modules/core/irc.js',
+            botName                 : 'valulon',
+            channels                : [
+                'your-mom'
+            ],
+            server                  : 'chat.freenode.net',
+            serverPassword          : 'password123',
+            floodProtection         : true,
+            floodProtectionDelay    : 50,
+            sasl                    : true,
+            coreConfig              : {
+                usernamePrefix          : [],
+                disabledModules         : [
+                    'DnD',
+                    'Doge',
+                    'Nico',
+                    'Twitter',
+                    'Words'
+                ]
+            }
+        }
+    },
+
+
+    language : {
+        mtgBrackets : {
+            enabled : true,
+            url     : './modules/languageParsers/mtgBrackets.js',
+        },
+
+        guys        : {
+            enabled : true,
+            url     : './modules/languageParsers/checkGuys.js',
+        },
+
+        nicoBlocker : {
+            enabled : true,
+            url     : './modules/languageParsers/nicoBlocker.js'
+        },
+
+        troll       : {
+            enabled : true,
+            url     : './modules/languageParsers/trollOn.js',
         }
     },
 
 
     /**
-     * timout for a user to be considered active
+     * timeout for a user to be considered active
      **/
     activeTime              : 600000,
-
-    /**
-     * admins get to issue admin commands
-     **/
-    admins                  : [ 'user' ],
 
     /**
      * connection to nickserv bot.  in twitch, users are already identified,
@@ -81,34 +151,18 @@ var userConfig = {
     bots                    : [ 'bot1', 'bot2', 'bot3' ],
 
     /**
-     * server, channel, name connection details
-     **/
-    channels                : [ '#channel-bots', '#channel1', '#channel2', '#channel3', '#channel4', '#channel5', '#channel6' ],
+     * disables the base commands (help, active, etc)
+     */
+    disableBaseCommands     : true,
 
     /**
-     * some services (**cough* twitch**) dont support private messages or
-     * multiline messages.
+     * modules disabled. mostly here to be disabled per head
      */
-    enableHelp              : true,
+    disabledModules         : [],
 
     /**
-     * enables private messages
+     * provided in config in case translations are necessary
      */
-    enablePM                : true,
-
-    /**
-     * anything ending in 'fetti'
-     */
-    fettiWordLength         : 15,
-    fettiLength             : 25,
-    fettiOptions            : [ '. ', '´ ', '\' ', ' ,' ],
-
-    floodProtection         : false,
-    floodProtectionDelay    : 1200,
-
-    helpText                : helpText,
-    helpUrl                 : 'http://knoblau.ch/_val/',
-
     months                  : [ 'Jan.', 'Feb.', 'Mar.', 'Apr.', 'May', 'June', 'July', 'Aug.', 'Sept.', 'Oct.', 'Nov.', 'Dec' ],
 
     nickservBot             : 'NickServ',

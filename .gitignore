@@ -1,9 +1,7 @@
 .DS_Store
 dcMasterList.json
-dcMasterList.bak
+json/tickers/tickers.*
 node_modules/
 npm-debug.log
 _val.config.js
 _val.modules.js
-unscrambleScores.json
-seen.json
