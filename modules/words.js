@@ -8,11 +8,6 @@ const Module            = require( './Module.js' );
 const complexTranslation = /[a-z]{2}\|[a-z]{2}/;
 
 let lang;
-let wordsChannel;
-let dogePayout;
-let dogeModifier;
-let pointTimeout;
-
 
 class Words extends Module
 {
@@ -33,32 +28,11 @@ class Words extends Module
         super( _bot, _modules, userConfig, commandModule, activeWord );
 
         activeWord = this.activeWord = activeWord || {
-            currentWord     : '',
-            currentWordTime : 0,
-            currentWordDef  : '',
-            define          : true,
             englishWord     : '',
-            minLength       : 4,
-            maxLength       : 8,
-            newWordVote     : [],
-            scrambledWord   : '',
-            wordScores      : {},
-            wordListener    : undefined,
-            verboseDef      : false,
             lang            : userConfig.wordsLang,
-            channel         : userConfig.wordsChannel,
-            dogePayout      : userConfig.wordsDogePayout,
-            dogeModifier    : userConfig.wordsDogeModifier,
-            pointTimeout    : userConfig.wordsPointTimeout
         };
 
-        lang            = activeWord.lang;
-        wordsChannel    = activeWord.channel;
-        dogePayout      = activeWord.dogePayout;
-        dogeModifier    = activeWord.dogeModifier;
-        pointTimeout    = activeWord.pointTimeout;
-
-        setTimeout( this.word, 300000 );
+        lang = activeWord.lang;
     }
 
 

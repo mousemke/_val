@@ -6,7 +6,7 @@ const Module    = require( './Module.js' );
 
 const TIMEOUT           =  30; // in min
 const MARKET_TIMEOUT    =  5; // in min
-const MARKETS           = 'https://api.coinmarketcap.com/v1/ticker/?limit=250';
+const MARKETS           = 'https://api.coinmarketcap.com/v1/ticker/?limit=500';
 const BTC_MARKET        = 'https://api.coindesk.com/v1/bpi/currentprice.json';
 const CURRENCY          = 'EUR';
 const CURRENCY_SYMBOL   = '€';
@@ -39,13 +39,13 @@ class Crypto extends Module
     }
 
     /**
-     * ## availableTickers
+     * ## availableCoins
      *
      * lists the coins that are available for the ticker
      *
      * @return {String} available coins
      */
-    availableTickers()
+    availableCoins()
     {
         const coins = 'Available coins are:';
 
@@ -170,7 +170,7 @@ class Crypto extends Module
         {
             const { trigger } = this.userConfig;
 
-            return `invalid coin abbreviation.  check ${trigger}availableTickers for available coins`;
+            return `invalid coin abbreviation.  check ${trigger}availableCoins for available coins`;
         }
 
         const value = amount * marketPrices[ coin ];
@@ -198,11 +198,11 @@ class Crypto extends Module
                     ]
                 },
 
-                availableTickers : {
-                    f       : this.availableTickers,
+                availableCoins : {
+                    f       : this.availableCoins,
                     desc    : 'lists the coins available for tickers',
                     syntax      : [
-                        `${trigger}availableTickers`
+                        `${trigger}availableCoins`
                     ]
                 },
 
@@ -298,7 +298,7 @@ class Crypto extends Module
         {
             const { trigger } = this.userConfig;
 
-            return `invalid coin abbreviation.  check ${trigger}availableTickers for available coins`;
+            return `invalid coin abbreviation.  check ${trigger}availableCoins for available coins`;
         }
 
         this.loadTickerList();

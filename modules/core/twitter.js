@@ -49,7 +49,6 @@ module.exports = function twitterBot( userConfig, channels, listenToMessages, di
 
     stream.on( 'tweet', tweet =>
     {
-        // const to        = `@${tweet.in_reply_to_screen_name}`;
         const from      = `@${tweet.user.screen_name}`;
         const text      = tweet.text;
         const botText   = boundListenToMessages( '', from, text );

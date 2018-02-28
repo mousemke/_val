@@ -46,11 +46,6 @@ This project adheres to the [Contributor Covenant](http://contributor-covenant.o
 Need to report something? [mouse@knoblau.ch](mailto:mouse@knoblau.ch)
 
 
-1.0.0 to do!
-=========
-+ mtg api
-+ doge ticker
-
 Change log
 ==========
 

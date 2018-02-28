@@ -1,7 +1,7 @@
 
 const Module        = require( './Module.js' );
 
-const dumpWierdChars = /[^a-zA-z0-9 -\/]/g;
+const dumpWeirdChars = /[^a-zA-z0-9 -\/]/g;
 
 const capitalize = word => word.split(' ').map(s => s.charAt(0).toUpperCase() + s.slice(1)).join(' ');
 
@@ -65,7 +65,7 @@ class Mtg extends Module
                 filters: [
                     {
                         name: 'ProductName',
-                        values: [ text.replace(dumpWierdChars, '') ]
+                        values: [ text.replace(dumpWeirdChars, '') ]
                     },
                     {
                         name: 'Rarity',
@@ -110,7 +110,7 @@ class Mtg extends Module
                     const itemCb = ( error, response, body ) =>
                     {
                         const res = JSON.parse(body);
-
+// try{
                         if ( !res.results || res.results.length < 1 || res.success !== true )
                         {
                             console.log(`Sorry ${to}, I didn't find anything.`)
@@ -149,13 +149,9 @@ class Mtg extends Module
                                     uniqueResults[ cardName ].sets.push( r.group.abbreviation );
                                 }
                             });
-
-
                             if ( uniqueResultNames.length === 1 )
                             {
                                 const card = uniqueResults[ uniqueResultNames[0] ];
-
-                                // http://api.tcgplayer.com/v1.8.1/pricing/product/127425,127428
 
                                 const priceOptions = {
                                     method  : 'GET',
@@ -204,7 +200,6 @@ class Mtg extends Module
                                 resolve(`Can you be more specific? I found ${uniqueResultNames.length} different cards`);
                             }
                         }
-
                     };
 
                     request(itemOptions, itemCb);

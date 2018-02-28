@@ -60,6 +60,7 @@ module.exports = function telegramBot( userConfig, channels, listenToMessages, d
                 {
                     const regex = new RegExp( chat.id, 'g' );
                     text        = text.replace( regex, chat.title );
+
                     _bot.say( from, text );
                 }
 
