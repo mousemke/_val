@@ -153,17 +153,17 @@ class PlainText extends Module
      */
     end( from, to, text, textArr, command )
     {
-        const num     = Math.floor( Math.random() * ( nouns.length ) );
+        const num     = Math.floor( Math.random() * nouns.length );
         const noun    = nouns[ num ];
 
         let botText   = `${command}s ${noun[ 0 ]}`;
 
-        if ( textArr[ 1 ] )
+        if ( textArr[ 0 ] )
         {
           const connections = [ ' to ', ' at ' ];
 
-          num       = Math.floor( Math.random() * ( connections.length ) );
-          botText   += connections[ num ] + textArr[ 1 ];
+          const num2 = Math.floor( Math.random() * connections.length );
+          botText   += connections[ num2 ] + textArr[ 0 ];
         }
 
         return botText;

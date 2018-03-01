@@ -2,9 +2,9 @@
 
 erm.... bot.
 
-v. 1.0.0
+v. 1.0.1
 
-`requires node 6.2.2+`
+`requires node 8+`
 
 ## install
 
@@ -48,6 +48,11 @@ Need to report something? [mouse@knoblau.ch](mailto:mouse@knoblau.ch)
 
 Change log
 ==========
+
+#### 1.0.1
+
++ fixes end$ issues
+
 
 #### 1.0.0
 
