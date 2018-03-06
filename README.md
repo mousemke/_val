@@ -2,9 +2,9 @@
 
 erm.... bot.
 
-v. 1.0.0
+v. 1.0.1
 
-`requires node 6.2.2+`
+`requires node 8+`
 
 ## install
 
@@ -53,6 +53,7 @@ Change log
 
 + removed more legacy unscramble elements from words module
 + specified api version for mtg in modules example
++ fixes end$ issues
 
 
 #### 1.0.0
