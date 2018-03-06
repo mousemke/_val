@@ -49,6 +49,12 @@ Need to report something? [mouse@knoblau.ch](mailto:mouse@knoblau.ch)
 Change log
 ==========
 
+#### 1.0.1
+
++ removed more legacy unscramble elements from words module
++ specified api version for mtg in modules example
+
+
 #### 1.0.0
 
 + val can no longer shoot itself

@@ -110,7 +110,7 @@ class Mtg extends Module
                     const itemCb = ( error, response, body ) =>
                     {
                         const res = JSON.parse(body);
-// try{
+
                         if ( !res.results || res.results.length < 1 || res.success !== true )
                         {
                             console.log(`Sorry ${to}, I didn't find anything.`)
@@ -149,6 +149,7 @@ class Mtg extends Module
                                     uniqueResults[ cardName ].sets.push( r.group.abbreviation );
                                 }
                             });
+
                             if ( uniqueResultNames.length === 1 )
                             {
                                 const card = uniqueResults[ uniqueResultNames[0] ];
