@@ -43,7 +43,6 @@ module.exports = {
     'jackdawed'             : 'http://media.giphy.com/media/rhaLXOOimBGN2/giphy.gif',
     'thoodle'               : 'thoodle-oo!!',
     'doom'                  : 'https://popkey-assets.s3.amazonaws.com/original-7850ad06-df4d-4d4c-af8e-9bb1698496c2.gif',
-    'wow'                   : 'http://gifs.gifme.io/i/5b9e69d976.gif',
     'bravo'                 : 'http://gifs.gifme.io/i/5b9e69d976.gif',
     '_val'                  : 'yes?',
     '_val?'                 : 'yes?',

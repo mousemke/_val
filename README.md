@@ -53,6 +53,8 @@ Change log
 
 + removed more legacy unscramble elements from words module
 + specified api version for mtg in modules example
++ removed a double `wow` in plainText
++ mtg returns better for multiple / exact matches
 + fixes end$ issues
 
 

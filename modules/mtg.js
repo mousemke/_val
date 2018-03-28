@@ -58,6 +58,8 @@ class Mtg extends Module
                 Authorization: `Bearer ${mtgBearerToken}`
             };
 
+            const cleanText = text.replace( dumpWeirdChars, '' );
+
             const postBody  = JSON.stringify({
                 sort: 'Sales DESC',
                 limit: 10,
@@ -65,7 +67,7 @@ class Mtg extends Module
                 filters: [
                     {
                         name: 'ProductName',
-                        values: [ text.replace(dumpWeirdChars, '') ]
+                        values: [ cleanText ]
                     },
                     {
                         name: 'Rarity',
@@ -117,12 +119,13 @@ class Mtg extends Module
                         }
                         else
                         {
-                            const uniqueResultNames = [];
+                            let exactFound = false;
+                            let uniqueResultNames = [];
                             const uniqueResults = {};
 
                             res.results.forEach(r =>
                             {
-                                const cardName      = r.productName;
+                                const cardName      = r.productName.replace(  /\((.)*\)$/, '' ).trim();
                                 const cardPosition  = uniqueResultNames.indexOf( cardName );
 
                                 if ( cardPosition === -1 )
@@ -143,12 +146,20 @@ class Mtg extends Module
                                         uniqueResults[ cardName ][ data.name.toLowerCase() ] = data.value;
                                     });
                                 }
-                                else
+                                else if ( !exactFound )
                                 {
                                     uniqueResults[ cardName ].ids.push( r.productId );
                                     uniqueResults[ cardName ].sets.push( r.group.abbreviation );
                                 }
                             });
+
+                            const match = uniqueResultNames.indexOf( cleanText );
+
+                            if ( match !== -1 )
+                            {
+                                uniqueResultNames = [ uniqueResultNames[ match ] ];
+                                exactFound = true;
+                            }
 
                             if ( uniqueResultNames.length === 1 )
                             {
@@ -180,12 +191,12 @@ class Mtg extends Module
 
                                         sets += `\n${card.sets[ i ]}: `;
 
-                                        if ( cardPrices.Normal )
+                                        if ( cardPrices.Normal && cardPrices.Normal.marketPrice )
                                         {
                                             sets += `$${cardPrices.Normal.marketPrice} `;
                                         }
 
-                                        if ( cardPrices.Foil )
+                                        if ( cardPrices.Foil && cardPrices.Foil.marketPrice )
                                         {
                                             sets += `*F* $${cardPrices.Foil.marketPrice} `;
                                         }
@@ -198,7 +209,7 @@ class Mtg extends Module
                             }
                             else
                             {
-                                resolve(`Can you be more specific? I found ${uniqueResultNames.length} different cards`);
+                                resolve(`Can you be more specific? I found ${uniqueResultNames.join( ', ' )}`);
                             }
                         }
                     };
