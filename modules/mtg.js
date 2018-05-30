@@ -202,7 +202,9 @@ class Mtg extends Module
                                         }
                                     });
 
-                                    resolve( `${card.image}\n${card.name}\n\n${card.oracletext}\n${sets}` );
+                                    const oracletext = card.oracletext.replace(/<br>/gi, '\n').replace(/<\/?em>/gi, '_');
+
+                                    resolve( `${card.image}\n${card.name}\n\n${oracletext}\n${sets}` );
                                 };
 
                                 request( priceOptions, priceCb );
