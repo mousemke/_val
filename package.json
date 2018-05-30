@@ -1,11 +1,11 @@
 {
   "name": "val-bot",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "A bot that does things.",
   "main": "_val.js",
   "scripts": {
     "away": "node awaybot.js",
-    "postinstall": "cp -n ./config/_val.config.sample.js ./config/_val.config.js & cp -n ./config/_val.modules.sample.js ./config/_val.modules.js & cp -n ./json/dcMasterList.sample.json ./json/dcMasterList.json & cp -n ./json/tickers.sample.json ./json/tickers.json",
+    "postinstall": "cp -n ./config/_val.config.sample.js ./config/_val.config.js | cp -n ./config/_val.modules.sample.js ./config/_val.modules.js | cp -n ./json/dcMasterList.sample.json ./json/dcMasterList.json; true",
     "serve": "xvfb-run --auto-servernum --server-num=1 node --harmony _val.js",
     "serveAlt": "node _val.js"
   },
@@ -29,12 +29,13 @@
   },
   "homepage": "https://github.com/mousemke/_val",
   "dependencies": {
-    "@slack/client": "^3.5.1",
-    "chalk": "^1.1.1",
+    "@slack/client": "^4.2.2",
+    "chalk": "^2.4.1",
+    "compromise": "^11.9.0",
     "irc": "^0.5.2",
-    "nlp_compromise": "^6.5.3",
     "request": "^2.83.0",
-    "telegram-api": "^0.4.4",
+    "slack": "^11.0.0",
+    "telegram-api": "^4.1.0",
     "twit": "^2.1.0"
   },
   "files": [

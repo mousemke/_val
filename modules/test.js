@@ -35,25 +35,28 @@ class Test extends Module
      */
     test( from, to, text )
     {
-        const nlp = require( 'nlp_compromise' );
+        const nlp = require( 'compromise' );
+console.log('this is all disabled for now.  go here => http://compromise.cool/')
+        // const textObj   = nlp( text );
 
-        const textObj   = nlp.text( text );
-        const textRoot  = textObj.root();
-        const terms     = textObj.terms();
-        const verb      = nlp.verb( text );
 
-        const sentence  = nlp.sentence( text );
-        const sentenceType = sentence.sentence_type();
 
-        const tags      = sentence.tags();
-        let botText = '';
+        // const textRoot  = textObj.root();
+        // const terms     = textObj.terms();
+        // const verb      = nlp.verb( text );
 
-        terms.forEach( t =>
-        {
-            botText += `${t.text}: ${JSON.stringify( t )}\n`;
-        } );
+        // const sentence  = nlp.sentence( text );
+        // const sentenceType = sentence.sentence_type();
 
-        return botText;
+        // const tags      = sentence.tags();
+        // let botText = '';
+
+        // terms.forEach( t =>
+        // {
+        //     botText += `${t.text}: ${JSON.stringify( t )}\n`;
+        // } );
+
+        // return botText;
 
         // return `root sentence: ${textRoot}
         //             sentence type: ${sentenceType}

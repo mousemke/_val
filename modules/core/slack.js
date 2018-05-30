@@ -1,10 +1,6 @@
 
-const slack               = require( '@slack/client' );
-const RtmClient           = slack.RtmClient;
-const CLIENT_EVENTS       = slack.CLIENT_EVENTS;
-const RTM_EVENTS          = slack.RTM_EVENTS;
-const RTM_CLIENT_EVENTS   = slack.CLIENT_EVENTS.RTM;
-const MemoryDataStore     = slack.MemoryDataStore;
+const slack                     = require( '@slack/client' );
+const { RTMClient, WebClient }  = slack;
 
 /**
  * ## val slack loader
@@ -17,75 +13,101 @@ const MemoryDataStore     = slack.MemoryDataStore;
 module.exports =  function slackBot( userConfig, channels, listenToMessages, displayDebugInfo, context, slackConfig )
 {
     const token     = slackConfig.apiKey;
-    const dataStore = new MemoryDataStore();
-    const _bot      = new RtmClient( token, { dataStore } );
+    const _bot      = new RTMClient( token );
+    const web       = new WebClient( token );
 
     let boundListenToMessages = listenToMessages.bind( context );
 
     userConfig.commandModules.push( _bot );
 
 
-    _bot.on( RTM_EVENTS.MESSAGE, message =>
+    _bot.on( 'message', message =>
     {
         const { type, subtype, hidden } = message;
 
         if ( !hidden && message.user && message.channel )
         {
-            const from  = message.channel;
-            const to    = message.user;
-
-            let botText = message.text;
+            const from          = message.channel;
+            const to            = message.user;
+            const messageText   = message.text;
 
             /*
              * replaces useless slack identifiers with names
              */
-            botText = botText.replace( /<@([Uu][A-Za-z0-9]{4,})>/g, ( match, user ) =>
-            {
-                let userName = _bot.dataStore.getUserById( user );
+            const messageMentions = messageText.match( /<@([Uu][A-Za-z0-9]{4,})>/g );
 
-                return userName ? userName.name : user;
-            } );
+            function getHumanChannelName( channel ) {
+                    if ( channel[0] !== 'G' ) {
+                        return web.channels.info({ channel }).then(res => res.channel.name);
+                    }
 
-            const channel   = `#${_bot.dataStore.getChannelGroupOrDMById( message.channel ).name}`;
-            const user      = _bot.dataStore.getUserById( to ).name;
-
-            const confObj   = {
-                to,
-                from,
-                user,
-                channel
-            };
-
-            botText         = boundListenToMessages( user, channel, botText, confObj );
-
-            if ( botText && botText !== '' )
-            {
-                if ( subtype === 'message_changed' )
-                {
-                    _bot.updateMessage( msg, ( err, res ) =>
-                    {
-                        msg.text = 'test message update';
-                    } );
-                }
-                else if ( typeof botText.then === 'function' )
-                {
-                    // refactor to use message updating?
-                    // https://github.com/slackhq/node-slack-sdk#update-messages
-                    botText.then( text =>
-                    {
-                        _bot.say( from, text, confObj );
-                    } );
-                }
-                else
-                {
-                    _bot.say( from, botText, confObj );
-                }
+                    return web.conversations.info({ channel }).then(res => res.channel.name);
             }
+
+            function getHumanUserName( rawUser ) {
+                const user = rawUser.replace( /^<@|>$/g, '' );
+
+                return web.users.info({ user }).then(res => res.user.name);
+            }
+
+            function getHumanMentions( mentions, text ) {
+                if ( messageMentions ) {
+                    return Promise.all( messageMentions.map(name => getHumanUserName( name )) )
+                        .then( nameArr => {
+                            let correctedText = messageText;
+
+                            messageMentions.forEach(( codeName, i) => correctedText = correctedText.replace( new RegExp(codeName, 'g'), nameArr[ i ]));
+
+                            return correctedText;
+                        });
+                }
+
+                return text;
+            }
+
+            Promise.all([
+                getHumanChannelName(message.channel),
+                getHumanUserName(to),
+                getHumanMentions(messageMentions, messageText),
+            ]).then(([ channel, user, botText ]) => {
+                const confObj   = {
+                    to,
+                    from,
+                    user,
+                    channel,
+                };
+
+                botText         = boundListenToMessages( user, channel, botText, confObj );
+
+                if ( botText && botText !== '' )
+                {
+                    if ( subtype === 'message_changed' )
+                    {
+                        _bot.updateMessage( msg, ( err, res ) =>
+                        {
+                            msg.text = 'test message update';
+                        } );
+                    }
+                    else if ( typeof botText.then === 'function' )
+                    {
+                        // refactor to use message updating?
+                        // https://github.com/slackhq/node-slack-sdk#update-messages
+                        botText.then( text =>
+                        {
+                            _bot.say( from, text, confObj );
+                        } );
+                    }
+                    else
+                    {
+                        _bot.say( from, botText, confObj );
+                    }
+                }
+            });
         }
     } );
 
 
-    _bot.on( RTM_CLIENT_EVENTS.RTM_CONNECTION_OPENED, () =>
+    _bot.on( 'ready', () =>
     {
         _bot.pm = ( to, botText, confObj ) =>
         {

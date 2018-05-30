@@ -2,7 +2,7 @@
 
 erm.... bot.
 
-v. 1.0.1
+v. 1.0.2
 
 `requires node 8+`
 
@@ -11,6 +11,10 @@ v. 1.0.1
 ```
 npm i val-bot
 ```
+
+if you hit issues on mac with `node-icu-charset-detector` you may need xcode command line developer tools
+
+`xcode-select --install`.
 
 ## Running val
 
@@ -48,6 +52,14 @@ Need to report something? [mouse@knoblau.ch](mailto:mouse@knoblau.ch)
 
 Change log
 ==========
+
+#### 1.0.2
+
++ fixed a bug in doge tipping
++ added some plaintext commands
++ updated mtg card fetch formatting
++ updated slack interface
+
 
 #### 1.0.1
 

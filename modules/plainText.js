@@ -508,7 +508,7 @@ class PlainText extends Module
                 },
 
                 ping : {
-                    f       : function( from, to ){ return `${to}: pong!` },
+                    f       : ( from, to ) => `${to}: pong!`,
                     desc    : 'test a response',
                     syntax  : [
                         `${trigger}ping`
