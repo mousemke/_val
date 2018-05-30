@@ -523,6 +523,14 @@ class PlainText extends Module
                     ]
                 },
 
+                trophy : {
+                    f       : this.trophy,
+                    desc    : 'give that person a trophy',
+                    syntax  : [
+                        `${trigger}trophy`
+                    ]
+                },
+
                 w   : {
                     f       : this.wiki,
                     desc    : 'search wikipedia',
@@ -583,6 +591,24 @@ class PlainText extends Module
     travolta()
     {
         return travolta[ Math.floor( Math.random() * travolta.length ) ];
+    }
+
+
+    /**
+     * ## trophy
+     *
+     * gives someone a trophy
+     *
+     * @param {String} from originating channel
+     * @param {String} to originating user
+     * @param {String} text message text
+     * @param {Array} textArr text broken into an array of words
+     *
+     * @return {String} trophy url
+     */
+    trophy( from, to, text, textArr )
+    {
+        return `${this.userConfig.usernamePrefix[0]}${textArr[0]} https://popkey-assets.s3.amazonaws.com/original-caee1224-afd0-4f33-8b16-785cc027fc3c.gif`;
     }
 
 
