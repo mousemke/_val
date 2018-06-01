@@ -28,6 +28,16 @@
     },
 
 
+    Crypto       : {
+        enabled : true,
+        url     : './modules/crypto.js',
+        options : {
+            binanceKey: 'api-key',
+            binanceSecret: 'api-secret',
+        }
+    },
+
+
     DnD         : {
         enabled : true,
         url     : './modules/dnd.js',
@@ -64,7 +74,7 @@
             mtgApiPublicKey         : 'public-api-key-here',
             mtgApiPrivateKey        : 'private-api-key-here',
             mtgApiAppId             : '1382',
-            mtgApiBaseUrl           : 'api.tcgplayer.com',
+            mtgApiBaseUrl           : 'api.tcgplayer.com/v1.8.0',
         }
     },
 

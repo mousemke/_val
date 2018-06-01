@@ -2,7 +2,7 @@
 
 erm.... bot.
 
-v. 1.0.1
+v. 1.0.2
 
 `requires node 8+`
 
@@ -11,6 +11,10 @@ v. 1.0.1
 ```
 npm i val-bot
 ```
+
+if you hit issues on mac with `node-icu-charset-detector` you may need xcode command line developer tools
+
+`xcode-select --install`.
 
 ## Running val
 
@@ -37,7 +41,7 @@ All json configuration files are missing.  Be sure to copy the example files to 
 
  Feel free to donate to keep _val's hosting server up and running!
 
-DOGE `DQiQ8e62CQGqx378EuS8i8gUW2mLkfBuXu`
+DOGE `D5tq8KaqQJjoeQJUG7CDy5NAWaEyjibrDo`
 
 This project adheres to the [Contributor Covenant](http://contributor-covenant.org/). By participating, you are expected to honor this code.
 
@@ -49,8 +53,22 @@ Need to report something? [mouse@knoblau.ch](mailto:mouse@knoblau.ch)
 Change log
 ==========
 
+#### 1.0.2
+
++ fixed a bug in doge tipping
++ added some plaintext commands
++ updated mtg card fetch formatting
++ updated slack interface
++ fixe a bug in trophy
++ removed harmohy flag from serve
+
+
 #### 1.0.1
 
++ removed more legacy unscramble elements from words module
++ specified api version for mtg in modules example
++ removed a double `wow` in plainText
++ mtg returns better for multiple / exact matches
 + fixes end$ issues
 
 

@@ -373,11 +373,11 @@ class Doge extends Module
             {
                 _to = _to.toLowerCase();
 
-                var origTextSplit = origText.split( ' ' );
+                var origTextSplit   = origText.split( ' ' );
 
-                var reciever        = origTextSplit[ 0 ],
-                    amount          = origTextSplit[ 1 ],
-                    balance         = Math.floor( dcMasterList[ to ] );
+                var reciever        = origTextSplit[ 0 ].toLowerCase(),
+                    amount          = parseFloat( origTextSplit[ 1 ] ),
+                    balance         = Math.floor( dcMasterList[ _to ] ) || 0;
 
                 if ( ! reciever || ! amount || parseInt( amount ) != amount || isNaN( amount ) )
                 {
@@ -391,7 +391,7 @@ class Doge extends Module
                 {
                     resolve( `stay positive, ${to}` );
                 }
-                else if ( to === reciever )
+                else if ( _to === reciever )
                 {
                     resolve( `don't tip yourself in public` );
                 }
@@ -411,8 +411,7 @@ class Doge extends Module
 
                         if ( reciever !== _bot.name )
                         {
-                            dcMasterList[ reciever.toLowerCase() ] = ( dcMasterList[ reciever.toLowerCase() ] ) ?
-                                                                            dcMasterList[ reciever.toLowerCase() ] + amount : amount;
+                            dcMasterList[ reciever ] = dcMasterList[ reciever ] ? dcMasterList[ reciever ] + amount : amount;
                         }
                         else
                         {

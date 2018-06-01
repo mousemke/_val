@@ -7,7 +7,7 @@ const Module            = require( './Module.js' );
 
 const complexTranslation = /[a-z]{2}\|[a-z]{2}/;
 
-let lang;
+const lang = 'en';
 
 class Words extends Module
 {
@@ -23,16 +23,9 @@ class Words extends Module
      *
      * @return {Void} void
      */
-    constructor( _bot, _modules, userConfig, commandModule, activeWord )
+    constructor( _bot, _modules, userConfig, commandModule )
     {
-        super( _bot, _modules, userConfig, commandModule, activeWord );
-
-        activeWord = this.activeWord = activeWord || {
-            englishWord     : '',
-            lang            : userConfig.wordsLang,
-        };
-
-        lang = activeWord.lang;
+        super( _bot, _modules, userConfig, commandModule );
     }
 
 
@@ -49,13 +42,9 @@ class Words extends Module
      */
     complexTranslation( from, to, text, botText, command )
     {
-        if ( this.activeWord.define )
-        {
-            command = command.split( '|' );
-            return this.translate( command[0], command[1], from, to, text );
-        }
+        command = command.split( '|' );
 
-        return '';
+        return this.translate( command[0], command[1], from, to, text );
     }
 
 
@@ -84,7 +73,8 @@ class Words extends Module
             {
                 if ( current === true )
                 {
-                    this.activeWord.currentWordDef = result;
+                    console.log( 'is this used?' );
+                    // this.activeWord.currentWordDef = result;
                 }
                 else
                 {
@@ -130,10 +120,7 @@ class Words extends Module
      */
     defineCommand( from, to, text, textArr )
     {
-        if ( this.activeWord.define )
-        {
-            return this.define( from, textArr.join( '%20' ), false, to );
-        }
+        return this.define( from, textArr.join( '%20' ), false, to );
     }
 
     /**
@@ -802,12 +789,7 @@ class Words extends Module
      */
     translateEnglishTo( from, to, text, textArr, command )
     {
-        if ( this.activeWord.define )
-        {
-            return this.translate( 'en', command, from, to, text );
-        }
-
-        return '';
+        return this.translate( 'en', command, from, to, text );
     }
 };
 

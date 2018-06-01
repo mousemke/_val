@@ -508,7 +508,7 @@ class PlainText extends Module
                 },
 
                 ping : {
-                    f       : function( from, to ){ return `${to}: pong!` },
+                    f       : ( from, to ) => `${to}: pong!`,
                     desc    : 'test a response',
                     syntax  : [
                         `${trigger}ping`
@@ -520,6 +520,14 @@ class PlainText extends Module
                     desc    : 'because',
                     syntax  : [
                         `${trigger}travolta`
+                    ]
+                },
+
+                trophy : {
+                    f       : this.trophy,
+                    desc    : 'give that person a trophy',
+                    syntax  : [
+                        `${trigger}trophy`
                     ]
                 },
 
@@ -583,6 +591,26 @@ class PlainText extends Module
     travolta()
     {
         return travolta[ Math.floor( Math.random() * travolta.length ) ];
+    }
+
+
+    /**
+     * ## trophy
+     *
+     * gives someone a trophy
+     *
+     * @param {String} from originating channel
+     * @param {String} to originating user
+     * @param {String} text message text
+     * @param {Array} textArr text broken into an array of words
+     *
+     * @return {String} trophy url
+     */
+    trophy( from, to, text, textArr )
+    {
+        const user = textArr[0] ? `${this.userConfig.usernamePrefix[0]}${textArr[0]}` : '';
+
+        return `${user} https://popkey-assets.s3.amazonaws.com/original-caee1224-afd0-4f33-8b16-785cc027fc3c.gif`;
     }
 
 

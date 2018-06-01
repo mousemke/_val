@@ -661,7 +661,6 @@ const _Val = function( commandModuleName, userConfig )
                             Object.keys( commands ).forEach( r =>
                             {
                                 const res       = commands[ r ];
-
                                 res.f           = res.f.bind( module );
                                 res.moduleName  = name;
                                 res.module      = module;
