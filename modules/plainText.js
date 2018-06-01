@@ -608,7 +608,9 @@ class PlainText extends Module
      */
     trophy( from, to, text, textArr )
     {
-        return `${this.userConfig.usernamePrefix[0]}${textArr[0]} https://popkey-assets.s3.amazonaws.com/original-caee1224-afd0-4f33-8b16-785cc027fc3c.gif`;
+        const user = textArr[0] ? `${this.userConfig.usernamePrefix[0]}${textArr[0]}` : '';
+
+        return `${user} https://popkey-assets.s3.amazonaws.com/original-caee1224-afd0-4f33-8b16-785cc027fc3c.gif`;
     }
 
 

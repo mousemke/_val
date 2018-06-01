@@ -41,7 +41,7 @@ All json configuration files are missing.  Be sure to copy the example files to 
 
  Feel free to donate to keep _val's hosting server up and running!
 
-DOGE `DQiQ8e62CQGqx378EuS8i8gUW2mLkfBuXu`
+DOGE `D5tq8KaqQJjoeQJUG7CDy5NAWaEyjibrDo`
 
 This project adheres to the [Contributor Covenant](http://contributor-covenant.org/). By participating, you are expected to honor this code.
 
@@ -59,6 +59,8 @@ Change log
 + added some plaintext commands
 + updated mtg card fetch formatting
 + updated slack interface
++ fixe a bug in trophy
++ removed harmohy flag from serve
 
 
 #### 1.0.1
