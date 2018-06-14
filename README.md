@@ -60,7 +60,8 @@ Change log
 + updated mtg card fetch formatting
 + updated slack interface
 + fixe a bug in trophy
-+ removed harmohy flag from serve
++ removed harmony flag from server
++ made dnd die rolls case-insensitive
 
 
 #### 1.0.1

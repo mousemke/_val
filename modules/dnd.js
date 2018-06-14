@@ -1,7 +1,7 @@
 
 const Module        = require( './Module.js' );
 
-const rollRegex     = /^([0-9]*)d([0-9]+)\+?(\d)?/;
+const rollRegex = /^(\d+)?(?:[dD]([0-9][\d]+|[1-9]))(?:[+](\d+))?$/;
 
 class DND extends Module
 {
@@ -22,7 +22,7 @@ class DND extends Module
             regex : {
                 [ `${rollRegex}` ] : {
                     f       : this.roll,
-                    desc    : 'roll the bones',
+                    desc    : 'roll them bones',
                     syntax  : [
                         `${trigger}d10`,
                         `${trigger}16d6`,
@@ -70,11 +70,15 @@ class DND extends Module
 
             if ( rolls > maxDice )
             {
-                return `Come on ${to}...   do you *really* need that many dice?`;
+                botText = `Come on ${to}...   do you *really* need that many dice?`;
+
+                return false;
             }
             else if ( rolls === 0 )
             {
-                return `Really? Fine ${to}...   you roll 0d${max}`;
+                botText = `Really? Fine ${to}...   your 0d${max} rolls...  0`;
+
+                return false;
             }
 
             rolls           = rolls || 1;
@@ -107,7 +111,6 @@ class DND extends Module
         if ( dndRooms.indexOf( from ) !== -1 || dndRooms === '*' || 
                 dndRooms[ 0 ] === '*' )
         {
-            const rollRegex = /^(\d+)?(?:d([0-9][\d]+|[1-9]))(?:[+](\d+))?$/;
             const roll      = rollRegex.exec( command );
 
             if ( roll && roll[2] )
