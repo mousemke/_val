@@ -36,53 +36,53 @@ class PopKey extends Module
      */
     getGif( from, to, text )
     {
-        text = text.replace( / /g, ',' ).toLowerCase().replace( /['"`’]/g, '' );
+        return 'popkey is not a thing any more. tell mouse to fix this!\nhttps://developers.gfycat.com/api/';
+        // text = text.replace( / /g, ',' ).toLowerCase().replace( /['"`’]/g, '' );
 
-        const options = {
-            path: `/v2/media/search?q=${text}`,
-            host: 'api.popkey.co',
-            port: 443,
-            headers: {
-                Authorization: `Basic ${this.apikey}`,
-                Accept: '*/*'
-            }
-        };
+        // const options = {
+        //     path: `/v2/media/search?q=${text}`,
+        //     host: 'api.popkey.co',
+        //     port: 443,
+        //     headers: {
+        //         Authorization: `Basic ${this.apikey}`,
+        //         Accept: '*/*'
+        //     }
+        // };
 
-        return new Promise( ( resolve, reject ) =>
-        {
-            this._modules.core.apiGet( options, function( info )
-            {
-                var length = info.length;
+        // return new Promise( ( resolve, reject ) =>
+        // {
+        //     this._modules.core.apiGet( options, function( info )
+        //     {
+        //         var length = info.length;
 
-                if ( length )
-                {
-                    var choose = function()
-                    {
-                        var _r      = Math.floor( Math.random() * length );
-                        var _file   =  info[ _r ];
+        //         if ( length )
+        //         {
+        //             var choose = function()
+        //             {
+        //                 var _r      = Math.floor( Math.random() * length );
+        //                 var _file   =  info[ _r ];
 
-                        var rating = _file.rating;
-                        console.log( `GIF Called.  Rating: ${rating}` );
+        //                 var rating = _file.rating;
+        //                 console.log( `GIF Called.  Rating: ${rating}` );
 
-                        if ( rating === 'E' )
-                        {
-                            return _file.source.url;
-                        }
-                        else
-                        {
-                            return choose();
-                        }
-                    };
+        //                 if ( rating === 'E' )
+        //                 {
+        //                     return _file.source.url;
+        //                 }
+        //                 else
+        //                 {
+        //                     return choose();
+        //                 }
+        //             };
 
-                    resolve( choose() );
-                }
-                else
-                {
-                    resolve( 'Nah.... I got nothing' );
-                }
-            }, true, from, to );
-
-        } );
+        //             resolve( choose() );
+        //         }
+        //         else
+        //         {
+        //             resolve( 'Nah.... I got nothing' );
+        //         }
+        //     }, true, from, to );
+        // } );
     }
 
 

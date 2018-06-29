@@ -2,7 +2,7 @@
 
 erm.... bot.
 
-v. 1.0.2
+v. 1.0.3
 
 `requires node 8+`
 
@@ -30,7 +30,7 @@ Use `${trigger}help` for a list of commands.
 | `script` | description |
 |----------|-------------|
 | `npm run serve` | starts _val in Xvfb mode (recommended) |
-| `npm run serveAlt` | starts _val in simple mode. nightmare commands may work |
+| `npm run serveAlt` | starts _val in simple mode. nightmare commands may not work |
 | `npm run away` | starts awaybot as a placeholder |
 
 
@@ -52,6 +52,11 @@ Need to report something? [mouse@knoblau.ch](mailto:mouse@knoblau.ch)
 
 Change log
 ==========
+
+#### 1.0.3
+
++ added sark
+
 
 #### 1.0.2
 
