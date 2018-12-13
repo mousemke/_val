@@ -6,6 +6,7 @@ const travolta      = require( '../lists/travolta.js' );
 const nouns         = require( '../lists/nouns.js' );
 const cars          = require( '../lists/cars.js' );
 const textResponses = require( '../lists/plainText.js' );
+const fish = require( '../lists/fish.js' );
 const Module        = require( './Module.js' );
 
 const moonRegex     = /(?:m([o]+)n)/;
@@ -13,6 +14,9 @@ const spaceRegex    = /(?:sp([a]+)ce)/;
 const khanRegex     = /(?:kh([a]+)n)/;
 const fettiRegex    = /.+fetti$/;
 const endRegex      = /.+end$/;
+
+const { fishTypes, preparation } = fish;
+const lastFishDay = {};
 
 /**
  * this is entirely filled with nonsense.  thats all the docs this needs.
@@ -256,6 +260,42 @@ class PlainText extends Module
 
 
     /**
+     * ## fish
+     *
+     * what's on the menu
+     *
+     * @return {String} today's special
+     */
+    fish()
+    {
+        const date = this.getDate();
+
+        let preparationNum;
+        let fishNum;
+
+        if (lastFishDay.date === date)
+        {
+            preparationNum  = lastFishDay.preparationNum
+            fishNum         = lastFishDay.fishNum
+        }
+        else
+        {
+            preparationNum  = Math.floor( Math.random() * preparation.length );
+            fishNum         = Math.floor( Math.random() * fishTypes.length );
+
+            lastFishDay.date            = date;
+            lastFishDay.preparationNum  = preparationNum;
+            lastFishDay.fishNum         = fishNum;
+        }
+
+        const p                 = preparation[ preparationNum ];
+        const f                 = fishTypes[ fishNum ];
+
+        return `Today's fish is, "${p} ${f}", enjoy your meal`;
+    }
+
+
+    /**
      * ## g
      *
      * searches google for things
@@ -295,6 +335,17 @@ class PlainText extends Module
         const choice    = Math.floor( Math.random() * choices.length );
 
         return choices[ choice ];
+    }
+
+
+    /**
+     * ## gets the current date as a string
+     *
+     * @return {String} date string
+     */
+    getDate()
+    {
+        return new Date().toJSON().split('T')[0];
     }
 
 
@@ -480,6 +531,14 @@ class PlainText extends Module
                     syntax  : [
                         `${trigger}dodge`,
                         `${trigger}dodge <user>`
+                    ]
+                },
+
+                fish : {
+                    f       : this.fish,
+                    desc    : 'todays special',
+                    syntax  : [
+                        `${trigger}fish`,
                     ]
                 },
 

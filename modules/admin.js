@@ -71,6 +71,11 @@ class Admin extends Module
     }
 
 
+    removeAlias() {
+
+    }
+
+
     /**
      * ## responses
      *
@@ -95,6 +100,24 @@ class Admin extends Module
                 },
 
 
+                [ `${trigger}removeAlias` ] : {
+                    f       : this.checkChannel,
+                    desc    : 'returns the current channel\'s identifier',
+                    syntax      : [
+                        `${trigger}${trigger}channel`
+                    ]
+                },
+
+
+                [ `${trigger}setAlias` ] : {
+                    f       : this.checkChannel,
+                    desc    : 'returns the current channel\'s identifier',
+                    syntax      : [
+                        `${trigger}${trigger}channel`
+                    ]
+                },
+
+
                 [ `${trigger}v` ] : {
                     f       : this.version,
                     desc    : 'returns the current running version number',
@@ -107,6 +130,10 @@ class Admin extends Module
 
         return res;
     }
+
+
+    setAlias()
+    {}
 
 
     /**
