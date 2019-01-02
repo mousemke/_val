@@ -16,7 +16,7 @@
  */
 function fish( to, from, text, botText, _botConfig, confObj, _bot )
 {
-    if (text && text.toLowerCase() === 'fish!')
+    if (text && text.toLowerCase().includes('fish!'))
     {
         return {
             to,
