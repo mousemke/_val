@@ -294,13 +294,6 @@ class Crypto extends Module
             return 'invalid syntax';
         }
 
-        if (!marketPrices[ coin ])
-        {
-            const { trigger } = this.userConfig;
-
-            return `invalid coin abbreviation.  check ${trigger}availableCoins for available coins`;
-        }
-
         this.loadTickerList();
 
         const channelId = confObj.from;
@@ -313,13 +306,20 @@ class Crypto extends Module
 
             botText = `${coin.toUpperCase()} ticker removed`;
 
-            if ( Object.values(tickers[ channelId ]).length === 0 )
+            if ( Object.keys(tickers[ channelId ]).length === 0 )
             {
                 delete tickers[ channelId ];
             }
         }
         else if (amount)
         {
+            if (!marketPrices[ coin ])
+            {
+                const { trigger } = this.userConfig;
+
+                return `invalid coin abbreviation.  check ${trigger}availableCoins for available coins`;
+            }
+
             tickers[ channelId ][ coin ] = amount;
 
             botText = `${coin.toUpperCase()} ticker set for ${amount}`;
@@ -342,9 +342,13 @@ class Crypto extends Module
             const coinCount = localTickers[ coin ];
             const coinValue = coinCount * marketPrices[ coin ];
 
-            botText += `|    ${coin.toUpperCase()}: ${coinCount}; ${this.fixed2(coinValue)}${CURRENCY_SYMBOL}\n`;
-
-            eurTotal += coinValue
+            if (Number.isNaN(coinValue)) {
+                botText += `|    ${coin.toUpperCase()} prices are not available\n`;
+            }
+            else {
+                botText += `|    ${coin.toUpperCase()}: ${coinCount}; ${this.fixed2(coinValue)}${CURRENCY_SYMBOL}\n`;
+                eurTotal += coinValue
+            }
         });
 
         botText += `|\n|    Total: ${this.fixed2( eurTotal )}${CURRENCY_SYMBOL}\n|`;
