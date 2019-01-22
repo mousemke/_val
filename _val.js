@@ -960,7 +960,7 @@ for ( let commander in commanders )
 {
     const commandObj = commanders[ commander ];
 
-    if ( commandObj.disabled !== true )
+    if ( commandObj.enabled !== false )
     {
         cores.push( _val( commander, valConfig ) );
     }
