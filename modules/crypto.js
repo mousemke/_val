@@ -60,17 +60,13 @@ class Crypto extends Module
             _bot
         } = this;
 
-        const localTickers = tickers[ channelId ];
+        clearTimeout(tickerTimeouts[ channelId ]);
+        clearInterval(tickerIntervals[ channelId ]);
 
-        if ( localTickers )
+        if (tickers[channelId])
         {
-            tickerIntervals[ channelId ] = tickerIntervals[ channelId ] || {};
-
-            clearTimeout(tickerTimeouts[ channelId ]);
-            tickerTimeouts[ channelId ] = setTimeout(() => _bot.say(channelId, tick(localTickers)), 20000);
-
-            clearInterval( tickerIntervals[ channelId ] );
-            tickerIntervals[ channelId ] = setInterval(() => _bot.say(channelId, tick(localTickers)), TIMEOUT * 1000 * 60 );
+            tickerTimeouts[ channelId ] = setTimeout(() => _bot.say(channelId, tick(channelId)), 20000);
+            tickerIntervals[ channelId ] = setInterval(() => _bot.say(channelId, tick(channelId)), TIMEOUT * 1000 * 60 );
         }
     }
 
@@ -214,11 +210,20 @@ class Crypto extends Module
                     ]
                 },
 
-                setTicker : {
+                removeTicker : {
                     f       : this.setTicker,
                     desc    : 'adds or removes a coin in the ticker',
                     syntax      : [
                         `${trigger}setTicker <coin> <amount>`
+                    ]
+                },
+
+
+                setTicker : {
+                    f       : this.setTicker,
+                    desc    : 'adds or removes a coin in the ticker',
+                    syntax      : [
+                        `${trigger}setTicker <coin> <?amount>`
                     ]
                 },
 
@@ -231,6 +236,26 @@ class Crypto extends Module
                 }
             }
         };
+    }
+
+
+    /**
+     * ## removeTicker
+     *
+     * a shortcut for setTicker with no amount
+     *
+     * @param {String} from originating channel
+     * @param {String} to originating user
+     * @param {String} text full message text
+     * @param {String} textArr full message text split by " "
+     * @param {String} command trigger word that brought us here
+     * @param {Object} confObj extra config object that some command modules need
+     *
+     * @return {String} success message
+     */
+    removeTicker( from, to, text, textArr, command, confObj )
+    {
+        return this.setTicker( from, to, text, [textArr[0]], command, confObj );
     }
 
 
@@ -250,6 +275,15 @@ class Crypto extends Module
     }
 
 
+    /**
+     * ## startTicker
+     *
+     * loads the list of tickers and starts them
+     *
+     * @param {String} channelId internal name for the channeö
+     *
+     * @return {Void}
+     */
     startTicker( channelId )
     {
         this.loadTickerList();
@@ -300,7 +334,7 @@ class Crypto extends Module
 
         tickers[ channelId ] = tickers[ channelId ] || {};
 
-        if ( ( !amount || amount === '0' ) && tickers[ channelId ][ coin ] )
+        if ( ( !amount || amount === '0' ||  amount === 0 ) && tickers[ channelId ][ coin ] )
         {
             delete tickers[ channelId ][ coin ];
 
@@ -311,7 +345,7 @@ class Crypto extends Module
                 delete tickers[ channelId ];
             }
         }
-        else if (amount)
+        else if (amount && amount !== '0' && amount !== 0)
         {
             if (!marketPrices[ coin ])
             {
@@ -332,8 +366,10 @@ class Crypto extends Module
     }
 
 
-    tick(localTickers)
+    tick(channelId)
     {
+        const localTickers = tickers[ channelId ];
+
         let eurTotal    = 0;
         let botText     = '';
 
@@ -368,7 +404,7 @@ class Crypto extends Module
             return 'there are no crypto tickers for this channel';
         }
 
-        return this.tick(localTickers);
+        return this.tick(confObj.from);
     }
 
 
