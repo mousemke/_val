@@ -23,7 +23,6 @@ class Mtg extends Module
     {
         super( _bot, _modules, userConfig, commandModule );
 
-        this.apiGet         = _modules.core.apiGet;
         this.mtg            = this.mtg.bind(this);
         this.bearerToken    = this.userConfig;
     }
@@ -242,26 +241,8 @@ class Mtg extends Module
 
         return {
             commands : {
-                m   : {
-                    f       : this.mtg,
-                    desc    : 'searches for a magic card by name',
-                    syntax      : [
-                        `${trigger}m <query>`
-                    ]
-                },
-
                 mtg : {
                     f       : this.mtg,
-                    desc    : 'searches for a magic card by name',
-                    syntax      : [
-                        `${trigger}mtg <query>`
-                    ]
-                },
-
-                tok : {
-                    f       : () => {
-                        return this.setBearerToken( ()=>{}, []);
-                    },
                     desc    : 'searches for a magic card by name',
                     syntax      : [
                         `${trigger}mtg <query>`

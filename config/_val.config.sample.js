@@ -29,7 +29,6 @@ const userConfig = {
     command     : {
 
         web     : {
-            enabled                 : true,
             url                     : './modules/core/web.js',
             botName                 : '_valpi',
             host                    : '192.168.0.1',
@@ -48,7 +47,6 @@ const userConfig = {
 
 
         twitter : {
-            enabled                 : false,
             url                     : './modules/core/twitter.js',
             botName                 : '@example',
             consumerKey             : 'moon1moon1moon1moon1',
@@ -69,7 +67,6 @@ const userConfig = {
 
 
         slackulon       : {
-            enabled                 : true,
             url                     : './modules/core/slack.js',
             botName                 : 'val-bot',
             apiKey                  : 'moon1moon1moon1moon1moon1moon1moon1moon1',
@@ -79,7 +76,6 @@ const userConfig = {
 
 
         telegram    : {
-            enabled                 : true,
             url                     : './modules/core/telegram.js',
             botName                 : 'val2000bot',
             apiKey                  : 'moon1moon1moon1moon1moon1moon1moon1',
@@ -91,7 +87,6 @@ const userConfig = {
 
 
         ircExample : {
-            enabled                 : true,
             url                     : './modules/core/irc.js',
             botName                 : 'valulon',
             channels                : [

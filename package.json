@@ -36,7 +36,8 @@
     "request": "^2.87.0",
     "slack": "^11.0.0",
     "telegram-api": "^4.1.0",
-    "twit": "^2.1.0"
+    "twit": "^2.1.0",
+    "xml-js": "^1.6.9"
   },
   "files": [
     "CODE_OF_CONDUCT.md",

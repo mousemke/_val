@@ -67,7 +67,6 @@ console.log('this is all disabled for now.  go here => http://compromise.cool/')
         // return tags;
     }
 
-
     /**
      * ## responses
      *
@@ -81,7 +80,7 @@ console.log('this is all disabled for now.  go here => http://compromise.cool/')
             commands : {
                 test : {
                     f       : this.test,
-                    desc    : 'never reall know what you\'ll find here...',
+                    desc    : 'never really know what you\'ll find here...',
                     syntax      : [
                         `${trigger}test <things maybe?>`
                     ]

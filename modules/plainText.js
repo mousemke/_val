@@ -24,25 +24,6 @@ const lastFishDay = {};
 class PlainText extends Module
 {
     /**
-     * ## bgg
-     *
-     * searches board game geek for things
-     *
-     * @param {String} from originating channel
-     * @param {String} to originating user
-     * @param {String} text message text
-     *
-     * @return {String} bgg search url
-     */
-    bgg( from, to, text )
-    {
-        text = text.split( ' ' ).join( '+' );
-
-        return `http://www.boardgamegeek.com/geeksearch.php?action=search&objecttype=boardgame&q=${text}&B1=Go`;
-    }
-
-
-    /**
      * ## dance
      *
      * returns 2-3 dancers
@@ -500,15 +481,6 @@ class PlainText extends Module
             },
 
             commands : {
-
-                bgg   : {
-                    f       : this.bgg,
-                    desc    : 'search board game geek',
-                    syntax  : [
-                        `${trigger}bgg <query>`
-                    ]
-                },
-
                 dance   : {
                     f       : this.dance,
                     desc    : 'dance dance!',
