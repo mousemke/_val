@@ -3,7 +3,6 @@
 const Module        = require( './Module.js' );
 
 const xmlJs = require('xml-js');
-const dumpWeirdChars = /[^:a-zA-z0-9 -\/]/g;
 const xml2js = (xml) => JSON.parse(xmlJs.xml2json(xml, {compact: true}));
 
 class Bgg extends Module
@@ -30,7 +29,9 @@ class Bgg extends Module
 
             const request   = req.request;
 
-            const cleanText = text.replace( dumpWeirdChars, '' ).replace(/ /g, '%20');
+            const cleanText = text
+                .replace(/&amp;/g, '%26')
+                .replace(/ /g, '+');
 
             const options   = {
                 method  : 'GET',
