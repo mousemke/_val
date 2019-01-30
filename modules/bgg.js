@@ -83,9 +83,9 @@ class Bgg extends Module
                             playingtime: { _text: playingTime },
                             thumbnail: { _text: thumbnail },
                             yearpublished: { _text: yearPublished },
-                            boardgamemechanic: mechanicRaw,
-                            boardgamecategory: categoryRaw,
-                            boardgamefamily: familyRaw,
+                            boardgamemechanic: mechanicRaw = [],
+                            boardgamecategory: categoryRaw = [],
+                            boardgamefamily: familyRaw = [],
                             poll: pollsRaw,
                         } = boardGame;
 
