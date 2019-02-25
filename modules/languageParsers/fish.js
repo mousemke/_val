@@ -1,4 +1,3 @@
-
 /**
  * ## Fish!
  *
@@ -14,18 +13,16 @@
  *
  * @return {String} original or modified text
  */
-function fish( to, from, text, botText, _botConfig, confObj, _bot )
-{
-    if (text && text.toLowerCase().includes('fish!'))
-    {
-        return {
-            to,
-            text: `${_botConfig.trigger}fish`,
-            botText
-        };
-    }
+function fish(to, from, text, botText, _botConfig, confObj, _bot) {
+  if (text && text.toLowerCase().includes('fish!')) {
+    return {
+      to,
+      text: `${_botConfig.trigger}fish`,
+      botText,
+    };
+  }
 
-    return { to, text, botText };
+  return { to, text, botText };
 }
 
 module.exports = fish;

@@ -1,4 +1,3 @@
-
 // https://en.wikipedia.org/wiki/List_of_cooking_techniques
 const preparation = [
   'Backwoods cooked',
