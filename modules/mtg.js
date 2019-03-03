@@ -10,6 +10,29 @@ const capitalize = word =>
 
 class Mtg extends Module {
   /**
+   * ## buildPriceString
+   *
+   * formats a price into a price string with foil indicator
+   *
+   * @param {Object} cardPrice apiresult for card
+   * @return {string} price string
+   */
+  buildPriceString(cardPrice) {
+    if (!cardPrice ||!cardPrice.marketPrice) {
+      return '';
+    }
+
+    const {
+      marketPrice,
+      subTypeName,
+    } = cardPrice;
+
+    const foil = subTypeName ==='Foil' ? '  *F* ' : '';
+
+    return `${foil}${marketPrice}€`;
+  }
+
+  /**
    * ## constructor
    *
    * sets the initial "global" variables
@@ -29,6 +52,91 @@ class Mtg extends Module {
   }
 
   /**
+   * ## getPrices
+   *
+   * retrieves, sorts, and returns the prices
+   *
+   * @param {string | Array} ids card printing product ids
+   * @param {string} mtgApiBaseUrl base api address
+   * @param {Object} headers api and auth headers
+   * @param {Object} request val internal request
+   *
+   * @return {Promise} prices for the selected card
+   */
+  getGroups(ids, mtgApiBaseUrl, headers, request) {
+    const joinedIds =  Array.isArray(ids) ? ids.join(',') : ids;
+
+    const groupOptions = {
+      method: 'GET',
+      url: `https://${mtgApiBaseUrl}/catalog/groups/${joinedIds}?categoryId=1`,
+      headers,
+    };
+
+    return new Promise((resolve, reject) => {
+      const groupCb = (error, response, body) => {
+        const res = JSON.parse(body).results;
+
+        const groups = {};
+        res.forEach(g => groups[g.groupId] = g);
+
+        resolve(groups);
+      };
+
+      request(groupOptions, groupCb);
+    });
+  };
+
+  /**
+   * ## getPrices
+   *
+   * retrieves, sorts, and returns the set information
+   *
+   * @param {string | Array} ids card printing product ids
+   * @param {string} mtgApiBaseUrl base api address
+   * @param {Object} headers api and auth headers
+   * @param {Object} request val internal request
+   *
+   * @return {Promise} prices for the selected card
+   */
+  getPrices(ids, mtgApiBaseUrl, headers, request) {
+    const joinedIds =  Array.isArray(ids) ? ids.join(',') : ids;
+
+    const priceOptions = {
+      method: 'GET',
+      url: `https://${mtgApiBaseUrl}/pricing/product/${joinedIds}`,
+      headers,
+    };
+
+    return new Promise((resolve, reject) => {
+      const priceCb = (error, response, body) => {
+        const res = JSON.parse(body).results;
+
+        const prices = {};
+        res.forEach(card => {
+          const {
+            productId,
+            subTypeName,
+          } = card;
+
+          if (prices[productId]) {
+            prices[productId][subTypeName] = card;
+          }
+          else
+          {
+            prices[productId] = {
+              [subTypeName]: card,
+            };
+          }
+        });
+
+        resolve(prices);
+      };
+
+      request(priceOptions, priceCb);
+    });
+  };
+
+  /**
    * ## mtg
    *
    * performs a basic api name search
@@ -41,7 +149,7 @@ class Mtg extends Module {
    * @return {String} card image url
    */
   mtg(from, to, text, textArr) {
-    return new Promise((resolve, reject) => {
+    return new Promise((mtgResolve, reject) => {
       const {
         mtgApiBaseUrl,
         mtgBearerToken,
@@ -74,22 +182,18 @@ class Mtg extends Module {
         ],
       });
 
-      // if this ever stops working....   check if the manifest changed
-      // const options   = {
-      //     method  : 'GET',
-      //     url     : `https://${mtgApiBaseUrl}/catalog/categories/${mtgCategory}/search/manifest`,
-      //     headers : headers,
-      // };
-
       const options = {
         method: 'POST',
         url: `https://${mtgApiBaseUrl}/catalog/categories/${mtgCategory}/search`,
-        headers: headers,
+        headers,
         body: postBody,
       };
 
       const callback = (error, response, body) => {
-        if (body && !error && response.statusCode === 200) {
+         if (response.statusCode === 401) {
+          console.log('refreshing mtg api token....');
+          mtgResolve(this.setBearerToken(this.mtg, [from, to, text, textArr]));
+        } else if (body && !error && response.statusCode === 200) {
           const res = JSON.parse(body).results;
 
           if (!res || res.length < 1) {
@@ -103,7 +207,7 @@ class Mtg extends Module {
             url: `https://${mtgApiBaseUrl}/catalog/products/${res.join(
               ','
             )}?getExtendedFields=true`,
-            headers: headers,
+            headers,
           };
 
           const itemCb = (error, response, body) => {
@@ -116,92 +220,57 @@ class Mtg extends Module {
             ) {
               console.log(`Sorry ${to}, I didn't find anything.`);
             } else {
-              let exactFound = false;
-              let uniqueResultNames = [];
-              const uniqueResults = {};
 
-              res.results.forEach(r => {
-                const cardName = r.productName.replace(/\((.)*\)$/, '').trim();
-                const cardPosition = uniqueResultNames.indexOf(cardName);
 
-                if (cardPosition === -1) {
-                  uniqueResultNames.push(cardName);
-
-                  uniqueResults[cardName] = {
-                    name: r.productName,
-                    image: r.image,
-                    store: r.url,
-                    ids: [r.productId],
-                    sets: [r.group.abbreviation],
-                  };
-
-                  r.extendedData.forEach(data => {
-                    uniqueResults[cardName][data.name.toLowerCase()] =
-                      data.value;
-                  });
-                } else if (!exactFound) {
-                  uniqueResults[cardName].ids.push(r.productId);
-                  uniqueResults[cardName].sets.push(r.group.abbreviation);
-                }
-              });
+              const {
+                uniqueResultNames,
+                uniqueResults,
+              } = this.sortCardResults(res.results);
 
               const match = uniqueResultNames.indexOf(cleanText);
 
               if (match !== -1) {
                 uniqueResultNames = [uniqueResultNames[match]];
-                exactFound = true;
               }
 
               if (uniqueResultNames.length === 1) {
                 const card = uniqueResults[uniqueResultNames[0]];
 
-                const priceOptions = {
-                  method: 'GET',
-                  url: `https://${mtgApiBaseUrl}/pricing/product/${card.ids.join(
-                    ','
-                  )}`,
-                  headers: headers,
-                };
+                Promise.all([
+                  this.getPrices(card.ids, mtgApiBaseUrl, headers, request),
+                  this.getGroups(card.sets, mtgApiBaseUrl, headers, request),
+                ])
+                  .then(res => {
+                    const prices = res[0];
+                    const sets = res[1];
 
-                const priceCb = (error, response, body) => {
-                  const res = JSON.parse(body).results;
+                    let setsWithPrices = '';
 
-                  const prices = {};
+                    card.printings.forEach(printing => {
+                      const {
+                        groupId,
+                        productId,
+                      } = printing;
 
-                  res.forEach(r => {
-                    prices[r.productId] = prices[r.productId] || {};
-                    prices[r.productId][r.subTypeName] = r;
+                      const set = sets[groupId];
+                      const price = prices[productId];
+                      const normal = this.buildPriceString(price.Normal);
+                      const foil = this.buildPriceString(price.Foil);
+
+                      setsWithPrices += `${set.abbreviation}: ${normal}${foil}\n`;
+                    });
+
+                    const oracleText = card.oracletext
+                      .replace(/<br>/gi, '\n')
+                      .replace(/<\/?em>/gi, '_')
+                      .replace(/<\/?b>/gi, '*');
+
+                    mtgResolve(`${card.image}\n${card.name}\n\n${oracleText}\n\n${setsWithPrices}`);
                   });
 
-                  let sets = '';
 
-                  card.ids.forEach((id, i) => {
-                    const cardPrices = prices[id];
-
-                    sets += `\n${card.sets[i]}: `;
-
-                    if (cardPrices.Normal && cardPrices.Normal.marketPrice) {
-                      sets += `$${cardPrices.Normal.marketPrice} `;
-                    }
-
-                    if (cardPrices.Foil && cardPrices.Foil.marketPrice) {
-                      sets += `*F* $${cardPrices.Foil.marketPrice} `;
-                    }
-                  });
-
-                  const oracletext = card.oracletext
-                    .replace(/<br>/gi, '\n')
-                    .replace(/<\/?em>/gi, '_')
-                    .replace(/<\/?b>/gi, '*');
-
-                  resolve(
-                    `${card.image}\n${card.name}\n\n${oracletext}\n${sets}`
-                  );
-                };
-
-                request(priceOptions, priceCb);
               } else {
-                resolve(
+                mtgResolve(
                   `Can you be more specific? I found ${uniqueResultNames.join(
                     ', '
                   )}`
@@ -211,14 +280,10 @@ class Mtg extends Module {
           };
 
           request(itemOptions, itemCb);
-        } else if (response.statusCode === 401) {
-          console.log('refreshing mtg api token....');
-          resolve(this.setBearerToken(this.mtg, [from, to, text, textArr]));
         }
       };
 
-      resolve(`The api has updated.  Tell @mouse to fix it`);
-      // request(options, callback);
+      request(options, callback);
     });
   }
 
@@ -264,11 +329,11 @@ class Mtg extends Module {
       const options = {
         url: `https://${mtgApiBaseUrl}/token`,
         method: 'POST',
-        headers: headers,
+        headers,
         body: postBody,
       };
 
-      const callback = (error, response, body) => {
+      const parseBearerToken = (error, response, body) => {
         if (!error && response.statusCode == 200) {
           const res = JSON.parse(body);
 
@@ -278,8 +343,54 @@ class Mtg extends Module {
         }
       };
 
-      request(options, callback);
+      request(options, parseBearerToken);
     });
+  }
+
+  /**
+   * ## sortCardResults
+   *
+   * sorts the result from the server into a more usable shape for our purposes
+   *
+   * @param {Object} res raw api result
+   *
+   * @return {Object}  { uniqueResultNames, uniqueResults }
+   */
+  sortCardResults(res) {
+    let uniqueResultNames = [];
+    const uniqueResults = {};
+
+    res.forEach(r => {
+      const cardName = r.name.split(' ').join('');
+      const cardPosition = uniqueResultNames.indexOf(cardName);
+
+      if (cardPosition === -1) {
+        uniqueResultNames.push(cardName);
+
+        uniqueResults[cardName] = {
+          name: r.cleanName,
+          image: r.imageUrl,
+          store: r.url,
+          printings: [r],
+          ids: [r.productId],
+          sets: [r.groupId],
+        };
+
+        r.extendedData.forEach(data => {
+          uniqueResults[cardName][data.name.toLowerCase()] =
+            data.value;
+        });
+      } else {
+        uniqueResults[cardName].printings.push(r);
+        uniqueResults[cardName].ids.push(r.productId);
+        uniqueResults[cardName].sets.push(r.groupId);
+      }
+    });
+
+    return {
+      uniqueResultNames,
+      uniqueResults,
+    };
   }
 }
 
