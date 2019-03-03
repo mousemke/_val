@@ -1,5 +1,4 @@
-
-const guysObj       = require( '../../lists/guys.js' );
+const guysObj = require('../../lists/guys.js');
 
 /**
  * ## checkGuys
@@ -16,52 +15,44 @@ const guysObj       = require( '../../lists/guys.js' );
  *
  * @return {String} original or modified text
  */
-function checkGuys( to, from, text, botText, _botConfig, confObj, _bot )
-{
-    /**
-     * ## replaceGuys
-     *
-     * responds to 'guys' (and other trigger words) with alternative suggestions
-     *
-     * @param {String} to user
-     * @param {Object} obj triggered word object
-     *
-     * @return {String} suggestion
-     */
-    function replaceGuys( to, obj )
-    {
-        const alternative   = obj.alternatives[ Math.floor( Math.random() *
-                                                    obj.alternatives.length ) ];
+function checkGuys(to, from, text, botText, _botConfig, confObj, _bot) {
+  /**
+   * ## replaceGuys
+   *
+   * responds to 'guys' (and other trigger words) with alternative suggestions
+   *
+   * @param {String} to user
+   * @param {Object} obj triggered word object
+   *
+   * @return {String} suggestion
+   */
+  function replaceGuys(to, obj) {
+    const alternative =
+      obj.alternatives[Math.floor(Math.random() * obj.alternatives.length)];
 
-        const speech        = obj.speech[ Math.floor( Math.random() *
-                                                    obj.speech.length ) ];
+    const speech = obj.speech[Math.floor(Math.random() * obj.speech.length)];
 
-        return `${to}, ${speech[ 0 ]}${alternative}${speech[ 1 ]}`;
-    }
+    return `${to}, ${speech[0]}${alternative}${speech[1]}`;
+  }
 
+  let newBotText = '';
 
-    let newBotText = '';
+  guysObj.forEach(obj => {
+    obj.triggers.forEach(word => {
+      if (newBotText === '') {
+        let guysRegex = `(^|\\s)+${word}([\\.!?,\\s]+|$)`;
+        guysRegex = new RegExp(guysRegex, 'i');
 
-    guysObj.forEach( obj =>
-    {
-        obj.triggers.forEach( word =>
-        {
-            if ( newBotText === '' )
-            {
-                let guysRegex   = `(^|\\s)+${word}([\\.!?,\\s]+|$)`;
-                guysRegex       = new RegExp( guysRegex, 'i' );
+        if (guysRegex.test(text)) {
+          newBotText = replaceGuys(to, obj);
+        }
+      }
+    });
+  });
 
-                if ( guysRegex.test( text ) )
-                {
-                    newBotText = replaceGuys( to, obj );
-                }
-            }
-        } );
-    } );
+  botText = newBotText === '' ? botText : newBotText;
 
-    botText = newBotText === '' ? botText : newBotText;
-
-    return { to, text, botText };
+  return { to, text, botText };
 }
 
 module.exports = checkGuys;

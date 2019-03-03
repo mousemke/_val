@@ -1,112 +1,103 @@
+const Module = require('./Module.js');
 
-const Module        = require( './Module.js' );
+class PopKey extends Module {
+  /**
+   * ## constructor
+   *
+   * sets the initial "global" variables
+   *
+   * @param {Object} _bot instance of _Val with a core attached
+   * @param {Object} _modules config and instance of all modules
+   * @param {Object} userConfig available options
+   * @param {Object} commandModule instance of the applied core
+   *
+   * @return {Void} void
+   */
+  constructor(_bot, _modules, userConfig, commandModule) {
+    super(_bot, _modules, userConfig, commandModule);
 
-class PopKey extends Module
-{
-    /**
-     * ## constructor
-     *
-     * sets the initial "global" variables
-     *
-     * @param {Object} _bot instance of _Val with a core attached
-     * @param {Object} _modules config and instance of all modules
-     * @param {Object} userConfig available options
-     * @param {Object} commandModule instance of the applied core
-     *
-     * @return {Void} void
-     */
-    constructor( _bot, _modules, userConfig, commandModule )
-    {
-        super( _bot, _modules, userConfig, commandModule );
+    this.apikey = userConfig.popKeyAPIKey;
+  }
 
-        this.apikey = userConfig.popKeyAPIKey;
-    }
+  /**
+   * ## getGif
+   *
+   * pulls in a gif from popkey (or more than one and chooses randomly)
+   *
+   * @param {String} from originating channel
+   * @param {String} to originating user
+   * @param {Sring} text original text minus command
+   *
+   * @return {String} gif url
+   */
+  getGif(from, to, text) {
+    return 'popkey is not a thing any more. tell mouse to fix this!\nhttps://developers.gfycat.com/api/';
+    // text = text.replace( / /g, ',' ).toLowerCase().replace( /['"`’]/g, '' );
 
+    // const options = {
+    //     path: `/v2/media/search?q=${text}`,
+    //     host: 'api.popkey.co',
+    //     port: 443,
+    //     headers: {
+    //         Authorization: `Basic ${this.apikey}`,
+    //         Accept: '*/*'
+    //     }
+    // };
 
-    /**
-     * ## getGif
-     *
-     * pulls in a gif from popkey (or more than one and chooses randomly)
-     *
-     * @param {String} from originating channel
-     * @param {String} to originating user
-     * @param {Sring} text original text minus command
-     *
-     * @return {String} gif url
-     */
-    getGif( from, to, text )
-    {
-        return 'popkey is not a thing any more. tell mouse to fix this!\nhttps://developers.gfycat.com/api/';
-        // text = text.replace( / /g, ',' ).toLowerCase().replace( /['"`’]/g, '' );
+    // return new Promise( ( resolve, reject ) =>
+    // {
+    //     this._modules.core.apiGet( options, function( info )
+    //     {
+    //         var length = info.length;
 
-        // const options = {
-        //     path: `/v2/media/search?q=${text}`,
-        //     host: 'api.popkey.co',
-        //     port: 443,
-        //     headers: {
-        //         Authorization: `Basic ${this.apikey}`,
-        //         Accept: '*/*'
-        //     }
-        // };
+    //         if ( length )
+    //         {
+    //             var choose = function()
+    //             {
+    //                 var _r      = Math.floor( Math.random() * length );
+    //                 var _file   =  info[ _r ];
 
-        // return new Promise( ( resolve, reject ) =>
-        // {
-        //     this._modules.core.apiGet( options, function( info )
-        //     {
-        //         var length = info.length;
+    //                 var rating = _file.rating;
+    //                 console.log( `GIF Called.  Rating: ${rating}` );
 
-        //         if ( length )
-        //         {
-        //             var choose = function()
-        //             {
-        //                 var _r      = Math.floor( Math.random() * length );
-        //                 var _file   =  info[ _r ];
+    //                 if ( rating === 'E' )
+    //                 {
+    //                     return _file.source.url;
+    //                 }
+    //                 else
+    //                 {
+    //                     return choose();
+    //                 }
+    //             };
 
-        //                 var rating = _file.rating;
-        //                 console.log( `GIF Called.  Rating: ${rating}` );
+    //             resolve( choose() );
+    //         }
+    //         else
+    //         {
+    //             resolve( 'Nah.... I got nothing' );
+    //         }
+    //     }, true, from, to );
+    // } );
+  }
 
-        //                 if ( rating === 'E' )
-        //                 {
-        //                     return _file.source.url;
-        //                 }
-        //                 else
-        //                 {
-        //                     return choose();
-        //                 }
-        //             };
+  /**
+   * ## responses
+   *
+   * @return {Object} responses
+   */
+  responses() {
+    const { trigger } = this.userConfig;
 
-        //             resolve( choose() );
-        //         }
-        //         else
-        //         {
-        //             resolve( 'Nah.... I got nothing' );
-        //         }
-        //     }, true, from, to );
-        // } );
-    }
+    return {
+      commands: {
+        gif: {
+          f: this.getGif,
+          desc: 'finds a gif matching the passed query',
+          syntax: [`${trigger}gif <query>`],
+        },
+      },
+    };
+  }
+}
 
-
-    /**
-     * ## responses
-     *
-     * @return {Object} responses
-     */
-    responses()
-    {
-        const { trigger } = this.userConfig;
-
-        return {
-            commands : {
-                gif : {
-                    f       : this.getGif,
-                    desc    : 'finds a gif matching the passed query',
-                    syntax      : [
-                        `${trigger}gif <query>`
-                    ]
-                }
-            }
-        }
-    }
-};
-
-module.exports  = PopKey;
+module.exports = PopKey;
