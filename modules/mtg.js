@@ -18,16 +18,13 @@ class Mtg extends Module {
    * @return {string} price string
    */
   buildPriceString(cardPrice) {
-    if (!cardPrice ||!cardPrice.marketPrice) {
+    if (!cardPrice || !cardPrice.marketPrice) {
       return '';
     }
 
-    const {
-      marketPrice,
-      subTypeName,
-    } = cardPrice;
+    const { marketPrice, subTypeName } = cardPrice;
 
-    const foil = subTypeName ==='Foil' ? '  *F* ' : '';
+    const foil = subTypeName === 'Foil' ? '  *F* ' : '';
 
     return `${foil}${marketPrice}€`;
   }
@@ -64,7 +61,7 @@ class Mtg extends Module {
    * @return {Promise} prices for the selected card
    */
   getGroups(ids, mtgApiBaseUrl, headers, request) {
-    const joinedIds =  Array.isArray(ids) ? ids.join(',') : ids;
+    const joinedIds = Array.isArray(ids) ? ids.join(',') : ids;
 
     const groupOptions = {
       method: 'GET',
@@ -77,14 +74,14 @@ class Mtg extends Module {
         const res = JSON.parse(body).results;
 
         const groups = {};
-        res.forEach(g => groups[g.groupId] = g);
+        res.forEach(g => (groups[g.groupId] = g));
 
         resolve(groups);
       };
 
       request(groupOptions, groupCb);
     });
-  };
+  }
 
   /**
    * ## getPrices
@@ -99,7 +96,7 @@ class Mtg extends Module {
    * @return {Promise} prices for the selected card
    */
   getPrices(ids, mtgApiBaseUrl, headers, request) {
-    const joinedIds =  Array.isArray(ids) ? ids.join(',') : ids;
+    const joinedIds = Array.isArray(ids) ? ids.join(',') : ids;
 
     const priceOptions = {
       method: 'GET',
@@ -113,16 +110,11 @@ class Mtg extends Module {
 
         const prices = {};
         res.forEach(card => {
-          const {
-            productId,
-            subTypeName,
-          } = card;
+          const { productId, subTypeName } = card;
 
           if (prices[productId]) {
             prices[productId][subTypeName] = card;
-          }
-          else
-          {
+          } else {
             prices[productId] = {
               [subTypeName]: card,
             };
@@ -134,7 +126,7 @@ class Mtg extends Module {
 
       request(priceOptions, priceCb);
     });
-  };
+  }
 
   /**
    * ## mtg
@@ -190,7 +182,7 @@ class Mtg extends Module {
       };
 
       const callback = (error, response, body) => {
-         if (response.statusCode === 401) {
+        if (response.statusCode === 401) {
           console.log('refreshing mtg api token....');
           mtgResolve(this.setBearerToken(this.mtg, [from, to, text, textArr]));
         } else if (body && !error && response.statusCode === 200) {
@@ -220,12 +212,9 @@ class Mtg extends Module {
             ) {
               console.log(`Sorry ${to}, I didn't find anything.`);
             } else {
-
-
-              const {
-                uniqueResultNames,
-                uniqueResults,
-              } = this.sortCardResults(res.results);
+              let { uniqueResultNames, uniqueResults } = this.sortCardResults(
+                res.results
+              );
 
               const match = uniqueResultNames.indexOf(cleanText);
 
@@ -239,36 +228,34 @@ class Mtg extends Module {
                 Promise.all([
                   this.getPrices(card.ids, mtgApiBaseUrl, headers, request),
                   this.getGroups(card.sets, mtgApiBaseUrl, headers, request),
-                ])
-                  .then(res => {
-                    const prices = res[0];
-                    const sets = res[1];
+                ]).then(res => {
+                  const prices = res[0];
+                  const sets = res[1];
 
-                    let setsWithPrices = '';
+                  let setsWithPrices = '';
 
-                    card.printings.forEach(printing => {
-                      const {
-                        groupId,
-                        productId,
-                      } = printing;
+                  card.printings.forEach(printing => {
+                    const { groupId, productId } = printing;
 
-                      const set = sets[groupId];
-                      const price = prices[productId];
-                      const normal = this.buildPriceString(price.Normal);
-                      const foil = this.buildPriceString(price.Foil);
+                    const set = sets[groupId];
+                    const price = prices[productId];
+                    const normal = this.buildPriceString(price.Normal);
+                    const foil = this.buildPriceString(price.Foil);
 
-                      setsWithPrices += `${set.abbreviation}: ${normal}${foil}\n`;
-                    });
-
-                    const oracleText = card.oracletext
-                      .replace(/<br>/gi, '\n')
-                      .replace(/<\/?em>/gi, '_')
-                      .replace(/<\/?b>/gi, '*');
-
-                    mtgResolve(`${card.image}\n${card.name}\n\n${oracleText}\n\n${setsWithPrices}`);
+                    setsWithPrices += `${set.abbreviation}: ${normal}${foil}\n`;
                   });
 
+                  const oracleText = card.oracletext
+                    .replace(/<br>/gi, '\n')
+                    .replace(/<\/?em>/gi, '_')
+                    .replace(/<\/?b>/gi, '*');
 
+                  mtgResolve(
+                    `${card.image}\n${
+                      card.name
+                    }\n\n${oracleText}\n\n${setsWithPrices}`
+                  );
+                });
               } else {
                 mtgResolve(
                   `Can you be more specific? I found ${uniqueResultNames.join(
@@ -377,8 +364,7 @@ class Mtg extends Module {
         };
 
         r.extendedData.forEach(data => {
-          uniqueResults[cardName][data.name.toLowerCase()] =
-            data.value;
+          uniqueResults[cardName][data.name.toLowerCase()] = data.value;
         });
       } else {
         uniqueResults[cardName].printings.push(r);

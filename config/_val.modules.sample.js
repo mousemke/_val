@@ -59,6 +59,16 @@ module.exports = {
     },
   },
 
+  Gif: {
+    enabled: true,
+    url: './modules/gif.js',
+    options: {
+      tenorAPIKey: 'asdfghjkl',
+      tenorAnonId: '1234567890',
+      tenorLimit: 10,
+    },
+  },
+
   Mtg: {
     enabled: true,
     url: './modules/mtg.js',
@@ -82,15 +92,6 @@ module.exports = {
       plainTextFettiWordLength: 15,
       plainTextFettiLength: 25,
       plainTextFettiOptions: ['. ', '´ ', "' ", ' ,'],
-    },
-  },
-
-  PopKey: {
-    enabled: true,
-    url: './modules/popkey.js',
-    options: {
-      popKeyContentFilter: true,
-      popKeyAPIKey: 'api-here',
     },
   },
 
