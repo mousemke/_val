@@ -215,15 +215,14 @@ class Mtg extends Module {
               let { uniqueResultNames, uniqueResults } = this.sortCardResults(
                 res.results
               );
-
+              let actualNamesArr = uniqueResultNames.map(n => uniqueResults[n].name);
               const match = uniqueResultNames.indexOf(cleanText);
 
               if (match !== -1) {
-                uniqueResultNames = [uniqueResultNames[match]];
-              }
+                const exactCardArray = uniqueResultNames.splice(match, 1);
+                actualNamesArr = uniqueResultNames.map(n => uniqueResults[n].name);
 
-              if (uniqueResultNames.length === 1) {
-                const card = uniqueResults[uniqueResultNames[0]];
+                const card = uniqueResults[exactCardArray[0]];
 
                 Promise.all([
                   this.getPrices(card.ids, mtgApiBaseUrl, headers, request),
@@ -250,15 +249,22 @@ class Mtg extends Module {
                     .replace(/<\/?em>/gi, '_')
                     .replace(/<\/?b>/gi, '*');
 
+                  let extraHits = '';
+
+                  if (uniqueResultNames.length > 0) {
+                    const names = actualNamesArr.join(', ');
+                    extraHits = `\n\n\nI also found ${names}`;
+                  }
                   mtgResolve(
                     `${card.image}\n${
                       card.name
-                    }\n\n${oracleText}\n\n${setsWithPrices}`
+                    }\n\n${oracleText}\n\n${setsWithPrices}${extraHits}`
                   );
                 });
-              } else {
+              }
+              else {
                 mtgResolve(
-                  `Can you be more specific? I found ${uniqueResultNames.join(
+                  `Can you be more specific? I found ${actualNamesArr.join(
                     ', '
                   )}`
                 );
@@ -348,7 +354,7 @@ class Mtg extends Module {
     const uniqueResults = {};
 
     res.forEach(r => {
-      const cardName = r.name.split(' ').join('');
+      const cardName = r.name.split(' ').join('').toLowerCase();
       const cardPosition = uniqueResultNames.indexOf(cardName);
 
       if (cardPosition === -1) {

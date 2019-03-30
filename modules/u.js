@@ -42,6 +42,10 @@ class U extends Module {
    * @return {String} reply
    */
   talk(from, to, text, textSplit) {
+    if (Math.random() > 0.98) {
+      return 'mumbles something in binary';
+    }
+
     var _w,
       _ts,
       res = [];
