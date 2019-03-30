@@ -22,11 +22,19 @@ class Mtg extends Module {
       return '';
     }
 
-    const { marketPrice, subTypeName } = cardPrice;
+    const { marketPrice: marketPriceRaw, subTypeName } = cardPrice;
+    const marketPriceArr = `${marketPriceRaw}`.split('.');
+
+    let marketPriceDecimal = marketPriceArr[1];
+    if (!marketPriceDecimal) {
+      marketPriceDecimal = '00';
+    } else if (marketPriceDecimal.length == 1) {
+      marketPriceDecimal += '0';
+    }
 
     const foil = subTypeName === 'Foil' ? '  *F* ' : '';
 
-    return `${foil}${marketPrice}€`;
+    return `${foil}${marketPriceArr[0]}.${marketPriceDecimal}€`;
   }
 
   /**
@@ -215,12 +223,16 @@ class Mtg extends Module {
               let { uniqueResultNames, uniqueResults } = this.sortCardResults(
                 res.results
               );
-              let actualNamesArr = uniqueResultNames.map(n => uniqueResults[n].name);
+              let actualNamesArr = uniqueResultNames.map(
+                n => uniqueResults[n].name
+              );
               const match = uniqueResultNames.indexOf(cleanText);
 
               if (match !== -1) {
                 const exactCardArray = uniqueResultNames.splice(match, 1);
-                actualNamesArr = uniqueResultNames.map(n => uniqueResults[n].name);
+                actualNamesArr = uniqueResultNames.map(
+                  n => uniqueResults[n].name
+                );
 
                 const card = uniqueResults[exactCardArray[0]];
 
@@ -261,8 +273,7 @@ class Mtg extends Module {
                     }\n\n${oracleText}\n\n${setsWithPrices}${extraHits}`
                   );
                 });
-              }
-              else {
+              } else {
                 mtgResolve(
                   `Can you be more specific? I found ${actualNamesArr.join(
                     ', '
@@ -354,7 +365,10 @@ class Mtg extends Module {
     const uniqueResults = {};
 
     res.forEach(r => {
-      const cardName = r.name.split(' ').join('').toLowerCase();
+      const cardName = r.name
+        .split(' ')
+        .join('')
+        .toLowerCase();
       const cardPosition = uniqueResultNames.indexOf(cardName);
 
       if (cardPosition === -1) {
