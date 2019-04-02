@@ -164,7 +164,7 @@ class Mtg extends Module {
         Authorization: `Bearer ${mtgBearerToken}`,
       };
 
-      const cleanText = text.replace(dumpWeirdChars, '');
+      const cleanText = text.replace(dumpWeirdChars, '').toLowerCase();
 
       const postBody = JSON.stringify({
         sort: 'Sales DESC',
@@ -226,7 +226,8 @@ class Mtg extends Module {
               let actualNamesArr = uniqueResultNames.map(
                 n => uniqueResults[n].name
               );
-              const match = uniqueResultNames.indexOf(cleanText);
+
+              const match = uniqueResultNames.indexOf(cleanText.replace(/ /g, ''));
 
               if (match !== -1) {
                 const exactCardArray = uniqueResultNames.splice(match, 1);
