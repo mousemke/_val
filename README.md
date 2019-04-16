@@ -2,9 +2,9 @@
 
 erm.... bot.
 
-v. 1.0.3
+v. 1.0.4
 
-`requires node 8+`
+`requires node 10+`
 
 ## install
 
@@ -52,6 +52,10 @@ Need to report something? [mouse@knoblau.ch](mailto:mouse@knoblau.ch)
 
 Change log
 ==========
+
+#### 1.0.4
+
++ required node version updated
 
 #### 1.0.3
 

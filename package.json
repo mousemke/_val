@@ -1,6 +1,6 @@
 {
   "name": "val-bot",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "description": "A bot that does things.",
   "main": "_val.js",
   "scripts": {
@@ -37,19 +37,16 @@
     "prettier": "^1.16.4",
     "request": "^2.87.0",
     "slack": "^11.0.0",
-    "telegram-api": "^4.1.0",
+    "telegram-api": "^4.2.0",
     "twit": "^2.1.0",
     "xml-js": "^1.6.9"
   },
   "files": [
     "CODE_OF_CONDUCT.md",
-    "older_changes.md",
     "awaybot.js",
     "README.md",
     "_val.js",
-    "json/unscrambleScores.sample.json",
     "json/dcMasterList.sample.json",
-    "json/cards.json",
     "config/_val.config.sample.js",
     "config/_val.modules.sample.js",
     "lists/",
