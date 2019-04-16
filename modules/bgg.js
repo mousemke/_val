@@ -102,15 +102,16 @@ class Bgg extends Module {
             const categories = categoryArray.map(cat => cat._text).join(', ');
             const mechanics = mechanicArray.map(mech => mech._text).join(', ');
             const family = familyArray.map(fam => fam._text).join(', ');
-            const languageDependence = pollsArray
+
+            const languageDependenceArr = pollsArray
               .filter(
                 poll => poll._attributes.name === 'language_dependence'
-              )[0]
-              .results.result.sort(
-                (a, b) =>
-                  parseInt(a._attributes.numvotes) <
-                  parseInt(b._attributes.numvotes)
-              )[0]._attributes;
+              )[0].results;
+            const languageDependence = languageDependenceArr ? languageDependenceArr.result.sort(
+              (a, b) =>
+                parseInt(a._attributes.numvotes) <
+                parseInt(b._attributes.numvotes)
+            )[0]._attributes : null;
 
             let gameResult =
               `${thumbnail}\n` +
@@ -130,9 +131,10 @@ class Bgg extends Module {
 
             gameResult += `\n\n*Family*: ${family}\n\n*Categories*: ${categories}\n\n*Mechanics*: ${mechanics}\n\n`;
 
-            const { level: ldLevel, value: ldValue } = languageDependence;
-
-            gameResult += `*Language Dependence*: ${ldLevel} ${ldValue}\n\nwww.boardgamegeek.com/boardgame/${id}`;
+            if (languageDependence) {
+              const { level: ldLevel, value: ldValue } = languageDependence;
+              gameResult += `*Language Dependence*: ${ldLevel} ${ldValue}\n\nwww.boardgamegeek.com/boardgame/${id}`;
+            }
 
             if (multipleHits) {
               gameResult += `\n\n\n------------\n\n*Multiple results* Above is the newest game. You can see the other results with a full search.\n\nwww.boardgamegeek.com/geeksearch.php?action=search&objecttype=boardgame&q=${cleanText}&B1=Go`;
