@@ -103,15 +103,16 @@ class Bgg extends Module {
             const mechanics = mechanicArray.map(mech => mech._text).join(', ');
             const family = familyArray.map(fam => fam._text).join(', ');
 
-            const languageDependenceArr = pollsArray
-              .filter(
-                poll => poll._attributes.name === 'language_dependence'
-              )[0].results;
-            const languageDependence = languageDependenceArr ? languageDependenceArr.result.sort(
-              (a, b) =>
-                parseInt(a._attributes.numvotes) <
-                parseInt(b._attributes.numvotes)
-            )[0]._attributes : null;
+            const languageDependenceArr = pollsArray.filter(
+              poll => poll._attributes.name === 'language_dependence'
+            )[0].results;
+            const languageDependence = languageDependenceArr
+              ? languageDependenceArr.result.sort(
+                  (a, b) =>
+                    parseInt(a._attributes.numvotes) <
+                    parseInt(b._attributes.numvotes)
+                )[0]._attributes
+              : null;
 
             let gameResult =
               `${thumbnail}\n` +

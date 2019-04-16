@@ -55,7 +55,22 @@ Change log
 
 #### 1.0.3
 
-+ added sark
++ Added dnd characters
++ Fish!
++ fish now triggers from a language parser
++ crypto ticker improvements
++ heads changed to disabled if not enabled: true,
++ ticker interval removal fixed …
++ BGG module created
++ bgg encoding fix
++ safety fix in bgg
++ (dev) added prettier
++ mtg api updates
++ gif api re-added
++ MTG module : better multiple and partial hit reporting
++ MTG : prices are float 2
++ More mtg tweaks
++ bgg module bugfix
 
 
 #### 1.0.2

@@ -227,7 +227,9 @@ class Mtg extends Module {
                 n => uniqueResults[n].name
               );
 
-              const match = uniqueResultNames.indexOf(cleanText.replace(/ /g, ''));
+              const match = uniqueResultNames.indexOf(
+                cleanText.replace(/ /g, '')
+              );
 
               if (match !== -1) {
                 const exactCardArray = uniqueResultNames.splice(match, 1);
