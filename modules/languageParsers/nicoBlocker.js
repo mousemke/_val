@@ -1,4 +1,3 @@
-
 /**
  * ## nicoBlocker
  *
@@ -14,28 +13,26 @@
  *
  * @return {String} original or modified text
  */
-function nicoBlocker( to, from, text, botText, _botConfig, confObj, _bot )
-{
-    const textSplit = text.split( ' ' );
-    const command = textSplit[0];
+function nicoBlocker(to, from, text, botText, _botConfig, confObj, _bot) {
+  const textSplit = text.split(' ');
+  const command = textSplit[0];
 
-    const {
-        nico,
-        nicoFlipped,
-        trigger
-    } = _botConfig;
+  const { nico, nicoFlipped, trigger } = _botConfig;
 
-    if ( command[0] === trigger && nicoFlipped === true &&
-            to === nico && command !== `${trigger}is${nico}flipped?` )
-    {
-        return {
-            to,
-            text : '',
-            botText : `I'm sorry, ${nico}... I can't hear you while you're flipped`
-        };
-    }
+  if (
+    command[0] === trigger &&
+    nicoFlipped === true &&
+    to === nico &&
+    command !== `${trigger}is${nico}flipped?`
+  ) {
+    return {
+      to,
+      text: '',
+      botText: `I'm sorry, ${nico}... I can't hear you while you're flipped`,
+    };
+  }
 
-    return { to, text, botText };
+  return { to, text, botText };
 }
 
 module.exports = nicoBlocker;

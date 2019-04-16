@@ -1,5 +1,4 @@
-
-const trollBlacklist = require( '../../lists/trollBlacklist.js' );
+const trollBlacklist = require('../../lists/trollBlacklist.js');
 
 /**
  * ## trollOn
@@ -16,28 +15,26 @@ const trollBlacklist = require( '../../lists/trollBlacklist.js' );
  *
  * @return {String} original or modified text
  */
-function trollOn( to, from, text, botText, _botConfig, confObj, _bot )
-{
-    const textSplit = text.split( ' ' );
+function trollOn(to, from, text, botText, _botConfig, confObj, _bot) {
+  const textSplit = text.split(' ');
 
-    for ( let i = 0, lenI = textSplit.length; i < lenI; i++ )
-    {
-        if ( trollBlacklist.indexOf( textSplit[ i ].replace( /[^A-Za-z0-9]/, '' ).toLowerCase() ) !== -1 )
-        {
-            return { to, text, botText };
-        }
+  for (let i = 0, lenI = textSplit.length; i < lenI; i++) {
+    if (
+      trollBlacklist.indexOf(
+        textSplit[i].replace(/[^A-Za-z0-9]/, '').toLowerCase()
+      ) !== -1
+    ) {
+      return { to, text, botText };
     }
+  }
 
-    if ( text.toLowerCase().indexOf( 'troll' ) !== -1 )
-    {
-        text = `${_botConfig.trigger}trollfetti`;
-    }
-    else if ( text.toLowerCase().indexOf( 'trøll' ) !== -1 )
-    {
-        text = `${_botConfig.trigger}trøllfetti`;
-    }
+  if (text.toLowerCase().indexOf('troll') !== -1) {
+    text = `${_botConfig.trigger}trollfetti`;
+  } else if (text.toLowerCase().indexOf('trøll') !== -1) {
+    text = `${_botConfig.trigger}trøllfetti`;
+  }
 
-    return { to, text, botText };
+  return { to, text, botText };
 }
 
 module.exports = trollOn;

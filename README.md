@@ -2,7 +2,7 @@
 
 erm.... bot.
 
-v. 1.0.2
+v. 1.0.3
 
 `requires node 8+`
 
@@ -30,7 +30,7 @@ Use `${trigger}help` for a list of commands.
 | `script` | description |
 |----------|-------------|
 | `npm run serve` | starts _val in Xvfb mode (recommended) |
-| `npm run serveAlt` | starts _val in simple mode. nightmare commands may work |
+| `npm run serveAlt` | starts _val in simple mode. nightmare commands may not work |
 | `npm run away` | starts awaybot as a placeholder |
 
 
@@ -52,6 +52,26 @@ Need to report something? [mouse@knoblau.ch](mailto:mouse@knoblau.ch)
 
 Change log
 ==========
+
+#### 1.0.3
+
++ Added dnd characters
++ Fish!
++ fish now triggers from a language parser
++ crypto ticker improvements
++ heads changed to disabled if not enabled: true,
++ ticker interval removal fixed …
++ BGG module created
++ bgg encoding fix
++ safety fix in bgg
++ (dev) added prettier
++ mtg api updates
++ gif api re-added
++ MTG module : better multiple and partial hit reporting
++ MTG : prices are float 2
++ More mtg tweaks
++ bgg module bugfix
+
 
 #### 1.0.2
 
