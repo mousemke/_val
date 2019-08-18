@@ -86,6 +86,7 @@ module.exports = function slackBot(
           from,
           user,
           channel,
+          originalText: messageText,
         };
 
         botText = boundListenToMessages(user, channel, botText, confObj);
