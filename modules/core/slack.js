@@ -1,5 +1,5 @@
-const slack = require('@slack/client');
-const { RTMClient, WebClient } = slack;
+const { WebClient } = require('@slack/web-api');
+const { RTMClient } = require('@slack/rtm-api');
 
 /**
  * ## val slack loader
@@ -24,6 +24,8 @@ module.exports = function slackBot(
   let boundListenToMessages = listenToMessages.bind(context);
 
   userConfig.commandModules.push(_bot);
+
+  _bot.on('team_join', info => console.log(info));
 
   _bot.on('message', message => {
     const { type, subtype, hidden } = message;

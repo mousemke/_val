@@ -2,11 +2,10 @@ const http = require('http');
 const https = require('https');
 const fs = require('fs');
 const Module = require('./Module.js');
+const request = require('request');
 
-const TIMEOUT = 30; // in min
-const MARKET_TIMEOUT = 5; // in min
-const MARKETS = 'https://api.coinmarketcap.com/v1/ticker/?limit=500';
-const BTC_MARKET = 'https://api.coindesk.com/v1/bpi/currentprice.json';
+// const MARKETS = 'https://pro-api.coinmarketcap.com/v1/cryptocurrency/listings/latest';
+const MARKETS = 'https://pro-api.coinmarketcap.com/v1/cryptocurrency/listings/latest';
 const CURRENCY = 'EUR';
 const CURRENCY_SYMBOL = '€';
 
@@ -51,7 +50,8 @@ class Crypto extends Module {
   }
 
   buildTicker(channelId) {
-    const { tick, _bot } = this;
+    const { tick, userConfig, _bot } = this;
+    const { cryptoTickerFrequency } = userConfig;
 
     clearTimeout(tickerTimeouts[channelId]);
     clearInterval(tickerIntervals[channelId]);
@@ -63,7 +63,7 @@ class Crypto extends Module {
       );
       tickerIntervals[channelId] = setInterval(
         () => _bot.say(channelId, tick(channelId)),
-        TIMEOUT * 1000 * 60
+        cryptoTickerFrequency * 1000 * 60
       );
     }
   }
@@ -83,6 +83,10 @@ class Crypto extends Module {
   constructor(_bot, _modules, userConfig, commandModule) {
     super(_bot, _modules, userConfig, commandModule);
 
+    const {
+      cryptoMarketUpdateFrequency,
+    } = userConfig;
+
     this.updateMarket = this.updateMarket.bind(this);
     this.startTicker = this.startTicker.bind(this);
     this.tick = this.tick.bind(this);
@@ -93,7 +97,7 @@ class Crypto extends Module {
 
     this.marketInterval = setInterval(
       this.updateMarket,
-      MARKET_TIMEOUT * 1000 * 60
+      cryptoMarketUpdateFrequency * 1000 * 60
     );
   }
 
@@ -366,71 +370,38 @@ class Crypto extends Module {
   }
 
   updateMarket() {
-    const apiGet = this._modules.core.apiGet;
+    const {
+      coinMarketCapKey,
+    } = this.userConfig;
 
-    return Promise.all([
-      new Promise((resolve, reject) => {
-        apiGet(
-          MARKETS,
-          market => {
-            resolve(
-              Object.assign(
-                {},
-                ...market
-                  .map(m => {
-                    if (m.symbol === 'BTC') {
-                      return null;
-                    }
-
-                    return {
-                      [m.symbol.toLowerCase()]: m['price_btc'],
-                    };
-                  })
-                  .filter(a => !!a)
-              )
-            );
+    return new Promise((resolve, reject) => {
+        const marketOptions = {
+          method: 'GET',
+          url: MARKETS,
+          headers: {
+            'X-CMC_PRO_API_KEY': coinMarketCapKey,
           },
-          true,
-          '',
-          ''
-        );
-      }),
-      new Promise((resolve, reject) => {
-        apiGet(
-          BTC_MARKET,
-          btcToEur => {
-            resolve(
-              Object.assign(
-                {},
-                ...Object.keys(btcToEur.bpi).map(currency => {
-                  return {
-                    [currency]: parseFloat(
-                      btcToEur.bpi[currency].rate.replace(',', '')
-                    ),
-                  };
-                })
-              )
-            );
+          qs: {
+            'start': '1',
+            'convert': 'EUR'
           },
-          true,
-          '',
-          ''
-        );
-      }),
-    ]).then(res => {
-      fiatPrices = res[1];
+        };
 
-      const activeCurrency = fiatPrices[CURRENCY];
+        const marketCb = (error, response, market) => {
+          const data = JSON.parse(market).data;
 
-      Object.keys(res[0]).forEach(coin => {
-        res[0][coin] = res[0][coin] * activeCurrency;
+          resolve(
+            Object.assign(
+              {},
+              ...data.map(m => ({[m.symbol.toLowerCase()]: m.quote['EUR'].price}))
+            )
+          );
+        };
+
+        request(marketOptions, marketCb);
+      }).then(market => {
+        marketPrices = market;
       });
-
-      res[0].btc = activeCurrency;
-      marketPrices = res[0];
-
-      return res;
-    });
   }
 }
 

@@ -53,6 +53,10 @@ Need to report something? [mouse@knoblau.ch](mailto:mouse@knoblau.ch)
 Change log
 ==========
 
+#### 1.1.0
+
++ major updates to slack head
+
 #### 1.0.4
 
 + required node version updated

@@ -65,7 +65,6 @@ module.exports = {
     options: {
       tenorAPIKey: 'asdfghjkl',
       tenorAnonId: '1234567890',
-      tenorLimit: 10,
     },
   },
 

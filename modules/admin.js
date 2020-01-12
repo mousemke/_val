@@ -141,13 +141,13 @@ class Admin extends Module {
         [`${trigger}removeAlias`]: {
           f: this.removeAlias,
           desc: "removes an alias from the room (admin command)",
-          syntax: [`${trigger}${trigger}removeAlias`],
+          syntax: [`${trigger}${trigger}removeAlias [alias]`],
         },
 
         [`${trigger}setAlias`]: {
           f: this.setAlias,
           desc: "adds an alias to the room (admin command)",
-          syntax: [`${trigger}${trigger}setAlias`],
+          syntax: [`${trigger}${trigger}setAlias [alias] [user1, user2, etc.. ]`],
         },
 
         [`useAlias`]: {

@@ -1,6 +1,6 @@
 {
   "name": "val-bot",
-  "version": "1.0.4",
+  "version": "1.1.0",
   "description": "A bot that does things.",
   "main": "_val.js",
   "scripts": {
@@ -30,7 +30,8 @@
   },
   "homepage": "https://github.com/mousemke/_val",
   "dependencies": {
-    "@slack/client": "^4.2.2",
+    "@slack/rtm-api": "^5.0.3",
+    "@slack/web-api": "^5.6.0",
     "chalk": "^2.4.1",
     "compromise": "^11.9.0",
     "irc": "^0.5.2",

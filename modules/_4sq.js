@@ -73,7 +73,8 @@ class _4sq extends Module {
         url,
         function(result) {
           try {
-            const venues = result.response.groups[0].items;
+            console.warn('result', result.response.groups[0].items.map(v => v.venue))
+            const venues = result.response.groups[0].items.map(v => v.venue);
             const venueCount = venues.length;
 
             if (venues.length === 0) {
