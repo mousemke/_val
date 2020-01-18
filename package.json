@@ -31,16 +31,14 @@
   "homepage": "https://github.com/mousemke/_val",
   "dependencies": {
     "@slack/rtm-api": "^5.0.3",
-    "@slack/web-api": "^5.6.0",
+    "@slack/web-api": "^5.7.0",
     "chalk": "^2.4.1",
-    "compromise": "^11.9.0",
     "irc": "^0.5.2",
-    "prettier": "^1.16.4",
-    "request": "^2.87.0",
-    "slack": "^11.0.0",
+    "prettier": "^1.19.1",
+    "request": "^2.88.0",
     "telegram-api": "^4.2.0",
-    "twit": "^2.1.0",
-    "xml-js": "^1.6.9"
+    "twit": "^2.2.11",
+    "xml-js": "^1.6.11"
   },
   "files": [
     "CODE_OF_CONDUCT.md",
