@@ -2,7 +2,7 @@
 
 erm.... bot.
 
-v. 1.0.4
+v. 1.1.0
 
 `requires node 10+`
 
