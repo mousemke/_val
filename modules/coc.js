@@ -19,19 +19,19 @@ class CoC extends Module {
    * @return {String} success message
    */
   coc(from, to, text, textArr, command, confObj) {
-    const { admins } = this.userConfig;
+    const { admins, cocAdminChannel } = this.userConfig;
 
-    if (textArr.length === 0) {
+    if (!textArr || textArr.length === 0) {
       const {
-        codeOfConductMessage,
+        cocMessage,
         trigger,
       } = this.userConfig;
 
-      if (codeOfConductMessage) {
+      if (cocMessage) {
         const adminsString = `@${admins.join(', @')}`;
 
-        let botText = `${codeOfConductMessage}`;
-        botText += `\nOnce you have read through, please agree by replying to this message with:\n${trigger}coc agree`;
+        let botText = `${cocMessage}`;
+        botText += `\nOnce you have read through the CoC, please agree by replying to this message with:\n${trigger}coc agree`;
         botText += `\n\nIf you have any questions about the CoC, or why it is important, feel free to reach out to an admin (${adminsString})`;
 
         return botText;
@@ -43,10 +43,15 @@ class CoC extends Module {
     const response = textArr[0].toLowerCase();
 
     if (response === 'agree') {
-      return this.setUserAgreed(from, to, text, textArr, command, confObj);
+      return this.setUserAgreed(confObj);
     }
 
-    // bad response to admin?
+    let fixedUser = to;
+    if (this.commandModule.nameFormat) {
+      fixedUser = this.commandModule.nameFormat(to);
+    }
+
+    this._bot.say(cocAdminChannel, `${fixedUser} - bad CoC response - ${response}`);
   }
 
   /**
@@ -66,20 +71,21 @@ class CoC extends Module {
 
     const {
       cocReminderFrequency,
-      codeOfConductMessage,
+      cocReminders,
+      cocMessage,
     } = userConfig;
 
-    if (codeOfConductMessage) {
+    if (cocMessage) {
       this.loadUsersAgreed();
 
-      // if (cocReminders) {
-      //   this.tickCoC = this.tickCoC.bind(this);
+      if (cocReminders) {
+        this.tickCoC = this.tickCoC.bind(this);
 
-      //   this.cocInterval = setInterval(
-      //     this.tickCoC,
-      //     cocReminderFrequency * 1000 * 60 * 60 * 24
-      //   );
-      // }
+        this.cocInterval = setInterval(
+          this.tickCoC,
+          cocReminderFrequency * 1000 * 60 * 60 * 24,
+        );
+      }
     }
   }
 
@@ -140,46 +146,13 @@ class CoC extends Module {
   }
 
   /**
-   * ## tickCoC
-   *
-   * loads the list of tickers and starts them
-   *
-   * @param {String} channelId internal name for the channeö
-   *
-   * @return {Void}
-   */
-  tickCoC(channelId) {
-    // get users
-
-    this.loadUsersAgreed();
-
-    users.forEach(user => {
-      const attempts = usersAgreed[user];
-
-      if (attempts !== true) {
-        // check attepts amount. if over X attempts, message an admin
-        // else, sends CoC message to unresponded users
-        console.log(`${user} has not agreed`)
-      }
-      // this.buildTicker(t);
-    });
-  }
-
-  /**
    * ## setUserAgreed
    *
    * accepts a user response
    *
-   * @param {String} from originating channel
-   * @param {String} to originating user
-   * @param {String} text full message text
-   * @param {String} textArr full message text split by " "
-   * @param {String} command trigger word that brought us here
-   * @param {Object} confObj extra config object that some command modules need
-   *
    * @return {String} success message
    */
-  setUserAgreed(from, to, text, textArr, command, confObj) {
+  setUserAgreed(confObj) {
     this.loadUsersAgreed();
 
     usersAgreed[confObj.to] = true;
@@ -188,6 +161,50 @@ class CoC extends Module {
 
     return 'Enjoy GalaxyPotato!';
   }
+
+  /**
+   * ## tickCoC
+   *
+   * loads the list of tickers and starts them
+   *
+   * @return {Void}
+   */
+  tickCoC() {
+    const {
+      cocAdminChannel,
+      cocMaxRetries,
+    } = this.userConfig;
+
+    this.loadUsersAgreed();
+
+    Object.keys(usersAgreed).forEach(user => {
+      let attempts = usersAgreed[user];
+
+      if (attempts !== true) {
+        let fixedUser = user;
+
+        if (this.commandModule.nameFormat) {
+          fixedUser = this.commandModule.nameFormat(fixedUser);
+        }
+
+        if (typeof attempts === 'number' && attempts > cocMaxRetries) {
+          this._bot.say(cocAdminChannel, `${fixedUser} has not agreed to the CoC (max attempts reached)`);
+        } else {
+          const fullMessage = this.coc();
+          this._bot.pm(user, fullMessage);
+
+          if (typeof attempts !== 'number') {
+            attempts = 0;
+          }
+
+          usersAgreed[user] = attempts + 1;
+
+          this.saveUsersAgreed();
+        }
+      }
+    });
+  }
+
 }
 
 module.exports = CoC;

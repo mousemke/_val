@@ -23,7 +23,7 @@ module.exports = function slackBot(
 
   userConfig.commandModules.push(_bot);
 
-  if (userConfig.codeOfConductMessage) {
+  if (userConfig.cocMessage) {
     let usersAgreed;
     const botName = slackConfig.botName;
     const url = `./json/coc.${botName}.json`;
@@ -102,16 +102,12 @@ module.exports = function slackBot(
     return web.users.info({ user }).then(res => res.user.name);
   }
 
-  // _bot.on('team_join', async (info) => {
-  _bot.on('member_joined_channel', async (info) => {
+  _bot.on('team_join', async (info) => {
     const id = info.user;
     const userName = await getHumanUserName(id);
 
     const { trigger } = userConfig;
-    const {
-      codeOfConductMessage,
-      welcomeMessage,
-    } = slackConfig;
+    const { welcomeMessage } = slackConfig;
 
     botText = boundListenToMessages(userName, id, `${trigger}coc`, {});
 

@@ -70,6 +70,7 @@ const userConfig = {
             botName                 : 'val-bot',
             channelsPrivateJoin     : []
             enabled                 : true,
+            nameFormat              : n => `<@${n}>`,
             slackTeam               : 'spaaceteam101',
             url                     : './modules/core/slack.js',
             welcomeMessage          : 'welcome to the place!\n\n',
