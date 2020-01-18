@@ -47,7 +47,6 @@ const userConfig = {
 
 
         twitter : {
-            url                     : './modules/core/twitter.js',
             botName                 : '@example',
             consumerKey             : 'moon1moon1moon1moon1',
             consumerSecret          : 'moon1moon1moon1moon1moon1moon1moon1',
@@ -62,18 +61,19 @@ const userConfig = {
                     'Twitter',
                     'Words'
                 ]
-            }
+            },
+            url                     : './modules/core/twitter.js',
         },
-
 
         slackulon       : {
-            url                     : './modules/core/slack.js',
-            botName                 : 'val-bot',
             apiKey                  : 'moon1moon1moon1moon1moon1moon1moon1moon1',
-            slackTeam               : 'spaaceteam101',
+            botName                 : 'val-bot',
             channelsPrivateJoin     : []
+            enabled                 : true,
+            slackTeam               : 'spaaceteam101',
+            url                     : './modules/core/slack.js',
+            welcomeMessage          : 'welcome to the place!\n\n',
         },
-
 
         telegram    : {
             url                     : './modules/core/telegram.js',
