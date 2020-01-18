@@ -58,7 +58,9 @@ Change log
 + major updates to slack head
 + crypto markeets api update
 + admin updates
-+ added support welcome messages and codes of conduct
++ added support welcome messages
++ added CoC module
++ added a web api example
 
 
 #### 1.0.4
