@@ -30,36 +30,9 @@ class Test extends Module {
    * @return {Boolean}  false
    */
   test(from, to, text) {
-    const nlp = require('compromise');
     console.log(
       'this is all disabled for now.  go here => http://compromise.cool/'
     );
-    // const textObj   = nlp( text );
-
-    // const textRoot  = textObj.root();
-    // const terms     = textObj.terms();
-    // const verb      = nlp.verb( text );
-
-    // const sentence  = nlp.sentence( text );
-    // const sentenceType = sentence.sentence_type();
-
-    // const tags      = sentence.tags();
-    // let botText = '';
-
-    // terms.forEach( t =>
-    // {
-    //     botText += `${t.text}: ${JSON.stringify( t )}\n`;
-    // } );
-
-    // return botText;
-
-    // return `root sentence: ${textRoot}
-    //             sentence type: ${sentenceType}
-    //             verb: ${JSON.stringify( verb.to_present() )}
-    //             verb is negative: ${verb.isNegative()}
-    //             tags: ${JSON.stringify( tags )}
-    //             terms: ${JSON.stringify( terms )}`;
-    // return tags;
   }
 
   /**

@@ -1,4 +1,7 @@
 const Module = require('./Module.js');
+const fs = require('fs');
+
+let alias = {};
 
 /**
  * this modules contains admin only functions.  they are generally called with
@@ -41,6 +44,8 @@ class Admin extends Module {
     super(_bot, _modules, userConfig, commandModule);
 
     this.version = this.version.bind(this);
+
+    this.loadAliasList();
   }
 
   /**
@@ -62,7 +67,56 @@ class Admin extends Module {
     return false;
   }
 
-  removeAlias() {}
+  /**
+   * ## loadAliasList
+   *
+   * loads the json for the alias' list
+   *
+   * @return {Void}
+   */
+  loadAliasList() {
+    const botName = this._bot.name;
+    const url = `json/alias/alias.${botName}.json`;
+
+    try {
+      alias = JSON.parse(fs.readFileSync(url, 'utf8'));
+    } catch (e) {
+      alias = {};
+      this.saveAliasList();
+    }
+  }
+
+  /**
+   * ## removeAlias
+   *
+   * removes a specific alias to the roon
+   *
+   * @param {String} from originating channel
+   * @param {String} to originating user
+   * @param {String} text full message text
+   * @param {String} textArr full message text split by " "
+   *
+   * @return {String} success message
+   */
+  removeAlias(from, to, text, textArr) {
+    if (this.isAdmin(to)) {
+      const aliasToRemove = textArr[0];
+
+      if (!alias[from]) {
+        return 'There are no aliases in this room';
+      }
+      else if (!alias[from][aliasToRemove]) {
+        return `There is no alias !${aliasToRemove} in this room`;
+      }
+
+      delete alias[from][aliasToRemove];
+
+      this.saveAliasList();
+
+      return `Alias !${aliasToRemove} removed from #${from}`;
+    }
+  }
+
 
   /**
    * ## responses
@@ -80,25 +134,31 @@ class Admin extends Module {
       commands: {
         [`${trigger}channel`]: {
           f: this.checkChannel,
-          desc: "returns the current channel's identifier",
+          desc: "returns the current channel's unique identifier (admin command)",
           syntax: [`${trigger}${trigger}channel`],
         },
 
         [`${trigger}removeAlias`]: {
-          f: this.checkChannel,
-          desc: "returns the current channel's identifier",
-          syntax: [`${trigger}${trigger}channel`],
+          f: this.removeAlias,
+          desc: "removes an alias from the room (admin command)",
+          syntax: [`${trigger}${trigger}removeAlias [alias]`],
         },
 
         [`${trigger}setAlias`]: {
-          f: this.checkChannel,
-          desc: "returns the current channel's identifier",
-          syntax: [`${trigger}${trigger}channel`],
+          f: this.setAlias,
+          desc: "adds an alias to the room (admin command)",
+          syntax: [`${trigger}${trigger}setAlias [alias] [user1, user2, etc.. ]`],
+        },
+
+        [`useAlias`]: {
+          f: this.useAlias,
+          desc: "triggers an alias. mostly used by the language parsers",
+          syntax: [`${trigger}useAlias`],
         },
 
         [`${trigger}v`]: {
           f: this.version,
-          desc: 'returns the current running version number',
+          desc: 'returns the current running version number (admin command)',
           syntax: [`${trigger}${trigger}v`],
         },
       },
@@ -107,7 +167,93 @@ class Admin extends Module {
     return res;
   }
 
-  setAlias() {}
+  /**
+   * ## saveAliasList
+   *
+   * saves the json to the alias' list
+   *
+   * @return {Void}
+   */
+  saveAliasList() {
+    const botName = this._bot.name;
+    const url = `json/alias/alias.${botName}.json`;
+
+    const aliasJSON = JSON.stringify(alias);
+    fs.writeFileSync(
+      `./${url}`,
+      aliasJSON,
+      'utf8'
+    );
+  }
+
+  /**
+   * ## setAlias
+   *
+   * adds a specific alias to the roon
+   *
+   * @param {String} from originating channel
+   * @param {String} to originating user
+   * @param {String} text message text
+   * @param {Array} textArr text broken into an array of words
+   * @param {String} command text that triggered the bot
+   * @param {Object} confObj configuration object
+   *
+   * @return {String} channel id
+   */
+  setAlias(from, to, text, textArr, command, confObj) {
+    if (this.isAdmin(to)) {
+      const aliasToAdd = textArr[0];
+      alias[from] = alias[from] || {};
+
+      const overwrite = Boolean(alias[from][aliasToAdd]);
+
+
+      let usersArr;
+
+      if (confObj && confObj.originalText) {
+        usersArr = confObj.originalText.split(' ').slice(2);
+      }
+      else {
+        usersArr = textArr.slice(1).filter(t => Boolean(t.trim())).map(t => `@${t}`);
+      }
+
+      alias[from][aliasToAdd] = usersArr
+      this.saveAliasList();
+
+      if (overwrite) {
+        return `Alias !${aliasToAdd} in #${from} overwritten`;
+      }
+
+      return `Alias !${aliasToAdd} added to #${from}`;
+    }
+  }
+
+  /**
+   * ## useAlias
+   *
+   * triggers an alias
+   *
+   * @param {String} from originating channel
+   * @param {String} to originating user
+   * @param {String} text full message text
+   * @param {String} textArr full message text split by " "
+   *
+   * @return {String} success message
+   */
+  useAlias(from, to, text, textArr) {
+    const aliasToUse = textArr.map(a => {
+
+      if (alias[from] && alias[from][a]) {
+        return alias[from][a].join(' ');
+      }
+
+      return null;
+    }).filter(Boolean);
+
+    if (Array.isArray(aliasToUse) && aliasToUse.length !== 0) {
+      return `${text} ( ${aliasToUse.join(' ')} )`
+    }
+  }
 
   /**
    * ## version

@@ -24,6 +24,18 @@ module.exports = {
     url: './modules/beats.js',
   },
 
+  CoC: {
+    enabled: true,
+    url: './modules/coc.js',
+    options: {
+      cocAdminChannel: 'G0EK1NZPZ',
+      cocMaxRetries: 3,
+      cocMessage: 'This is a tight-knit community that strives to create a diverse and inclusive space where all people can feel safe to be themselves. In order to ensure that priniciple, we follow the <https://berlincodeofconduct.org/|Berlin Code of Conduct> [CoC].\n',
+      cocReminderFrequency: 5, // in days
+      cocReminders: true,
+    },
+  },
+
   Crypto: {
     enabled: true,
     url: './modules/crypto.js',
@@ -65,7 +77,6 @@ module.exports = {
     options: {
       tenorAPIKey: 'asdfghjkl',
       tenorAnonId: '1234567890',
-      tenorLimit: 10,
     },
   },
 

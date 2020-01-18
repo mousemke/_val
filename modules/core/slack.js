@@ -1,11 +1,9 @@
-const slack = require('@slack/client');
-const { RTMClient, WebClient } = slack;
+const { WebClient } = require('@slack/web-api');
+const { RTMClient } = require('@slack/rtm-api');
+const fs = require('fs');
 
 /**
  * ## val slack loader
- *
- * https://api.slack.com/methods/im.open
- * https://github.com/slackhq/node-slack-sdk
  *
  * @return {Object} slack chatbot
  */
@@ -25,112 +23,188 @@ module.exports = function slackBot(
 
   userConfig.commandModules.push(_bot);
 
-  _bot.on('message', message => {
-    const { type, subtype, hidden } = message;
+  if (userConfig.cocMessage) {
+    let usersAgreed;
+    const botName = slackConfig.botName;
+    const url = `./json/coc.${botName}.json`;
 
-    if (!hidden && message.user && message.channel) {
-      const from = message.channel;
-      const to = message.user;
-      const messageText = message.text;
+    try {
+      usersAgreed = JSON.parse(fs.readFileSync(url, 'utf8'));
+    } catch (e) {
+      usersAgreed = {};
+    }
 
-      /*
-       * replaces useless slack identifiers with names
-       */
-      const messageMentions = messageText.match(/<@([Uu][A-Za-z0-9]{4,})>/g);
-
-      function getHumanChannelName(channel) {
-        if (channel[0] !== 'G') {
-          return web.channels.info({ channel }).then(res => res.channel.name);
-        }
-
-        return web.conversations
-          .info({ channel })
-          .then(res => res.channel.name);
-      }
-
-      function getHumanUserName(rawUser) {
-        const user = rawUser.replace(/^<@|>$/g, '');
-
-        return web.users.info({ user }).then(res => res.user.name);
-      }
-
-      function getHumanMentions(mentions, text) {
-        if (messageMentions) {
-          return Promise.all(
-            messageMentions.map(name => getHumanUserName(name))
-          ).then(nameArr => {
-            let correctedText = messageText;
-
-            messageMentions.forEach(
-              (codeName, i) =>
-                (correctedText = correctedText.replace(
-                  new RegExp(codeName, 'g'),
-                  nameArr[i]
-                ))
-            );
-
-            return correctedText;
-          });
-        }
-
-        return text;
-      }
-
-      Promise.all([
-        getHumanChannelName(message.channel),
-        getHumanUserName(to),
-        getHumanMentions(messageMentions, messageText),
-      ]).then(([channel, user, botText]) => {
-        const confObj = {
-          to,
-          from,
-          user,
-          channel,
-        };
-
-        botText = boundListenToMessages(user, channel, botText, confObj);
-
-        if (botText && botText !== '') {
-          if (subtype === 'message_changed') {
-            _bot.updateMessage(msg, (err, res) => {
-              msg.text = 'test message update';
-            });
-          } else if (typeof botText.then === 'function') {
-            // refactor to use message updating?
-            // https://github.com/slackhq/node-slack-sdk#update-messages
-            botText.then(text => {
-              _bot.say(from, text, confObj);
-            });
-          } else {
-            _bot.say(from, botText, confObj);
-          }
-        }
+    web.users.list().then(res => {
+      res.members.map(u => u.id).forEach(id => {
+        usersAgreed[id] = usersAgreed[id] || false;
       });
+
+      const usersAgreedJSON = JSON.stringify(usersAgreed);
+      fs.writeFileSync(
+        url,
+        usersAgreedJSON,
+        'utf8'
+      );
+
+      console.log(`${botName} user list updated`)
+    });
+  }
+
+  /**
+   * ## getHumanChannelName
+   *
+   * @param {String} channel slack channel id
+   *
+   * @return {String} human readable channel name
+   */
+  async function getHumanChannelName(channel) {
+    if (channel[0] !== 'G') {
+      return web.channels.info({ channel }).then(res => res.channel.name);
+    }
+
+    return web.conversations
+      .info({ channel })
+      .then(res => res.channel.name);
+  }
+
+  async function getHumanMentions(mentions, text) {
+    if (mentions) {
+      return Promise.all(
+        mentions.map(name => getHumanUserName(name))
+      ).then(nameArr => {
+        let correctedText = text;
+
+        mentions.forEach(
+          (codeName, i) =>
+            (correctedText = correctedText.replace(
+              new RegExp(codeName, 'g'),
+              nameArr[i]
+            ))
+        );
+
+        return correctedText;
+      });
+    }
+
+    return text;
+  }
+
+  /**
+   * ## getHumanUserName
+   *
+   * @param {String} rawUser slack user id
+   *
+   * @return {String} human readable username
+   */
+  async function getHumanUserName(rawUser) {
+    const user = rawUser.replace(/^<@|>$/g, '');
+
+    return web.users.info({ user }).then(res => res.user.name);
+  }
+
+  _bot.on('team_join', async (info) => {
+    const id = info.user;
+    const userName = await getHumanUserName(id);
+
+    const { trigger } = userConfig;
+    const { welcomeMessage } = slackConfig;
+
+    botText = boundListenToMessages(userName, id, `${trigger}coc`, {});
+
+    if (welcomeMessage) {
+      botText = `Hello ${userName}, ${welcomeMessage}\n\n${botText}`;
+    }
+
+    if (botText) {
+      _bot.pm(id, botText)
     }
   });
 
-  _bot.on('ready', () => {
-    _bot.pm = (to, botText, confObj) => {
-      if (confObj) {
-        to = confObj.to;
-      }
+  /**
+   * main bot message listener. reacts to messagds and PMs
+   */
+  _bot.on('message', message => {
+    const {
+      bot_id,
+      channel,
+      hidden,
+      text,
+      user,
+    } = message;
+    const isIm = channel[0] === 'D';
 
-      _bot._modules.core.apiGet(
-        `https://slack.com/api/im.open?token=${token}&user=${to}`,
-        res => {
-          const id = res.channel.id;
+    let sayFunction;
 
-          _bot.sendMessage(botText, id);
+    if (bot_id) {
+      return null;
+    } else if (!isIm && !hidden) {
+      sayFunction = _bot.say.bind(_bot);
+    }
+    else {
+      sayFunction = _bot.pm.bind(_bot);
+    }
+
+    const messageMentions = text.match(/<@([Uu][A-Za-z0-9]{4,})>/g);
+
+    Promise.all([
+      isIm ? channel : getHumanChannelName(channel),
+      getHumanUserName(user),
+      getHumanMentions(messageMentions, text),
+    ]).then(([channelName, userName, botText]) => {
+      const confObj = {
+        to: user,
+        from: channel,
+        user: userName,
+        channel: channelName,
+        originalText: text,
+      };
+
+      botText = boundListenToMessages(userName, channelName, botText, confObj);
+
+      if (botText && botText !== '') {
+        if (typeof botText.then === 'function') {
+          botText.then(text => {
+            sayFunction(channel, text, confObj);
+          });
+        } else {
+          sayFunction(channel, botText, confObj);
         }
-      );
-    };
+      }
+    });
+  });
 
+  /**
+   * bot ready listener.  sets proper say and pm functions
+   */
+  _bot.on('ready', async () => {
     _bot.say = (from, botText, confObj) => {
       if (confObj) {
         from = confObj.from;
       }
 
       _bot.sendMessage(botText, from);
+    };
+
+    _bot.pm = (from, botText, confObj) => {
+      if (confObj) {
+        from = confObj.from;
+      }
+
+      const message = {
+        blocks: [
+          {
+            type: 'section',
+            text: {
+              text: botText,
+              type: 'mrkdwn',
+            },
+          },
+        ],
+        channel: from,
+        as_user: true,
+      }
+
+      web.chat.postMessage(message);
     };
   });
 

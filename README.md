@@ -2,9 +2,9 @@
 
 erm.... bot.
 
-v. 1.0.3
+v. 1.0.4
 
-`requires node 8+`
+`requires node 10+`
 
 ## install
 
@@ -53,6 +53,21 @@ Need to report something? [mouse@knoblau.ch](mailto:mouse@knoblau.ch)
 Change log
 ==========
 
+#### 1.1.0
+
++ major updates to slack head
++ crypto markeets api update
++ admin updates
++ added support welcome messages
++ added CoC module
++ added a web api example
+
+
+#### 1.0.4
+
++ required node version updated
+
+
 #### 1.0.3
 
 + Added dnd characters
@@ -82,57 +97,6 @@ Change log
 + fixe a bug in trophy
 + removed harmony flag from server
 + made dnd die rolls case-insensitive
-
-
-#### 1.0.1
-
-+ removed more legacy unscramble elements from words module
-+ specified api version for mtg in modules example
-+ removed a double `wow` in plainText
-+ mtg returns better for multiple / exact matches
-+ fixes end$ issues
-
-
-#### 1.0.0
-
-+ val can no longer shoot itself
-+ updated scripts to run Xvfb mode by default
-+ multiple commanders from each core are now allowed
-+ twitter core works
-+ added core specific ability to disable modules
-+ web api core added
-+ updated question words
-+ remove doge->tip ability to dm
-+ updated 8ball and 4square
-+ complete rebuild of how commands and responses are handled
-+ module ini removed, now handled in the constructor
-+ added imporoved help mode
-+ modules are now classes
-+ made syntax help available
-+ website removed
-+ twitter now trims to 140 chars and supports promises
-+ listen to pm removed
-+ xkcd bug fixed
-+ awaybot updated
-+ responses altered to support regex and dynamic commands
-+ regex responses added
-+ language parser module capabilities added
-+ added awaybot npm script
-+ switched market api
-+ fixed plainText list responses
-+ updated dnd module regex
-+ added dynamic commands
-+ updated guys list
-+ trollOn blacklist now ignores punctuation and case
-+ updated mtg plugin info and api source
-+ added hipchat core head
-+ doge ticker refactored
-+ multiple doge tickers based on acct or number are now available
-+ added POST possibility to api calls
-+ removed unscramble game
-+ magic api completely revamped
-+ [[magic card name]] language parser added
-
 
 
 Older Changes

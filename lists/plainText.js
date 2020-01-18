@@ -50,4 +50,5 @@ module.exports = {
   _val: 'yes?',
   '_val?': 'yes?',
   '_val!': 'what?!',
+  groan: 'https://media.tenor.com/images/4bc3e89894c7e99560a32a0a9613cd44/tenor.gif',
 };
