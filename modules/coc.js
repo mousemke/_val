@@ -72,12 +72,14 @@ class CoC extends Module {
     if (codeOfConductMessage) {
       this.loadUsersAgreed();
 
-      // this.tickCoC = this.tickCoC.bind(this);
+      // if (cocReminders) {
+      //   this.tickCoC = this.tickCoC.bind(this);
 
-      // this.cocInterval = setInterval(
-      //   this.tickCoC,
-      //   cocReminderFrequency * 1000 * 60 * 60 * 24
-      // );
+      //   this.cocInterval = setInterval(
+      //     this.tickCoC,
+      //     cocReminderFrequency * 1000 * 60 * 60 * 24
+      //   );
+      // }
     }
   }
 
@@ -93,7 +95,7 @@ class CoC extends Module {
     const url = `json/coc.${botName}.json`;
 
     try {
-      tickers = JSON.parse(fs.readFileSync(url, 'utf8'));
+      usersAgreed = JSON.parse(fs.readFileSync(url, 'utf8'));
     } catch (e) {
       usersAgreed = {};
       this.saveUsersAgreed();

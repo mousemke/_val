@@ -1,5 +1,6 @@
 .DS_Store
 dcMasterList.json
+json/coc.*
 json/tickers/tickers.*
 json/alias/alias.*
 json/characters/characters.*

@@ -1,11 +1,9 @@
 const { WebClient } = require('@slack/web-api');
 const { RTMClient } = require('@slack/rtm-api');
+const fs = require('fs');
 
 /**
  * ## val slack loader
- *
- * https://api.slack.com/methods/im.open
- * https://github.com/slackhq/node-slack-sdk
  *
  * @return {Object} slack chatbot
  */
@@ -24,6 +22,33 @@ module.exports = function slackBot(
   let boundListenToMessages = listenToMessages.bind(context);
 
   userConfig.commandModules.push(_bot);
+
+  if (userConfig.codeOfConductMessage) {
+    let usersAgreed;
+    const botName = slackConfig.botName;
+    const url = `./json/coc.${botName}.json`;
+
+    try {
+      usersAgreed = JSON.parse(fs.readFileSync(url, 'utf8'));
+    } catch (e) {
+      usersAgreed = {};
+    }
+
+    web.users.list().then(res => {
+      res.members.map(u => u.id).forEach(id => {
+        usersAgreed[id] = usersAgreed[id] || false;
+      });
+
+      const usersAgreedJSON = JSON.stringify(usersAgreed);
+      fs.writeFileSync(
+        url,
+        usersAgreedJSON,
+        'utf8'
+      );
+
+      console.log(`${botName} user list updated`)
+    });
+  }
 
   /**
    * ## getHumanChannelName
