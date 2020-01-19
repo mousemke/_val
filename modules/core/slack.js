@@ -5,12 +5,12 @@ const fs = require('fs');
 /**
  * ## val slack loader
  *
- * @param {Object} userConfig
- * @param {Object} channels
- * @param {Object} listenToMessages
- * @param {Object} displayDebugInfo
- * @param {Object} context
- * @param {Object} slackConfig
+ * @param {Object} userConfig combined config of modules
+ * @param {Object} channels (unused by this core)
+ * @param {Function} listenToMessages message listener function
+ * @param {Boolean} displayDebugInfo whether to display debug info in the console
+ * @param {Object} context bot context to keep things bound together
+ * @param {Object} slackConfig slack head options
  *
  * @return {Object} slack chatbot
  */
@@ -144,6 +144,9 @@ module.exports = function slackBot(
     console.log(`${botName} user list updated`);
   }
 
+  /**
+   * team_join listener. sends out CoC and welcome messages
+   */
   _bot.on('team_join', async (info) => {
     const id = info.user;
 
@@ -183,46 +186,48 @@ module.exports = function slackBot(
       text,
       user,
     } = message;
-    const isIm = channel[0] === 'D';
+    if (text) {
+      const isIm = channel[0] === 'D';
 
-    let sayFunction;
+      let sayFunction;
 
-    if (bot_id) {
-      return null;
-    } else if (!isIm && !hidden) {
-      sayFunction = _bot.say.bind(_bot);
-    }
-    else {
-      sayFunction = _bot.pm.bind(_bot);
-    }
-
-    const messageMentions = text.match(/<@([Uu][A-Za-z0-9]{4,})>/g);
-
-    Promise.all([
-      isIm ? channel : getHumanChannelName(channel),
-      getHumanUserName(user),
-      getHumanMentions(messageMentions, text),
-    ]).then(([channelName, userName, botText]) => {
-      const confObj = {
-        to: user,
-        from: channel,
-        user: userName,
-        channel: channelName,
-        originalText: text,
-      };
-
-      botText = boundListenToMessages(userName, channelName, botText, confObj);
-
-      if (botText && botText !== '') {
-        if (typeof botText.then === 'function') {
-          botText.then(text => {
-            sayFunction(channel, text, confObj);
-          });
-        } else {
-          sayFunction(channel, botText, confObj);
-        }
+      if (bot_id) {
+        return null;
+      } else if (!isIm && !hidden) {
+        sayFunction = _bot.say.bind(_bot);
       }
-    });
+      else {
+        sayFunction = _bot.pm.bind(_bot);
+      }
+
+      const messageMentions = text.match(/<@([Uu][A-Za-z0-9]{4,})>/g);
+
+      Promise.all([
+        isIm ? channel : getHumanChannelName(channel),
+        getHumanUserName(user),
+        getHumanMentions(messageMentions, text),
+      ]).then(([channelName, userName, botText]) => {
+        const confObj = {
+          to: user,
+          from: channel,
+          user: userName,
+          channel: channelName,
+          originalText: text,
+        };
+
+        botText = boundListenToMessages(userName, channelName, botText, confObj);
+
+        if (botText && botText !== '') {
+          if (typeof botText.then === 'function') {
+            botText.then(text => {
+              sayFunction(channel, text, confObj);
+            });
+          } else {
+            sayFunction(channel, botText, confObj);
+          }
+        }
+      });
+    }
   });
 
   /**
