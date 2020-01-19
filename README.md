@@ -61,7 +61,7 @@ Change log
 + added support welcome messages
 + added CoC module
 + added a web api example
-
++ hipchat core module removed
 
 #### 1.0.4
 
@@ -94,7 +94,7 @@ Change log
 + added some plaintext commands
 + updated mtg card fetch formatting
 + updated slack interface
-+ fixe a bug in trophy
++ fixed a bug in trophy
 + removed harmony flag from server
 + made dnd die rolls case-insensitive
 

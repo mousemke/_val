@@ -5,6 +5,13 @@ const fs = require('fs');
 /**
  * ## val slack loader
  *
+ * @param {Object} userConfig
+ * @param {Object} channels
+ * @param {Object} listenToMessages
+ * @param {Object} displayDebugInfo
+ * @param {Object} context
+ * @param {Object} slackConfig
+ *
  * @return {Object} slack chatbot
  */
 module.exports = function slackBot(
@@ -24,29 +31,16 @@ module.exports = function slackBot(
   userConfig.commandModules.push(_bot);
 
   if (userConfig.cocMessage) {
-    let usersAgreed;
     const botName = slackConfig.botName;
-    const url = `./json/coc.${botName}.json`;
 
-    try {
-      usersAgreed = JSON.parse(fs.readFileSync(url, 'utf8'));
-    } catch (e) {
-      usersAgreed = {};
-    }
+    const users = getUsersList(botName);
 
     web.users.list().then(res => {
       res.members.map(u => u.id).forEach(id => {
-        usersAgreed[id] = usersAgreed[id] || false;
+        users[id] = users[id] || false;
       });
 
-      const usersAgreedJSON = JSON.stringify(usersAgreed);
-      fs.writeFileSync(
-        url,
-        usersAgreedJSON,
-        'utf8'
-      );
-
-      console.log(`${botName} user list updated`)
+      saveUsersList(botName, users);
     });
   }
 
@@ -67,6 +61,14 @@ module.exports = function slackBot(
       .then(res => res.channel.name);
   }
 
+  /**
+   * ## getHumanMentions
+   *
+   * @param {String} mentions regex found user ids
+   * @param {String} text full text
+   *
+   * @return {String} corrected text
+   */
   async function getHumanMentions(mentions, text) {
     if (mentions) {
       return Promise.all(
@@ -102,14 +104,64 @@ module.exports = function slackBot(
     return web.users.info({ user }).then(res => res.user.name);
   }
 
+  /**
+   * ## get users list
+   *
+   *
+   * @param {String} botName active bot#s name
+   *
+   * @return {Object} users list
+   */
+  function getUsersList(botName) {
+    const url = `./json/coc.${botName}.json`;
+
+    try {
+      return JSON.parse(fs.readFileSync(url, 'utf8'));
+    } catch (e) {
+      return {};
+    }
+  }
+
+  /**
+   * ## saveUsersList
+   *
+   * saves the usernames list for coc reference
+   *
+   * @param {String} botName active bot#s name
+   * @param {Object} users users list
+   */
+  function saveUsersList(botName, users) {
+    const url = `./json/coc.${botName}.json`;
+
+    const usersJSON = JSON.stringify(users);
+
+    fs.writeFileSync(
+      url,
+      usersJSON,
+      'utf8'
+    );
+
+    console.log(`${botName} user list updated`);
+  }
+
   _bot.on('team_join', async (info) => {
     const id = info.user;
+
+    if (userConfig.cocMessage) {
+      const botName = slackConfig.botName;
+      const users = getUsersList(botName);
+
+      users[id] = users[id] || false;
+
+      saveUsersList(botName, users);
+    }
+
     const userName = await getHumanUserName(id);
 
     const { trigger } = userConfig;
     const { welcomeMessage } = slackConfig;
 
-    botText = boundListenToMessages(userName, id, `${trigger}coc`, {});
+    let botText = boundListenToMessages(userName, id, `${trigger}coc`, {});
 
     if (welcomeMessage) {
       botText = `Hello ${userName}, ${welcomeMessage}\n\n${botText}`;
@@ -121,7 +173,7 @@ module.exports = function slackBot(
   });
 
   /**
-   * main bot message listener. reacts to messagds and PMs
+   * main bot message listener. reacts to messages and PMs
    */
   _bot.on('message', message => {
     const {
