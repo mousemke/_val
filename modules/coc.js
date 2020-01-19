@@ -21,11 +21,8 @@ class CoC extends Module {
   coc(from, to, text, textArr, command, confObj) {
     const { admins, cocAdminChannel } = this.userConfig;
 
-    if (!textArr || textArr.length === 0) {
-      const {
-        cocMessage,
-        trigger,
-      } = this.userConfig;
+    if (!textArr || textArr.length === 0) {
+      const { cocMessage, trigger } = this.userConfig;
 
       if (cocMessage) {
         const adminsString = `@${admins.join(', @')}`;
@@ -51,7 +48,10 @@ class CoC extends Module {
       fixedUser = this.commandModule.nameFormat(to);
     }
 
-    this._bot.say(cocAdminChannel, `${fixedUser} - bad CoC response - ${response}`);
+    this._bot.say(
+      cocAdminChannel,
+      `${fixedUser} - bad CoC response - ${response}`
+    );
   }
 
   /**
@@ -69,11 +69,7 @@ class CoC extends Module {
   constructor(_bot, _modules, userConfig, commandModule) {
     super(_bot, _modules, userConfig, commandModule);
 
-    const {
-      cocReminderFrequency,
-      cocReminders,
-      cocMessage,
-    } = userConfig;
+    const { cocReminderFrequency, cocReminders, cocMessage } = userConfig;
 
     if (cocMessage) {
       this.loadUsersAgreed();
@@ -83,7 +79,7 @@ class CoC extends Module {
 
         this.cocInterval = setInterval(
           this.tickCoC,
-          cocReminderFrequency * 1000 * 60 * 60 * 24,
+          cocReminderFrequency * 1000 * 60 * 60 * 24
         );
       }
     }
@@ -138,11 +134,7 @@ class CoC extends Module {
     const botName = this._bot.name;
 
     const usersAgreedJSON = JSON.stringify(usersAgreed);
-    fs.writeFileSync(
-      `./json/coc.${botName}.json`,
-      usersAgreedJSON,
-      'utf8'
-    );
+    fs.writeFileSync(`./json/coc.${botName}.json`, usersAgreedJSON, 'utf8');
   }
 
   /**
@@ -170,10 +162,7 @@ class CoC extends Module {
    * @return {Void}
    */
   tickCoC() {
-    const {
-      cocAdminChannel,
-      cocMaxRetries,
-    } = this.userConfig;
+    const { cocAdminChannel, cocMaxRetries } = this.userConfig;
 
     this.loadUsersAgreed();
 
@@ -188,7 +177,10 @@ class CoC extends Module {
         }
 
         if (typeof attempts === 'number' && attempts > cocMaxRetries) {
-          this._bot.say(cocAdminChannel, `${fixedUser} has not agreed to the CoC (max attempts reached)`);
+          this._bot.say(
+            cocAdminChannel,
+            `${fixedUser} has not agreed to the CoC (max attempts reached)`
+          );
         } else {
           const fullMessage = this.coc();
           this._bot.pm(user, fullMessage);
@@ -204,7 +196,6 @@ class CoC extends Module {
       }
     });
   }
-
 }
 
 module.exports = CoC;

@@ -460,9 +460,7 @@ const _Val = function(commandModuleName, userConfig) {
     }
 
     if (commandModule.slackTeam && commandModule.autojoin) {
-      const url = `https://${
-        commandModule.slackTeam
-      }.slack.com/api/channels.list?token=${userConfig.slackAPIKey}`;
+      const url = `https://${commandModule.slackTeam}.slack.com/api/channels.list?token=${userConfig.slackAPIKey}`;
 
       apiGet(
         url,
@@ -685,7 +683,7 @@ const _Val = function(commandModuleName, userConfig) {
         return botText;
       } else if (
         _botConfig.bots.indexOf(to) !== -1 &&
-        (text[0] === _botConfig.trigger && text !== _botConfig.trigger)
+        text[0] === _botConfig.trigger && text !== _botConfig.trigger
       ) {
         // automated response to automated people
       }

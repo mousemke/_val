@@ -104,8 +104,7 @@ class Admin extends Module {
 
       if (!alias[from]) {
         return 'There are no aliases in this room';
-      }
-      else if (!alias[from][aliasToRemove]) {
+      } else if (!alias[from][aliasToRemove]) {
         return `There is no alias !${aliasToRemove} in this room`;
       }
 
@@ -116,7 +115,6 @@ class Admin extends Module {
       return `Alias !${aliasToRemove} removed from #${from}`;
     }
   }
-
 
   /**
    * ## responses
@@ -134,25 +132,28 @@ class Admin extends Module {
       commands: {
         [`${trigger}channel`]: {
           f: this.checkChannel,
-          desc: "returns the current channel's unique identifier (admin command)",
+          desc:
+            "returns the current channel's unique identifier (admin command)",
           syntax: [`${trigger}${trigger}channel`],
         },
 
         [`${trigger}removeAlias`]: {
           f: this.removeAlias,
-          desc: "removes an alias from the room (admin command)",
+          desc: 'removes an alias from the room (admin command)',
           syntax: [`${trigger}${trigger}removeAlias [alias]`],
         },
 
         [`${trigger}setAlias`]: {
           f: this.setAlias,
-          desc: "adds an alias to the room (admin command)",
-          syntax: [`${trigger}${trigger}setAlias [alias] [user1, user2, etc.. ]`],
+          desc: 'adds an alias to the room (admin command)',
+          syntax: [
+            `${trigger}${trigger}setAlias [alias] [user1, user2, etc.. ]`,
+          ],
         },
 
         [`useAlias`]: {
           f: this.useAlias,
-          desc: "triggers an alias. mostly used by the language parsers",
+          desc: 'triggers an alias. mostly used by the language parsers',
           syntax: [`${trigger}useAlias`],
         },
 
@@ -179,11 +180,7 @@ class Admin extends Module {
     const url = `json/alias/alias.${botName}.json`;
 
     const aliasJSON = JSON.stringify(alias);
-    fs.writeFileSync(
-      `./${url}`,
-      aliasJSON,
-      'utf8'
-    );
+    fs.writeFileSync(`./${url}`, aliasJSON, 'utf8');
   }
 
   /**
@@ -207,17 +204,18 @@ class Admin extends Module {
 
       const overwrite = Boolean(alias[from][aliasToAdd]);
 
-
       let usersArr;
 
       if (confObj && confObj.originalText) {
         usersArr = confObj.originalText.split(' ').slice(2);
-      }
-      else {
-        usersArr = textArr.slice(1).filter(t => Boolean(t.trim())).map(t => `@${t}`);
+      } else {
+        usersArr = textArr
+          .slice(1)
+          .filter(t => Boolean(t.trim()))
+          .map(t => `@${t}`);
       }
 
-      alias[from][aliasToAdd] = usersArr
+      alias[from][aliasToAdd] = usersArr;
       this.saveAliasList();
 
       if (overwrite) {
@@ -241,17 +239,18 @@ class Admin extends Module {
    * @return {String} success message
    */
   useAlias(from, to, text, textArr) {
-    const aliasToUse = textArr.map(a => {
+    const aliasToUse = textArr
+      .map(a => {
+        if (alias[from] && alias[from][a]) {
+          return alias[from][a].join(' ');
+        }
 
-      if (alias[from] && alias[from][a]) {
-        return alias[from][a].join(' ');
-      }
-
-      return null;
-    }).filter(Boolean);
+        return null;
+      })
+      .filter(Boolean);
 
     if (Array.isArray(aliasToUse) && aliasToUse.length !== 0) {
-      return `${text} ( ${aliasToUse.join(' ')} )`
+      return `${text} ( ${aliasToUse.join(' ')} )`;
     }
   }
 
@@ -269,9 +268,7 @@ class Admin extends Module {
     const { userConfig } = this;
 
     if (this.isAdmin(to)) {
-      return `Well, ${to}, thanks for asking!  I'm currently running version ${
-        userConfig.version
-      }`;
+      return `Well, ${to}, thanks for asking!  I'm currently running version ${userConfig.version}`;
     }
   }
 }

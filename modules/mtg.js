@@ -271,9 +271,7 @@ class Mtg extends Module {
                     extraHits = `\n\n\nI also found ${names}`;
                   }
                   mtgResolve(
-                    `${card.image}\n${
-                      card.name
-                    }\n\n${oracleText}\n\n${setsWithPrices}${extraHits}`
+                    `${card.image}\n${card.name}\n\n${oracleText}\n\n${setsWithPrices}${extraHits}`
                   );
                 });
               } else {

@@ -68,7 +68,7 @@ const userConfig = {
         slackulon       : {
             apiKey                  : 'moon1moon1moon1moon1moon1moon1moon1moon1',
             botName                 : 'val-bot',
-            channelsPrivateJoin     : []
+            channelsPrivateJoin     : [],
             enabled                 : true,
             nameFormat              : n => `<@${n}>`,
             slackTeam               : 'spaaceteam101',

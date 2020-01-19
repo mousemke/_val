@@ -40,9 +40,7 @@ class Tenor extends Module {
       .replace(/['"`’]/g, '');
 
     const options = {
-      path: `/v1/search?tag=${text}&key=${this.apikey}&limit=${
-        this.limit
-      }&anon_id=${this.anonId}`,
+      path: `/v1/search?tag=${text}&key=${this.apikey}&limit=${this.limit}&anon_id=${this.anonId}`,
       host: 'api.tenor.com',
       port: 443,
     };

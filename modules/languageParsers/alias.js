@@ -16,10 +16,15 @@
 function alias(to, from, text, botText, _botConfig, confObj, _bot) {
   if (text) {
     const textArr = text.split(' ');
-    const activeAlias = textArr.map(t => t[0] === '!' ? t.slice(1) : null).filter(Boolean);
+    const activeAlias = textArr
+      .map(t => (t[0] === '!' ? t.slice(1) : null))
+      .filter(Boolean);
 
     if (activeAlias.length !== 0) {
-      _bot.say(confObj.from, _bot.responses.commands.useAlias.f(from, to, text, activeAlias));
+      _bot.say(
+        confObj.from,
+        _bot.responses.commands.useAlias.f(from, to, text, activeAlias)
+      );
     }
   }
 

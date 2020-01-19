@@ -255,9 +255,7 @@ const _Val = function(commandModule, userConfig) {
     }
 
     if (commandModule.slackTeam && commandModule.autojoin) {
-      var _url = `https://${
-        commandModule.slackTeam
-      }.slack.com/api/channels.list?token=${userConfig.slackAPIKey}`;
+      var _url = `https://${commandModule.slackTeam}.slack.com/api/channels.list?token=${userConfig.slackAPIKey}`;
 
       apiGet(
         _url,
@@ -326,9 +324,7 @@ const _Val = function(commandModule, userConfig) {
 
       if (userConfig.bots.indexOf(to) === -1) {
         if (text[0] === userConfig.trigger) {
-          return `Your ${
-            _bot.name
-          } is getting a firmware upgrade, please do not press the power button or unplug your computer.`;
+          return `Your ${_bot.name} is getting a firmware upgrade, please do not press the power button or unplug your computer.`;
         }
       }
     }

@@ -15,9 +15,7 @@ class _4sq extends Module {
   getRange() {
     const userConfig = this.userConfig;
 
-    return `Range is set to ${userConfig.foursquareRadius} meters from ${
-      userConfig.latLong
-    }`;
+    return `Range is set to ${userConfig.foursquareRadius} meters from ${userConfig.latLong}`;
   }
 
   /**
@@ -73,7 +71,10 @@ class _4sq extends Module {
         url,
         function(result) {
           try {
-            console.warn('result', result.response.groups[0].items.map(v => v.venue))
+            console.warn(
+              'result',
+              result.response.groups[0].items.map(v => v.venue)
+            );
             const venues = result.response.groups[0].items.map(v => v.venue);
             const venueCount = venues.length;
 

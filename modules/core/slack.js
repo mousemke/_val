@@ -36,9 +36,11 @@ module.exports = function slackBot(
     const users = getUsersList(botName);
 
     web.users.list().then(res => {
-      res.members.map(u => u.id).forEach(id => {
-        users[id] = users[id] || false;
-      });
+      res.members
+        .map(u => u.id)
+        .forEach(id => {
+          users[id] = users[id] || false;
+        });
 
       saveUsersList(botName, users);
     });
@@ -56,9 +58,7 @@ module.exports = function slackBot(
       return web.channels.info({ channel }).then(res => res.channel.name);
     }
 
-    return web.conversations
-      .info({ channel })
-      .then(res => res.channel.name);
+    return web.conversations.info({ channel }).then(res => res.channel.name);
   }
 
   /**
@@ -71,21 +71,21 @@ module.exports = function slackBot(
    */
   async function getHumanMentions(mentions, text) {
     if (mentions) {
-      return Promise.all(
-        mentions.map(name => getHumanUserName(name))
-      ).then(nameArr => {
-        let correctedText = text;
+      return Promise.all(mentions.map(name => getHumanUserName(name))).then(
+        nameArr => {
+          let correctedText = text;
 
-        mentions.forEach(
-          (codeName, i) =>
-            (correctedText = correctedText.replace(
-              new RegExp(codeName, 'g'),
-              nameArr[i]
-            ))
-        );
+          mentions.forEach(
+            (codeName, i) =>
+              (correctedText = correctedText.replace(
+                new RegExp(codeName, 'g'),
+                nameArr[i]
+              ))
+          );
 
-        return correctedText;
-      });
+          return correctedText;
+        }
+      );
     }
 
     return text;
@@ -106,7 +106,6 @@ module.exports = function slackBot(
 
   /**
    * ## get users list
-   *
    *
    * @param {String} botName active bot#s name
    *
@@ -135,19 +134,68 @@ module.exports = function slackBot(
 
     const usersJSON = JSON.stringify(users);
 
-    fs.writeFileSync(
-      url,
-      usersJSON,
-      'utf8'
-    );
+    fs.writeFileSync(url, usersJSON, 'utf8');
 
     console.log(`${botName} user list updated`);
   }
 
   /**
+   * main bot message listener. reacts to messages and PMs
+   */
+  _bot.on('message', message => {
+    const { bot_id, channel, hidden, text, user } = message;
+    if (text) {
+      const isIm = channel[0] === 'D';
+
+      let sayFunction;
+
+      if (bot_id) {
+        return null;
+      } else if (!isIm && !hidden) {
+        sayFunction = _bot.say.bind(_bot);
+      } else {
+        sayFunction = _bot.pm.bind(_bot);
+      }
+
+      const messageMentions = text.match(/<@([Uu][A-Za-z0-9]{4,})>/g);
+
+      Promise.all([
+        isIm ? channel : getHumanChannelName(channel),
+        getHumanUserName(user),
+        getHumanMentions(messageMentions, text),
+      ]).then(([channelName, userName, botText]) => {
+        const confObj = {
+          to: user,
+          from: channel,
+          user: userName,
+          channel: channelName,
+          originalText: text,
+        };
+
+        botText = boundListenToMessages(
+          userName,
+          channelName,
+          botText,
+          confObj
+        );
+
+        if (botText && botText !== '') {
+          if (typeof botText.then === 'function') {
+            botText.then(text => {
+              sayFunction(channel, text, confObj);
+            });
+          } else {
+            sayFunction(channel, botText, confObj);
+          }
+        }
+      });
+    }
+  });
+
+  /**
    * team_join listener. sends out CoC and welcome messages
    */
-  _bot.on('team_join', async (info) => {
+  _bot.on('team_join', async info => {
     const id = info.user;
 
     if (userConfig.cocMessage) {
@@ -171,62 +219,7 @@ module.exports = function slackBot(
     }
 
     if (botText) {
-      _bot.pm(id, botText)
-    }
-  });
-
-  /**
-   * main bot message listener. reacts to messages and PMs
-   */
-  _bot.on('message', message => {
-    const {
-      bot_id,
-      channel,
-      hidden,
-      text,
-      user,
-    } = message;
-    if (text) {
-      const isIm = channel[0] === 'D';
-
-      let sayFunction;
-
-      if (bot_id) {
-        return null;
-      } else if (!isIm && !hidden) {
-        sayFunction = _bot.say.bind(_bot);
-      }
-      else {
-        sayFunction = _bot.pm.bind(_bot);
-      }
-
-      const messageMentions = text.match(/<@([Uu][A-Za-z0-9]{4,})>/g);
-
-      Promise.all([
-        isIm ? channel : getHumanChannelName(channel),
-        getHumanUserName(user),
-        getHumanMentions(messageMentions, text),
-      ]).then(([channelName, userName, botText]) => {
-        const confObj = {
-          to: user,
-          from: channel,
-          user: userName,
-          channel: channelName,
-          originalText: text,
-        };
-
-        botText = boundListenToMessages(userName, channelName, botText, confObj);
-
-        if (botText && botText !== '') {
-          if (typeof botText.then === 'function') {
-            botText.then(text => {
-              sayFunction(channel, text, confObj);
-            });
-          } else {
-            sayFunction(channel, botText, confObj);
-          }
-        }
-      });
+      _bot.pm(id, botText);
     }
   });
 
@@ -259,7 +252,7 @@ module.exports = function slackBot(
         ],
         channel: from,
         as_user: true,
-      }
+      };
 
       web.chat.postMessage(message);
     };

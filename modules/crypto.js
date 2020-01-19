@@ -5,7 +5,8 @@ const Module = require('./Module.js');
 const request = require('request');
 
 // const MARKETS = 'https://pro-api.coinmarketcap.com/v1/cryptocurrency/listings/latest';
-const MARKETS = 'https://pro-api.coinmarketcap.com/v1/cryptocurrency/listings/latest';
+const MARKETS =
+  'https://pro-api.coinmarketcap.com/v1/cryptocurrency/listings/latest';
 const CURRENCY = 'EUR';
 const CURRENCY_SYMBOL = '€';
 
@@ -83,9 +84,7 @@ class Crypto extends Module {
   constructor(_bot, _modules, userConfig, commandModule) {
     super(_bot, _modules, userConfig, commandModule);
 
-    const {
-      cryptoMarketUpdateFrequency,
-    } = userConfig;
+    const { cryptoMarketUpdateFrequency } = userConfig;
 
     this.updateMarket = this.updateMarket.bind(this);
     this.startTicker = this.startTicker.bind(this);
@@ -370,38 +369,38 @@ class Crypto extends Module {
   }
 
   updateMarket() {
-    const {
-      coinMarketCapKey,
-    } = this.userConfig;
+    const { coinMarketCapKey } = this.userConfig;
 
     return new Promise((resolve, reject) => {
-        const marketOptions = {
-          method: 'GET',
-          url: MARKETS,
-          headers: {
-            'X-CMC_PRO_API_KEY': coinMarketCapKey,
-          },
-          qs: {
-            'start': '1',
-            'convert': 'EUR'
-          },
-        };
+      const marketOptions = {
+        method: 'GET',
+        url: MARKETS,
+        headers: {
+          'X-CMC_PRO_API_KEY': coinMarketCapKey,
+        },
+        qs: {
+          start: '1',
+          convert: 'EUR',
+        },
+      };
 
-        const marketCb = (error, response, market) => {
-          const data = JSON.parse(market).data;
+      const marketCb = (error, response, market) => {
+        const data = JSON.parse(market).data;
 
-          resolve(
-            Object.assign(
-              {},
-              ...data.map(m => ({[m.symbol.toLowerCase()]: m.quote['EUR'].price}))
-            )
-          );
-        };
+        resolve(
+          Object.assign(
+            {},
+            ...data.map(m => ({
+              [m.symbol.toLowerCase()]: m.quote['EUR'].price,
+            }))
+          )
+        );
+      };
 
-        request(marketOptions, marketCb);
-      }).then(market => {
-        marketPrices = market;
-      });
+      request(marketOptions, marketCb);
+    }).then(market => {
+      marketPrices = market;
+    });
   }
 }
 

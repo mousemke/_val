@@ -59,11 +59,7 @@ class Words extends Module {
 
     return new Promise((resolve, reject) => {
       word = word.toLowerCase();
-      const url = `${
-        userConfig.wordnikBaseUrl
-      }word.json/${word}/definitions?includeRelated=true&useCanonical=true&includeTags=false&api_key=${
-        userConfig.wordnikAPIKey
-      }`;
+      const url = `${userConfig.wordnikBaseUrl}word.json/${word}/definitions?includeRelated=true&useCanonical=true&includeTags=false&api_key=${userConfig.wordnikAPIKey}`;
 
       this._modules.core.apiGet(
         url,
@@ -578,9 +574,7 @@ class Words extends Module {
 
       text = encodeURIComponent(text);
 
-      var url = `${
-        userConfig.translationBaseUrl
-      }get?q=${text}&langpair=${langFrom}|${langTo}`;
+      var url = `${userConfig.translationBaseUrl}get?q=${text}&langpair=${langFrom}|${langTo}`;
 
       this._modules.core.apiGet(
         url,

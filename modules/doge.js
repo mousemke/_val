@@ -265,9 +265,7 @@ class Doge extends Module {
               if (soakRemainder !== 0) {
                 dcMasterList[_bot.name] =
                   dcMasterList[_bot.name] + soakRemainder;
-                botText += ` (Ð${soakRemainder} in scraps eaten by ${
-                  _bot.name
-                })`;
+                botText += ` (Ð${soakRemainder} in scraps eaten by ${_bot.name})`;
               }
 
               self.writeMasterList();
