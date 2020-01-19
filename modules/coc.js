@@ -19,10 +19,9 @@ class CoC extends Module {
    * @return {String} success message
    */
   coc(from, to, text, textArr, command, confObj) {
-    const { admins, cocAdminChannel } = this.userConfig;
+    const { admins, cocAdminChannel, cocMessage, trigger } = this.userConfig;
 
     if (!textArr || textArr.length === 0) {
-      const { cocMessage, trigger } = this.userConfig;
 
       if (cocMessage) {
         const adminsString = `@${admins.join(', @')}`;
@@ -50,7 +49,7 @@ class CoC extends Module {
 
     this._bot.say(
       cocAdminChannel,
-      `${fixedUser} - bad CoC response - ${response}`
+      `${fixedUser} - ${to} - bad CoC response - ${response}`
     );
   }
 
@@ -79,7 +78,7 @@ class CoC extends Module {
 
         this.cocInterval = setInterval(
           this.tickCoC,
-          cocReminderFrequency * 1000 * 60 * 60 * 24
+          cocReminderFrequency * 1000 * 60 * 60 * 24 // time ms to days
         );
       }
     }
