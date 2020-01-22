@@ -49,7 +49,7 @@ class CoC extends Module {
 
     this._bot.say(
       cocAdminChannel,
-      `${fixedUser} - ${to} - bad CoC response - ${response}`
+      `${fixedUser} - bad CoC response - ${response}`
     );
   }
 
@@ -163,35 +163,43 @@ class CoC extends Module {
   tickCoC() {
     const { cocAdminChannel, cocMaxRetries } = this.userConfig;
 
+    let messageBuffer = 0;
+
     this.loadUsersAgreed();
 
     Object.keys(usersAgreed).forEach(user => {
       let attempts = usersAgreed[user];
 
       if (attempts !== true) {
-        let fixedUser = user;
+        setTimeout(() => {
+          this.loadUsersAgreed();
 
-        if (this.commandModule.nameFormat) {
-          fixedUser = this.commandModule.nameFormat(fixedUser);
-        }
+          let fixedUser = user;
 
-        if (typeof attempts === 'number' && attempts > cocMaxRetries) {
-          this._bot.say(
-            cocAdminChannel,
-            `${fixedUser} has not agreed to the CoC (max attempts reached)`
-          );
-        } else {
-          const fullMessage = this.coc();
-          this._bot.pm(user, fullMessage);
-
-          if (typeof attempts !== 'number') {
-            attempts = 0;
+          if (this.commandModule.nameFormat) {
+            fixedUser = this.commandModule.nameFormat(fixedUser);
           }
 
-          usersAgreed[user] = attempts + 1;
+          if (typeof attempts === 'number' && attempts > cocMaxRetries) {
+            this._bot.say(
+              cocAdminChannel,
+              `${fixedUser} has not agreed to the CoC (max attempts reached)`
+            );
+          } else {
+            const fullMessage = this.coc();
+            this._bot.pm(user, fullMessage);
 
-          this.saveUsersAgreed();
-        }
+            if (typeof attempts !== 'number') {
+              attempts = 0;
+            }
+
+            usersAgreed[user] = attempts + 1;
+
+            this.saveUsersAgreed();
+          }
+        }, messageBuffer * 1200);
+
+        messageBuffer += 1;
       }
     });
   }
