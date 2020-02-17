@@ -62,6 +62,7 @@ Change log
 + added CoC module
 + added a web api example
 + hipchat core module removed
++ adds admin/userId
 
 #### 1.0.4
 

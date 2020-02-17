@@ -29,6 +29,33 @@ class Admin extends Module {
   }
 
   /**
+   * ## checkUser
+   *
+   * returns a user's id
+   *
+   * @param {String} from originating channel
+   * @param {String} to originating user
+   * @param {String} text message text
+   * @param {Array} textArr text broken into an array of words
+   * @param {String} command text that triggered the bot
+   * @param {Object} confObj configuration object
+   *
+   * @return {String} user id
+   */
+  checkUser(from, to, text, textArr, command, confObj) {
+    if (this.isAdmin(to)) {
+
+      if (textArr.length === 0) {
+        return confObj.to;
+      }
+
+      const userToCheck = textArr[0];
+
+      return confObj.getUserId ? confObj.getUserId(userToCheck) : userToCheck;
+    }
+  }
+
+  /**
    * ## constructor
    *
    * sets the initial "global" variables
@@ -42,8 +69,6 @@ class Admin extends Module {
    */
   constructor(_bot, _modules, userConfig, commandModule) {
     super(_bot, _modules, userConfig, commandModule);
-
-    this.version = this.version.bind(this);
 
     this.loadAliasList();
   }
@@ -155,6 +180,13 @@ class Admin extends Module {
           f: this.useAlias,
           desc: 'triggers an alias. mostly used by the language parsers',
           syntax: [`${trigger}useAlias`],
+        },
+
+        [`${trigger}userId`]: {
+          f: this.checkUser,
+          desc:
+            "returns a user's unique identifier (admin command)",
+          syntax: [`${trigger}${trigger}userId [user]`],
         },
 
         [`${trigger}v`]: {
