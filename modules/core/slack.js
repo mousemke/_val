@@ -92,6 +92,20 @@ module.exports = function slackBot(
   }
 
   /**
+   * ## getUserId
+   *
+   * @param {String} username slack user name
+   *
+   * @return {String} human readable username
+   */
+  async function getUserId(username) {
+    const match = web.users.list().then(res => res.members.filter(u => u.name === username)[0]).then(a => a.id);
+
+    return match;
+  }
+
+
+  /**
    * ## getHumanUserName
    *
    * @param {String} rawUser slack user id
@@ -165,11 +179,12 @@ module.exports = function slackBot(
         getHumanMentions(messageMentions, text),
       ]).then(([channelName, userName, botText]) => {
         const confObj = {
-          to: user,
-          from: channel,
-          user: userName,
           channel: channelName,
+          from: channel,
+          getUserId: getUserId,
           originalText: text,
+          to: user,
+          user: userName,
         };
 
         botText = boundListenToMessages(
