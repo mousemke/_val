@@ -4,7 +4,6 @@ const fs = require('fs');
 const Module = require('./Module.js');
 const request = require('request');
 
-// const MARKETS = 'https://pro-api.coinmarketcap.com/v1/cryptocurrency/listings/latest';
 const MARKETS =
   'https://pro-api.coinmarketcap.com/v1/cryptocurrency/listings/latest';
 const CURRENCY = 'EUR';

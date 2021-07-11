@@ -44,7 +44,6 @@ class Admin extends Module {
    */
   checkUser(from, to, text, textArr, command, confObj) {
     if (this.isAdmin(to)) {
-
       if (textArr.length === 0) {
         return confObj.to;
       }
@@ -184,8 +183,7 @@ class Admin extends Module {
 
         [`${trigger}userId`]: {
           f: this.checkUser,
-          desc:
-            "returns a user's unique identifier (admin command)",
+          desc: "returns a user's unique identifier (admin command)",
           syntax: [`${trigger}${trigger}userId [user]`],
         },
 

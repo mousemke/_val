@@ -683,7 +683,8 @@ const _Val = function(commandModuleName, userConfig) {
         return botText;
       } else if (
         _botConfig.bots.indexOf(to) !== -1 &&
-        text[0] === _botConfig.trigger && text !== _botConfig.trigger
+        text[0] === _botConfig.trigger &&
+        text !== _botConfig.trigger
       ) {
         // automated response to automated people
       }

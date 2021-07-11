@@ -1,5 +1,5 @@
 const { WebClient } = require('@slack/web-api');
-const { RTMClient } = require('@slack/rtm-api');
+const { App } = require('@slack/bolt');
 const fs = require('fs');
 
 /**
@@ -22,9 +22,20 @@ module.exports = function slackBot(
   context,
   slackConfig
 ) {
-  const token = slackConfig.apiKey;
-  const _bot = new RTMClient(token);
-  const web = new WebClient(token);
+  const webToken = slackConfig.apiKey;
+  const token = slackConfig.oauthToken;
+  const signingSecret = slackConfig.signingSecret;
+  const appToken = slackConfig.appToken;
+  const port = slackConfig.port;
+  const { trigger } = userConfig;
+
+  const _bot = new App({
+    signingSecret,
+    token,
+    socketMode: true,
+    appToken,
+  });
+  const web = new WebClient(webToken);
 
   let boundListenToMessages = listenToMessages.bind(context);
 
@@ -54,10 +65,6 @@ module.exports = function slackBot(
    * @return {String} human readable channel name
    */
   async function getHumanChannelName(channel) {
-    if (channel[0] !== 'G') {
-      return web.channels.info({ channel }).then(res => res.channel.name);
-    }
-
     return web.conversations.info({ channel }).then(res => res.channel.name);
   }
 
@@ -99,11 +106,13 @@ module.exports = function slackBot(
    * @return {String} human readable username
    */
   async function getUserId(username) {
-    const match = web.users.list().then(res => res.members.filter(u => u.name === username)[0]).then(a => a.id);
+    const match = web.users
+      .list()
+      .then(res => res.members.filter(u => u.name === username)[0])
+      .then(a => a.id);
 
     return match;
   }
-
 
   /**
    * ## getHumanUserName
@@ -156,61 +165,49 @@ module.exports = function slackBot(
   /**
    * main bot message listener. reacts to messages and PMs
    */
-  _bot.on('message', message => {
-    const { bot_id, channel, hidden, text, user } = message;
-    if (text) {
-      const isIm = channel[0] === 'D';
+  _bot.message(/./, async ({ message, say }) => {
+    const { bot_id, channel, text, user } = message;
 
-      let sayFunction;
+    const isDm = channel[0] === 'D';
 
-      if (bot_id) {
-        return null;
-      } else if (!isIm && !hidden) {
-        sayFunction = _bot.say.bind(_bot);
-      } else {
-        sayFunction = _bot.pm.bind(_bot);
-      }
-
-      const messageMentions = text.match(/<@([Uu][A-Za-z0-9]{4,})>/g);
-
-      Promise.all([
-        isIm ? channel : getHumanChannelName(channel),
-        getHumanUserName(user),
-        getHumanMentions(messageMentions, text),
-      ]).then(([channelName, userName, botText]) => {
-        const confObj = {
-          channel: channelName,
-          from: channel,
-          getUserId: getUserId,
-          originalText: text,
-          to: user,
-          user: userName,
-        };
-
-        botText = boundListenToMessages(
-          userName,
-          channelName,
-          botText,
-          confObj
-        );
-
-        if (botText && botText !== '') {
-          if (typeof botText.then === 'function') {
-            botText.then(text => {
-              sayFunction(channel, text, confObj);
-            });
-          } else {
-            sayFunction(channel, botText, confObj);
-          }
-        }
-      });
+    if (bot_id) {
+      return null;
     }
+
+    const messageMentions = text.match(/<@([Uu][A-Za-z0-9]{4,})>/g);
+
+    Promise.all([
+      isDm ? channel : getHumanChannelName(channel),
+      getHumanUserName(user),
+      getHumanMentions(messageMentions, text),
+    ]).then(async ([channelName, userName, botText]) => {
+      const confObj = {
+        channel: channelName,
+        from: channel,
+        getUserId: getUserId,
+        originalText: text,
+        to: user,
+        user: userName,
+      };
+
+      botText = boundListenToMessages(userName, channelName, botText, confObj);
+
+      if (botText && botText !== '') {
+        if (typeof botText.then === 'function') {
+          botText.then(async text => {
+            await say(text);
+          });
+        } else {
+          await say(botText);
+        }
+      }
+    });
   });
 
   /**
    * team_join listener. sends out CoC and welcome messages
    */
-  _bot.on('team_join', async info => {
+  _bot.action('team_join', async info => {
     const id = info.user;
 
     if (userConfig.cocMessage) {
@@ -224,7 +221,6 @@ module.exports = function slackBot(
 
     const userName = await getHumanUserName(id);
 
-    const { trigger } = userConfig;
     const { welcomeMessage } = slackConfig;
 
     let botText = boundListenToMessages(userName, id, `${trigger}coc`, {});
@@ -234,49 +230,19 @@ module.exports = function slackBot(
     }
 
     if (botText) {
-      _bot.pm(id, botText);
+      _bot.say(id, botText);
     }
   });
 
-  /**
-   * bot ready listener.  sets proper say and pm functions
-   */
-  _bot.on('ready', async () => {
-    _bot.say = (from, botText, confObj) => {
-      if (confObj) {
-        from = confObj.from;
-      }
+  _bot.say = async (channel, text) =>
+    await web.chat.postMessage({
+      text,
+      channel,
+    });
 
-      _bot.sendMessage(botText, from);
-    };
-
-    _bot.pm = (from, botText, confObj) => {
-      if (confObj) {
-        from = confObj.from;
-      }
-
-      const message = {
-        blocks: [
-          {
-            type: 'section',
-            text: {
-              text: botText,
-              type: 'mrkdwn',
-            },
-          },
-        ],
-        channel: from,
-        as_user: true,
-      };
-
-      web.chat.postMessage(message);
-    };
-  });
-
-  _bot.pm = () => {};
-  _bot.say = () => {};
-
-  _bot.start();
+  (async () => {
+    await _bot.start(port);
+  })();
 
   return _bot;
 };
