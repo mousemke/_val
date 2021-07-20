@@ -1,6 +1,6 @@
 const Module = require('./Module.js');
 
-const dumpWeirdChars = /[^a-zA-z0-9 -\/]/g;
+const dumpWeirdChars = /[^a-zA-z0-9 -\/\(\)]/g;
 
 const capitalize = word =>
   word
@@ -376,7 +376,8 @@ class Mtg extends Module {
         uniqueResultNames.push(cardName);
 
         uniqueResults[cardName] = {
-          name: r.cleanName,
+          name: r.name,
+          cleanName: r.cleanName,
           image: r.imageUrl,
           store: r.url,
           printings: [r],
