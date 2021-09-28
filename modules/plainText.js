@@ -225,13 +225,15 @@ class PlainText extends Module {
     }
     return botText;
   }
+
   /**
    * ## fish
    *
    * what's on the menu
    *
    * @return {String} today's special
-   */ fish() {
+   */
+  fish() {
     const date = this.getDate();
     let preparationNum;
     let fishNum;
@@ -249,6 +251,7 @@ class PlainText extends Module {
     const f = fishTypes[fishNum];
     return `Today's fish is, "${p} ${f}", enjoy your meal`;
   }
+
   /**
    * ## g
    *
@@ -259,10 +262,12 @@ class PlainText extends Module {
    * @param {String} text message text
    *
    * @return {String} google search url
-   */ g(from, to, text) {
+   */
+  g(from, to, text) {
     text = text.split(' ').join('%20');
     return `https://www.google.de/search?hl=en&q=${text}`;
   }
+
   /**
    * ## germanysGotTalent
    *
@@ -273,7 +278,8 @@ class PlainText extends Module {
    * @param {String} text message text
    *
    * @return {String} youtube url
-   */ germanysGotTalent(from, to, text) {
+   */
+  germanysGotTalent(from, to, text) {
     const choices = [
       'https://www.youtube.com/watch?v=IeWAPVWXLtM',
       'https://www.youtube.com/watch?v=dNUUCHsgRu8',
@@ -283,13 +289,16 @@ class PlainText extends Module {
     const choice = Math.floor(Math.random() * choices.length);
     return choices[choice];
   }
+
   /**
    * ## gets the current date as a string
    *
    * @return {String} date string
-   */ getDate() {
+   */
+  getDate() {
     return new Date().toJSON().split('T')[0];
   }
+
   /**
    * ## google
    *
@@ -300,10 +309,12 @@ class PlainText extends Module {
    * @param {String} text message text
    *
    * @return {String} google search url
-   */ google(from, to, text) {
+   */
+  google(from, to, text) {
     text = text.split(' ').join('%20');
     return `http://www.lmgtfy.com/?q=${text}`;
   }
+
   /**
    * ## khan
    *
@@ -317,7 +328,8 @@ class PlainText extends Module {
    * @param {String} command text that triggered the bot
    *
    * @return {String} Botany Bay?
-   */ khan(from, to, text, textArr, command) {
+   */
+  khan(from, to, text, textArr, command) {
     const khan = khanRegex.exec(command);
     let botText = 'kh';
     khan.forEach(() => {
@@ -325,6 +337,7 @@ class PlainText extends Module {
     });
     return `${botText.toUpperCase()}N!!!!!!`;
   }
+
   /**
    * ## moon
    *
@@ -338,7 +351,8 @@ class PlainText extends Module {
    * @param {String} command text that triggered the bot
    *
    * @return {String} to the moon!
-   */ moon(from, to, text, textArr, command) {
+   */
+  moon(from, to, text, textArr, command) {
     if (command !== 'moonflakes') {
       const moon = moonRegex.exec(command);
       let botText = 'm';
@@ -353,11 +367,13 @@ class PlainText extends Module {
       }
     }
   }
+
   /**
    * ## responses
    *
    * @return {Object} responses
-   */ responses() {
+   */
+  responses() {
     const { trigger } = this.userConfig;
     const responses = {
       regex: {
@@ -491,15 +507,18 @@ class PlainText extends Module {
     });
     return responses;
   }
+
   /**
    * ## travolta
    *
    * because
    *
    * @return {void}
-   */ travolta() {
+   */
+  travolta() {
     return travolta[Math.floor(Math.random() * travolta.length)];
   }
+
   /**
    * ## trophy
    *
@@ -511,12 +530,14 @@ class PlainText extends Module {
    * @param {Array} textArr text broken into an array of words
    *
    * @return {String} trophy url
-   */ trophy(from, to, text, textArr) {
+   */
+  trophy(from, to, text, textArr) {
     const user = textArr[0]
       ? `${this.userConfig.usernamePrefix[0]}${textArr[0]}`
       : '';
     return `${user} http://pics.knoblau.ch/trophy.png`;
   }
+
   /**
    * ## space
    *
@@ -530,7 +551,8 @@ class PlainText extends Module {
    * @param {String} command text that triggered the bot
    *
    * @return {String} to the moon!
-   */ space(from, to, text, textArr, command) {
+   */
+  space(from, to, text, textArr, command) {
     const space = spaceRegex.exec(command);
     let botText = 'sp';
     space.forEach(() => {
@@ -538,6 +560,7 @@ class PlainText extends Module {
     });
     return `${botText.toUpperCase()}CE!!!!!!`;
   }
+
   /**
    * ## wave
    *
@@ -546,10 +569,12 @@ class PlainText extends Module {
    * @param {String} from originating channel
    * @param {String} to originating user
    * @param {String} text message text
-   */ wave(from, to, text) {
+   */
+  wave(from, to, text) {
     const target = text || to;
     return `${target} o/`;
   }
+
   /**
    * ## wiki
    *
@@ -560,7 +585,8 @@ class PlainText extends Module {
    * @param {String} text message text
    *
    * @return {String} wikipedia search url
-   */ wiki(from, to, text) {
+   */
+  wiki(from, to, text) {
     text = text.split(' ').join('%20');
     return `http://en.wikipedia.org/wiki/${text}`;
   }
