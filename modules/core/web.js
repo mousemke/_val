@@ -1,4 +1,5 @@
 const http = require('http');
+const https = require('https');
 const qs = require('querystring');
 
 /**
@@ -106,9 +107,10 @@ module.exports = function webBot(
     }
   }
 
-  const { botName, host, port } = webConfig;
+  const { botName, isHttps, host, port } = webConfig;
 
-  const _bot = http.createServer(serverFunction);
+
+  const _bot = isHttps ? https.createServer(serverFunction) : http.createServer(serverFunction);
   _bot.listen(port);
   _bot.say = say;
 

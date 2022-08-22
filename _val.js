@@ -46,7 +46,7 @@ const _Val = function(commandModuleName, userConfig) {
    *
    * @return {Void}
    */
-  function addLanguageParsers() {
+  function addLanguageParsers(_botConfig) {
     _bot.languageParsers = [];
 
     const languageParsers = userConfig.language;
@@ -54,7 +54,7 @@ const _Val = function(commandModuleName, userConfig) {
     for (const parserName in languageParsers) {
       const parser = languageParsers[parserName];
 
-      if (parser.enabled) {
+      if (parser.enabled && !_botConfig.disabledLanguageModules.includes(parserName)) {
         _bot.languageParsers.push(require(parser.url));
 
         if (parser.options) {
@@ -250,7 +250,7 @@ const _Val = function(commandModuleName, userConfig) {
 
     _bot.name = commandModule.botName;
 
-    addLanguageParsers();
+    addLanguageParsers(_botConfig);
   }
 
   /**
@@ -683,7 +683,8 @@ const _Val = function(commandModuleName, userConfig) {
         return botText;
       } else if (
         _botConfig.bots.indexOf(to) !== -1 &&
-        text[0] === _botConfig.trigger && text !== _botConfig.trigger
+        text[0] === _botConfig.trigger &&
+        text !== _botConfig.trigger
       ) {
         // automated response to automated people
       }

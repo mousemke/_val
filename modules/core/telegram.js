@@ -1,4 +1,4 @@
-const Telegram = require('telegram-api');
+const Telegram = require('telegram-api').default;
 const Message = require('telegram-api/types/Message');
 const File = require('telegram-api/types/File');
 
@@ -33,7 +33,12 @@ module.exports = function telegramBot(
 
   _bot.pm = () => {};
 
+  _bot.command("moon", message => {
+    console.log("ping")
+  });
+
   _bot.get(/./, message => {
+    console.log("jvjhvjh")
     try {
       const { text, chat } = message;
 

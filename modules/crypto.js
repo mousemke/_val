@@ -1,10 +1,7 @@
-const http = require('http');
-const https = require('https');
 const fs = require('fs');
 const Module = require('./Module.js');
 const request = require('request');
 
-// const MARKETS = 'https://pro-api.coinmarketcap.com/v1/cryptocurrency/listings/latest';
 const MARKETS =
   'https://pro-api.coinmarketcap.com/v1/cryptocurrency/listings/latest';
 const CURRENCY = 'EUR';
@@ -12,7 +9,6 @@ const CURRENCY_SYMBOL = '€';
 
 let tickers = {};
 let marketPrices = {};
-let fiatPrices = {};
 let tickerIntervals = {};
 let tickerTimeouts = {};
 
@@ -126,6 +122,7 @@ class Crypto extends Module {
     try {
       tickers = JSON.parse(fs.readFileSync(url, 'utf8'));
     } catch (e) {
+      console.error('[ERR] Ticker failed to load - ', e);
       tickers = {};
       this.saveTickerList();
     }
@@ -146,8 +143,6 @@ class Crypto extends Module {
   market(from, to, text, textArr) {
     const coin = textArr[0].toLowerCase();
     const amount = parseFloat(textArr[1]);
-
-    let botText = '';
 
     if (!coin || isNaN(amount)) {
       return 'invalid syntax';
@@ -332,6 +327,8 @@ class Crypto extends Module {
   }
 
   tick(channelId) {
+    this.loadTickerList();
+
     const localTickers = tickers[channelId];
 
     let eurTotal = 0;

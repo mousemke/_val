@@ -1,6 +1,6 @@
 const Module = require('./Module.js');
 
-const dumpWeirdChars = /[^a-zA-z0-9 -\/]/g;
+const dumpWeirdChars = /[^a-zA-z0-9 -\/\(\)]/g;
 
 const capitalize = word =>
   word
@@ -149,6 +149,17 @@ class Mtg extends Module {
    * @return {String} card image url
    */
   mtg(from, to, text, textArr) {
+    let justImage;
+    let justPrice;
+
+    if (text[0] === "!") {
+      text = text.slice(1);
+      justImage = true;
+    } else if (text[0] === "$") {
+      text = text.slice(1);
+      justPrice = true;
+    }
+
     return new Promise((mtgResolve, reject) => {
       const {
         mtgApiBaseUrl,
@@ -239,6 +250,10 @@ class Mtg extends Module {
 
                 const card = uniqueResults[exactCardArray[0]];
 
+                if (justImage) {
+                  mtgResolve(card.image);
+                }
+
                 Promise.all([
                   this.getPrices(card.ids, mtgApiBaseUrl, headers, request),
                   this.getGroups(card.sets, mtgApiBaseUrl, headers, request),
@@ -247,6 +262,23 @@ class Mtg extends Module {
                   const sets = res[1];
 
                   let setsWithPrices = '';
+
+                  if (justPrice) {
+                    let setsWithPrices = `Prices for ${card.name}\n\n`;
+
+                    card.printings.forEach(printing => {
+                      const { groupId, productId } = printing;
+
+                      const set = sets[groupId];
+                      const price = prices[productId];
+                      const normal = this.buildPriceString(price.Normal);
+                      const foil = this.buildPriceString(price.Foil);
+
+                      setsWithPrices += `${set.name}\n ${normal}${foil}\n\n`;
+                    });
+
+                    mtgResolve(setsWithPrices);
+                  }
 
                   card.printings.forEach(printing => {
                     const { groupId, productId } = printing;
@@ -376,7 +408,8 @@ class Mtg extends Module {
         uniqueResultNames.push(cardName);
 
         uniqueResults[cardName] = {
-          name: r.cleanName,
+          name: r.name,
+          cleanName: r.cleanName,
           image: r.imageUrl,
           store: r.url,
           printings: [r],

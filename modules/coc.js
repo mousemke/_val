@@ -22,7 +22,6 @@ class CoC extends Module {
     const { admins, cocAdminChannel, cocMessage, trigger } = this.userConfig;
 
     if (!textArr || textArr.length === 0) {
-
       if (cocMessage) {
         const adminsString = `@${admins.join(', @')}`;
 
