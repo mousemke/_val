@@ -384,6 +384,14 @@ class Crypto extends Module {
       const marketCb = (error, response, market) => {
         const data = JSON.parse(market).data;
 
+        if (!data) {
+          console.log("No crypto price data retrieved.");
+
+          resolve({});
+
+          return;
+        }
+
         resolve(
           Object.assign(
             {},
