@@ -1,6 +1,6 @@
 const Telegram = require('telegram-api').default;
 const Message = require('telegram-api/types/Message');
-const File = require('telegram-api/types/File');
+// const File = require('telegram-api/types/File');
 
 /**
  * ## val telegram loader
@@ -25,20 +25,26 @@ module.exports = function telegramBot(
 
   const boundListenToMessages = listenToMessages.bind(context);
 
-  _bot.say = (to, text, confObj) => {
+  _bot.say = (to, text) => {
     const answer = new Message().text(text).to(to);
 
     _bot.send(answer);
   };
 
+  _bot.shared = userConfig.sharedChannel?.enabled ? {
+    say: (user, text, service) => {
+      const answer = new Message()
+        .text(`${user} [${service}]: ${text}`)
+        .to(userConfig.sharedChannel.channel);
+
+      _bot.send(answer);
+    },
+    name: telegramConfig.botName
+  } : null;
+
   _bot.pm = () => {};
 
-  _bot.command("moon", message => {
-    console.log("ping")
-  });
-
   _bot.get(/./, message => {
-    console.log("jvjhvjh")
     try {
       const { text, chat } = message;
 
@@ -46,7 +52,14 @@ module.exports = function telegramBot(
       const to = chat['first_name'] || message.from['first_name'];
       let botText = text[0] === '/' ? userConfig.trigger + text.slice(1) : text;
 
-      botText = boundListenToMessages(to, from, botText);
+      const confObj = {
+        channel: from,
+        from,
+        to,
+        user: to,
+      };
+
+      botText = boundListenToMessages(to, from, botText, confObj);
 
       if (botText !== '' && botText !== false) {
         /**

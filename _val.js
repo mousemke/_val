@@ -1,5 +1,43 @@
 const modulesConfig = require('./config/_val.modules.js');
+const http = require('http');
+const https = require('https');
+const fs = require('fs');
+const chalk = require('chalk');
+const request = require('request');
 
+const valConfig = require('./config/_val.config.js');
+const packageJSON = require('./package.json');
+
+/**
+ * colors use by chalk for console messages
+ */
+const debugChalkBox = {
+  PING: 'blue',
+  MODE: 'magenta',
+  rpl_channelmodeis: 'cyan',
+  rpl_myinfo: 'cyan',
+  rpl_creationtime: 'cyan',
+  rpl_namreply: 'cyan',
+  rpl_endofnames: 'cyan',
+  rpl_topic: 'gray',
+  rpl_isupport: 'magenta',
+  rpl_welcome: 'magenta',
+  rpl_luserclient: 'magenta',
+  rpl_motdstart: 'bgMagenta',
+  rpl_motd: 'bgMagenta',
+  rpl_endofmotd: 'bgMagenta',
+  JOIN: 'green',
+  KILL: 'green',
+  NOTICE: 'yellow',
+  TOPIC: 'yellow',
+};
+
+/**
+ *
+ * @param {*} commandModuleName
+ * @param {*} userConfig
+ * @returns
+ */
 const _Val = function(commandModuleName, userConfig) {
   const commandModule = userConfig.command[commandModuleName];
   const coreConfig = commandModule.coreConfig || {};
@@ -10,34 +48,11 @@ const _Val = function(commandModuleName, userConfig) {
   const req = userConfig.req;
   const http = req.http;
   const https = req.https;
-  const fs = req.fs;
   const chalk = req.chalk;
 
-  let channel;
   let _bot = {};
   let channels = [];
   const modules = {};
-
-  const debugChalkBox = {
-    PING: 'blue',
-    MODE: 'magenta',
-    rpl_channelmodeis: 'cyan',
-    rpl_myinfo: 'cyan',
-    rpl_creationtime: 'cyan',
-    rpl_namreply: 'cyan',
-    rpl_endofnames: 'cyan',
-    rpl_topic: 'gray',
-    rpl_isupport: 'magenta',
-    rpl_welcome: 'magenta',
-    rpl_luserclient: 'magenta',
-    rpl_motdstart: 'bgMagenta',
-    rpl_motd: 'bgMagenta',
-    rpl_endofmotd: 'bgMagenta',
-    JOIN: 'green',
-    KILL: 'green',
-    NOTICE: 'yellow',
-    TOPIC: 'yellow',
-  };
 
   /**
    * ## addLanguageParsers
@@ -80,7 +95,7 @@ const _Val = function(commandModuleName, userConfig) {
    * @return {Void}
    */
   function apiGet(options, cb, secure, from, to) {
-    secure = !!secure;
+    secure = Boolean(secure);
 
     const error = e => {
       if (_bot.say && from && to) {
@@ -826,29 +841,28 @@ const _Val = function(commandModuleName, userConfig) {
 
   start();
 
+  this._bot = _bot;
+
   return this;
 };
 
+/** build a new _val instance */
 function _val(commander, commanderConfig) {
   return new _Val(commander, commanderConfig);
 }
-
-const valConfig = require('./config/_val.config.js');
-const packageJSON = require('./package.json');
 
 let connectionTimer = null;
 let up = Date.now();
 let lastPing = Date.now();
 
 valConfig.version = packageJSON.version;
-const req = (valConfig.req = {});
-
-(req.http = require('http')),
-  (req.https = require('https')),
-  (req.fs = require('fs')),
-  (req.chalk = require('chalk'));
-req.request = require('request');
-
+valConfig.req = {
+  chalk,
+  fs,
+  http,
+  https,
+  request,
+};
 valConfig.commandModules = [];
 
 const commanders = valConfig.command;
@@ -857,9 +871,22 @@ const cores = [];
 for (let commander in commanders) {
   const commandObj = commanders[commander];
 
-  if (commandObj.enabled !== false) {
-    cores.push(_val(commander, valConfig));
+  if (commandObj.enabled === true) {
+    const v = _val(commander, valConfig);
+    cores.push(v);
   }
 }
 
-module.exports = cores;
+const shared = cores.map(({ _bot }) => _bot.shared).filter(Boolean);
+
+cores.forEach(c => {
+  const { _bot } = c;
+
+  _bot.sayShared = (user, text, service) => {
+    shared.forEach(shareConfig => {
+      if (shareConfig.name !== _bot.name) {
+        shareConfig.say(user, text, service);
+      }
+    });
+  }
+});

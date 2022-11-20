@@ -167,7 +167,6 @@ module.exports = function slackBot(
    */
   _bot.message(/./, async ({ message, say }) => {
     const { bot_id, channel, text, user } = message;
-
     const isDm = channel[0] === 'D';
 
     if (bot_id) {
@@ -239,6 +238,16 @@ module.exports = function slackBot(
       text,
       channel,
     });
+
+
+  _bot.shared = userConfig.sharedChannel?.enabled ? {
+    say: async (user, text, service) =>
+      await web.chat.postMessage({
+        text: `${user} [${service}]: ${text}`,
+        channel: userConfig.sharedChannel.channel,
+      }),
+    name: slackConfig.botName
+  } : null;
 
   (async () => {
     await _bot.start(port);

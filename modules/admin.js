@@ -24,7 +24,7 @@ class Admin extends Module {
    */
   checkChannel(from, to, text, textArr, command, confObj) {
     if (this.isAdmin(to)) {
-      return confObj.from;
+      return `${confObj.from}`;
     }
   }
 
