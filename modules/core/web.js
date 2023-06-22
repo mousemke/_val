@@ -25,7 +25,7 @@ module.exports = function webBot(
    */
   function sendResponse(data, { request, response }) {
     const headers = [
-      ['access-control-allow-origin', request.headers.origin || '*'],
+      ['access-control-allow-origin', request.headers?.origin || '*'],
       ['Content-Type', 'application/json'],
       ['content-length', data.length],
     ];
@@ -46,7 +46,7 @@ module.exports = function webBot(
    * @param {Object} confObj request, response and any other necessary data
    */
   function say(from, text, confObj) {
-    console.log('text', text);
+
     const botTextObj = {
       status: '200',
       text,
@@ -66,49 +66,88 @@ module.exports = function webBot(
   function serverFunction(request, response) {
     const ip =
       request.headers['x-forwarded-for'] ||
+      request.rawHeaders['x-forwarded-for'] ||
       request.connection.remoteAddress ||
       request.socket.remoteAddress ||
       request.connection.socket.remoteAddress;
 
     const urlSplit = request.url.split('?');
     const url = urlSplit[0];
-    const query = urlSplit.slice(1).join('?');
-    const queryObj = qs.parse(query);
-    const name = queryObj.name || 'anonymous';
 
-    const confObj = {
-      name,
-      request,
-      response,
-      url,
-      queryObj,
-      ip,
-    };
+    if (request.method === 'GET') {
+      const query = urlSplit.slice(1).join('?');
+      const queryObj = qs.parse(query);
+      const name = queryObj.name || 'anonymous';
 
-    if (request.method === 'GET' && url === '/') {
-      const botText = boundListenToMessages(name, ip, queryObj.text, confObj);
+      const confObj = {
+        name,
+        request,
+        response,
+        url,
+        queryObj,
+        ip,
+      };
 
-      if (botText) {
-        if (typeof botText.then === 'function') {
-          botText.then(text => {
-            _bot.say(ip, text, confObj);
-          });
+      if (url === '/') {
+        const botText = boundListenToMessages(name, ip, queryObj.text, confObj);
+
+        if (botText) {
+          if (typeof botText.then === 'function') {
+            botText.then(text => {
+              _bot.say(ip, text, confObj);
+            });
+          } else {
+            _bot.say(ip, botText, confObj);
+          }
         } else {
-          _bot.say(ip, botText, confObj);
+          const botText = '{"status":"200","text":""}';
+          sendResponse(botText, confObj);
         }
       } else {
-        const botText = '{"status":"200","text":""}';
+        const botText =
+          '{"status":"403","err":"invalid access (sorry)","text":""}';
         sendResponse(botText, confObj);
       }
-    } else {
-      const botText =
-        '{"status":"403","err":"invalid access (sorry)","text":""}';
-      sendResponse(botText, confObj);
+    } else if (request.method === 'POST') {
+      let body = '';
+
+      request.on('data', (data) => {
+        body += data;
+      });
+
+      request.on('end', () => {
+        try {
+          const postBody = JSON.parse(body);
+          const formResponse = postBody.form_response;
+
+          const confObj = {
+            name: "anonymous",
+            request,
+            response,
+            url,
+            queryObj: postBody,
+            ip,
+          };
+
+          const botText = boundListenToMessages(confObj.name, ip, `test ${JSON.stringify(formResponse)}`, confObj);
+
+          if (typeof botText.then === 'function') {
+            botText.then(text => {
+              _bot.say(ip, text, confObj);
+            });
+          } else {
+            _bot.say(ip, botText, confObj);
+          }
+        } catch (err){
+          const botText =
+            '{"status":"403","err":"invalid post body","text":""}';
+          sendResponse(botText, { request , response });
+        }
+      });
     }
   }
 
   const { botName, isHttps, host, port } = webConfig;
-
 
   const _bot = isHttps ? https.createServer(serverFunction) : http.createServer(serverFunction);
   _bot.listen(port);
@@ -116,7 +155,7 @@ module.exports = function webBot(
 
   const boundListenToMessages = listenToMessages.bind(context);
 
-  console.warn(`${botName} - ${host}:${port}`);
+  console.warn(`${botName} - http${isHttps ? "s" : ""}://${host}:${port}`);
 
   return _bot;
 };
