@@ -2,6 +2,9 @@ const Module = require('./Module.js');
 const { Configuration, OpenAIApi } = require('openai');
 const mailchimp = require('@mailchimp/mailchimp_transactional');
 
+const OPENAI_API_KEY = "<api key>";
+const MAILCHIMP_API_KEY = "<api key>";
+
 const EXAMPLE_MEALS = [
   {"name":"Lemon Cream Tortellini & Broccoli with Garlicky Green Beans & Red Bell Peppers","websiteUrl":"https://factor-us-development.myshopify.com/products/lemon-cream-tortellini-broccoli-with-garlicky-green-beans-red-bell-peppers","image":"https://cdn.shopify.com/s/files/1/0704/0080/3133/products/WL_LemonCreamTortellini_Broccoli2022_Plated_WhiteLabel.jpg?v=1677026103"},
   {"name":"Vegetable Ratatouille with Mascarpone Polenta","websiteUrl":"https://factor-us-development.myshopify.com/products/vegetable-ratatouille-with-mascarpone-polenta-1","image":"https://cdn.shopify.com/s/files/1/0704/0080/3133/products/WLVegetableRatatouille_3db05dc1-c657-47d3-b89e-664ca6262daa.jpg?v=1677025935"},
@@ -173,11 +176,11 @@ class Test extends Module {
     super(_bot, _modules, userConfig, commandModule);
 
     const configuration = new Configuration({
-      apiKey: "<api key>"
+      apiKey: OPENAI_API_KEY
     });
 
     this.openai = new OpenAIApi(configuration);
-    this.mailchimp = mailchimp("<api key>");
+    this.mailchimp = mailchimp(MAILCHIMP_API_KEY);
   }
 
   buildHumanRequest(answers) {
@@ -348,18 +351,23 @@ class Test extends Module {
       .replace("{{activity_level}}", activity_level)
       .replace("{{activity_recommendation}}", activity_recommendation)
       .replace("{{day1Name}}", day1Meal.name)
+      .replace("{{day1Reason}}", Day_1.reasoning)
       .replace("{{day1Image}}", day1Meal.image)
       .replace("{{day1Url}}", day1Meal.websiteUrl)
       .replace("{{day2Name}}", day2Meal.name)
+      .replace("{{day2Reason}}", Day_2.reasoning)
       .replace("{{day2Image}}", day2Meal.image)
       .replace("{{day2Url}}", day2Meal.websiteUrl)
       .replace("{{day3Name}}", day3Meal.name)
+      .replace("{{day3Reason}}", Day_3.reasoning)
       .replace("{{day3Image}}", day3Meal.image)
       .replace("{{day3Url}}", day3Meal.websiteUrl)
       .replace("{{day4Name}}", day4Meal.name)
+      .replace("{{day4Reason}}", Day_4.reasoning)
       .replace("{{day4Image}}", day4Meal.image)
       .replace("{{day4Url}}", day4Meal.websiteUrl)
       .replace("{{day5Name}}", day5Meal.name)
+      .replace("{{day5Reason}}", Day_5.reasoning)
       .replace("{{day5Image}}", day5Meal.image)
       .replace("{{day5Url}}", day5Meal.websiteUrl);
 
